@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version 1.12-5-gddbadeb8
+Version 1.12-18-g0f6be3f2
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -617,11 +617,8 @@ Schwänzchen in die Höh
 
   \needspace{4cm}
 
-\begin{verbatim}
-  "extract"  : {
-    "0" : {"lyrics": {"1": {"verses": [1, 2], "pos": [350, 70]}}}
-  },
-\end{verbatim}
+  ``extract'' : \{ ``0'' : \{``lyrics'': \{``1'': \{``verses'': {[}1,
+  2{]}, ``pos'': {[}350, 70{]}\}\}\} \},
 
   \needspace{15cm}
 \item
@@ -9126,8 +9123,6 @@ issues}\label{backward-compatibility-issues}}
   first official release
 \end{itemize}
 
-\cleardoublepage
-\addcontentsline{toc}{chapter}{\indexname}
-\printindex
+\cleardoublepage\addcontentsline{toc}{chapter}{\indexname}\printindex
 
 \end{document}
