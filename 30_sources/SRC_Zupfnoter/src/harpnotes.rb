@@ -1058,7 +1058,7 @@ module Harpnotes
         @origin     = origin
         @conf_key   = conf_key
         @conf_value = conf_value
-        @shift_eu   = false         # this indicates that it should be repostioned for countnotes e u
+        @shift_eu   = false # this indicates that it should be repostioned for countnotes e u
       end
 
       # this estimates the size of an annotation
@@ -1081,7 +1081,7 @@ module Harpnotes
             $log.error("unsupported style for annotation: #{@style}")
           end
           ysize = font_size * $conf.get("layout.MM_PER_POINT").to_f
-          xsize = @text.length * ysize * 0.55# todo: found 0.55 by try and error this needs improvement (multiline texts, monospace fonts.)
+          xsize = @text.length * ysize * 0.55 # todo: found 0.55 by try and error this needs improvement (multiline texts, monospace fonts.)
         else
           xsize, ysize = 1.5, 2 # todo: this is pretty heuristic in fact this should not happen ...
         end
@@ -1096,7 +1096,7 @@ module Harpnotes
           @@pdf = JsPDF.new(:l, :mm, :a3) # we need this to compute string width
         end
 
-        font_size = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size")
+        font_size  = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size")
         font_style = $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_style")
 
         unless font_size
@@ -1108,15 +1108,24 @@ module Harpnotes
 
         size = @@pdf.get_text_dimensions(@text.split("\n"))
 
-        [size[:w], size[:h]]
+        result = [size[:w], size[:h]]
+
+        result
       end
 
-      def shift_eu
-        if /^[aoveu]$/.match(@text)
-          @shift_eu  = true
-          @center[1] = @center[1] - $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size") * $conf.get("layout.MM_PER_POINT").to_f  * 0.25   # todo: 0.03 ?? try error
+      def shift_eu=(value)
+        if value
+          if /^[aoveu]$/.match(@text)
+            @shift_eu  = true
+            @center[1] = @center[1] - $conf.get("layout.FONT_STYLE_DEF.#{@style}.font_size") * $conf.get("layout.MM_PER_POINT").to_f * 0.25 # todo: 0.03 ?? try error
+          end
         end
       end
+
+      def shift_eu?
+        @shift_eu
+      end
+
     end
 
 
@@ -1549,8 +1558,8 @@ module Harpnotes
       def layout(music, beat_layout = nil, print_variant_nr = 0, page_format = 'A4')
 
         _layout_prepare_options(print_variant_nr)
-        title               = music.meta_data[:title] || "untitled"
-        filename            = music.meta_data[:filename]
+        title    = music.meta_data[:title] || "untitled"
+        filename = music.meta_data[:filename]
 
         ### layout debug grid
         res_debug_grid = $conf['layout.grid'] ? layout_debug_grid() : []
@@ -1565,7 +1574,7 @@ module Harpnotes
         res_synch_lines = _layout_synclines(music, required_synchlines)
 
         ### build Scalebar stringmarks, sortmark
-        res_sheetmarks = _layout_sheetmarks(@print_options_hash, print_variant_nr)
+        res_sheetmarks   = _layout_sheetmarks(@print_options_hash, print_variant_nr)
         sortmark_options = @print_options_hash['sortmark']
         res_sheetmarks << _layout_sortmark(title, sortmark_options) if sortmark_options['show']
 
@@ -1624,8 +1633,6 @@ module Harpnotes
       end
 
 
-
-
       NOTE_POSITION_LOOKUP = {
           #         t   C
           "11" => [:r, :r], # l l
@@ -1648,7 +1655,7 @@ module Harpnotes
 
         if x < 10
           [:r, :r]
-        elsif  x > 410
+        elsif x > 410
           [:l, :l]
         else
           NOTE_POSITION_LOOKUP["#{a}#{b}"]
@@ -1708,8 +1715,8 @@ module Harpnotes
         res_slurs = _layout_voice_slurs(playables)
 
         ### layout the jumplines
-        res_gotos     = _layout_voice_gotos(print_variant_nr, show_options, voice)
-        res_gotos     = [] unless show_options[:jumpline]
+        res_gotos = _layout_voice_gotos(print_variant_nr, show_options, voice)
+        res_gotos = [] unless show_options[:jumpline]
 
         color_default = @color_default
         res_gotos.each { |the_goto| the_goto.color = color_default }
@@ -1721,9 +1728,9 @@ module Harpnotes
         res_annotations = _layout_voice_notebound_annotations(print_variant_nr, show_options, voice)
 
 
-        res_barnumber_backgrounds = res_barnumbers.map { |i| create_annotation_background_rect(i, 0.2) }
-        res_countnote_backgrounds = res_countnotes.map { |i| create_annotation_background_rect(i, -0.1) }
-        res_annotation_backgrounds = (res_annotations + res_repeatmarks).compact.map{|i| create_annotation_background_rect(i, 1) }
+        res_barnumber_backgrounds  = res_barnumbers.map { |i| create_annotation_background_rect(i, 0.2) }
+        res_countnote_backgrounds  = res_countnotes.map { |i| create_annotation_background_rect(i, -0.05) }
+        res_annotation_backgrounds = (res_annotations + res_repeatmarks).compact.map { |i| create_annotation_background_rect(i, 0.5) }
 
         # return all drawing primitives
         (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables +
@@ -2379,7 +2386,7 @@ module Harpnotes
           sheet_marks += (start_scale .. end_scale).to_a.inject([]) do |result, pitch|
             x = (-start_scale + pitch) * x_spacing + x_offset
             vpos.each do |vpos|
-              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style, nil, conf_key).tap{|d| d.align=:center}
+              result << Harpnotes::Drawing::Annotation.new([x, vpos], scale[pitch - start_scale], style, nil, conf_key).tap { |d| d.align = :center }
             end
             result
           end
@@ -2591,21 +2598,21 @@ module Harpnotes
               cn_position = Vector2d(dcenter) + cn_offset
 
               # todo: pass more attributes by an object instead of using tap
-              annotation =  Harpnotes::Drawing::Annotation.new(cn_position.to_a,
-                                                                     count_note, cn_style, playable.origin,
-                                                                     "extract.#{print_variant_nr}.#{cn_pos_key}", cn_offset)
-                                      .tap { |s| s.shift_eu = true, s.align = cn_align; s.draginfo = {handler: :annotation}
-                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{cn_align_key}",
-                                                             text:     I18n.t("countnote left"),
-                                                             icon:     "fa fa-arrow-left",
-                                                             value:    "l"
-                                                            })
-                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{cn_align_key}",
-                                                             text:     I18n.t("countnote right"),
-                                                             icon:     "fa fa-arrow-right",
-                                                             value:    "r"
-                                                            })
-                                      }
+              annotation = Harpnotes::Drawing::Annotation.new(cn_position.to_a,
+                                                              count_note, cn_style, playable.origin,
+                                                              "extract.#{print_variant_nr}.#{cn_pos_key}", cn_offset)
+                               .tap { |s| s.shift_eu = true, s.align = cn_align; s.draginfo = {handler: :annotation}
+                               s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{cn_align_key}",
+                                                      text:     I18n.t("countnote left"),
+                                                      icon:     "fa fa-arrow-left",
+                                                      value:    "l"
+                                                     })
+                               s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{cn_align_key}",
+                                                      text:     I18n.t("countnote right"),
+                                                      icon:     "fa fa-arrow-right",
+                                                      value:    "r"
+                                                     })
+                               }
 
               res_countnotes.push(annotation)
 
@@ -2627,10 +2634,10 @@ module Harpnotes
               bn_align_key = "#{bn_base_key}.align"
               bn_conf_key  = "extract.#{print_variant_nr}.#{bn_pos_key}"
               barnumber    = %Q{#{bn_prefix}#{playable.measure_count.to_s}} || ""
-              bn_dsize_y = (:center == bn_apanchor) ? 0 : dsize_y
+              bn_dsize_y   = (:center == bn_apanchor) ? 0 : dsize_y
               # read countnote-configuration from extract
-              bn_offset  = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
-              bn_side    = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
+              bn_offset    = @print_options_raw[bn_pos_key] if @print_options_keys.include? bn_pos_key
+              bn_side      = @print_options_raw[bn_align_key] if @print_options_keys.include? bn_align_key and (@print_options_raw[bn_align_key] != :auto)
 
               # if we have autopos, we need to compute the align
               # even if there is a cnoffset, we need to consider the side of the note
@@ -2654,18 +2661,18 @@ module Harpnotes
               bn_position = Vector2d(dcenter) + bn_offset
 
               annotation = Harpnotes::Drawing::Annotation.new(bn_position.to_a, barnumber, bn_style, playable.origin,
-                                                                     "extract.#{print_variant_nr}.#{bn_pos_key}", bn_offset)
-                                      .tap { |s| s.align = bn_align; s.draginfo = {handler: :annotation}
-                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{bn_align_key}",
-                                                             text:     I18n.t("barnumber left"),
-                                                             icon:     "fa fa-arrow-left",
-                                                             value:    "l"
-                                                            })
-                                      s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{bn_align_key}",
-                                                             text:     I18n.t("barnumber right"),
-                                                             icon:     "fa fa-arrow-right",
-                                                             value:    "r"
-                                                            }) }
+                                                              "extract.#{print_variant_nr}.#{bn_pos_key}", bn_offset)
+                               .tap { |s| s.align = bn_align; s.draginfo = {handler: :annotation}
+                               s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{bn_align_key}",
+                                                      text:     I18n.t("barnumber left"),
+                                                      icon:     "fa fa-arrow-left",
+                                                      value:    "l"
+                                                     })
+                               s.more_conf_keys.push({conf_key: "extract.#{print_variant_nr}.#{bn_align_key}",
+                                                      text:     I18n.t("barnumber right"),
+                                                      icon:     "fa fa-arrow-right",
+                                                      value:    "r"
+                                                     }) }
 
               res_barnumbers.push(annotation)
             end
@@ -2680,13 +2687,30 @@ module Harpnotes
         # make backgroung bigger by padding
         # adjust the position of background such that it does not overlap synchlines
         bn_position = bn_position = Vector2d(annotation.center)
-        bgsize           = annotation.size.map { |i| i * 0.5 }  # annotation size is ful size, but now we need from center
+        bgsize      = annotation.size.map { |i| i * 0.5 } # annotation size is ful size, but now we need from center
 
-        bgsize1          = [ bgsize.first + padding, bgsize.last + padding ]
-        bgsize1[1]        = bgsize1[1] * 0.8 if annotation.shift_eu  # this is to optimize countnote backgground for e | u
+        bgsize_padded = [bgsize.first + padding, bgsize.last + padding]
 
-        bgx              = (annotation.align == :left) ? bgsize.first :  -bgsize.first
-        background       = Ellipse.new((bn_position + [bgx, bgsize.last ]).to_a, bgsize1, :filled, false, nil, true)
+        background_x = (annotation.align == :left) ? bgsize.first : -bgsize.first
+        background_y = bgsize.last
+
+
+        # todo: properly handle hanging annotations
+        # adjust size and position
+        if annotation.shift_eu?
+          # have no lowerlength and upperlength
+          background_y     = bgsize[1] * 1 - padding * 0.7  # adjust vertical alignment
+          bgsize_padded[1] = bgsize_padded[1] * 0.5 # ajust size
+        else
+          # have no lowerlength
+          unless /[|gyqp]/.match(annotation.text)
+            background_y     = bgsize[1] * 1  - padding * 0.5
+            bgsize_padded[1] = bgsize_padded[1] * 0.7
+          end
+        end
+
+
+        background       = Ellipse.new((bn_position + [background_x, background_y]).to_a, bgsize_padded, :filled, false, nil, true)
         background.color = 'white'
         background
       end
@@ -3275,24 +3299,23 @@ module Harpnotes
         #
 
 
-
         # line points
         p1      = from + start_offset
         p2      = start_of_vertical
         p3      = end_of_vertical
         p4      = to + end_offset
-        p4_line = to + end_offset + end_orientation * [2, 0]    # end of line such that it ends inside of the arrow
+        p4_line = to + end_offset + end_orientation * [2, 0] # end of line such that it ends inside of the arrow
 
         # arrow points
         # arrow path is p4 a1 a2 p4
         a1 = p4 + end_orientation * 2.5 + [0, 1]
         a2 = p4 + end_orientation * 2.5 - [0, 1]
 
-        dy = (p3.y - p2.y)
-        verticalcuty = dy > 0 ? verticalcut: -verticalcut
+        dy           = (p3.y - p2.y)
+        verticalcuty = dy > 0 ? verticalcut : -verticalcut
         verticalcuty = dy if verticalcut == 0
 
-        vcp2 = p2 + [0, verticalcuty]
+        vcp2      = p2 + [0, verticalcuty]
         vcp2_line = vcp2 + vert_orientation
 
         vcp3 = p3 - [0, verticalcuty]
