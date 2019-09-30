@@ -2298,9 +2298,9 @@ module Harpnotes
         end
 
 
-        res_barnumber_backgrounds = res_barnumbers.map { |i| create_annotation_background_rect(i) }
-        res_countnote_backgrounds = res_countnotes.map { |i| create_annotation_background_rect(i) }
-        res_annotation_backgrounds = (res_annotations + res_repeatmarks).compact.map{|i| create_annotation_background_rect(i) }
+        res_barnumber_backgrounds = res_barnumbers.map { |i| create_annotation_background_rect(i, 0.2) }
+        res_countnote_backgrounds = res_countnotes.map { |i| create_annotation_background_rect(i, -0.1) }
+        res_annotation_backgrounds = (res_annotations + res_repeatmarks).compact.map{|i| create_annotation_background_rect(i, 1) }
 
         # return all drawing primitives
         (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables +
@@ -2579,18 +2579,18 @@ module Harpnotes
         return res_barnumbers, res_countnotes
       end
 
-      def create_annotation_background_rect(annotation)
+      def create_annotation_background_rect(annotation, padding = 0.1)
         # notes to literals
         # literals are basically determined by try and error
-        # make backgroung bigger by 0.1
+        # make backgroung bigger by padding
         # adjust the position of background such that it does not overlap synchlines
         bn_position = bn_position = Vector2d(annotation.center)
-        bgsize           = annotation.size.map { |i| i * 0.5 }
+        bgsize           = annotation.size.map { |i| i * 0.5 }  # annotation size is ful size, but now we need from center
 
-        bgsize1          = [bgsize.first + 0.1, bgsize.last ]
+        bgsize1          = [ bgsize.first + padding, bgsize.last + padding ]
         bgsize1[1]        = bgsize1[1] * 0.8 if annotation.shift_eu  # this is to optimize countnote backgground for e | u
 
-        bgx              = (annotation.align == :left) ? bgsize1.first :  -bgsize1.first
+        bgx              = (annotation.align == :left) ? bgsize.first :  -bgsize.first
         background       = Ellipse.new((bn_position + [bgx, bgsize.last ]).to_a, bgsize1, :filled, false, nil, true)
         background.color = 'white'
         background
