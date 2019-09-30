@@ -709,10 +709,34 @@ function init_w2ui(uicontroller) {
             tooltip: "Replace all unisons in the selection by the first note"
           },
           {
+            id: "editunison:replaceBySecond",
+            text: "Replace unison by second note",
+            icon: "fa fa-bars",
+            tooltip: "Replace all unisons in the selection by the second note"
+          },
+          {
+            id: "editunison:replaceBySecondLast",
+            text: "Replace unison by second last note",
+            icon: "fa fa-bars",
+            tooltip: "Replace all unisons in the selection by the second last note"
+          },
+          {
             id: "editunison:replaceByLast",
             text: "Replace unison by last note",
             icon: "fa fa-bars",
             tooltip: "Replace all unisons in the selection by the last note"
+          },
+          {
+            id: "editunison:replaceByInnerPart",
+            text: "Replace unison by inner part",
+            icon: "fa fa-bars",
+            tooltip: "Replace all unisons in the selection by the inner part note"
+          },
+          {
+            id: "editunison:revert",
+            text: "Revert notes",
+            icon: "fa fa-bars",
+            tooltip: "revert unisons"
           },
           {
             id: "editunison:swapFirstWithLast",
