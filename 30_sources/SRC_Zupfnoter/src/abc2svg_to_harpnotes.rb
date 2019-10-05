@@ -330,7 +330,6 @@ module Harpnotes
         # it shall not create a bar in harpnotes
         # but do not check this in context of variants
         #    variant is stopped and not started nex
-         `debugger`
         if ( (voice_element[:rbstop] == 2 and not voice_element[:rbstart] == 2))
           if type.include? ":"  #   false # @is_first_measure ## first measure after a meter statment cannot suppress bar
             @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
