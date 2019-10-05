@@ -1,3 +1,1 @@
-\cleardoublepage
-\addcontentsline{toc}{chapter}{\indexname}
-\printindex
+\cleardoublepage\addcontentsline{toc}{chapter}{\indexname}\printindex

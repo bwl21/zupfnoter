@@ -2,6 +2,8 @@
 
 ## fix
 
+* refine alignment of stringnames #281
+
 ## enhancement
 
 * integrate pdf preview in harpnote preview #281

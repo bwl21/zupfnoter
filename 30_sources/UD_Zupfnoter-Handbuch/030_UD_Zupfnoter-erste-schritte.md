@@ -190,9 +190,8 @@ Beispiel kannst du zunächst einen Liedtext hinzufügen:
 
     \needspace{4cm}
 
-          "extract"  : {
-            "0" : {"lyrics": {"1": {"verses": [1, 2], "pos": [350, 70]}}}
-          },
+    "extract" : { "0" : {"lyrics": {"1": {"verses": \[1, 2\], "pos":
+    \[350, 70\]}}} },
 
     \needspace{15cm}
 7.  klicke auf die Schaltfläche "Rendern", um die Unterlegnoten zu

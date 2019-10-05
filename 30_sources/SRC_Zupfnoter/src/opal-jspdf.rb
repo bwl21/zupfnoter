@@ -149,6 +149,10 @@ class JsPDF
     %x{#{@native_jspdf}.getTextWidth(#{text})}
   end
 
+  def get_text_dimensions(text)
+    Native(%x{#{@native_jspdf}.getTextDimensions(#{text.to_n})})
+  end
+
   private
 
   def apply_offset_to_point(point)

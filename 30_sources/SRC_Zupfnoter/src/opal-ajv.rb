@@ -394,7 +394,11 @@ module Ajv
                                                                                }
                                                                            }},
                                                          :countnote    => {:'$ref' => '#/definitions/notebound_pos'},
-                                                         :decoration   => {:'$ref' => '#/definitions/notebound_pos'},
+                                                         :decoration => {:type              => 'object',
+                                                                         :patternProperties => {
+                                                                             "\d+" => {:'$ref' => '#/definitions/notebound_pos'}
+                                                                         }
+                                                         },
                                                          :flowline     => {:type              => 'object',
                                                                            :patternProperties => {
                                                                                "v_\d+" => {
