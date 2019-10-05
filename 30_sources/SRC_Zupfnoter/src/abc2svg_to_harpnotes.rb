@@ -271,14 +271,14 @@ module Harpnotes
         result = []
         type   = voice_element[:bar_type]
 
-        text = voice_element[:text]
+        variant_label = voice_element[:text]
         distance = _extract_goto_info_from_bar(voice_element).last[:distance] rescue [-10, 10, 15]
         @next_note_marks[:measure]      = true unless voice_element[:invisible] or type =~ /^\:?([\[\]]+)$/ # "]" is not a visible bar - useful for variant ending between measures
         @next_note_marks[:repeat_start] = true if type =~ /^.*:$/
 
         if voice_element[:rbstart] == 2
           @variant_no                       += 1
-          @next_note_marks[:variant_ending] = {text: text}
+          @next_note_marks[:variant_ending] = {text: variant_label}
         end
 
         # process end of variant ending
@@ -297,7 +297,7 @@ module Harpnotes
         end
 
         # if variant stops and we are alraedy in a variant
-        # variant_edinngs.last -> the current variant ending group
+        # variant_edings.last -> the current variant ending group
         # variant_endings.last.last - > the current variant ending within the current variant ending group
         # [:rbstart] check if it is really started
         if (voice_element[:rbstop] == 2) and (!@variant_endings.last.last.nil?) and (@variant_endings.last.last[:rbstart])
@@ -325,10 +325,14 @@ module Harpnotes
 
         result << _transform_bar_repeat_end(voice_element, index, voice_index) if _bar_is_repetition_end?(type)
 
-        # here we handle the case that a repeat is within a measure (textcase 3016 in measure repeats)
+        # here we handle the case that a repeat starts within a measure (textcase 3016 in measure repeats)
+        # if a repeat ends within a measure
         # it shall not create a bar in harpnotes
-        if type.include? ':'
-          unless false # @is_first_measure ## first measure after a meter statment cannot suppress bar
+        # but do not check this in context of variants
+        #    variant is stopped and not started nex
+         `debugger`
+        if ( (voice_element[:rbstop] == 2 and not voice_element[:rbstart] == 2))
+          if type.include? ":"  #   false # @is_first_measure ## first measure after a meter statment cannot suppress bar
             @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
           end
         end
