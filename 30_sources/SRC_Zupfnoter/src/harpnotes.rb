@@ -3023,8 +3023,8 @@ module Harpnotes
                 result   = collision_range[k]
                 the_note = collision_range[k][:note]
 
-                # todo: remove this
-                the_note.count_note += " #{the_note.prev_pitch} -> #{the_note.pitch} :   #{k} #{collision_stack[k][:kind]}-#{collision_range[k][:kind]}"
+                # todo: remove this append debug info to count note
+                # the_note.count_note += " #{the_note.prev_pitch} -> #{the_note.pitch} :   #{k} #{collision_stack[k][:kind]}-#{collision_range[k][:kind]}"
 
                 result[:inc] = size
                 #result[:inc] = size/2 if ["line-note", "note-line"].include? collisiontype
