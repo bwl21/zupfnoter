@@ -2399,7 +2399,7 @@ module Harpnotes
       def _layout_voices(beat_layout, music, print_variant_nr)
         beat_compression_map = nil
         $log.benchmark("compute beat compression map") do
-          layoutlines          = @print_options_hash[:voices] + @print_options_hash[:layoutlines].uniq
+          layoutlines          = (@print_options_hash[:voices] + @print_options_hash[:layoutlines]).uniq
           beat_compression_map = compute_beat_compression(music, layoutlines)
         end
         maximal_beat      = beat_compression_map.values.max || 0
