@@ -2719,6 +2719,7 @@ module Harpnotes
       def compute_beat_compression(music, layout_lines)
         result = compute_beat_compression_1(music, layout_lines) if $conf.get('layout.packer.pack_method') == 1
         result = compute_beat_compression_2(music, layout_lines) if $conf.get('layout.packer.pack_method') == 2
+        result = compute_beat_compression_3(music, layout_lines) if $conf.get('layout.packer.pack_method') == 3
         result = compute_beat_compression_10(music, layout_lines) if $conf.get('layout.packer.pack_method') == 10
         result = compute_beat_compression_0(music, layout_lines) if ($conf.get('layout.packer.pack_method') || 0) == 0
         result
@@ -2968,6 +2969,106 @@ module Harpnotes
         compression_map
       end
 
+
+
+      # this is like 1 but has a differnt approch for flowine inversions
+      def compute_beat_compression_3(music, layout_lines)
+        duration_to_style  = $conf.get('layout.DURATION_TO_STYLE')
+        conf_min_increment = ($conf.get('layout.packer.pack_min_increment') || 0) * @conf_beat_resolution
+
+
+        # initialize the memory
+        collision_stack = {}
+        collision_range = {}
+        compression_map = {}
+        newbeat         = 0
+        nextincrement   = 0
+        last_size       = 0
+
+        # find relevant notes for vertical layout
+        relevant_notes = layout_lines.uniq.map { |voice_id| music.voices[voice_id] }.inject([]) { |result, voice| result.push(voice) }.flatten.select { |note| note.is_a? Harpnotes::Music::Playable }
+        relevant_sp    = relevant_notes.select { |note| note.is_a? Harpnotes::Music::SynchPoint }.map { |sp| sp.notes }
+        relevant_notes = relevant_notes.push(relevant_sp).flatten
+
+        # get relvant beats
+        relevant_beats = relevant_notes.group_by { |playable| playable.beat }
+
+        relevant_beats.keys.sort.each do |beat| # note that hashes are not sorted!
+          notes = relevant_beats[beat]
+          # 1. compute the range to check the collisions
+          collision_range = notes.inject({}) do |result, note|
+            Range.new(*[note.prev_pitch, note.pitch].sort).each do |pitch|
+              result[pitch] = {beat: newbeat, note: note, pitch: pitch, kind: note.pitch==pitch ? :note : :line}
+            end
+            result.delete(note.prev_pitch) unless note.pitch == note.prev_pitch
+
+            result
+          end
+
+          puts collision_range
+          # 2. identify the collisions
+          collision_candidate_keys = collision_range.keys & collision_stack.keys
+          collisions = collision_candidate_keys.map do |k|
+            result = nil
+            begin
+              size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(collision_range[k][:note].duration)].first}   }
+            rescue Exception => e
+              $log.error("BUG: unsupported duration: #{collision_range[k][:note].duration} on beat #{beat},  #{collision_range[k][:note].to_json}")
+            end
+
+            collisiontype = "#{collision_stack[k][:kind]}-#{collision_range[k][:kind]}"
+
+            if ["note-note", "note-line", "line-note", "dline-line"].include? collisiontype
+              if collision_range[k][:beat] <= collision_stack[k][:beat] + conf_min_increment
+                result   = collision_range[k]
+                the_note = collision_range[k][:note]
+
+                # todo: remove this
+                the_note.count_note += " #{the_note.prev_pitch} -> #{the_note.pitch} :   #{k} #{collision_stack[k][:kind]}-#{collision_range[k][:kind]}"
+
+                result[:inc] = size
+                #result[:inc] = size/2 if ["line-note", "note-line"].include? collisiontype
+              end
+            end
+            result
+          end.compact
+
+
+          # 3. compute the default increment
+          defaultincrement = conf_min_increment
+          if collisions[0]  # we do have a collision
+            puts(beat * 8, collision_stack, collision_range, collisions, collision_candidate_keys)
+
+            largest_increment = collisions.sort_by { |i| i[:inc]}.first
+            # todo. compute the size at the collision ...
+            defaultincrement = largest_increment[:inc]
+          else
+            defaultincrement = conf_min_increment
+          end
+
+          # 4. apply special cases (measuere, part)
+          # detect parts and measure starts
+          is_new_part   = notes.select { |n| n.first_in_part? }
+          measure_start = notes.select { |n| n.measure_start? }
+
+          increment     = defaultincrement
+
+          # handle start part
+          unless is_new_part.empty?
+            increment     += defaultincrement
+          end
+
+          increment += increment / 4 unless measure_start.empty? # make room for measure bar
+          increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment
+
+          newbeat += increment
+          collision_range.keys.each{|k| collision_stack[k] = {beat: newbeat, kind: collision_range[k][:kind], inc: increment}}
+
+          compression_map[beat] = newbeat
+        end
+
+        compression_map
+      end
 
       #
       # layout the one Playable on the sheet
