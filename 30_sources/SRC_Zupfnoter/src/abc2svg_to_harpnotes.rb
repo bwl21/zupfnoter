@@ -827,7 +827,7 @@ module Harpnotes
 
         # handle parts as annotation
 
-        if part_label
+        if part_label and part_label.length > 0
           conf_key = "notebound.partname.#{voice_id}.#{znid}" if znid #$conf['defaults.notebound.variantend.pos']
           position = $conf['defaults.notebound.partname.pos']
 
