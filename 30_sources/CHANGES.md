@@ -7,6 +7,8 @@
 ## enhancement
 
 * integrate pdf preview in harpnote preview #281
+* draw white background on annotations #279
+* added experimental packer 3
 
 # 1.12 August 2019
 
