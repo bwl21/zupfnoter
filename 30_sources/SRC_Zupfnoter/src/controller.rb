@@ -733,6 +733,18 @@ class Controller
     result
   end
 
+  # this is an accessor which tries to recompute
+  # the value if is not available
+  def pdf_preview_string
+    if @systemstatus[:autorefresh] and not @pdf_preview_string.empty?
+      @pdf_preview_string
+    else
+      engine              = Harpnotes::PDFEngine.new
+      @pdf_preview_string = engine.draw(@song_harpnotes).output('datauristring')
+    end
+  end
+
+
 # download abc + pdfs as a zip archive
 # todo: determine filename from abc header
   def save_file

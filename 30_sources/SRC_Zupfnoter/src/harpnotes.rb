@@ -3005,7 +3005,7 @@ module Harpnotes
             result
           end
 
-          puts collision_range
+         ## puts collision_range
           # 2. identify the collisions
           collision_candidate_keys = collision_range.keys & collision_stack.keys
           collisions = collision_candidate_keys.map do |k|
@@ -3037,7 +3037,7 @@ module Harpnotes
           # 3. compute the default increment
           defaultincrement = conf_min_increment
           if collisions[0]  # we do have a collision
-            puts(beat * 8, collision_stack, collision_range, collisions, collision_candidate_keys)
+            # puts(beat * 8, collision_stack, collision_range, collisions, collision_candidate_keys)
 
             largest_increment = collisions.sort_by { |i| i[:inc]}.first
             # todo. compute the size at the collision ...
