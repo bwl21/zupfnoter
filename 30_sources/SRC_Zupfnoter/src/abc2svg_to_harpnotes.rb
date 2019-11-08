@@ -386,6 +386,7 @@ module Harpnotes
           result.decorations   = decorations
           result.measure_count = @measure_count
           result.count_note    = _transform_count_note(voice_element)
+          result.lyrics        = _transform_lyrics(voice_element)
           result.time          = voice_element[:time]
           result.znid          = _mkznid(voice_element)
           result.origin        = origin
@@ -491,6 +492,7 @@ module Harpnotes
         end
         result
       end
+
 
       # this generates the count notes
       # Approach
@@ -683,6 +685,15 @@ module Harpnotes
         nil
       end
 
+
+      def _transform_lyrics(voice_element)
+        if voice_element[:a_ly]
+          result = voice_element[:a_ly].first[:t].gsub("\n", "-").gsub("_", "")
+        else
+          resuilt = ""
+        end
+        result
+      end
 
       # here we handle meter changes
       # there are some special cases to consider

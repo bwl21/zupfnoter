@@ -202,6 +202,7 @@ module Harpnotes
                     :shift, # {dir: :left | :right}
                     :count_note, # string to support count_notes
                     :chord_symbol, # string to support chortd harmony symbols
+                    :lyrics, # string lyrics for the note
                     :measure_count, # number of meausre for barnumbers
                     :measure_start # this playable starts a measure
 
@@ -2708,7 +2709,6 @@ module Harpnotes
               cn_base_key  = "notebound.countnote.v_#{voice_nr}.t_#{playable.time}"
               cn_pos_key   = "#{cn_base_key}.pos"
               cn_align_key = "#{cn_base_key}.align"
-              count_note   = playable.count_note || ""
 
               cn_dsize_y = (:center == cn_apanchor) ? 0 : dsize_y # this adjusts the postion for autopos. prepare for using baseline=hanging 0 = center of note, dsize_y = top/bottom of note
 
@@ -2720,6 +2720,16 @@ module Harpnotes
               # even if there is a cnoffset, we need to consider the side of the note
               # otherwise drag/drop does not work properly
               cn_align = cn_autopos == true ? ((cn_side == :l) ? :right : :left) : :left
+
+              lyrics = playable.lyrics || ''
+              count_note =  playable.count_note
+              unless lyrics.empty?
+                if cn_align == :left
+                  count_note = %Q{#{count_note} "#{playable.lyrics}"} || ""
+                else
+                  count_note = %Q{"#{playable.lyrics}" #{count_note}} || ""
+                end
+              end
 
               unless cn_offset # unless no offest is specified in config
                 if cn_autopos == true # global autopositioning
@@ -2836,12 +2846,12 @@ module Harpnotes
         # adjust size and position
         if annotation.shift_eu?
           # have no lowerlength and upperlength
-          background_y     = bgsize[1] * 1 - padding * 0.7  # adjust vertical alignment
+          background_y     = bgsize[1] * 1 - padding * 0.7 # adjust vertical alignment
           bgsize_padded[1] = bgsize_padded[1] * 0.5 # ajust size
         else
           # have no lowerlength
           unless /[|gyqp]/.match(annotation.text)
-            background_y     = bgsize[1] * 1  - padding * 0.5
+            background_y     = bgsize[1] * 1 - padding * 0.5
             bgsize_padded[1] = bgsize_padded[1] * 0.7
           end
         end
@@ -3107,7 +3117,6 @@ module Harpnotes
       end
 
 
-
       # this is like 1 but has a differnt approch for flowine inversions
       def compute_beat_compression_3(music, layout_lines)
         duration_to_style  = $conf.get('layout.DURATION_TO_STYLE')
@@ -3135,17 +3144,17 @@ module Harpnotes
           # 1. compute the range to check the collisions
           collision_range = notes.inject({}) do |result, note|
             Range.new(*[note.prev_pitch, note.pitch].sort).each do |pitch|
-              result[pitch] = {beat: newbeat, note: note, pitch: pitch, kind: note.pitch==pitch ? :note : :line}
+              result[pitch] = {beat: newbeat, note: note, pitch: pitch, kind: note.pitch == pitch ? :note : :line}
             end
             result.delete(note.prev_pitch) unless note.pitch == note.prev_pitch
 
             result
           end
 
-         ## puts collision_range
+          ## puts collision_range
           # 2. identify the collisions
           collision_candidate_keys = collision_range.keys & collision_stack.keys
-          collisions = collision_candidate_keys.map do |k|
+          collisions               = collision_candidate_keys.map do |k|
             result = nil
             begin
               size = %x{#{@conf_beat_resolution} * #{duration_to_style[duration_to_id(collision_range[k][:note].duration)].first}   }
@@ -3173,10 +3182,10 @@ module Harpnotes
 
           # 3. compute the default increment
           defaultincrement = conf_min_increment
-          if collisions[0]  # we do have a collision
+          if collisions[0] # we do have a collision
             # puts(beat * 8, collision_stack, collision_range, collisions, collision_candidate_keys)
 
-            largest_increment = collisions.sort_by { |i| i[:inc]}.first
+            largest_increment = collisions.sort_by { |i| i[:inc] }.first
             # todo. compute the size at the collision ...
             defaultincrement = largest_increment[:inc]
           else
@@ -3188,18 +3197,18 @@ module Harpnotes
           is_new_part   = notes.select { |n| n.first_in_part? }
           measure_start = notes.select { |n| n.measure_start? }
 
-          increment     = defaultincrement
+          increment = defaultincrement
 
           # handle start part
           unless is_new_part.empty?
-            increment     += defaultincrement
+            increment += defaultincrement
           end
 
           increment += increment / 4 unless measure_start.empty? # make room for measure bar
           increment += get_minc_factor(notes.first.time, defaultincrement) # get manuial increment
 
           newbeat += increment
-          collision_range.keys.each{|k| collision_stack[k] = {beat: newbeat, kind: collision_range[k][:kind], inc: increment}}
+          collision_range.keys.each { |k| collision_stack[k] = {beat: newbeat, kind: collision_range[k][:kind], inc: increment} }
 
           compression_map[beat] = newbeat
         end
