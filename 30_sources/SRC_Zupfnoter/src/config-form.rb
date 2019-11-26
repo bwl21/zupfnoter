@@ -341,6 +341,32 @@ class ConfstackEditor
       end
     end
 
+    class Tuning < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['fixed', 'open']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: '', #@value[key],
+         html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_value(key, string)
+        string[:id]
+      end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral Instrument #{__FILE__} #{__LINE__}")
+      end
+
+    end
+
     class Instrument < ZnTypes
       def self.to_html(key)
         %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
@@ -350,7 +376,7 @@ class ConfstackEditor
         {field:       key,
          type:        'list',
          options:     {items: ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel', 'Zipino',
-                               'okon-f', 'okon-g', 'okon-c', 'okon-d']},
+                               'okon-f', 'okon-g', 'okon-c', 'okon-d',  'akkordzither']},
          required:    true,
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),

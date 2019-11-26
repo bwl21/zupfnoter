@@ -169,6 +169,7 @@ module Ajv
                     :X_SPACING         => {:type => "number"},
                     :X_OFFSET          => {:type => "number"},
                     :instrument        => {:type => 'string'},
+                    :tuning            => {:type => 'string'},
 
                     :DRAWING_AREA_SIZE => {:type     => "array",
                                            :minItems => 2,

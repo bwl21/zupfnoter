@@ -1378,10 +1378,9 @@ module Harpnotes
         @color_variant2       = $conf.get('layout.color.color_variant2')
         @draw_instrument      = nil
         @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholder=
-        set_instrument_handlers
       end
 
-      def set_instrument_handlers
+      def set_instrument_handlers(print_variant_nr)
 
         xoffset                      = $conf['layout.X_OFFSET']
         xspacing                     = $conf['layout.X_SPACING']
@@ -1393,87 +1392,14 @@ module Harpnotes
 
         when "Zipino"
           #                  F# G  A  B  C  D  E  F# G  A  B  C  D  E  F#
-          pitches         = "54 55 57 59 60 62 64 66 67 69 71 72 74 76 78"
-          string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
-
-          @pitch_to_xpos               = lambda { |pitch|
-            #                           G        c        d        e        f        g        a        b        c'       D'
-            pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
-            result             = 0
-            result             = (pitch_to_stringpos) * xspacing + xoffset unless pitch_to_stringpos.nil?
-            result
-          }
-          @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
-          @draw_instrument             = lambda {
-            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 20], ['L', xoffset + 190, 100], ['M', xoffset + 190, 200], ['L', xoffset + 30, 281]], :open)
-            res.line_width = $conf.get('layout.LINE_MEDIUM');
-            [res]
-          }
-          @instrument_orientation      = :horizontal
+          _instrument_zipino(pitchoffset, xoffset, xspacing)
 
 
         when "saitenspiel"
-          @pitch_to_xpos               = lambda { |pitch|
-            #          G        c        d        e        f        g        a        b        c'       D'
-            pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
-            pitch_to_stringpos = pitch_to_stringpos[pitch + pitchoffset]
-            result             = 0
-            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
-            result
-          }
-          @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
-          @draw_instrument             = lambda {
-            res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
-            res.line_width = $conf.get('layout.LINE_MEDIUM');
-            [res]
-          }
+          _instrument_saitenspiel(pitchoffset, xoffset, xspacing)
 
-        when "okon-f", "okon-g", "okon-c", "okon-d"
-          flaps   = ""
-          pitches = ""
-          case $conf['layout.instrument']
-          when "okon-f"
-            #          G  A Bb C  D  E  F  G  A   Bb C  D  E  F  G  A  Bb C   D E F G
-            pitches = "55 57 58 60 62 64 65 67 69 70 72 74 76 77 79 81 82 84"
-            flaps   = ""
-          when "okon-g"
-            #          G  A  B  C  D  E  F# G  A  B  C  D  E  F# G  A  Bb C   D E F G
-            pitches = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79 81 83 84"
-            flaps   = "      59          66       71          78       83 "
-          when "okon-c"
-            #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
-            pitches = "55 57 59 60 62 64 65 67 69 71 72 74 76 77 79 81 83 84"
-            flaps   = "      59                   71                   83"
-          when "okon-d"
-            #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
-            pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
-            flaps   = "      59 61       66       71 73       78       83"
-          end
-
-          flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
-
-          string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
-          flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
-
-          @pitch_to_xpos               = lambda { |pitch|
-            #                           G        c        d        e        f        g        a        b        c'       D'
-            pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
-            result             = 0
-            result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
-            result
-          }
-          @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
-
-          @draw_instrument = lambda {
-            result = []
-            flaps_by_pitch.each do |f|
-              result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
-            end
-
-            res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)
-            res.line_width = $conf.get('layout.LINE_MEDIUM');
-            result.push(res)
-          }
+        when "okon-f", "okon-g", "okon-c", "okon-d", "okon-open"
+          _instrument_okon(pitchoffset, xoffset, xspacing, print_variant_nr)
 
         when "21-strings-a-f"
           @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
@@ -1481,10 +1407,14 @@ module Harpnotes
 
         when "18-strings-b-e"
           @bottom_annotation_positions = [[210, 287], [210, 290], [280, 290]]
+
+        when "akkordzither", "Akkordzither"
+          _instrument_akkordzither(pitchoffset, xoffset, xspacing, print_variant_nr)
+
         else
+
         end
       end
-
 
       def layout_images(print_options_raw, print_variant_nr)
         result = []
@@ -1823,6 +1753,154 @@ module Harpnotes
 
 
       private
+
+      def _mkflaps_pitches(stringnames)
+        pitchtable = _mk_pitches_table
+        string_by_pitch = {}
+        flap_by_pitch = {}
+        stringnames.split(" ").each_with_index.each do |k, i|
+          pitch = pitchtable[k]
+          string_by_pitch[pitch] = i
+          flap_by_pitch[pitch] = i if k.start_with?('*')
+        end
+
+        [string_by_pitch, flap_by_pitch]
+      end
+
+      def _mk_pitches_table
+        pitches = {
+            'c' => 60, '*c' => 61, 'c#' => 61, 'cis' => 61,
+            'd' => 62, '*d' => 63, 'd#' => 63, 'dis' => 63, 'des' => 61, 'db' => 61,
+            'e' => 64, 'eb' => 63, 'es' => 63,
+            'f' => 65, '*f' => 66, 'f#' => 66, 'fis' => 66,
+            'g' => 67, '*g' => 68, 'g#' => 68, 'gis' => 68, 'ges' => 66, 'gb' => 66,
+            'a' => 69, '*a' => 70, 'a#' => 70, 'ais' => 70, 'as' => 68, 'ab' => 68,
+            'h' => 71, 'b' => 71, 'hb' => 70, 'bb' => 70, '*hb' => 71, '*bb' => 71
+        }
+        pitches.keys.each do |k|
+           v = pitches[k]
+          pitches[k.upcase]        = v - 12
+          pitches[k + ',']         = v - 12
+          pitches[k + ',,']        = v - 24
+          pitches[k.upcase + ',']  = v - 24
+          pitches[k.upcase + ',,'] = v - 36
+          pitches[k + "'"]         = v + 12
+          pitches[k + "''"]        = v + 24
+          pitches[k + "''''"]      = v + 36
+        end
+        pitches
+      end
+
+      def _instrument_akkordzither(pitchoffset, xoffset, xspacing, print_variant_nr)
+        string_by_pitch, flaps_by_pitch = _mkflaps_pitches($conf["extract.#{print_variant_nr}.stringnames.text"])
+        @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+
+        @draw_instrument = lambda {
+          result = []
+          flaps_by_pitch.each do |f|
+            result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
+          end
+
+          res            = Harpnotes::Drawing::Path.new([['M', 228, 0], ['L',  335, 185], ['L', 335,297]],:open)
+          res.line_width = $conf.get('layout.LINE_THICK');
+          result.push(res)
+        }
+
+        @bottom_annotation_positions = [[30, 287], [30, 290], [130, 290]]
+
+      end
+
+      def _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+        lambda { |pitch|
+          pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
+          result             = -xspacing # in case no string is found
+          result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+          result
+        }
+      end
+
+      def _instrument_okon(pitchoffset, xoffset, xspacing, print_variant_nr = 0)
+        flaps   = ""
+        pitches = ""
+        case $conf['layout.instrument']
+        when "okon-f"
+          #          G  A  Bb C  D  E  F  G  A   Bb C  D  E  F  G  A  Bb C   D E F G
+          pitches = "55 57 58 60 62 64 65 67 69 70 72 74 76 77 79 81 82 84"
+          flaps   = ""
+        when "okon-g"
+          #          G  A  B  C  D  E  F# G  A  B  C  D  E  F# G  A  Bb C   D E F G
+          pitches = "55 57 59 60 62 64 66 67 69 71 72 74 76 78 79 81 83 84"
+          flaps   = "      59          66       71          78       83 "
+        when "okon-c"
+          #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+          pitches = "55 57 59 60 62 64 65 67 69 71 72 74 76 77 79 81 83 84"
+          flaps   = "      59                   71                   83"
+        when "okon-d"
+          #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
+          pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
+          flaps   = "      59 61       66       71 73       78       83"
+        when "okon-open"
+          string_by_pitch, flap_by_pitch = _mkflaps_pitches($conf["extract.#{print_variant_nr}.stringnames.text"])
+          @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+        end
+
+        flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
+
+        string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
+        flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
+
+        unless $conf['layout.instrument'] == "okon-open"
+        @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+        end
+
+        @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
+
+        @draw_instrument = lambda {
+          result = []
+          flaps_by_pitch.each do |f|
+            result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
+          end
+
+          res            = Harpnotes::Drawing::Path.new([['M', xoffset - 15, 280], ['L', xoffset - 15, 0], ['M', xoffset + 135, 0], ['L', xoffset + 290, 157], ['L', xoffset + 290, 280]], :open)
+          res.line_width = $conf.get('layout.LINE_MEDIUM');
+          result.push(res)
+        }
+      end
+
+      def _instrument_saitenspiel(pitchoffset, xoffset, xspacing)
+        @pitch_to_xpos               = lambda { |pitch|
+          pitch_to_stringpos = Hash[[[31, 0], [36, 1], [38, 2], [40, 3], [41, 4], [43, 5], [45, 6], [47, 7], [48, 8], [50, 9]]]
+          pitch_to_stringpos = pitch_to_stringpos[pitch + pitchoffset]
+          result             = -xspacing
+          result             = (pitch_to_stringpos) * xspacing + xoffset if pitch_to_stringpos
+          result
+        }
+        @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+        @draw_instrument             = lambda {
+          res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 6], ['L', xoffset + 180, 81], ['L', xoffset + 180, 216], ['L', xoffset + 30, 291]], :open)
+          res.line_width = $conf.get('layout.LINE_MEDIUM');
+          [res]
+        }
+      end
+
+      def _instrument_zipino(pitchoffset, xoffset, xspacing)
+        pitches         = "54 55 57 59 60 62 64 66 67 69 71 72 74 76 78"
+        string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
+
+        @pitch_to_xpos               = lambda { |pitch|
+          pitch_to_stringpos = string_by_pitch[pitch + pitchoffset]
+          result             = -xspacing
+          result             = (pitch_to_stringpos) * xspacing + xoffset unless pitch_to_stringpos.nil?
+          result
+        }
+        @bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [xoffset + 100, 290]]
+        @draw_instrument             = lambda {
+          res            = Harpnotes::Drawing::Path.new([['M', xoffset + 30, 20], ['L', xoffset + 190, 100], ['M', xoffset + 190, 200], ['L', xoffset + 30, 281]], :open)
+          res.line_width = $conf.get('layout.LINE_MEDIUM');
+          [res]
+        }
+        @instrument_orientation      = :horizontal
+      end
 
       def _layout_voice_notebound_annotations(print_variant_nr, show_options, voice)
         res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
@@ -2494,6 +2572,8 @@ module Harpnotes
 
         @y_offset = @print_options_hash[:startpos]
         @y_size   = $conf.get('layout.DRAWING_AREA_SIZE').last
+        set_instrument_handlers(print_variant_nr)
+
       end
 
 

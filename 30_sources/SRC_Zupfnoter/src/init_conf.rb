@@ -304,6 +304,23 @@ module InitConf
                                    a3_offset: [-35, 0],
                                    a4_offset: [70, 0]}
                  },
+                 'Akkordzither'          => {
+                     layout:      {instrument:   'akkordzither',
+                                   tuning:       'open',
+                                   beams:        true,
+                                   bottomup:     false,
+                                   limit_a3:     false,
+                                   PITCH_OFFSET: 0, # adapt if you pitches in
+                                   X_SPACING: 15,
+                                   X_OFFSET:  50
+                     },
+                     stringnames: {text:  '',
+                                   marks: {hpos: [55, 74]}
+                     },
+                     printer:     {a4_pages:  [1, 2],
+                                   a3_offset: [-35, 0],
+                                   a4_offset: [70, 0]}
+                 },
              },
 
              notes:      {
@@ -441,6 +458,7 @@ module InitConf
                                REST_SIZE:         [4, 2],
                                DRAWING_AREA_SIZE: [400, 282],
                                instrument:        '37-strings-g-g',
+                               tuning:            'fixed',
                                packer:            {
                                    pack_method:           0,
                                    pack_max_spreadfactor: 2,
