@@ -87,6 +87,17 @@ module Ajv
                                       :text  => {:type => "string"},
                                       :align => {:'$ref' => '#/definitions/align'},
                                       :style => {:type => "string"}}},
+           :nb_annotation_xx => {:type       => "object",   # todo: remove this?
+                              :required   => ["voices", "pos", "autopos", "style"],
+                              :properties =>
+                                  {:voices   => {:type        => "array",
+                                                 :minItems    => 0,
+                                                 :uniqueItems => true,
+                                                 :items       => {}},
+                                   :pos      => {:'$ref' => '#/definitions/pos'},
+                                   :autopos  => {:type => "boolean"},
+                                   :apanchor => {"$ref" => "#/definitions/apanchor"},
+                                   :style    => {:type => "string"}}},
            :minc_entry       => {
                :type                 => "object",
                :required             => [:minc_f],
@@ -109,28 +120,43 @@ module Ajv
            },
            align:            {:type => 'string',
                               :enum => ['l', 'r', 'auto']},
-           :notebound_pos    => {:type                 => "object",
-                                 :additionalProperties => false,
-                                 :patternProperties    => {
-                                     "v_\d*" => {:type                 => "object",
-                                                 :additionalProperties => false,
-                                                 :patternProperties    => {
-                                                     "t_\d*|\d*" => {
-                                                         :type                 => "object",
-                                                         :additionalProperties => false,
-                                                         :properties           => {
-                                                             pos:   {:'$ref' => '#/definitions/pos'},
-                                                             align: {:'$ref' => '#/definitions/align'},
-                                                             show:  {:type => 'boolean'},
-                                                             text:  {:type => 'string'}
-                                                         }
-                                                     }
-                                                 }
-                                     }
+           :notebound_pos => {:type => "object", # todo refactor to notebound_annotation_entry
+                              :additionalProperties => false,
+                              :patternProperties    => {
+                                  "v_\d*" => {:type                 => "object",
+                                              :additionalProperties => false,
+                                              :patternProperties    => {
+                                                  "t_\\d*|\\d*" => {
+                                                      :type                 => "object",
+                                                      :additionalProperties => false,
+                                                      :properties           => {
+                                                          pos:   {:'$ref' => '#/definitions/pos'},
+                                                          align: {:'$ref' => '#/definitions/align'},
+                                                          show:  {:type => 'boolean'},
+                                                          text:  {:type => 'string'},
+                                                          style: {:type => 'string'}
+                                                      },
+                                                      :patternProperties    => {
+                                                          "\\d+" => {
+                                                              :type                 => "object",
+                                                              :additionalProperties => false,
+                                                              :properties           => {
+                                                                  pos:   {:'$ref' => '#/definitions/pos'},
+                                                                  align: {:'$ref' => '#/definitions/align'},
+                                                                  show:  {:type => 'boolean'},
+                                                                  text:  {:type => 'string'},
+                                                                  style: {:type => 'string'}
+                                                              }
+                                                          }
+                                                      }
+                                                  }
 
-                                 }
+                                              }
+
+                                  }
+                              }
            },
-           :notebound_repeat => {:type                 => "object",
+           :notebound_repeat_outdated => {:type                 => "object",
                                  :additionalProperties => false,
                                  :patternProperties    => {
                                      "v_\d*" => {:text  => "integer",
@@ -225,7 +251,7 @@ module Ajv
                              :required   => ["notebound"],
                              :properties =>
                                  {:notebound => {:type       => "object",
-                                                 :required   => ["annotation", "partname", "variantend", "tuplet"],
+                                                 :required   => ["annotation", "partname", "variantend", "tuplet", "chord"],
                                                  :properties =>
 
                                                      {:annotation => {:type       => "object",
@@ -233,6 +259,11 @@ module Ajv
                                                                       :properties =>
                                                                           {:pos   => {:'$ref' => '#/definitions/pos'},
                                                                            :style => {:type => "string"}}},
+                                                      :chord => {:type       => "object",
+                                                                  :required   => ["pos"],
+                                                                  :properties =>
+                                                                      {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                       :style => {:type => "string"}}},
                                                       :partname => {:type       => "object",
                                                                     :required   => ["pos"],
                                                                     :properties =>
@@ -307,7 +338,7 @@ module Ajv
                                                 ["title", "filenamepart", "startpos", "voices", "synchlines",
                                                  "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines",
                                                  "legend", "lyrics", "layout", "nonflowrest", "notes", "barnumbers",
-                                                 "countnotes", "stringnames", "printer"],
+                                                 "countnotes", "chords", "stringnames", "printer"],
                                             :properties           =>
                                                 {:title        => {:type => "string"},
                                                  :filenamepart => {},
@@ -382,6 +413,7 @@ module Ajv
                                                      :additionalProperties => false,
                                                      :properties           => {
                                                          :annotation   => {:'$ref' => '#/definitions/notebound_pos'},
+                                                         :chord        => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :barnumber    => {:'$ref' => '#/definitions/notebound_pos',
                                                                            :align  => {:'$ref' => '#/definitions/align'}},
                                                          :c_jumplines  => {:type => 'object', # configuratoin of jumpline distances
@@ -424,7 +456,7 @@ module Ajv
                                                          },
                                                          :partname     => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :repeat_begin => {:'$ref' => '#/definitions/notebound_pos'},
-                                                         :repeat_end   => {:'$ref' => '#/definitions/notebound_repeat'},
+                                                         :repeat_end   => {:'$ref' => '#/definitions/notebound_pos'},
                                                          :tuplet       => {:type              => 'object',
                                                                            :patternProperties => {
                                                                                "v_\d*" => {
@@ -464,24 +496,25 @@ module Ajv
                                                                         :autopos  => {:type => "boolean"},
                                                                         :apanchor => {"$ref" => "#/definitions/apanchor"},
                                                                         :style    => {:type => "string"}}},
+                                                 :chords   => {:ref       => "#/definitions/nb_annotations"},
                                                  :stringnames  => {:type       => "object",
                                                                    :required   => ["text", "vpos", "style", "marks"],
                                                                    :properties =>
                                                                        {:text  => {:type => "string"},
                                                                         :vpos  => {:type        => "array",
-                                                                                   :minItems    => 0,
+                                                                                   :minItems    => 0, # support empty array for no stringnames
                                                                                    :uniqueItems => true,
-                                                                                   :items       => {}},
+                                                                                   :items       => {:type => "integer"}},
                                                                         :style => {:type => "string"},
                                                                         :marks => {:type       => "object",
                                                                                    :required   => ["vpos", "hpos"],
                                                                                    :properties =>
                                                                                        {:vpos => {:type        => "array",
-                                                                                                  :minItems    => 1,
+                                                                                                  :minItems    => 0, # support empty array for no stringmarks
                                                                                                   :uniqueItems => true,
                                                                                                   :items       => {:type => "integer"}},
                                                                                         :hpos => {:type        => "array",
-                                                                                                  :minItems    => 1,
+                                                                                                  :minItems    => 0,    # support empty array for no stringmarks
                                                                                                   :uniqueItems => true,
                                                                                                   :items       => {:type => "integer"}}}}}},
                                                  :sortmark     => {:type       => 'object',
