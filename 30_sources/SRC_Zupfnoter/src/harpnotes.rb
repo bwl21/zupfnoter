@@ -2676,6 +2676,7 @@ module Harpnotes
             cn_autopos                   = cn_options[:autopos]
             cn_fixedpos                  = cn_options[:pos]
             cn_apbase_x, cn_apbase_y     = cn_options[:apbase]
+            cn_text                      = [cn_options[:cntextleft], cn_options[:cntextright]].compact
           end
           if bn_options
             bn_style                     = bn_options[:style]
@@ -2721,14 +2722,12 @@ module Harpnotes
               # otherwise drag/drop does not work properly
               cn_align = cn_autopos == true ? ((cn_side == :l) ? :right : :left) : :left
 
-              lyrics = playable.lyrics || ''
-              count_note =  playable.count_note
-              unless lyrics.empty?
-                if cn_align == :left
-                  count_note = %Q{#{count_note} "#{playable.lyrics}"} || ""
-                else
-                  count_note = %Q{"#{playable.lyrics}" #{count_note}} || ""
-                end
+              if cn_text.empty?
+                count_note = playable.count_note
+              else
+                cn_pattern = (cn_side == :l ? cn_text.first : cn_text.last)
+                count_note = cn_pattern.gsub('{lyrics}', playable.lyrics)
+                count_note = count_note.gsub('{countnote}', playable.count_note)
               end
 
               unless cn_offset # unless no offest is specified in config

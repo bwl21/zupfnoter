@@ -415,6 +415,7 @@ module Harpnotes
           synchpoint.decorations   = decorations
           synchpoint.measure_count = @measure_count
           synchpoint.count_note    = _transform_count_note(voice_element)
+          synchpoint.lyrics        = _transform_lyrics(voice_element)
           synchpoint.time          = first_note.time
           synchpoint.duration      = first_note.duration
           synchpoint.origin        = first_note.origin
@@ -591,6 +592,7 @@ module Harpnotes
         result.measure_count = @measure_count
         result.decorations   = decorations
         result.count_note    = _transform_count_note(voice_element)
+        result.lyrics        = _transform_lyrics(voice_element)
         result.znid          = _mkznid(voice_element)
         result.time          = voice_element[:time]
         result.origin        = _parse_origin(voice_element)
@@ -690,7 +692,7 @@ module Harpnotes
         if voice_element[:a_ly]
           result = voice_element[:a_ly].first[:t].gsub("\n", "-").gsub("_", "")
         else
-          resuilt = ""
+          result = ""
         end
         result
       end
