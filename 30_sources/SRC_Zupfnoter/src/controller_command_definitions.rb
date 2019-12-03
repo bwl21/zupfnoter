@@ -685,7 +685,8 @@ class Controller
                                     scope:                 :global
             },
             barnumbers_countnotes: {keys:                  expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apanchor', 'barnumbers.apbase', 'barnumbers.style',
-                                                                                'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apanchor', 'countnotes.apbase', 'countnotes.style',
+                                                                                'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apanchor', 'countnotes.apbase', 'countnotes.style', "countnotes.cnlyrics",
+                                                                                'chords.voices', 'chords.pos', 'chords.autopos', 'chords.apanchor', 'chords.apbase', 'chords.style',
                                                                                 "tuplets.text", "tuplets.style"]),
                                     quicksetting_commands: _get_quicksetting_commands('barnumbers_countnotes')},
             annotations:           {keys: [:annotations], newentry_handler: lambda { handle_command("addconf annotations") }, scope: :global},
@@ -744,7 +745,7 @@ class Controller
         # todo: implement a more flexible replacement that simplifies prefixing
         regexp_form_sets = {
             /^extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)$/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /^extract\.(\d+)\.notebound\.(annotation|partname|)\.v_(\d+)\.(\w+)$/   => {keys: ["show", "pos", "style", "align"]},
+            /^extract\.(\d+)\.notebound\.(chord|annotation|partname|)\.v_(\d+)\.(\d+).(\d+)$/   => {keys: ["show", "pos", "style"]},
             /^extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)$/ => {keys: ["pos", "align"]},
             /^extract\.(\d+)\.notebound\.minc\.(\d+)$/                              => {keys: ["minc_f"]},
             /^extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)$/                 => {keys: ["cp1", "cp2"]},

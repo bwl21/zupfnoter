@@ -227,7 +227,11 @@ module Harpnotes
           notebound_annotations << _make_notebound_annotations(element, voice_index)
         end
 
-        result += (jumplines + notebound_annotations)
+        chordsymbols = result.inject([]) do |chordsymbols, element|
+          chordsymbols << _transform_chordsymbol(element, voice_index)
+        end
+
+        result += (jumplines + notebound_annotations + chordsymbols)
 
         result = result.flatten.compact
 
@@ -464,6 +468,29 @@ module Harpnotes
         end
       end
 
+
+      # this computes the chord symbols
+      # @param [Harpnotes::Music::Entity] entity
+      def _transform_chordsymbol(entity, voice_id)
+        result = []
+        if entity.is_a? Harpnotes::Music::Playable
+
+          chords = _extract_chord_lines(entity.origin[:raw_voice_element])
+          chords.each_with_index do |name, index|
+
+            match = name.match(/^([^!#\<\>]+)([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
+            if match
+              text     = match[1]
+              position = $conf['defaults.notebound.annotation.pos']
+              conf_key = "notebound.chord.#{voice_id}.#{entity.znid}.#{index}"
+              result << Harpnotes::Music::Chordsymbol.new(entity, {style: 'large', pos: position, text: text}, conf_key)
+            else
+              # $log.error("syntax error in annotation: #{name}")
+            end
+          end
+        end
+        result
+      end
 
       # this generates the count notes
       # Approach
@@ -900,7 +927,7 @@ module Harpnotes
       def _extract_chord_lines(voice_element)
         chords = voice_element[:a_gch]
         if chords
-          result = chords.select { |e| e[:type] = '^' }.map { |e| e[:text] }
+          result = chords.select { |e| e[:type] == '^' ; true}.map { |e| e[:text] }
         else
           result = []
         end

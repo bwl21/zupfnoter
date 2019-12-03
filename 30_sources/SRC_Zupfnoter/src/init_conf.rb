@@ -53,6 +53,7 @@ module InitConf
          # such that there is no explicit default in the configuration
          defaults: {
              notebound: {annotation: {pos: [5, -7]},
+                         chord:{pos: [0,0]},
                          partname:   {pos: [-4, -7]},
                          variantend: {pos: [-4, -7]},
                          tuplet:     {
@@ -479,6 +480,7 @@ module InitConf
                      prefix:   ""
                  },
                  countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], apanchor: 'box', style: "smaller"},
+                 chords:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], apanchor: 'box', style: "large"},
                  stringnames: {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],

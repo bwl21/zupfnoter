@@ -201,6 +201,7 @@ module Harpnotes
                     :tuplet_end, # last note of a tuplet
                     :shift, # {dir: :left | :right}
                     :count_note, # string to support count_notes
+                    :chord_symbol, # string to support chortd harmony symbols
                     :measure_count, # number of meausre for barnumbers
                     :measure_start # this playable starts a measure
 
@@ -465,6 +466,33 @@ module Harpnotes
 
     #
     class NoteBoundAnnotation < NonPlayable
+      # @param [Object] companion the note which is annotated
+      # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
+      def initialize(companion, annotation, conf_key = nil)
+        super()
+        self.companion = companion # self: use the method companion=
+        @conf_key      = conf_key
+        @annotations   = annotation
+      end
+
+      def style
+        @annotations[:style] || :regular # default styl of notebound annotations
+      end
+
+      def text
+        @annotations[:text]
+      end
+
+      def position
+        @annotations[:pos]
+      end
+
+      def policy # this is used for filtering in layout for example if visibility is to be controlled (annotations on variant endings : Goto)
+        @annotations[:policy]
+      end
+    end
+
+    class Chordsymbol < NonPlayable
       # @param [Object] companion the note which is annotated
       # @param [Object] annotation the annotation {pos:[array], text:""} position relative to note
       def initialize(companion, annotation, conf_key = nil)
@@ -1637,6 +1665,7 @@ module Harpnotes
         res_flow       = [] unless show_options[:flowline]
         res_countnotes = [] unless show_options[:countnotes]
         res_barnumbers = [] unless show_options[:barnumbers]
+        res_chordsymbols = show_options[:chords] ? _layout_voice_chordsymbols(print_variant_nr, show_options, voice) : []
 
         ### layout tuplets
         res_tuplets = _layout_voice_tuplets(playables, print_variant_nr, show_options, voice_nr)
@@ -1657,17 +1686,16 @@ module Harpnotes
         ### draw note bound annotations
         res_annotations = _layout_voice_notebound_annotations(print_variant_nr, show_options, voice)
 
-
         res_barnumber_backgrounds  = res_barnumbers.map { |i| create_annotation_background_rect(i, 0.2) }
         res_countnote_backgrounds  = res_countnotes.map { |i| create_annotation_background_rect(i, -0.05) }
-        res_annotation_backgrounds = (res_annotations + res_repeatmarks).compact.map { |i| create_annotation_background_rect(i, 0.5) }
+        res_annotation_backgrounds = (res_annotations + res_repeatmarks + res_chordsymbols).compact.map { |i| create_annotation_background_rect(i, 0.5) }
 
         # return all drawing primitives
         (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables +
             res_countnote_backgrounds + res_countnotes +
             res_barnumber_backgrounds + res_barnumbers +
             res_decorations + res_gotos +
-            res_annotation_backgrounds + res_annotations + res_repeatmarks).compact
+            res_annotation_backgrounds + res_annotations + res_chordsymbols + res_repeatmarks).compact
       end
 
 
@@ -1806,7 +1834,7 @@ module Harpnotes
           result.push(res)
         }
 
-        @bottom_annotation_positions = [[30, 287], [30, 290], [130, 290]]
+        @bottom_annotation_positions = [[10, 287], [10, 290], [120, 290]]
 
       end
 
@@ -1904,6 +1932,32 @@ module Harpnotes
 
       def _layout_voice_notebound_annotations(print_variant_nr, show_options, voice)
         res_annotations = voice.select { |c| c.is_a? NoteBoundAnnotation }.map do |annotation|
+          notebound_pos_key = annotation.conf_key + ".pos"
+          show_from_config  = show_options[:print_options_raw].get(annotation.conf_key + ".show")
+          show              = show_from_config.nil? ? true : show_from_config
+          if notebound_pos_key
+            conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
+            annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
+            annotationoffset = annotation.position unless annotationoffset
+          else
+            annotationoffset = annotation.position
+            conf_key         = nil
+          end
+
+          style = show_options[:print_options_raw].get(annotation.conf_key + ".style") || annotation.style
+
+          position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
+          result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, style, annotation.companion.origin,
+                                                        conf_key, annotationoffset).tap { |s| s.draginfo = {handler: :annotation} }
+          result   = nil if annotation.policy == :Goto and not show_options[:jumpline]
+          result   = nil if show == false
+          result
+        end
+      end
+
+      def _layout_voice_chordsymbols(print_variant_nr, show_options, voice)
+        res_annotations = voice.select { |c| c.is_a? Chordsymbol }.map do |annotation|
+          `debugger`
           notebound_pos_key = annotation.conf_key + ".pos"
           show_from_config  = show_options[:print_options_raw].get(annotation.conf_key + ".show")
           show              = show_from_config.nil? ? true : show_from_config
@@ -2530,10 +2584,6 @@ module Harpnotes
         active_voices      = @print_options_hash[:voices]
         res_voice_elements = music.voices.each_with_index.map { |v, index|
           if active_voices.include?(index) ## todo add control for jumpline right border
-            countnotes_options = @print_options_hash[:countnotes]
-            countnotes_options = nil unless countnotes_options[:voices].include?(index)
-            barnumbers_options = @print_options_hash[:barnumbers]
-            barnumbers_options = nil unless barnumbers_options[:voices].include?(index)
 
             layout_voice(v, compressed_beat_layout_proc, print_variant_nr,
                          voice_nr:      index,
@@ -2543,8 +2593,9 @@ module Harpnotes
                          jumpline:      @print_options_hash[:jumplines].include?(index),
                          repeatsigns:   @print_options_hash[:repeatsigns],
                          synched_notes: synched_notes, # synchronized notes to determine subflowlines
-                         countnotes:        countnotes_options,
-                         barnumbers:        barnumbers_options,
+                         countnotes:        _get_options_by_voice(index, :countnotes),
+                         barnumbers:        _get_options_by_voice(index, :barnumbers),
+                         chords:            _get_options_by_voice(index, :chords),
                          print_options_raw: @print_options_raw
             )
           end
@@ -2555,6 +2606,12 @@ module Harpnotes
           collisiondetector.check_annotations(res_voice_elements)
         end
         return active_voices, required_synchlines, res_voice_elements
+      end
+
+      def _get_options_by_voice(voice_id, option)
+        options = @print_options_hash[option]
+        options = nil unless options[:voices].include?(voice_id)
+        options
       end
 
       def _layout_prepare_options(print_variant_nr)
