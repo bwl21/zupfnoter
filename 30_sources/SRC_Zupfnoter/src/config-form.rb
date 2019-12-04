@@ -341,31 +341,6 @@ class ConfstackEditor
       end
     end
 
-    class Tuning < ZnTypes
-      def self.to_html(key)
-        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
-      end
-
-      def self.to_w2uifield(key)
-        {field:       key,
-         type:        'list',
-         options:     {items: ['fixed', 'open']},
-         required:    true,
-         text:        I18n.t("#{key}.text"),
-         tooltip:     I18n.t("#{key}.tooltip"),
-         placeholder: '', #@value[key],
-         html: {caption: I18n.t("#{key}.caption")}}
-      end
-
-      def self.to_value(key, string)
-        string[:id]
-      end
-
-      def self.to_neutral
-        $log.error("BUG: this should not happen Neutral Instrument #{__FILE__} #{__LINE__}")
-      end
-
-    end
 
     class Instrument < ZnTypes
       def self.to_html(key)
@@ -419,6 +394,33 @@ class ConfstackEditor
 
     end
 
+
+
+    class Tuning < ZnTypes
+      def self.to_html(key)
+        %Q{<input name="#{key}" title = "#{key}" type="list" size="40"></input>}
+      end
+
+      def self.to_w2uifield(key)
+        {field:       key,
+         type:        'list',
+         options:     {items: ['fixed', 'open']},
+         required:    true,
+         text:        I18n.t("#{key}.text"),
+         tooltip:     I18n.t("#{key}.tooltip"),
+         placeholder: 'fixed | open', #@value[key],
+         html: {caption: I18n.t("#{key}.caption")}}
+      end
+
+      def self.to_value(key, string)
+        string[:id]
+      end
+
+      def self.to_neutral
+        $log.error("BUG: this should not happen Neutral Tuning #{__FILE__} #{__LINE__}")
+      end
+    end
+
     class ZnUnknown < ZnTypes
       def self.to_html(key)
       end
@@ -444,6 +446,7 @@ class ConfstackEditor
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'nshift', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
           TupletShape     => ['shape'],
           TextStyle       => ['style'],
+          Tuning          => ['tuning'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
           Instrument      => ['instrument'],
           Imagename       => ['imagename'],

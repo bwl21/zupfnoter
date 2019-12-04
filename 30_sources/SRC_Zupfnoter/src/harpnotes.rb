@@ -1423,7 +1423,6 @@ module Harpnotes
           #                  F# G  A  B  C  D  E  F# G  A  B  C  D  E  F#
           _instrument_zipino(pitchoffset, xoffset, xspacing)
 
-
         when "saitenspiel"
           _instrument_saitenspiel(pitchoffset, xoffset, xspacing)
 
@@ -1699,7 +1698,6 @@ module Harpnotes
             res_annotation_backgrounds + res_annotations + res_chordsymbols + res_repeatmarks).compact
       end
 
-
       # this layouts the decoration of a playable.
       # note that we do not handle it as decoration of the harp note since we want
       # it to be draggable
@@ -1793,29 +1791,33 @@ module Harpnotes
           flap_by_pitch[pitch] = i if k.start_with?('*')
         end
 
-        [string_by_pitch, flap_by_pitch]
+        [string_by_pitch, flap_by_pitch.keys]
       end
 
       def _mk_pitches_table
         pitches = {
-            'c' => 60, '*c' => 61, 'c#' => 61, 'cis' => 61,
-            'd' => 62, '*d' => 63, 'd#' => 63, 'dis' => 63, 'des' => 61, 'db' => 61,
-            'e' => 64, 'eb' => 63, 'es' => 63,
-            'f' => 65, '*f' => 66, 'f#' => 66, 'fis' => 66,
-            'g' => 67, '*g' => 68, 'g#' => 68, 'gis' => 68, 'ges' => 66, 'gb' => 66,
-            'a' => 69, '*a' => 70, 'a#' => 70, 'ais' => 70, 'as' => 68, 'ab' => 68,
-            'h' => 71, 'b' => 71, 'hb' => 70, 'bb' => 70, '*hb' => 71, '*bb' => 71
+            'C' => 60, '*C' => 61, 'C#' => 61, 'CIS' => 61,
+            'D' => 62, '*D' => 63, 'D#' => 63, 'DIS' => 63, 'DES' => 61, 'DB' => 61,
+            'E' => 64, 'EB' => 63, 'ES' => 63,
+            'F' => 65, '*F' => 66, 'F#' => 66, 'FIS' => 66,
+            'G' => 67, '*G' => 68, 'G#' => 68, 'GIS' => 68, 'GES' => 66, 'GB' => 66,
+            'A' => 69, '*A' => 70, 'A#' => 70, 'AIS' => 70, 'AS' => 68, 'AB' => 68,
+            'H' => 71, 'B' => 71, 'HB' => 70, 'BB' => 70, '*HB' => 71, '*BB' => 71
         }
         pitches.keys.each do |k|
-           v = pitches[k]
-          pitches[k.upcase]        = v - 12
-          pitches[k + ',']         = v - 12
-          pitches[k + ',,']        = v - 24
-          pitches[k.upcase + ',']  = v - 24
-          pitches[k.upcase + ',,'] = v - 36
-          pitches[k + "'"]         = v + 12
-          pitches[k + "''"]        = v + 24
-          pitches[k + "''''"]      = v + 36
+          v                           = pitches[k]
+          pitches[k + ',']            = v - 12
+          pitches[k + ',,']           = v - 24
+          pitches[k.downcase]         = v + 12
+          pitches[k.downcase + ',']   = v
+          pitches[k.downcase + ',,']  = v - 12
+          pitches[k.downcase + ',,,'] = v - 24
+          pitches[k + "'"]            = v + 12
+          pitches[k + "''"]           = v + 24
+          pitches[k + "'''"]          = v + 36
+          pitches[k.downcase + "'"]   = v + 24
+          pitches[k.downcase + "''"]  = v + 36
+          pitches[k.downcase + "'''"] = v + 48
         end
         pitches
       end
@@ -1868,19 +1870,19 @@ module Harpnotes
           #          G  A  B  C  D  E  F  G  A  B  C  D  E  F  G  A  B  C D E F G
           pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85"
           flaps   = "      59 61       66       71 73       78       83"
-        when "okon-open"
-          string_by_pitch, flap_by_pitch = _mkflaps_pitches($conf["extract.#{print_variant_nr}.stringnames.text"])
-          @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
         end
+
+        string_by_pitch={}
+
+        if 'open' == $conf["extract.#{print_variant_nr}.layout.tuning"]
+          string_by_pitch, flaps_by_pitch = _mkflaps_pitches($conf["extract.#{print_variant_nr}.stringnames.text"])
+        else
+          string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
+          flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
+        end
+        @pitch_to_xpos                 = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
 
         flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
-
-        string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
-        flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
-
-        unless $conf['layout.instrument'] == "okon-open"
-        @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
-        end
 
         @bottom_annotation_positions = [[xoffset, 290], [xoffset + 200, 290], [xoffset + 270, 290]]
 
@@ -1958,7 +1960,6 @@ module Harpnotes
 
       def _layout_voice_chordsymbols(print_variant_nr, show_options, voice)
         res_annotations = voice.select { |c| c.is_a? Chordsymbol }.map do |annotation|
-          `debugger`
           notebound_pos_key = annotation.conf_key + ".pos"
           show_from_config  = show_options[:print_options_raw].get(annotation.conf_key + ".show")
           show              = show_from_config.nil? ? true : show_from_config

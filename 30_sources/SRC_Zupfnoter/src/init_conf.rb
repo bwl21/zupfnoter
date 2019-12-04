@@ -99,6 +99,10 @@ module InitConf
                                   apbase:   [1, 0.3]},
                      countnotes: {apanchor: "center",
                                   apbase:   [1, 0]}
+                 },
+                 "countnotes_with_lyrics" => {
+                     countnotes: {cntextleft: "{lyrics} {countnote}",
+                                  cntextright: "{countnote} {lyrics} "},
                  }
              },
              stdextract:            {}, # this is to get a translation, the values
@@ -298,7 +302,7 @@ module InitConf
                                    X_SPACING: 15,
                                    X_OFFSET:  50
                      },
-                     stringnames: {text:  'G A B C D E F G A B C D E F G A B C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~',
+                     stringnames: {text:  %Q{G, A, BB, C D E F G A BB c d e f g a bb c' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~},
                                    marks: {hpos: [55, 74]}
                      },
                      printer:     {a4_pages:  [1, 2],
@@ -315,8 +319,8 @@ module InitConf
                                    X_SPACING: 15,
                                    X_OFFSET:  50
                      },
-                     stringnames: {text:  '',
-                                   marks: {hpos: [55, 74]}
+                     stringnames: {text:  %Q{C C# D E F F# G G# A B C' C# D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ },
+                                   marks: {hpos: [60]}
                      },
                      printer:     {a4_pages:  [1, 2],
                                    a3_offset: [-35, 0],

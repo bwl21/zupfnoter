@@ -175,6 +175,14 @@ Auszug 1 usw.
               "style"    : "small_bold",
               "voices"   : []
             },
+            "chords"       : {
+              "apanchor" : "box",
+              "apbase"   : [1, -0.5],
+              "autopos"  : true,
+              "pos"      : [3, -2],
+              "style"    : "large",
+              "voices"   : []
+            },
             "countnotes"   : {
               "apanchor" : "box",
               "apbase"   : [1, -0.5],
@@ -210,7 +218,8 @@ Auszug 1 usw.
                 "pack_max_spreadfactor" : 2,
                 "pack_method"           : 0,
                 "pack_min_increment"    : 0.2
-              }
+              },
+              "tuning"            : "fixed"
             },
             "layoutlines"  : [1, 2, 3, 4],
             "legend"       : {"pos": [320, 7], "spos": [320, 27]},
@@ -351,6 +360,72 @@ aus vordefinierten Stilen.
 
 Hier kannst du eine Liste der Stimmen angeben, die Taktnummern bekommen
 sollen.
+
+        "voices": []
+          
+
+## `extract.0.chords` - {#extract.0.chords}
+
+TODO: Helptext für extract.0.chords einfügen
+
+        "chords": {
+          "apanchor" : "box",
+          "apbase"   : [1, -0.5],
+          "autopos"  : true,
+          "pos"      : [3, -2],
+          "style"    : "large",
+          "voices"   : []
+        }
+          
+
+## `extract.0.chords.apanchor` - autom. pos. Anker {#extract.0.chords.apanchor}
+
+TODO: Helptext für extract.0.chords.apanchor einfügen
+
+        "apanchor": "box"
+          
+
+## `extract.0.chords.apbase` - autom. pos. Basis {#extract.0.chords.apbase}
+
+TODO: Helptext für extract.0.chords.apbase einfügen
+
+        "apbase": [1, -0.5]
+          
+
+## `extract.0.chords.autopos` - autom. pos. {#extract.0.chords.autopos}
+
+Hier kannst du die automatische Positionierung einschalten. Dabei werden
+Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert.
+Wenn diese Option ausgeschaltet, gelten die Werte von `pos`. Dies kann
+bei manchen Stücken eine sinnvollere Einstellugn sein.
+
+Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus
+verschieben.
+
+        "autopos": true
+          
+
+## `extract.0.chords.pos` - Position {#extract.0.chords.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [3, -2]
+          
+
+## `extract.0.chords.style` - Stil {#extract.0.chords.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "large"
+          
+
+## `extract.0.chords.voices` - Stimmen {#extract.0.chords.voices}
+
+Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste
+von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
+`%%score` - Anweisung in der ABC-Notation.
 
         "voices": []
           
@@ -503,7 +578,8 @@ Notenbild gezielt optimieren.
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
             "pack_min_increment"    : 0.2
-          }
+          },
+          "tuning"            : "fixed"
         }
           
 
@@ -699,6 +775,13 @@ TODO: Helptext für extract.0.layout.packer.pack\_method einfügen
 TODO: Helptext für extract.0.layout.packer.pack\_min\_increment einfügen
 
         "pack_min_increment": 0.2
+          
+
+## `extract.0.layout.tuning` - {#extract.0.layout.tuning}
+
+TODO: Helptext für extract.0.layout.tuning einfügen
+
+        "tuning": "fixed"
           
 
 ## `extract.0.layoutlines` - Stimmen für Layout {#extract.0.layoutlines}

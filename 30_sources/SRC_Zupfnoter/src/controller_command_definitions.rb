@@ -685,6 +685,7 @@ class Controller
                                     scope:                 :global
             },
             barnumbers_countnotes: {keys:                  expand_extract_keys(['barnumbers.voices', 'barnumbers.pos', 'barnumbers.autopos', 'barnumbers.apanchor', 'barnumbers.apbase', 'barnumbers.style',
+                                                                                'countnotes.voices', 'countnotes.pos', 'countnotes.autopos', 'countnotes.apanchor', 'countnotes.apbase', 'countnotes.style', "countnotes.cntextleft", "countnotes.cntextright",
                                                                                 'chords.voices', 'chords.pos', 'chords.autopos', 'chords.apanchor', 'chords.apbase', 'chords.style',
 
                                                                                 "tuplets.text", "tuplets.style"]),
@@ -724,7 +725,7 @@ class Controller
                                                               ])},
 
 
-            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.limit_a3', 'layout.bottomup', 'layout.beams', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
+            instrument_specific:   {keys: expand_extract_keys(['layout.instrument', 'layout.tuning', 'layout.limit_a3', 'layout.bottomup', 'layout.beams', 'layout.X_OFFSET', 'layout.X_SPACING', 'layout.PITCH_OFFSET', 'stringnames.text',
                                                                'printer.a3_offset', 'printer.a4_offset', 'printer.a4_pages', 'printer.show_border', 'stringnames.marks.hpos']),
                                     quicksetting_commands:
                                           _get_quicksetting_commands('instrument')
