@@ -650,7 +650,7 @@ class ConfstackEditor
           helptext = %Q{<img style="width:300px;" src="#{img.join}"</img>} if img
           `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: false})`
         else
-          `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: true})`
+          `$(#{evt}.target).w2overlay({html: #{helptext}, selectable: true })`
         end
       when 'default'
         if (a = @default_value[target.first])
@@ -872,7 +872,7 @@ class ConfstackEditor
 
                     <tr>
                       <th>__</th>
-                      <th style="width:20em; height:2em;">#{I18n.t("Name")}</th>
+                      <th style="width:25em;">#{I18n.t("Name")}</th>
                          <th>#{I18n.t("Value")}</th>
                          <th></th><th></th><th>#{I18n.t("Effective value")}</th>
                     </tr>

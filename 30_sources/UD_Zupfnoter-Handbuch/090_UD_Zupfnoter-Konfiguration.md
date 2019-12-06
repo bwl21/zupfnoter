@@ -79,8 +79,6 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `annotations.vr` - 'V' rechts {#annotations.vr}
 
-TODO: Helptext für annotations.vr einfügen
-
         "vr": {"pos": [2, -5], "text": "v"}
           
 
@@ -116,8 +114,6 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
         "text": "v"
 
 ## `annotations.vt` - 'V' oben {#annotations.vt}
-
-TODO: Helptext für annotations.vt einfügen
 
         "vt": {"pos": [-1, -5], "text": "v"}
           
@@ -364,9 +360,11 @@ sollen.
         "voices": []
           
 
-## `extract.0.chords` - {#extract.0.chords}
+## `extract.0.chords` - Akkordsymbole {#extract.0.chords}
 
-TODO: Helptext für extract.0.chords einfügen
+Hier kannst du die Darstellung von Akkordsymbolen einstellen.
+Akkordsymbole werden aus den Akkorden im ABC-code abgeleitet. Diese
+Funktion ist in erster Linie für Akkordzithern gedacht.
 
         "chords": {
           "apanchor" : "box",
@@ -380,17 +378,25 @@ TODO: Helptext für extract.0.chords einfügen
 
 ## `extract.0.chords.apanchor` - autom. pos. Anker {#extract.0.chords.apanchor}
 
-TODO: Helptext für extract.0.chords.apanchor einfügen
+Hier kannst du die vertikale Verankerung der eines notenbezogenen
+Objektes an der Note einstellen.
+
+-   `center`: das Objekt wird an der Mitte der Note verankert
+-   `box`: das Objekt wird am unteren Rand der Note verankert
 
         "apanchor": "box"
-          
 
 ## `extract.0.chords.apbase` - autom. pos. Basis {#extract.0.chords.apbase}
 
-TODO: Helptext für extract.0.chords.apbase einfügen
+Hier kannst du die Grundlage für die automatische Positionierung von
+notenbezogenen Objekten einstellen.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben das Objekt **weiter** von der Note weg.
+-   Negative Werte schieben das Objekt **näher** an die Note heran.
 
         "apbase": [1, -0.5]
-          
 
 ## `extract.0.chords.autopos` - autom. pos. {#extract.0.chords.autopos}
 
@@ -536,7 +542,8 @@ angeben, für die Flußlinien eingezeichnet werden sollen.
 
 ## `extract.0.images` - Bilder {#extract.0.images}
 
-TODO: Helptext für extract.0.images einfügen
+Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen
+sollen.
 
         "images": {}
           
@@ -585,63 +592,96 @@ Notenbild gezielt optimieren.
 
 ## `extract.0.layout.DRAWING_AREA_SIZE` - Zeichenfl.Größe {#extract.0.layout.DRAWING_AREA_SIZE}
 
-TODO: Helptext für extract.0.layout.DRAWING\_AREA\_SIZE einfügen
+Hier gibst du die Größe der Zeichenfläche an. Die Größe wird als
+*breite*, *höhe* angegeben.
 
         "DRAWING_AREA_SIZE": [400, 282]
           
 
 ## `extract.0.layout.ELLIPSE_SIZE` - Notengröße {#extract.0.layout.ELLIPSE_SIZE}
 
-TODO: Helptext für extract.0.layout.ELLIPSE\_SIZE einfügen
+Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte
+sind \[2-4, 1.2-2\].
+
+> **Hinweis**: Die Größe der anderen Noten werden ausgehend von diesem
+> Wert berechnet.
+>
+> Da die Noten auch mit der dicken Linie umrandet werden, kann auch die
+> "Linienstärke `dick`" reeduziert werden, um ein filigraneres Notenbild
+> zu erhalten.
 
         "ELLIPSE_SIZE": [3.5, 1.7]
           
 
 ## `extract.0.layout.LINE_MEDIUM` - Linienstärke mittel {#extract.0.layout.LINE_MEDIUM}
 
-TODO: Helptext für extract.0.layout.LINE\_MEDIUM einfügen
+Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
         "LINE_MEDIUM": 0.3
           
 
 ## `extract.0.layout.LINE_THICK` - Linienstärke dick {#extract.0.layout.LINE_THICK}
 
-TODO: Helptext für extract.0.layout.LINE\_THICK einfügen
+Hier stellst du die Breite (in mm) von dicken Linien ein.
 
         "LINE_THICK": 0.5
           
 
 ## `extract.0.layout.LINE_THIN` - Linienstärke dünn {#extract.0.layout.LINE_THIN}
 
-TODO: Helptext für extract.0.layout.LINE\_THIN einfügen
+Hier stellst du die Breite (in mm) von dünnen Linien ein.
 
         "LINE_THIN": 0.1
           
 
 ## `extract.0.layout.PITCH_OFFSET` - PitchOffset {#extract.0.layout.PITCH_OFFSET}
 
-TODO: Helptext für extract.0.layout.PITCH\_OFFSET einfügen
+Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem
+Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken
+Blattrand dargestellt wird.
+
+> **Hinweis** Bei **chromatischen** Instrumenten wird die Stimmung der
+> Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43 dafür, dass
+> das G der Oktave 3 am linken Blattrand erscheint.
+>
+> Die Midi-Codes findest du auf
+> [hier](http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm)
+>
+> Bei **diatonischen** Instrumenten muss der Wert ggf. durch
+> Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
+> verdrahtet ist. Üblicherweise ist er 0. Man könnte aber durch Werte
+> von -12 bzw. +12 eine Art "Transponierung" errreichen. Das ist dann
+> sinnvoll, wenn die selben Eingabenoten für verschiedene Instrumente
+> verwendet werden sollen.
 
         "PITCH_OFFSET": -43
           
 
 ## `extract.0.layout.REST_SIZE` - Pausengröße {#extract.0.layout.REST_SIZE}
 
-TODO: Helptext für extract.0.layout.REST\_SIZE einfügen
+Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind
+\[2-4, 1.2-2\]
+
+> **Hinweis**:Bitte beachte, dass nur die Angabe der Höhe von
+> berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
 
         "REST_SIZE": [4, 2]
           
 
 ## `extract.0.layout.X_OFFSET` - X - Offset {#extract.0.layout.X_OFFSET}
 
-TODO: Helptext für extract.0.layout.X\_OFFSET einfügen
+Hier gibst du an, wie weit das Druckbild auf dem A3-Blatt von links nach
+rechts geschoben werden soll.
+
+> Hinweis: es gibt zusätzliche Möglichkeiten, das Blatt auf dem Drucker
+> zu verschieben `extract.0.printer`
 
         "X_OFFSET": 2.8
           
 
 ## `extract.0.layout.X_SPACING` - Saitenabstand {#extract.0.layout.X_SPACING}
 
-TODO: Helptext für extract.0.layout.X\_SPACING einfügen
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
         "X_SPACING": 11.5
           
@@ -692,21 +732,38 @@ Hier kannst du die Farbe für verschiedene Elemente einstellen.
 
 ## `extract.0.layout.color.color_default` - Sonstiges {#extract.0.layout.color.color_default}
 
-TODO: Helptext für extract.0.layout.color.color\_default einfügen
+Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen
+Elementen verwendet, die keine spzeifische Farbeinstellung haben.
 
         "color_default": "black"
           
 
 ## `extract.0.layout.color.color_variant1` - Variante1 {#extract.0.layout.color.color_variant1}
 
-TODO: Helptext für extract.0.layout.color.color\_variant1 einfügen
+Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
+dargestellt werden.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
 
         "color_variant1": "grey"
           
 
 ## `extract.0.layout.color.color_variant2` - Variante2 {#extract.0.layout.color.color_variant2}
 
-TODO: Helptext für extract.0.layout.color.color\_variant2 einfügen
+Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc.
+dargestellt werden.
+
+> **Hinweis** Die Farbe von varianten Abnschnitten alterniert zwischen
+> variant1 und variant2. Wenn du beide gleich einstellst, dann werden
+> die varianten Abschnitte gleichermassen eingefärbt.
+>
+> Wenn du beide auf den gleichen wert wie "default" stellst, dann werden
+> variante Abschnitte nicht mehr durch Farbe abgesetzt.
 
         "color_variant2": "dimgrey"
           
@@ -730,14 +787,19 @@ Es gibt folgende Einstellunge:
 
 ## `extract.0.layout.jumpline_anchor` - Sprungl.Anker {#extract.0.layout.jumpline_anchor}
 
-TODO: Helptext für extract.0.layout.jumpline\_anchor einfügen
+Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
+verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
+an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
+gesagt, das umhüllende Rechteck) der entsprechende Note.
 
         "jumpline_anchor": [3, 1]
           
 
 ## `extract.0.layout.limit_a3` - Begrenzung auf A3 {#extract.0.layout.limit_a3}
 
-TODO: Helptext für extract.0.layout.limit\_a3 einfügen
+Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
+Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note
+angeshnitten.
 
         "limit_a3": true
           
@@ -757,32 +819,103 @@ ausmachen. Daher sind diese Funktionen noch experimentell.
 
 ## `extract.0.layout.packer.pack_max_spreadfactor` - max. Spreizung {#extract.0.layout.packer.pack_max_spreadfactor}
 
-TODO: Helptext für extract.0.layout.packer.pack\_max\_spreadfactor
-einfügen
+Nach der Berechnung des maximal komprimierten Layouts versucht
+Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfläche voll
+ausgefüllt wird.
+
+Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der
+Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen Stücken aus,
+welche das Blatt nicht vollständig ausfüllen.
+
+Bei sehr kurzen Stücken ist es sinnvoll, die Spreizung zu begrenzen,
+weil sonst die Noten sehr weit auseinander liegen.
 
         "pack_max_spreadfactor": 2
           
 
 ## `extract.0.layout.packer.pack_method` - Packmethode {#extract.0.layout.packer.pack_method}
 
-TODO: Helptext für extract.0.layout.packer.pack\_method einfügen
+Hier kannst du die pack-Methode auswählen
+
+-   **0** : Die bisherige Methode: diese geht nach jedem Schritt um die
+    Höhe der größten Note weiter
+
+-   **1** : Kopmpakt: diese geht nur dann weiter, wenn
+
+    -   ein Richtungswechsel der Melodie vorliegt
+    -   Noten übereinander gezeichnet würden
+
+    Das bedeutet dass bei monotonen Melodien die Noten enger gesetzt
+    werden.
+
+    > **Hinweis**: Diese Methode eignet sich am besten für lange,
+    > einstimmige Stücke. Die Platzeinsparung geht bei mehrstimmmigen
+    > Stücken schnell verloren.
+    >
+    > Bei dieser Methode sind die Synchronisiationslinien zwischen den
+    > Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr
+    > flach sind.
+
+-   **2** : linear: die Zeitachse wird linear auf das Blatt verteilt.
+    Bei kurzen Stücken entspricht der Abstand der Noten dann auch dem
+    Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber
+    am meisten Platz verbraucht.
+
+    Es wird auch kein extra Raum für Parts, Taktstriche und manuelle
+    Vorschübe erstellt.
 
         "pack_method": 0
-          
 
 ## `extract.0.layout.packer.pack_min_increment` - min. Inkrement {#extract.0.layout.packer.pack_min_increment}
 
-TODO: Helptext für extract.0.layout.packer.pack\_min\_increment einfügen
+Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt
+wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter
+geschaltet.
+
+**Beispiele**:
+
+-   **0.0**: es entstehen horizontale Flußlinien
+-   **1.0**: es wird mindests um eine ganze Note weiter geschaltet
+-   **0.2**: es wird um 20% einer ganzen Note weiter geschaltet. Dies
+    liefert angenehme Ergebnisse.
 
         "pack_min_increment": 0.2
-          
 
-## `extract.0.layout.tuning` - {#extract.0.layout.tuning}
+## `extract.0.layout.tuning` - Stimmung {#extract.0.layout.tuning}
 
-TODO: Helptext für extract.0.layout.tuning einfügen
+Hier kannst du einstellen, ob dein Instrument umgestimmt wurde. Diese
+Umstimmung erfolgt entweder durch verstimmung der Saiten oder durch
+umlegen einer Klappe (z.b. bei Okon-Harfe). Es gibt zwei Einträge
+
+**feste stimmung: `fixed`**
+
+Mit dieser Einstellung ist die Stimmung des Instrumentes fest
+vorgegegeben.
+
+**offene Stimmung: `open`**
+
+Wenn der Parameter `tuning` auf den Wert `offen` gesetzt ist, wird die
+Stimmung der Saiten aus den Saitennamen abgeleitet.
+
+Dabei gelten folgende Regeln.
+
+-   `C,` `C` `c` `c'` spannt vier Oktaven auf
+
+-   Saitennamen sind:
+
+    -   `C *C C# CIS`
+    -   `D *D D# DIS DES DB`
+    -   `E EB ES`
+    -   `F  *F F# FIS`
+    -   `G *G G# GIS GES GB`
+    -   `A *A A#  AIS AS AB`
+    -   `H B HB BB *HB *BB`
+
+-   ein nachgestelltes `#` bzw' `b` stellt ein Vorzeichen dar
+-   ein vorangestelltes `*` markiert eine Klappe, die Saite gilt dann
+    auch als einen Halbton höher gestimmt.
 
         "tuning": "fixed"
-          
 
 ## `extract.0.layoutlines` - Stimmen für Layout {#extract.0.layoutlines}
 
@@ -883,7 +1016,29 @@ Zeitpunkt.
 
 ## `extract.0.notebound.minc.x.minc_f` - Faktor {#extract.0.notebound.minc.x.minc_f}
 
-TODO: Helptext für extract.0.notebound.minc.x.minc\_f einfügen
+Hier gibst du den Korrekturfaktor für den vertikalen Voreschub an.
+
+Die Angabe bestimmt, welcher Anteil am errechneten vertikalen Abstand
+als extra Abstand **hinzugefügt** wird. (`a = (a + minc_f * a`))
+
+Im Beispiel
+
+        "minc" : {
+           "2304": {"minc_f": 1}, 
+           "4224": {"minc_f": -0.25}
+           }
+
+-   bei 2304 wird der Abstand verdoppelt. Mit derm Faktor 1 wird ein
+    Normalabstand wird hinugefügt.
+-   bei 4224 wird der abstand um 25% reduziert. Mit dem Faktor -0.25
+    wird ein Viertel des Maximalabstandes abgezogen
+
+**Beispiele**:
+
+-   `-1.0` würde den Vorschub um eine ganze Note zurück setzen
+-   `0` ändert nichts am Vorschub. Damit kann man den Wert zurücksetzen,
+    falls er im Auszug 0 gesetzt wurde.
+-   `0.5` vergrößert den Vorschub um die Hälfte einer ganzen Note.
 
 ... kein Beispiel verfügbar ...
 
@@ -938,28 +1093,60 @@ Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.
 
 ## `extract.0.printer.a3_offset` - Offset für A3 {#extract.0.printer.a3_offset}
 
-TODO: Helptext für extract.0.printer.a3\_offset einfügen
+Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+> **Hinweis**: Wenn ein Unterlegnotenblatt für eine 25 saitige Harfe auf
+> ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um 10 mm
+> nach links zu verschieben. Dadurch werden die Noten vom Drucker nicht
+> mehr angeschnitten.
+>
+> In diesem Fall kann es auch sinnvoll sein, `limit-A3` auszuschalten.
 
         "a3_offset": [0, 0]
           
 
 ## `extract.0.printer.a4_offset` - Offset für A4 {#extract.0.printer.a4_offset}
 
-TODO: Helptext für extract.0.printer.a4\_offset einfügen
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
 
         "a4_offset": [-5, 0]
           
 
 ## `extract.0.printer.a4_pages` - Seiten bei A4 {#extract.0.printer.a4_pages}
 
-TODO: Helptext für extract.0.printer.a4\_pages einfügen
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Zählung beginnt bei 0!
+Standardeinstellung ist `0,1,2`.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
 
         "a4_pages": [0, 1, 2]
           
 
 ## `extract.0.printer.show_border` - Blattbegr. zeich. {#extract.0.printer.show_border}
 
-TODO: Helptext für extract.0.printer.show\_border einfügen
+Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
+Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
+Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
+auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
+Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
+
+Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
+Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann
+unten ca. 10 mm.
+
+Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
+Situation verbessert.
 
         "show_border": false
           
@@ -1156,10 +1343,13 @@ aus vordefinierten Stilen.
 ## `extract.0.stringnames.text` - Text {#extract.0.stringnames.text}
 
 Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
-bekommen.
 
-In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+> **Hinweis:** Dieses Feld wird bei einer **offenen** Stimmung besonders
+> interpretiert. Siehe auch parameter `layout.tuning`.
+
+Die Liste der Saitennamen wird so oft zusamengefügt, dass alle Saiten
+einen Namen bekommen. In der Regel reicht es also, die Saitennamen für
+eine Oktave anzugeben.
 
 **Beispiel:**
 
@@ -1244,6 +1434,78 @@ von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
         "voices": [1, 2, 3, 4]
           
 
+## `presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes` - Zählmarken {#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes}
+
+TODO: Helptext für
+presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes
+einfügen
+
+        "countnotes": {
+          "cntextleft"  : "{lyrics} {countnote}",
+          "cntextright" : "{countnote} {lyrics}"
+        }
+          
+
+## `presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft` - Text rechte Zählmarke {#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft}
+
+Hier kannst du ein Textmuster für die Zählmarken **links** von der Note
+angegben. Dabei kannst du die entsprechneden Silben aus den Liedtexten
+im Notensysstem (angelegt mit `w:` Zeilen ) einfügen.
+
+Hierfür gibt es auch die Schnelleinstellung `Zählmarken mit Text`.
+
+> **Hinweis**: in ABC gibt es ja die Möglichkeit Liedtexte nach den
+> Noten einzufügen mit `W:` (groß) - Zeilen. Das sind die Texte die
+> Zupfnoter über die Konfiguration `Liedtexte` auf dem Blatt
+> positioniert.
+>
+> Es gibt aber auch Liedtexte, die silbengnau den Noten zugeordnet
+> werden as sind `w:` (klein) - Zeilen innerhalb einer Stimme. Diese
+> Texte können an die Zählmarken angefügt wrerden.
+
+Damit kannst du den Rythmus über das "Sprechen" unterstützen, oder gar
+eine eigene Rythmussprache (z.b. nach Zoltan-Kodaly) verwenden.
+
+Dabei gibt es die Platzhalter
+
+-   `{countnote}`
+-   `{lyrics}`
+
+Beispiel: `{lyrics} - {countnote}`
+
+        "cntextleft": "{lyrics} {countnote}"
+          
+
+## `presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright` - Text linke Zählmarke {#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright}
+
+Hier kannst du ein Textmuster für die Zählmarken **rechts** von der Note
+angegben. Dabei kannst du die entsprechneden Silben aus den Liedtexten
+im Notensysstem (angelegt mit `w:` Zeilen ) einfügen.
+
+Hierfür gibt es auch die Schnelleinstellung `Zählmarken mit Text`.
+
+> **Hinweis**: in ABC gibt es ja die Möglichkeit Liedtexte nach den
+> Noten einzufügen mit `W:` (groß) - Zeilen. Das sind die Texte die
+> Zupfnoter über die Konfiguration `Liedtexte` auf dem Blatt
+> positioniert.
+>
+> Es gibt aber auch Liedtexte, die silbengnau den Noten zugeordnet
+> werden as sind `w:` (klein) - Zeilen innerhalb einer Stimme. Diese
+> Texte können an die Zählmarken angefügt wrerden.
+
+Damit kannst du den Rythmus über das "Sprechen" unterstützen, oder gar
+eine eigene Rythmussprache (z.b. nach Zoltan-Kodaly) verwenden.
+
+Dabei gibt es die Platzhalter
+
+-   `{countnote}`
+-   `{lyrics}`
+
+Beispiel: `{countnote} - {lyrics}`
+
+        "cntextright": "{countnote} {lyrics}"
+          
+
 ## `presets.notes` - Seitenbeschriftungen {#presets.notes}
 
 Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer
@@ -1315,21 +1577,21 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 
 ## `presets.notes.T01_T99` - T01 .. T99 Alle .. {#presets.notes.T01_T99}
 
-TODO: Helptext für presets.notes.T01\_T99 einfügen
-
         "T01_T99": {"value": {}}
-          
-
-## `presets.notes.T01_T99.value` - Wert {#presets.notes.T01_T99.value}
-
-TODO: Helptext für presets.notes.T01\_T99.value einfügen
-
-        "value": {}
           
 
 ## `presets.notes.T01_number` - T01 Nummer {#presets.notes.T01_number}
 
-TODO: Helptext für presets.notes.T01\_number einfügen
+Dies fügt Nummer im Notenblatt ein. Damit kannst du deine eigenen
+Ordnungskriterien realiseren.
+
+Das vorgesehene Numernschema setzt sich aus zwei Blöcken zusammen
+
+-   3 Zeichen für den Urheber, sozusagen die Unterlegnotenmanufaktur
+-   3 Zeichen für eine fortlaufende Nummer. Es ist sinnvoll diese Nummer
+    mit führenden Nullen zu schreiben.
+
+Beispiel: `BWL-001` - Bernhard Weichel - Blatt 001
 
         "T01_number": {
           "value" : {
@@ -1341,81 +1603,18 @@ TODO: Helptext für presets.notes.T01\_number einfügen
         }
           
 
-## `presets.notes.T01_number.value` - Wert {#presets.notes.T01_number.value}
-
-TODO: Helptext für presets.notes.T01\_number.value einfügen
-
-        "value": {
-          "align" : "l",
-          "pos"   : [410, 17],
-          "style" : "bold",
-          "text"  : "XXX-{{number}}"
-        }
-          
-
-## `presets.notes.T01_number.value.align` - Ausrichtung {#presets.notes.T01_number.value.align}
-
-Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
-(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
-Anordnung automatisch errechnet
-
--   `l`: der Text steht links vom Bezugspunkt (und ist daher
-    rechtsbündig)
--   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
-    linksbündig)
--   `auto`: die Ausrichtung wird automatisch errechnet
-
-> **Hinweis**: Auch beim manuellen Verschieben wird die Anordnung der
-> Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
-> (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
-> Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
-> werden.
-
-        "align": "l"
-          
-
-## `presets.notes.T01_number.value.pos` - Position {#presets.notes.T01_number.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [410, 17]
-          
-
-## `presets.notes.T01_number.value.style` - Stil {#presets.notes.T01_number.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "bold"
-          
-
-## `presets.notes.T01_number.value.text` - Text {#presets.notes.T01_number.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": "XXX-{{number}}"
-
 ## `presets.notes.T01_number_extract` - T01 Auszug-Nummer {#presets.notes.T01_number_extract}
 
-TODO: Helptext für presets.notes.T01\_number\_extract einfügen
+Dies fügt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+
+Ein sinnvolles schema ist:
+
+-   `-A` - Sopran Alt - per default Auszug 1
+-   `-B` - Tenor Bass - per default Auszug 2
+-   `-M` - Nur Melodie - am besten Auszug 3 - ist aber nicht per default
+    konfiguriert
+-   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
+    aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
         "T01_number_extract": {
           "value" : {
@@ -1424,165 +1623,21 @@ TODO: Helptext für presets.notes.T01\_number\_extract einfügen
             "text"  : "{{extract_filename}}"
           }
         }
-          
-
-## `presets.notes.T01_number_extract.value` - Wert {#presets.notes.T01_number_extract.value}
-
-TODO: Helptext für presets.notes.T01\_number\_extract.value einfügen
-
-        "value": {
-          "pos"   : [411, 17],
-          "style" : "bold",
-          "text"  : "{{extract_filename}}"
-        }
-          
-
-## `presets.notes.T01_number_extract.value.pos` - Position {#presets.notes.T01_number_extract.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [411, 17]
-          
-
-## `presets.notes.T01_number_extract.value.style` - Stil {#presets.notes.T01_number_extract.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "bold"
-          
-
-## `presets.notes.T01_number_extract.value.text` - Text {#presets.notes.T01_number_extract.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": "{{extract_filename}}"
-
-## `presets.notes.T01_number_extract_value` - T01 Auszugn Nummer Wert {#presets.notes.T01_number_extract_value}
-
-TODO: Helptext für presets.notes.T01\_number\_extract\_value einfügen
-
-        "T01_number_extract_value": {
-          "key"   : "T01_number_extract",
-          "value" : {"text": "{{extract_filename}}"}
-        }
-          
-
-## `presets.notes.T01_number_extract_value.key` - schlüssel {#presets.notes.T01_number_extract_value.key}
-
-TODO: Helptext für presets.notes.T01\_number\_extract\_value.key
-einfügen
-
-        "key": "T01_number_extract"
-          
-
-## `presets.notes.T01_number_extract_value.value` - Wert {#presets.notes.T01_number_extract_value.value}
-
-TODO: Helptext für presets.notes.T01\_number\_extract\_value.value
-einfügen
-
-        "value": {"text": "{{extract_filename}}"}
-          
-
-## `presets.notes.T01_number_extract_value.value.text` - Text {#presets.notes.T01_number_extract_value.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": "{{extract_filename}}"
 
 ## `presets.notes.T02_copyright_music` - T02 Copyright Musik {#presets.notes.T02_copyright_music}
 
-TODO: Helptext für presets.notes.T02\_copyright\_music einfügen
+Dies fügt einen Copyrightvermerk für die Musik ein. Hier wird das
+Copyright auf die Komposition angegeben.
 
         "T02_copyright_music": {
           "value" : {"pos": [340, 251], "style": "small", "text": "© 2019\n"}
         }
           
 
-## `presets.notes.T02_copyright_music.value` - Wert {#presets.notes.T02_copyright_music.value}
-
-TODO: Helptext für presets.notes.T02\_copyright\_music.value einfügen
-
-        "value": {"pos": [340, 251], "style": "small", "text": "© 2019\n"}
-          
-
-## `presets.notes.T02_copyright_music.value.pos` - Position {#presets.notes.T02_copyright_music.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [340, 251]
-          
-
-## `presets.notes.T02_copyright_music.value.style` - Stil {#presets.notes.T02_copyright_music.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "small"
-          
-
-## `presets.notes.T02_copyright_music.value.text` - Text {#presets.notes.T02_copyright_music.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": "© 2019\n"
-
 ## `presets.notes.T03_copyright_harpnotes` - T03 Copyright Unterlegnoten {#presets.notes.T03_copyright_harpnotes}
 
-TODO: Helptext für presets.notes.T03\_copyright\_harpnotes einfügen
+Dies fügt einen Copyrightvermerk für das Unterlgnotenbild ein. Damit
+reklamierst du ein Copyright für die Umsetzung auf die Tischharfe
 
         "T03_copyright_harpnotes": {
           "value" : {
@@ -1593,115 +1648,22 @@ TODO: Helptext für presets.notes.T03\_copyright\_harpnotes einfügen
         }
           
 
-## `presets.notes.T03_copyright_harpnotes.value` - Wert {#presets.notes.T03_copyright_harpnotes.value}
-
-TODO: Helptext für presets.notes.T03\_copyright\_harpnotes.value
-einfügen
-
-        "value": {
-          "pos"   : [340, 260],
-          "style" : "small",
-          "text"  : "© 2019 Notenbild: zupfnoter.de"
-        }
-          
-
-## `presets.notes.T03_copyright_harpnotes.value.pos` - Position {#presets.notes.T03_copyright_harpnotes.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [340, 260]
-          
-
-## `presets.notes.T03_copyright_harpnotes.value.style` - Stil {#presets.notes.T03_copyright_harpnotes.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "small"
-          
-
-## `presets.notes.T03_copyright_harpnotes.value.text` - Text {#presets.notes.T03_copyright_harpnotes.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": "© 2019 Notenbild: zupfnoter.de"
-
 ## `presets.notes.T04_to_order` - T04 zu beziehen bei {#presets.notes.T04_to_order}
 
-TODO: Helptext für presets.notes.T04\_to\_order einfügen
+Dies fügt eine Notiz ein wo man das Unterlegnotenblatt beziehen kann.
+Das ist sinnvoll, wenn die Unterlegoten in irgendeiner Weise vertrieben
+werden.
 
         "T04_to_order": {
           "value" : {"pos": [340, 242], "style": "small", "text": null}
         }
           
 
-## `presets.notes.T04_to_order.value` - Wert {#presets.notes.T04_to_order.value}
-
-TODO: Helptext für presets.notes.T04\_to\_order.value einfügen
-
-        "value": {"pos": [340, 242], "style": "small", "text": null}
-          
-
-## `presets.notes.T04_to_order.value.pos` - Position {#presets.notes.T04_to_order.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [340, 242]
-          
-
-## `presets.notes.T04_to_order.value.style` - Stil {#presets.notes.T04_to_order.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "small"
-          
-
-## `presets.notes.T04_to_order.value.text` - Text {#presets.notes.T04_to_order.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": null
-
 ## `presets.notes.T05_printed_extracts` - T05 verfügbare Auszüge {#presets.notes.T05_printed_extracts}
 
-TODO: Helptext für presets.notes.T05\_printed\_extracts einfügen
+Dies fügt einen Hinweis im Notenblatt ein, welche Auszüge insgesamt zur
+Verfügung stehen. Das hilft festzustellen, ob alle verfügbaren Stimmen
+bzw. Auszüge vorliegen.
 
         "T05_printed_extracts": {
           "value" : {
@@ -1713,81 +1675,12 @@ TODO: Helptext für presets.notes.T05\_printed\_extracts einfügen
         }
           
 
-## `presets.notes.T05_printed_extracts.value` - Wert {#presets.notes.T05_printed_extracts.value}
-
-TODO: Helptext für presets.notes.T05\_printed\_extracts.value einfügen
-
-        "value": {
-          "align" : "l",
-          "pos"   : [410, 22],
-          "style" : "smaller",
-          "text"  : "{{printed_extracts}}"
-        }
-          
-
-## `presets.notes.T05_printed_extracts.value.align` - Ausrichtung {#presets.notes.T05_printed_extracts.value.align}
-
-Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
-(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
-Anordnung automatisch errechnet
-
--   `l`: der Text steht links vom Bezugspunkt (und ist daher
-    rechtsbündig)
--   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
-    linksbündig)
--   `auto`: die Ausrichtung wird automatisch errechnet
-
-> **Hinweis**: Auch beim manuellen Verschieben wird die Anordnung der
-> Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung
-> (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die
-> Nummern auch bei unterschiedlicher Länge sehr präzise positioniert
-> werden.
-
-        "align": "l"
-          
-
-## `presets.notes.T05_printed_extracts.value.pos` - Position {#presets.notes.T05_printed_extracts.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [410, 22]
-          
-
-## `presets.notes.T05_printed_extracts.value.style` - Stil {#presets.notes.T05_printed_extracts.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "smaller"
-          
-
-## `presets.notes.T05_printed_extracts.value.text` - Text {#presets.notes.T05_printed_extracts.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": "{{printed_extracts}}"
-
 ## `presets.notes.T06_legend` - T06 Legende {#presets.notes.T06_legend}
 
-TODO: Helptext für presets.notes.T06\_legend einfügen
+Hier kannst du eine eigene Legende gestalten. Dadurch wird die von
+Zupfnoter generierte Standard-Legende überschrieben.
+
+Die Voreinstellungn entspricht der Standardlegende von Zupfnoter.
 
         "T06_legend": {
           "value" : {
@@ -1798,110 +1691,15 @@ TODO: Helptext für presets.notes.T06\_legend einfügen
         }
           
 
-## `presets.notes.T06_legend.value` - Wert {#presets.notes.T06_legend.value}
-
-TODO: Helptext für presets.notes.T06\_legend.value einfügen
-
-        "value": {
-          "pos"   : [360, 30],
-          "style" : "small",
-          "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
-        }
-          
-
-## `presets.notes.T06_legend.value.pos` - Position {#presets.notes.T06_legend.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [360, 30]
-          
-
-## `presets.notes.T06_legend.value.style` - Stil {#presets.notes.T06_legend.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "small"
-          
-
-## `presets.notes.T06_legend.value.text` - Text {#presets.notes.T06_legend.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
-
 ## `presets.notes.T99_do_not_copy` - T99 bitte nicht kopieren {#presets.notes.T99_do_not_copy}
 
-TODO: Helptext für presets.notes.T99\_do\_not\_copy einfügen
+Dies fügt eine Notiz ein, die darauf hinweist, dass das Blatt nicht ohne
+Erlaubnis kopiert werden darf.
 
         "T99_do_not_copy": {
           "value" : {"pos": [380, 284], "style": "small_bold", "text": null}
         }
           
-
-## `presets.notes.T99_do_not_copy.value` - Wert {#presets.notes.T99_do_not_copy.value}
-
-TODO: Helptext für presets.notes.T99\_do\_not\_copy.value einfügen
-
-        "value": {"pos": [380, 284], "style": "small_bold", "text": null}
-          
-
-## `presets.notes.T99_do_not_copy.value.pos` - Position {#presets.notes.T99_do_not_copy.value.pos}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-        "pos": [380, 284]
-          
-
-## `presets.notes.T99_do_not_copy.value.style` - Stil {#presets.notes.T99_do_not_copy.value.style}
-
-Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
-aus vordefinierten Stilen.
-
-        "style": "small_bold"
-          
-
-## `presets.notes.T99_do_not_copy.value.text` - Text {#presets.notes.T99_do_not_copy.value.text}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
--   `{{composer}}`: Komponist aus `C:` Zeilen
--   `{{current_year}}`: das aktuelle Jahr
--   `{{key}}`: Tonart aus `K:` Zeile
--   `{{meter}}`: Taktart aus `M:` Zeile
--   `{{number}}`: Nummer aus `X:` Zeile
--   `{{o_key}}`: Originaltonart
--   `{{tempo}}`: Tempo aus `Q:`Zeile
--   `{{title}}`: Titel aus `T:` Zeilen
--   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
--   `{{extract_filename}}`: Filenamenszusatz aus
-    "extract.\*.filenamepart"},
--   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
-    die entsprechneden Filenamenzusätze ausgegeben.
--   `{{watermark}}`: Wasserzeichen (mit
-    `setsettings wartermark "wasserzeichen"` eingestellt)
-
-        "text": null
 
 ## `produce` - PDF für Auszüge {#produce}
 
@@ -2065,8 +1863,6 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `templates.extracts` - Auszüge {#templates.extracts}
 
-TODO: Helptext für templates.extracts einfügen
-
         "extracts": {
           "filenamepart" : "-",
           "notes"        : {"T01_number_extract": {"text": "{{extract_filename}}"}},
@@ -2076,7 +1872,16 @@ TODO: Helptext für templates.extracts einfügen
 
 ## `templates.extracts.filenamepart` - Filename-Zusatz {#templates.extracts.filenamepart}
 
-TODO: Helptext für templates.extracts.filenamepart einfügen
+Hier kannst du einen Zusatz angeben, um welchen der Filename der
+PDF-Dateien für diesen Auszug ergänzt werden soll. Auf diese Weise wird
+jeder Auszug in einer eigenen Datei wiedergegeben.
+
+Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von
+`extract.0.title` gebildet.
+
+> **Hinweis**: Bitte achte darauf, daß jeder Auszug einen eindeutigen
+> Filename-Zusatz oder Titel hat. Sonst werden mehrere Auszüge in die
+> gleiche Datei geschrieben (und nur der letzte bleibt übrig).
 
         "filenamepart": "-"
           
@@ -2096,11 +1901,18 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 
 ## `templates.extracts.notes.T01_number_extract` - T01 Auszug-Nummer {#templates.extracts.notes.T01_number_extract}
 
-TODO: Helptext für templates.extracts.notes.T01\_number\_extract
-einfügen
+Dies fügt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+
+Ein sinnvolles schema ist:
+
+-   `-A` - Sopran Alt - per default Auszug 1
+-   `-B` - Tenor Bass - per default Auszug 2
+-   `-M` - Nur Melodie - am besten Auszug 3 - ist aber nicht per default
+    konfiguriert
+-   `-S` - Alle Stimmen - per default Auszug 0; dieser wird in der Regel
+    aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
         "T01_number_extract": {"text": "{{extract_filename}}"}
-          
 
 ## `templates.extracts.notes.T01_number_extract.text` - Text {#templates.extracts.notes.T01_number_extract.text}
 
@@ -2127,14 +1939,13 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
 ## `templates.extracts.title` - Titel {#templates.extracts.title}
 
-TODO: Helptext für templates.extracts.title einfügen
-
         "title": ""
           
 
 ## `templates.images` - Bilder {#templates.images}
 
-TODO: Helptext für templates.images einfügen
+Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen
+sollen.
 
         "images": {
           "height"    : 100,
@@ -2145,8 +1956,6 @@ TODO: Helptext für templates.images einfügen
           
 
 ## `templates.images.height` - Bildhöhe {#templates.images.height}
-
-TODO: Helptext für templates.images.height einfügen
 
         "height": 100
           

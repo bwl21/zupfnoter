@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.12.1-7-ga8bfc429
+Version V\_1.12.1-15-g8b9ef33d
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -4737,8 +4737,6 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \subsection{\texorpdfstring{\texttt{annotations.vr} - `V'
 rechts}{annotations.vr - `V' rechts}}\label{annotations.vr}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r annotations.vr einf\"{u}gen
-
 \begin{verbatim}
     "vr": {"pos": [2, -5], "text": "v"}
       
@@ -4802,8 +4800,6 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \hypertarget{annotations.vt}{%
 \subsection{\texorpdfstring{\texttt{annotations.vt} - `V'
 oben}{annotations.vt - `V' oben}}\label{annotations.vt}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r annotations.vt einf\"{u}gen
 
 \begin{verbatim}
     "vt": {"pos": [-1, -5], "text": "v"}
@@ -4892,6 +4888,14 @@ spezifiziert den Auszug 1 usw.
           "style"    : "small_bold",
           "voices"   : []
         },
+        "chords"       : {
+          "apanchor" : "box",
+          "apbase"   : [1, -0.5],
+          "autopos"  : true,
+          "pos"      : [3, -2],
+          "style"    : "large",
+          "voices"   : []
+        },
         "countnotes"   : {
           "apanchor" : "box",
           "apbase"   : [1, -0.5],
@@ -4927,7 +4931,8 @@ spezifiziert den Auszug 1 usw.
             "pack_max_spreadfactor" : 2,
             "pack_method"           : 0,
             "pack_min_increment"    : 0.2
-          }
+          },
+          "tuning"            : "fixed"
         },
         "layoutlines"  : [1, 2, 3, 4],
         "legend"       : {"pos": [320, 7], "spos": [320, 27]},
@@ -5131,6 +5136,122 @@ sollen.
       
 \end{verbatim}
 
+\hypertarget{extract.0.chords}{%
+\subsection{\texorpdfstring{\texttt{extract.0.chords} -
+Akkordsymbole}{extract.0.chords - Akkordsymbole}}\label{extract.0.chords}}
+
+Hier kannst du die Darstellung von Akkordsymbolen einstellen.
+Akkordsymbole werden aus den Akkorden im ABC-code abgeleitet. Diese
+Funktion ist in erster Linie f\"{u}r Akkordzithern gedacht.
+
+\begin{verbatim}
+    "chords": {
+      "apanchor" : "box",
+      "apbase"   : [1, -0.5],
+      "autopos"  : true,
+      "pos"      : [3, -2],
+      "style"    : "large",
+      "voices"   : []
+    }
+      
+\end{verbatim}
+
+\hypertarget{extract.0.chords.apanchor}{%
+\subsection{\texorpdfstring{\texttt{extract.0.chords.apanchor} - autom.
+pos.
+Anker}{extract.0.chords.apanchor - autom. pos. Anker}}\label{extract.0.chords.apanchor}}
+
+Hier kannst du die vertikale Verankerung der eines notenbezogenen
+Objektes an der Note einstellen.
+
+\begin{itemize}
+\item
+  \texttt{center}: das Objekt wird an der Mitte der Note verankert
+\item
+  \texttt{box}: das Objekt wird am unteren Rand der Note verankert
+
+\begin{verbatim}
+"apanchor": "box"
+\end{verbatim}
+\end{itemize}
+
+\hypertarget{extract.0.chords.apbase}{%
+\subsection{\texorpdfstring{\texttt{extract.0.chords.apbase} - autom.
+pos.
+Basis}{extract.0.chords.apbase - autom. pos. Basis}}\label{extract.0.chords.apbase}}
+
+Hier kannst du die Grundlage f\"{u}r die automatische Positionierung von
+notenbezogenen Objekten einstellen.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+\begin{itemize}
+\item
+  Positive Werte schieben das Objekt \textbf{weiter} von der Note weg.
+\item
+  Negative Werte schieben das Objekt \textbf{n\"{a}her} an die Note
+  heran.
+
+\begin{verbatim}
+"apbase": [1, -0.5]
+\end{verbatim}
+\end{itemize}
+
+\hypertarget{extract.0.chords.autopos}{%
+\subsection{\texorpdfstring{\texttt{extract.0.chords.autopos} - autom.
+pos.}{extract.0.chords.autopos - autom. pos.}}\label{extract.0.chords.autopos}}
+
+Hier kannst du die automatische Positionierung einschalten. Dabei werden
+Z\"{a}hlmarken bzw. Taktnummern abh\"{a}ngig von der Gr\"{o}\ss e der
+Noten platziert. Wenn diese Option ausgeschaltet, gelten die Werte von
+\texttt{pos}. Dies kann bei manchen St\"{u}cken eine sinnvollere
+Einstellugn sein.
+
+Die Z\"{a}hlmarken/Taktnummer lassen sich weiterhin mit der Maus
+verschieben.
+
+\begin{verbatim}
+    "autopos": true
+      
+\end{verbatim}
+
+\hypertarget{extract.0.chords.pos}{%
+\subsection{\texorpdfstring{\texttt{extract.0.chords.pos} -
+Position}{extract.0.chords.pos - Position}}\label{extract.0.chords.pos}}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+\begin{verbatim}
+    "pos": [3, -2]
+      
+\end{verbatim}
+
+\hypertarget{extract.0.chords.style}{%
+\subsection{\texorpdfstring{\texttt{extract.0.chords.style} -
+Stil}{extract.0.chords.style - Stil}}\label{extract.0.chords.style}}
+
+Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
+Auswahl aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "style": "large"
+      
+\end{verbatim}
+
+\hypertarget{extract.0.chords.voices}{%
+\subsection{\texorpdfstring{\texttt{extract.0.chords.voices} -
+Stimmen}{extract.0.chords.voices - Stimmen}}\label{extract.0.chords.voices}}
+
+Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste
+von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
+\texttt{\%\%score} - Anweisung in der ABC-Notation.
+
+\begin{verbatim}
+    "voices": []
+      
+\end{verbatim}
+
 \hypertarget{extract.0.countnotes}{%
 \subsection{\texorpdfstring{\texttt{extract.0.countnotes} -
 Z\"{a}hlmarken}{extract.0.countnotes - Z\"{a}hlmarken}}\label{extract.0.countnotes}}
@@ -5303,7 +5424,8 @@ angeben, f\"{u}r die Flu\ss linien eingezeichnet werden sollen.
 \subsection{\texorpdfstring{\texttt{extract.0.images} -
 Bilder}{extract.0.images - Bilder}}\label{extract.0.images}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.images einf\"{u}gen
+Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen
+sollen.
 
 \begin{verbatim}
     "images": {}
@@ -5354,7 +5476,8 @@ l\"{a}sst das Notenbild gezielt optimieren.
         "pack_max_spreadfactor" : 2,
         "pack_method"           : 0,
         "pack_min_increment"    : 0.2
-      }
+      },
+      "tuning"            : "fixed"
     }
       
 \end{verbatim}
@@ -5364,8 +5487,8 @@ l\"{a}sst das Notenbild gezielt optimieren.
 -
 Zeichenfl.Gr\"{o}\ss e}{extract.0.layout.DRAWING\_AREA\_SIZE - Zeichenfl.Gr\"{o}\ss e}}\label{extract.0.layout.DRAWING_AREA_SIZE}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.layout.DRAWING\_AREA\_SIZE einf\"{u}gen
+Hier gibst du die Gr\"{o}\ss e der Zeichenfl\"{a}che an. Die
+Gr\"{o}\ss e wird als \emph{breite}, \emph{h\"{o}he} angegeben.
 
 \begin{verbatim}
     "DRAWING_AREA_SIZE": [400, 282]
@@ -5376,8 +5499,17 @@ extract.0.layout.DRAWING\_AREA\_SIZE einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{extract.0.layout.ELLIPSE\_SIZE} -
 Notengr\"{o}\ss e}{extract.0.layout.ELLIPSE\_SIZE - Notengr\"{o}\ss e}}\label{extract.0.layout.ELLIPSE_SIZE}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.ELLIPSE\_SIZE
-einf\"{u}gen
+Hier kannst du die Gr\"{o}\ss e der ganzen Noten einstellen. Sinnvolle
+Werte sind {[}2-4, 1.2-2{]}.
+
+\begin{quote}
+\textbf{Hinweis}: Die Gr\"{o}\ss e der anderen Noten werden ausgehend
+von diesem Wert berechnet.
+
+Da die Noten auch mit der dicken Linie umrandet werden, kann auch die
+``Linienst\"{a}rke \texttt{dick}'' reeduziert werden, um ein
+filigraneres Notenbild zu erhalten.
+\end{quote}
 
 \begin{verbatim}
     "ELLIPSE_SIZE": [3.5, 1.7]
@@ -5389,8 +5521,7 @@ einf\"{u}gen
 Linienst\"{a}rke
 mittel}{extract.0.layout.LINE\_MEDIUM - Linienst\"{a}rke mittel}}\label{extract.0.layout.LINE_MEDIUM}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.LINE\_MEDIUM
-einf\"{u}gen
+Hier stellst du die Breite (in mm) von mittelstarken Linien ein.
 
 \begin{verbatim}
     "LINE_MEDIUM": 0.3
@@ -5402,8 +5533,7 @@ einf\"{u}gen
 Linienst\"{a}rke
 dick}{extract.0.layout.LINE\_THICK - Linienst\"{a}rke dick}}\label{extract.0.layout.LINE_THICK}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.LINE\_THICK
-einf\"{u}gen
+Hier stellst du die Breite (in mm) von dicken Linien ein.
 
 \begin{verbatim}
     "LINE_THICK": 0.5
@@ -5415,8 +5545,7 @@ einf\"{u}gen
 Linienst\"{a}rke
 d\"{u}nn}{extract.0.layout.LINE\_THIN - Linienst\"{a}rke d\"{u}nn}}\label{extract.0.layout.LINE_THIN}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.LINE\_THIN
-einf\"{u}gen
+Hier stellst du die Breite (in mm) von d\"{u}nnen Linien ein.
 
 \begin{verbatim}
     "LINE_THIN": 0.1
@@ -5427,8 +5556,25 @@ einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{extract.0.layout.PITCH\_OFFSET} -
 PitchOffset}{extract.0.layout.PITCH\_OFFSET - PitchOffset}}\label{extract.0.layout.PITCH_OFFSET}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.PITCH\_OFFSET
-einf\"{u}gen
+Dieser Paramter justiert das Verh\"{a}ltnis von Tonh\"{o}he und Position
+auf dem Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am
+linken Blattrand dargestellt wird.
+
+\begin{quote}
+\textbf{Hinweis} Bei \textbf{chromatischen} Instrumenten wird die
+Stimmung der Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43
+daf\"{u}r, dass das G der Oktave 3 am linken Blattrand erscheint.
+
+Die Midi-Codes findest du auf
+\href{http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm}{hier}
+
+Bei \textbf{diatonischen} Instrumenten muss der Wert ggf. durch
+Ausprobieren ermittelt werden, da dort die Stimmung der Saiten fest
+verdrahtet ist. \"{U}blicherweise ist er 0. Man k\"{o}nnte aber durch
+Werte von -12 bzw. +12 eine Art ``Transponierung'' errreichen. Das ist
+dann sinnvoll, wenn die selben Eingabenoten f\"{u}r verschiedene
+Instrumente verwendet werden sollen.
+\end{quote}
 
 \begin{verbatim}
     "PITCH_OFFSET": -43
@@ -5439,8 +5585,13 @@ einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{extract.0.layout.REST\_SIZE} -
 Pausengr\"{o}\ss e}{extract.0.layout.REST\_SIZE - Pausengr\"{o}\ss e}}\label{extract.0.layout.REST_SIZE}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.REST\_SIZE
-einf\"{u}gen
+Hier kannst du die Gr\"{o}\ss e der Pausen einstellen. Sinnvolle Werte
+sind {[}2-4, 1.2-2{]}
+
+\begin{quote}
+\textbf{Hinweis}:Bitte beachte, dass nur die Angabe der H\"{o}he von
+ber\"{u}cksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.
+\end{quote}
 
 \begin{verbatim}
     "REST_SIZE": [4, 2]
@@ -5451,8 +5602,13 @@ einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{extract.0.layout.X\_OFFSET} - X -
 Offset}{extract.0.layout.X\_OFFSET - X - Offset}}\label{extract.0.layout.X_OFFSET}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.X\_OFFSET
-einf\"{u}gen
+Hier gibst du an, wie weit das Druckbild auf dem A3-Blatt von links nach
+rechts geschoben werden soll.
+
+\begin{quote}
+Hinweis: es gibt zus\"{a}tzliche M\"{o}glichkeiten, das Blatt auf dem
+Drucker zu verschieben \texttt{extract.0.printer}
+\end{quote}
 
 \begin{verbatim}
     "X_OFFSET": 2.8
@@ -5463,8 +5619,7 @@ einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{extract.0.layout.X\_SPACING} -
 Saitenabstand}{extract.0.layout.X\_SPACING - Saitenabstand}}\label{extract.0.layout.X_SPACING}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.X\_SPACING
-einf\"{u}gen
+Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
 \begin{verbatim}
     "X_SPACING": 11.5
@@ -5540,8 +5695,8 @@ variante Abschnitte nicht mehr durch Farbe abgesetzt.
 -
 Sonstiges}{extract.0.layout.color.color\_default - Sonstiges}}\label{extract.0.layout.color.color_default}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.layout.color.color\_default einf\"{u}gen
+Hier w\"{a}hlst die Grundfarbe f\"{u}r die Ausgabe. Diese Farbe wird bei
+allen Elementen verwendet, die keine spzeifische Farbeinstellung haben.
 
 \begin{verbatim}
     "color_default": "black"
@@ -5553,8 +5708,17 @@ extract.0.layout.color.color\_default einf\"{u}gen
 -
 Variante1}{extract.0.layout.color.color\_variant1 - Variante1}}\label{extract.0.layout.color.color_variant1}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.layout.color.color\_variant1 einf\"{u}gen
+Hier w\"{a}hlst du die Farbe in der variante Abschnitte 1, 3, 5 etc.
+dargestellt werden.
+
+\begin{quote}
+\textbf{Hinweis} Die Farbe von varianten Abnschnitten alterniert
+zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann
+werden die varianten Abschnitte gleichermassen eingef\"{a}rbt.
+
+Wenn du beide auf den gleichen wert wie ``default'' stellst, dann werden
+variante Abschnitte nicht mehr durch Farbe abgesetzt.
+\end{quote}
 
 \begin{verbatim}
     "color_variant1": "grey"
@@ -5566,8 +5730,17 @@ extract.0.layout.color.color\_variant1 einf\"{u}gen
 -
 Variante2}{extract.0.layout.color.color\_variant2 - Variante2}}\label{extract.0.layout.color.color_variant2}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.layout.color.color\_variant2 einf\"{u}gen
+Hier w\"{a}hlst du die Farbe in der variante Abschnitte 2,4,6 etc.
+dargestellt werden.
+
+\begin{quote}
+\textbf{Hinweis} Die Farbe von varianten Abnschnitten alterniert
+zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann
+werden die varianten Abschnitte gleichermassen eingef\"{a}rbt.
+
+Wenn du beide auf den gleichen wert wie ``default'' stellst, dann werden
+variante Abschnitte nicht mehr durch Farbe abgesetzt.
+\end{quote}
 
 \begin{verbatim}
     "color_variant2": "dimgrey"
@@ -5606,8 +5779,10 @@ Es gibt folgende Einstellunge:
 \subsection{\texorpdfstring{\texttt{extract.0.layout.jumpline\_anchor} -
 Sprungl.Anker}{extract.0.layout.jumpline\_anchor - Sprungl.Anker}}\label{extract.0.layout.jumpline_anchor}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.jumpline\_anchor
-einf\"{u}gen
+Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten
+verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma
+an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer
+gesagt, das umh\"{u}llende Rechteck) der entsprechende Note.
 
 \begin{verbatim}
     "jumpline_anchor": [3, 1]
@@ -5619,8 +5794,9 @@ einf\"{u}gen
 Begrenzung auf
 A3}{extract.0.layout.limit\_a3 - Begrenzung auf A3}}\label{extract.0.layout.limit_a3}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.layout.limit\_a3
-einf\"{u}gen
+Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das
+Unterlegnotenblatt etwas gr\"{o}\ss er ist als A3 w\"{u}rde sonst die
+Note angeshnitten.
 
 \begin{verbatim}
     "limit_a3": true
@@ -5649,8 +5825,16 @@ ausmachen. Daher sind diese Funktionen noch experimentell.
 - max.
 Spreizung}{extract.0.layout.packer.pack\_max\_spreadfactor - max. Spreizung}}\label{extract.0.layout.packer.pack_max_spreadfactor}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.layout.packer.pack\_max\_spreadfactor einf\"{u}gen
+Nach der Berechnung des maximal komprimierten Layouts versucht
+Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfl\"{a}che voll
+ausgef\"{u}llt wird.
+
+Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der
+Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen St\"{u}cken
+aus, welche das Blatt nicht vollst\"{a}ndig ausf\"{u}llen.
+
+Bei sehr kurzen St\"{u}cken ist es sinnvoll, die Spreizung zu begrenzen,
+weil sonst die Noten sehr weit auseinander liegen.
 
 \begin{verbatim}
     "pack_max_spreadfactor": 2
@@ -5662,26 +5846,129 @@ extract.0.layout.packer.pack\_max\_spreadfactor einf\"{u}gen
 -
 Packmethode}{extract.0.layout.packer.pack\_method - Packmethode}}\label{extract.0.layout.packer.pack_method}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.layout.packer.pack\_method einf\"{u}gen
+Hier kannst du die pack-Methode ausw\"{a}hlen
+
+\begin{itemize}
+\item
+  \textbf{0} : Die bisherige Methode: diese geht nach jedem Schritt um
+  die H\"{o}he der gr\"{o}\ss ten Note weiter
+\item
+  \textbf{1} : Kopmpakt: diese geht nur dann weiter, wenn
+
+  \begin{itemize}
+  \tightlist
+  \item
+    ein Richtungswechsel der Melodie vorliegt
+  \item
+    Noten \"{u}bereinander gezeichnet w\"{u}rden
+  \end{itemize}
+
+  Das bedeutet dass bei monotonen Melodien die Noten enger gesetzt
+  werden.
+
+  \begin{quote}
+  \textbf{Hinweis}: Diese Methode eignet sich am besten f\"{u}r lange,
+  einstimmige St\"{u}cke. Die Platzeinsparung geht bei mehrstimmmigen
+  St\"{u}cken schnell verloren.
+
+  Bei dieser Methode sind die Synchronisiationslinien zwischen den
+  Stimmen nicht immer gut sichtbar weil die Flusslinien ggf. sehr flach
+  sind.
+  \end{quote}
+\item
+  \textbf{2} : linear: die Zeitachse wird linear auf das Blatt verteilt.
+  Bei kurzen St\"{u}cken entspricht der Abstand der Noten dann auch dem
+  Notenwert. Manche Spieler empfinden das als hilfreich. Es wird aber am
+  meisten Platz verbraucht.
+
+  Es wird auch kein extra Raum f\"{u}r Parts, Taktstriche und manuelle
+  Vorsch\"{u}be erstellt.
 
 \begin{verbatim}
-    "pack_method": 0
-      
+"pack_method": 0
 \end{verbatim}
+\end{itemize}
 
 \hypertarget{extract.0.layout.packer.pack_min_increment}{%
 \subsection{\texorpdfstring{\texttt{extract.0.layout.packer.pack\_min\_increment}
 - min.
 Inkrement}{extract.0.layout.packer.pack\_min\_increment - min. Inkrement}}\label{extract.0.layout.packer.pack_min_increment}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.layout.packer.pack\_min\_increment einf\"{u}gen
+Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter
+ger\"{u}ckt wird. Pro Note wird mindestens um diesen Anteil einer
+Maximalnote weiter geschaltet.
+
+\textbf{Beispiele}:
+
+\begin{itemize}
+\item
+  \textbf{0.0}: es entstehen horizontale Flu\ss linien
+\item
+  \textbf{1.0}: es wird mindests um eine ganze Note weiter geschaltet
+\item
+  \textbf{0.2}: es wird um 20\% einer ganzen Note weiter geschaltet.
+  Dies liefert angenehme Ergebnisse.
 
 \begin{verbatim}
-    "pack_min_increment": 0.2
-      
+"pack_min_increment": 0.2
 \end{verbatim}
+\end{itemize}
+
+\hypertarget{extract.0.layout.tuning}{%
+\subsection{\texorpdfstring{\texttt{extract.0.layout.tuning} -
+Stimmung}{extract.0.layout.tuning - Stimmung}}\label{extract.0.layout.tuning}}
+
+Hier kannst du einstellen, ob dein Instrument umgestimmt wurde. Diese
+Umstimmung erfolgt entweder durch verstimmung der Saiten oder durch
+umlegen einer Klappe (z.b. bei Okon-Harfe). Es gibt zwei Eintr\"{a}ge
+
+\textbf{feste stimmung: \texttt{fixed}}
+
+Mit dieser Einstellung ist die Stimmung des Instrumentes fest
+vorgegegeben.
+
+\textbf{offene Stimmung: \texttt{open}}
+
+Wenn der Parameter \texttt{tuning} auf den Wert \texttt{offen} gesetzt
+ist, wird die Stimmung der Saiten aus den Saitennamen abgeleitet.
+
+Dabei gelten folgende Regeln.
+
+\begin{itemize}
+\item
+  \texttt{C,} \texttt{C} \texttt{c} \texttt{c\textquotesingle{}} spannt
+  vier Oktaven auf
+\item
+  Saitennamen sind:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{C\ *C\ C\#\ CIS}
+  \item
+    \texttt{D\ *D\ D\#\ DIS\ DES\ DB}
+  \item
+    \texttt{E\ EB\ ES}
+  \item
+    \texttt{F\ \ *F\ F\#\ FIS}
+  \item
+    \texttt{G\ *G\ G\#\ GIS\ GES\ GB}
+  \item
+    \texttt{A\ *A\ A\#\ \ AIS\ AS\ AB}
+  \item
+    \texttt{H\ B\ HB\ BB\ *HB\ *BB}
+  \end{itemize}
+\item
+  ein nachgestelltes \texttt{\#} bzw' \texttt{b} stellt ein Vorzeichen
+  dar
+\item
+  ein vorangestelltes \texttt{*} markiert eine Klappe, die Saite gilt
+  dann auch als einen Halbton h\"{o}her gestimmt.
+
+\begin{verbatim}
+"tuning": "fixed"
+\end{verbatim}
+\end{itemize}
 
 \hypertarget{extract.0.layoutlines}{%
 \subsection{\texorpdfstring{\texttt{extract.0.layoutlines} - Stimmen
@@ -5829,8 +6116,45 @@ bestimmten Zeitpunkt.
 -
 Faktor}{extract.0.notebound.minc.x.minc\_f - Faktor}}\label{extract.0.notebound.minc.x.minc_f}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-extract.0.notebound.minc.x.minc\_f einf\"{u}gen
+Hier gibst du den Korrekturfaktor f\"{u}r den vertikalen Voreschub an.
+
+Die Angabe bestimmt, welcher Anteil am errechneten vertikalen Abstand
+als extra Abstand \textbf{hinzugef\"{u}gt} wird.
+(\texttt{a\ =\ (a\ +\ minc\_f\ *\ a}))
+
+Im Beispiel
+
+\begin{verbatim}
+    "minc" : {
+       "2304": {"minc_f": 1}, 
+       "4224": {"minc_f": -0.25}
+       }
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  bei 2304 wird der Abstand verdoppelt. Mit derm Faktor 1 wird ein
+  Normalabstand wird hinugef\"{u}gt.
+\item
+  bei 4224 wird der abstand um 25\% reduziert. Mit dem Faktor -0.25 wird
+  ein Viertel des Maximalabstandes abgezogen
+\end{itemize}
+
+\textbf{Beispiele}:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{-1.0} w\"{u}rde den Vorschub um eine ganze Note zur\"{u}ck
+  setzen
+\item
+  \texttt{0} \"{a}ndert nichts am Vorschub. Damit kann man den Wert
+  zur\"{u}cksetzen, falls er im Auszug 0 gesetzt wurde.
+\item
+  \texttt{0.5} vergr\"{o}\ss ert den Vorschub um die H\"{a}lfte einer
+  ganzen Note.
+\end{itemize}
 
 \ldots{} kein Beispiel verf\"{u}gbar \ldots{}
 
@@ -5905,8 +6229,21 @@ Druckdialog findest.
 Offset f\"{u}r
 A3}{extract.0.printer.a3\_offset - Offset f\"{u}r A3}}\label{extract.0.printer.a3_offset}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.a3\_offset
-einf\"{u}gen
+Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
+
+\begin{quote}
+\textbf{Hinweis}: Wenn ein Unterlegnotenblatt f\"{u}r eine 25 saitige
+Harfe auf ein A3-Blatt gedruckt wird, ist es sinnvoll, das Druckbild um
+10 mm nach links zu verschieben. Dadurch werden die Noten vom Drucker
+nicht mehr angeschnitten.
+
+In diesem Fall kann es auch sinnvoll sein, \texttt{limit-A3}
+auszuschalten.
+\end{quote}
 
 \begin{verbatim}
     "a3_offset": [0, 0]
@@ -5918,8 +6255,11 @@ einf\"{u}gen
 Offset f\"{u}r
 A4}{extract.0.printer.a4\_offset - Offset f\"{u}r A4}}\label{extract.0.printer.a4_offset}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.a4\_offset
-einf\"{u}gen
+Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier
+verschoben werden soll.
+
+Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+vertikaler Position.
 
 \begin{verbatim}
     "a4_offset": [-5, 0]
@@ -5931,8 +6271,13 @@ einf\"{u}gen
 Seiten bei
 A4}{extract.0.printer.a4\_pages - Seiten bei A4}}\label{extract.0.printer.a4_pages}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.a4\_pages
-einf\"{u}gen
+Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4
+ausgedruckt werden sollen. Die Z\"{a}hlung beginnt bei 0!
+Standardeinstellung ist \texttt{0,1,2}.
+
+Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei
+25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2
+auszugeben, und Seite 0 wegzulassen.
 
 \begin{verbatim}
     "a4_pages": [0, 1, 2]
@@ -5944,8 +6289,18 @@ einf\"{u}gen
 Blattbegr.
 zeich.}{extract.0.printer.show\_border - Blattbegr. zeich.}}\label{extract.0.printer.show_border}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r extract.0.printer.show\_border
-einf\"{u}gen
+Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll.
+Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der
+Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild
+auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre
+Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.
+
+Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem
+Papier. Dadurch wird die Blattbegrenzung gedruckt, daf\"{u}r fehlen dann
+unten ca. 10 mm.
+
+Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die
+Situation verbessert.
 
 \begin{verbatim}
     "show_border": false
@@ -6235,11 +6590,15 @@ Auswahl aus vordefinierten Stilen.
 Text}{extract.0.stringnames.text - Text}}\label{extract.0.stringnames.text}}
 
 Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengef\"{u}gt, dass alle Saiten einen Nanen
-bekommen.
 
-In der Regel reicht es also, die Saitennamen f\"{u}r eine Oktave
-anzugeben.
+\begin{quote}
+\textbf{Hinweis:} Dieses Feld wird bei einer \textbf{offenen} Stimmung
+besonders interpretiert. Siehe auch parameter \texttt{layout.tuning}.
+\end{quote}
+
+Die Liste der Saitennamen wird so oft zusamengef\"{u}gt, dass alle
+Saiten einen Namen bekommen. In der Regel reicht es also, die
+Saitennamen f\"{u}r eine Oktave anzugeben.
 
 \textbf{Beispiel:}
 
@@ -6362,6 +6721,111 @@ von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der
       
 \end{verbatim}
 
+\hypertarget{presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes}{%
+\subsection{\texorpdfstring{\texttt{presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes}
+-
+Z\"{a}hlmarken}{presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes - Z\"{a}hlmarken}}\label{presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes}}
+
+TODO:\marginpar{TODO} Helptext f\"{u}r
+presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes
+einf\"{u}gen
+
+\begin{verbatim}
+    "countnotes": {
+      "cntextleft"  : "{lyrics} {countnote}",
+      "cntextright" : "{countnote} {lyrics}"
+    }
+      
+\end{verbatim}
+
+\hypertarget{presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft}{%
+\subsection{\texorpdfstring{\texttt{presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes.cntextleft}
+- Text rechte
+Z\"{a}hlmarke}{presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes.cntextleft - Text rechte Z\"{a}hlmarke}}\label{presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft}}
+
+Hier kannst du ein Textmuster f\"{u}r die Z\"{a}hlmarken \textbf{links}
+von der Note angegben. Dabei kannst du die entsprechneden Silben aus den
+Liedtexten im Notensysstem (angelegt mit \texttt{w:} Zeilen )
+einf\"{u}gen.
+
+Hierf\"{u}r gibt es auch die Schnelleinstellung
+\texttt{Zählmarken\ mit\ Text}.
+
+\begin{quote}
+\textbf{Hinweis}: in ABC gibt es ja die M\"{o}glichkeit Liedtexte nach
+den Noten einzuf\"{u}gen mit \texttt{W:} (gro\ss ) - Zeilen. Das sind
+die Texte die Zupfnoter \"{u}ber die Konfiguration \texttt{Liedtexte}
+auf dem Blatt positioniert.
+
+Es gibt aber auch Liedtexte, die silbengnau den Noten zugeordnet werden
+as sind \texttt{w:} (klein) - Zeilen innerhalb einer Stimme. Diese Texte
+k\"{o}nnen an die Z\"{a}hlmarken angef\"{u}gt wrerden.
+\end{quote}
+
+Damit kannst du den Rythmus \"{u}ber das ``Sprechen'' unterst\"{u}tzen,
+oder gar eine eigene Rythmussprache (z.b. nach Zoltan-Kodaly) verwenden.
+
+Dabei gibt es die Platzhalter
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{\{countnote\}}
+\item
+  \texttt{\{lyrics\}}
+\end{itemize}
+
+Beispiel: \texttt{\{lyrics\}\ -\ \{countnote\}}
+
+\begin{verbatim}
+    "cntextleft": "{lyrics} {countnote}"
+      
+\end{verbatim}
+
+\hypertarget{presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright}{%
+\subsection{\texorpdfstring{\texttt{presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes.cntextright}
+- Text linke
+Z\"{a}hlmarke}{presets.barnumbers\_countnotes.countnotes\_with\_lyrics.countnotes.cntextright - Text linke Z\"{a}hlmarke}}\label{presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright}}
+
+Hier kannst du ein Textmuster f\"{u}r die Z\"{a}hlmarken \textbf{rechts}
+von der Note angegben. Dabei kannst du die entsprechneden Silben aus den
+Liedtexten im Notensysstem (angelegt mit \texttt{w:} Zeilen )
+einf\"{u}gen.
+
+Hierf\"{u}r gibt es auch die Schnelleinstellung
+\texttt{Zählmarken\ mit\ Text}.
+
+\begin{quote}
+\textbf{Hinweis}: in ABC gibt es ja die M\"{o}glichkeit Liedtexte nach
+den Noten einzuf\"{u}gen mit \texttt{W:} (gro\ss ) - Zeilen. Das sind
+die Texte die Zupfnoter \"{u}ber die Konfiguration \texttt{Liedtexte}
+auf dem Blatt positioniert.
+
+Es gibt aber auch Liedtexte, die silbengnau den Noten zugeordnet werden
+as sind \texttt{w:} (klein) - Zeilen innerhalb einer Stimme. Diese Texte
+k\"{o}nnen an die Z\"{a}hlmarken angef\"{u}gt wrerden.
+\end{quote}
+
+Damit kannst du den Rythmus \"{u}ber das ``Sprechen'' unterst\"{u}tzen,
+oder gar eine eigene Rythmussprache (z.b. nach Zoltan-Kodaly) verwenden.
+
+Dabei gibt es die Platzhalter
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{\{countnote\}}
+\item
+  \texttt{\{lyrics\}}
+\end{itemize}
+
+Beispiel: \texttt{\{countnote\}\ -\ \{lyrics\}}
+
+\begin{verbatim}
+    "cntextright": "{countnote} {lyrics}"
+      
+\end{verbatim}
+
 \hypertarget{presets.notes}{%
 \subsection{\texorpdfstring{\texttt{presets.notes} -
 Seitenbeschriftungen}{presets.notes - Seitenbeschriftungen}}\label{presets.notes}}
@@ -6443,23 +6907,8 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
 Alle
 ..}{presets.notes.T01\_T99 - T01 .. T99 Alle ..}}\label{presets.notes.T01_T99}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T01\_T99
-einf\"{u}gen
-
 \begin{verbatim}
     "T01_T99": {"value": {}}
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_T99.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_T99.value} -
-Wert}{presets.notes.T01\_T99.value - Wert}}\label{presets.notes.T01_T99.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T01\_T99.value
-einf\"{u}gen
-
-\begin{verbatim}
-    "value": {}
       
 \end{verbatim}
 
@@ -6467,8 +6916,21 @@ einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{presets.notes.T01\_number} - T01
 Nummer}{presets.notes.T01\_number - T01 Nummer}}\label{presets.notes.T01_number}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T01\_number
-einf\"{u}gen
+Dies f\"{u}gt Nummer im Notenblatt ein. Damit kannst du deine eigenen
+Ordnungskriterien realiseren.
+
+Das vorgesehene Numernschema setzt sich aus zwei Bl\"{o}cken zusammen
+
+\begin{itemize}
+\tightlist
+\item
+  3 Zeichen f\"{u}r den Urheber, sozusagen die Unterlegnotenmanufaktur
+\item
+  3 Zeichen f\"{u}r eine fortlaufende Nummer. Es ist sinnvoll diese
+  Nummer mit f\"{u}hrenden Nullen zu schreiben.
+\end{itemize}
+
+Beispiel: \texttt{BWL-001} - Bernhard Weichel - Blatt 001
 
 \begin{verbatim}
     "T01_number": {
@@ -6482,316 +6944,35 @@ einf\"{u}gen
       
 \end{verbatim}
 
-\hypertarget{presets.notes.T01_number.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number.value} -
-Wert}{presets.notes.T01\_number.value - Wert}}\label{presets.notes.T01_number.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T01\_number.value
-einf\"{u}gen
-
-\begin{verbatim}
-    "value": {
-      "align" : "l",
-      "pos"   : [410, 17],
-      "style" : "bold",
-      "text"  : "XXX-{{number}}"
-    }
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number.value.align}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number.value.align}
--
-Ausrichtung}{presets.notes.T01\_number.value.align - Ausrichtung}}\label{presets.notes.T01_number.value.align}}
-
-Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
-(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
-Anordnung automatisch errechnet
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{l}: der Text steht links vom Bezugspunkt (und ist daher
-  rechtsb\"{u}ndig)
-\item
-  \texttt{r}: der Text steht rechts vom Bezugspunkt (und ist daher
-  linksb\"{u}ndig)
-\item
-  \texttt{auto}: die Ausrichtung wird automatisch errechnet
-\end{itemize}
-
-\begin{quote}
-\textbf{Hinweis}: Auch beim manuellen Verschieben wird die Anordnung der
-Nummer (links/rechts der Note) ber\"{u}cksichtigt und die Ausrichtung
-(linksb\"{u}ndig/rechtsb\"{u}ndig) entsprechend errechnet. Damit
-k\"{o}nnen die Nummern auch bei unterschiedlicher L\"{a}nge sehr
-pr\"{a}zise positioniert werden.
-\end{quote}
-
-\begin{verbatim}
-    "align": "l"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number.value.pos}
--
-Position}{presets.notes.T01\_number.value.pos - Position}}\label{presets.notes.T01_number.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [410, 17]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number.value.style}
--
-Stil}{presets.notes.T01\_number.value.style - Stil}}\label{presets.notes.T01_number.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "bold"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number.value.text}
--
-Text}{presets.notes.T01\_number.value.text - Text}}\label{presets.notes.T01_number.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": "XXX-{{number}}"
-\end{verbatim}
-\end{itemize}
-
 \hypertarget{presets.notes.T01_number_extract}{%
 \subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract}
 - T01
 Auszug-Nummer}{presets.notes.T01\_number\_extract - T01 Auszug-Nummer}}\label{presets.notes.T01_number_extract}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T01\_number\_extract einf\"{u}gen
+Dies f\"{u}gt eine Kennzeichung des Auszuges am Ender der Nummer ein.
 
-\begin{verbatim}
-    "T01_number_extract": {
-      "value" : {
-        "pos"   : [411, 17],
-        "style" : "bold",
-        "text"  : "{{extract_filename}}"
-      }
-    }
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number_extract.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract.value}
--
-Wert}{presets.notes.T01\_number\_extract.value - Wert}}\label{presets.notes.T01_number_extract.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T01\_number\_extract.value einf\"{u}gen
-
-\begin{verbatim}
-    "value": {
-      "pos"   : [411, 17],
-      "style" : "bold",
-      "text"  : "{{extract_filename}}"
-    }
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number_extract.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract.value.pos}
--
-Position}{presets.notes.T01\_number\_extract.value.pos - Position}}\label{presets.notes.T01_number_extract.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [411, 17]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number_extract.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract.value.style}
--
-Stil}{presets.notes.T01\_number\_extract.value.style - Stil}}\label{presets.notes.T01_number_extract.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "bold"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number_extract.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract.value.text}
--
-Text}{presets.notes.T01\_number\_extract.value.text - Text}}\label{presets.notes.T01_number_extract.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+Ein sinnvolles schema ist:
 
 \begin{itemize}
 \item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+  \texttt{-A} - Sopran Alt - per default Auszug 1
 \item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
+  \texttt{-B} - Tenor Bass - per default Auszug 2
 \item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+  \texttt{-M} - Nur Melodie - am besten Auszug 3 - ist aber nicht per
+  default konfiguriert
 \item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
+  \texttt{-S} - Alle Stimmen - per default Auszug 0; dieser wird in der
+  Regel aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
 \begin{verbatim}
-"text": "{{extract_filename}}"
-\end{verbatim}
-\end{itemize}
-
-\hypertarget{presets.notes.T01_number_extract_value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract\_value}
-- T01 Auszugn Nummer
-Wert}{presets.notes.T01\_number\_extract\_value - T01 Auszugn Nummer Wert}}\label{presets.notes.T01_number_extract_value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T01\_number\_extract\_value einf\"{u}gen
-
-\begin{verbatim}
-    "T01_number_extract_value": {
-      "key"   : "T01_number_extract",
-      "value" : {"text": "{{extract_filename}}"}
-    }
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number_extract_value.key}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract\_value.key}
--
-schl\"{u}ssel}{presets.notes.T01\_number\_extract\_value.key - schl\"{u}ssel}}\label{presets.notes.T01_number_extract_value.key}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T01\_number\_extract\_value.key einf\"{u}gen
-
-\begin{verbatim}
-    "key": "T01_number_extract"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number_extract_value.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract\_value.value}
--
-Wert}{presets.notes.T01\_number\_extract\_value.value - Wert}}\label{presets.notes.T01_number_extract_value.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T01\_number\_extract\_value.value einf\"{u}gen
-
-\begin{verbatim}
-    "value": {"text": "{{extract_filename}}"}
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T01_number_extract_value.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T01\_number\_extract\_value.value.text}
--
-Text}{presets.notes.T01\_number\_extract\_value.value.text - Text}}\label{presets.notes.T01_number_extract_value.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": "{{extract_filename}}"
+"T01_number_extract": {
+  "value" : {
+    "pos"   : [411, 17],
+    "style" : "bold",
+    "text"  : "{{extract_filename}}"
+  }
+}
 \end{verbatim}
 \end{itemize}
 
@@ -6800,8 +6981,8 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 - T02 Copyright
 Musik}{presets.notes.T02\_copyright\_music - T02 Copyright Musik}}\label{presets.notes.T02_copyright_music}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T02\_copyright\_music einf\"{u}gen
+Dies f\"{u}gt einen Copyrightvermerk f\"{u}r die Musik ein. Hier wird
+das Copyright auf die Komposition angegeben.
 
 \begin{verbatim}
     "T02_copyright_music": {
@@ -6810,96 +6991,14 @@ presets.notes.T02\_copyright\_music einf\"{u}gen
       
 \end{verbatim}
 
-\hypertarget{presets.notes.T02_copyright_music.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T02\_copyright\_music.value}
--
-Wert}{presets.notes.T02\_copyright\_music.value - Wert}}\label{presets.notes.T02_copyright_music.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T02\_copyright\_music.value einf\"{u}gen
-
-\begin{verbatim}
-    "value": {"pos": [340, 251], "style": "small", "text": "© 2019\n"}
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T02_copyright_music.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T02\_copyright\_music.value.pos}
--
-Position}{presets.notes.T02\_copyright\_music.value.pos - Position}}\label{presets.notes.T02_copyright_music.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [340, 251]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T02_copyright_music.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T02\_copyright\_music.value.style}
--
-Stil}{presets.notes.T02\_copyright\_music.value.style - Stil}}\label{presets.notes.T02_copyright_music.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "small"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T02_copyright_music.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T02\_copyright\_music.value.text}
--
-Text}{presets.notes.T02\_copyright\_music.value.text - Text}}\label{presets.notes.T02_copyright_music.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": "© 2019\n"
-\end{verbatim}
-\end{itemize}
-
 \hypertarget{presets.notes.T03_copyright_harpnotes}{%
 \subsection{\texorpdfstring{\texttt{presets.notes.T03\_copyright\_harpnotes}
 - T03 Copyright
 Unterlegnoten}{presets.notes.T03\_copyright\_harpnotes - T03 Copyright Unterlegnoten}}\label{presets.notes.T03_copyright_harpnotes}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T03\_copyright\_harpnotes einf\"{u}gen
+Dies f\"{u}gt einen Copyrightvermerk f\"{u}r das Unterlgnotenbild ein.
+Damit reklamierst du ein Copyright f\"{u}r die Umsetzung auf die
+Tischharfe
 
 \begin{verbatim}
     "T03_copyright_harpnotes": {
@@ -6912,100 +7011,14 @@ presets.notes.T03\_copyright\_harpnotes einf\"{u}gen
       
 \end{verbatim}
 
-\hypertarget{presets.notes.T03_copyright_harpnotes.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T03\_copyright\_harpnotes.value}
--
-Wert}{presets.notes.T03\_copyright\_harpnotes.value - Wert}}\label{presets.notes.T03_copyright_harpnotes.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T03\_copyright\_harpnotes.value einf\"{u}gen
-
-\begin{verbatim}
-    "value": {
-      "pos"   : [340, 260],
-      "style" : "small",
-      "text"  : "© 2019 Notenbild: zupfnoter.de"
-    }
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T03_copyright_harpnotes.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T03\_copyright\_harpnotes.value.pos}
--
-Position}{presets.notes.T03\_copyright\_harpnotes.value.pos - Position}}\label{presets.notes.T03_copyright_harpnotes.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [340, 260]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T03_copyright_harpnotes.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T03\_copyright\_harpnotes.value.style}
--
-Stil}{presets.notes.T03\_copyright\_harpnotes.value.style - Stil}}\label{presets.notes.T03_copyright_harpnotes.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "small"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T03_copyright_harpnotes.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T03\_copyright\_harpnotes.value.text}
--
-Text}{presets.notes.T03\_copyright\_harpnotes.value.text - Text}}\label{presets.notes.T03_copyright_harpnotes.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": "© 2019 Notenbild: zupfnoter.de"
-\end{verbatim}
-\end{itemize}
-
 \hypertarget{presets.notes.T04_to_order}{%
 \subsection{\texorpdfstring{\texttt{presets.notes.T04\_to\_order} - T04
 zu beziehen
 bei}{presets.notes.T04\_to\_order - T04 zu beziehen bei}}\label{presets.notes.T04_to_order}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T04\_to\_order
-einf\"{u}gen
+Dies f\"{u}gt eine Notiz ein wo man das Unterlegnotenblatt beziehen
+kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner Weise
+vertrieben werden.
 
 \begin{verbatim}
     "T04_to_order": {
@@ -7014,96 +7027,14 @@ einf\"{u}gen
       
 \end{verbatim}
 
-\hypertarget{presets.notes.T04_to_order.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T04\_to\_order.value}
--
-Wert}{presets.notes.T04\_to\_order.value - Wert}}\label{presets.notes.T04_to_order.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T04\_to\_order.value einf\"{u}gen
-
-\begin{verbatim}
-    "value": {"pos": [340, 242], "style": "small", "text": null}
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T04_to_order.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T04\_to\_order.value.pos}
--
-Position}{presets.notes.T04\_to\_order.value.pos - Position}}\label{presets.notes.T04_to_order.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [340, 242]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T04_to_order.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T04\_to\_order.value.style}
--
-Stil}{presets.notes.T04\_to\_order.value.style - Stil}}\label{presets.notes.T04_to_order.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "small"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T04_to_order.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T04\_to\_order.value.text}
--
-Text}{presets.notes.T04\_to\_order.value.text - Text}}\label{presets.notes.T04_to_order.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": null
-\end{verbatim}
-\end{itemize}
-
 \hypertarget{presets.notes.T05_printed_extracts}{%
 \subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts}
 - T05 verf\"{u}gbare
 Ausz\"{u}ge}{presets.notes.T05\_printed\_extracts - T05 verf\"{u}gbare Ausz\"{u}ge}}\label{presets.notes.T05_printed_extracts}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T05\_printed\_extracts einf\"{u}gen
+Dies f\"{u}gt einen Hinweis im Notenblatt ein, welche Ausz\"{u}ge
+insgesamt zur Verf\"{u}gung stehen. Das hilft festzustellen, ob alle
+verf\"{u}gbaren Stimmen bzw. Ausz\"{u}ge vorliegen.
 
 \begin{verbatim}
     "T05_printed_extracts": {
@@ -7117,134 +7048,14 @@ presets.notes.T05\_printed\_extracts einf\"{u}gen
       
 \end{verbatim}
 
-\hypertarget{presets.notes.T05_printed_extracts.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts.value}
--
-Wert}{presets.notes.T05\_printed\_extracts.value - Wert}}\label{presets.notes.T05_printed_extracts.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T05\_printed\_extracts.value einf\"{u}gen
-
-\begin{verbatim}
-    "value": {
-      "align" : "l",
-      "pos"   : [410, 22],
-      "style" : "smaller",
-      "text"  : "{{printed_extracts}}"
-    }
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T05_printed_extracts.value.align}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts.value.align}
--
-Ausrichtung}{presets.notes.T05\_printed\_extracts.value.align - Ausrichtung}}\label{presets.notes.T05_printed_extracts.value.align}}
-
-Hier kannst du die Anordnung des Textes bezogen auf den Bezugspunkt,
-(z.B. die Note) vorgeben. Wenn dieser Parameter fehlt, wird die
-Anordnung automatisch errechnet
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{l}: der Text steht links vom Bezugspunkt (und ist daher
-  rechtsb\"{u}ndig)
-\item
-  \texttt{r}: der Text steht rechts vom Bezugspunkt (und ist daher
-  linksb\"{u}ndig)
-\item
-  \texttt{auto}: die Ausrichtung wird automatisch errechnet
-\end{itemize}
-
-\begin{quote}
-\textbf{Hinweis}: Auch beim manuellen Verschieben wird die Anordnung der
-Nummer (links/rechts der Note) ber\"{u}cksichtigt und die Ausrichtung
-(linksb\"{u}ndig/rechtsb\"{u}ndig) entsprechend errechnet. Damit
-k\"{o}nnen die Nummern auch bei unterschiedlicher L\"{a}nge sehr
-pr\"{a}zise positioniert werden.
-\end{quote}
-
-\begin{verbatim}
-    "align": "l"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T05_printed_extracts.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts.value.pos}
--
-Position}{presets.notes.T05\_printed\_extracts.value.pos - Position}}\label{presets.notes.T05_printed_extracts.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [410, 22]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T05_printed_extracts.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts.value.style}
--
-Stil}{presets.notes.T05\_printed\_extracts.value.style - Stil}}\label{presets.notes.T05_printed_extracts.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "smaller"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T05_printed_extracts.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T05\_printed\_extracts.value.text}
--
-Text}{presets.notes.T05\_printed\_extracts.value.text - Text}}\label{presets.notes.T05_printed_extracts.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": "{{printed_extracts}}"
-\end{verbatim}
-\end{itemize}
-
 \hypertarget{presets.notes.T06_legend}{%
 \subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend} - T06
 Legende}{presets.notes.T06\_legend - T06 Legende}}\label{presets.notes.T06_legend}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T06\_legend
-einf\"{u}gen
+Hier kannst du eine eigene Legende gestalten. Dadurch wird die von
+Zupfnoter generierte Standard-Legende \"{u}berschrieben.
+
+Die Voreinstellungn entspricht der Standardlegende von Zupfnoter.
 
 \begin{verbatim}
     "T06_legend": {
@@ -7257,99 +7068,13 @@ einf\"{u}gen
       
 \end{verbatim}
 
-\hypertarget{presets.notes.T06_legend.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value} -
-Wert}{presets.notes.T06\_legend.value - Wert}}\label{presets.notes.T06_legend.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T06\_legend.value
-einf\"{u}gen
-
-\begin{verbatim}
-    "value": {
-      "pos"   : [360, 30],
-      "style" : "small",
-      "text"  : "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
-    }
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T06_legend.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.pos}
--
-Position}{presets.notes.T06\_legend.value.pos - Position}}\label{presets.notes.T06_legend.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [360, 30]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T06_legend.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.style}
--
-Stil}{presets.notes.T06\_legend.value.style - Stil}}\label{presets.notes.T06_legend.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "small"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T06_legend.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T06\_legend.value.text}
--
-Text}{presets.notes.T06\_legend.value.text - Text}}\label{presets.notes.T06_legend.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}"
-\end{verbatim}
-\end{itemize}
-
 \hypertarget{presets.notes.T99_do_not_copy}{%
 \subsection{\texorpdfstring{\texttt{presets.notes.T99\_do\_not\_copy} -
 T99 bitte nicht
 kopieren}{presets.notes.T99\_do\_not\_copy - T99 bitte nicht kopieren}}\label{presets.notes.T99_do_not_copy}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T99\_do\_not\_copy
-einf\"{u}gen
+Dies f\"{u}gt eine Notiz ein, die darauf hinweist, dass das Blatt nicht
+ohne Erlaubnis kopiert werden darf.
 
 \begin{verbatim}
     "T99_do_not_copy": {
@@ -7357,89 +7082,6 @@ einf\"{u}gen
     }
       
 \end{verbatim}
-
-\hypertarget{presets.notes.T99_do_not_copy.value}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T99\_do\_not\_copy.value}
--
-Wert}{presets.notes.T99\_do\_not\_copy.value - Wert}}\label{presets.notes.T99_do_not_copy.value}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r
-presets.notes.T99\_do\_not\_copy.value einf\"{u}gen
-
-\begin{verbatim}
-    "value": {"pos": [380, 284], "style": "small_bold", "text": null}
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T99_do_not_copy.value.pos}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T99\_do\_not\_copy.value.pos}
--
-Position}{presets.notes.T99\_do\_not\_copy.value.pos - Position}}\label{presets.notes.T99_do_not_copy.value.pos}}
-
-Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
-Liste von horizontaler / vertikaler Position.
-
-\begin{verbatim}
-    "pos": [380, 284]
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T99_do_not_copy.value.style}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T99\_do\_not\_copy.value.style}
--
-Stil}{presets.notes.T99\_do\_not\_copy.value.style - Stil}}\label{presets.notes.T99_do_not_copy.value.style}}
-
-Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
-Auswahl aus vordefinierten Stilen.
-
-\begin{verbatim}
-    "style": "small_bold"
-      
-\end{verbatim}
-
-\hypertarget{presets.notes.T99_do_not_copy.value.text}{%
-\subsection{\texorpdfstring{\texttt{presets.notes.T99\_do\_not\_copy.value.text}
--
-Text}{presets.notes.T99\_do\_not\_copy.value.text - Text}}\label{presets.notes.T99_do_not_copy.value.text}}
-
-Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
-auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
-
-\begin{itemize}
-\item
-  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
-\item
-  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
-\item
-  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
-\item
-  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
-\item
-  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
-\item
-  \texttt{\{\{o\_key\}\}}: Originaltonart
-\item
-  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
-\item
-  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
-\item
-  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
-  ``extract.*.title'',
-\item
-  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
-  ``extract.*.filenamepart''\},
-\item
-  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
-  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
-  ausgegeben.
-\item
-  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
-  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
-
-\begin{verbatim}
-"text": null
-\end{verbatim}
-\end{itemize}
 
 \hypertarget{produce}{%
 \subsection{\texorpdfstring{\texttt{produce} - PDF f\"{u}r
@@ -7682,8 +7324,6 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \subsection{\texorpdfstring{\texttt{templates.extracts} -
 Ausz\"{u}ge}{templates.extracts - Ausz\"{u}ge}}\label{templates.extracts}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r templates.extracts einf\"{u}gen
-
 \begin{verbatim}
     "extracts": {
       "filenamepart" : "-",
@@ -7697,8 +7337,19 @@ TODO:\marginpar{TODO} Helptext f\"{u}r templates.extracts einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{templates.extracts.filenamepart} -
 Filename-Zusatz}{templates.extracts.filenamepart - Filename-Zusatz}}\label{templates.extracts.filenamepart}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r templates.extracts.filenamepart
-einf\"{u}gen
+Hier kannst du einen Zusatz angeben, um welchen der Filename der
+PDF-Dateien f\"{u}r diesen Auszug erg\"{a}nzt werden soll. Auf diese
+Weise wird jeder Auszug in einer eigenen Datei wiedergegeben.
+
+Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von
+\texttt{extract.0.title} gebildet.
+
+\begin{quote}
+\textbf{Hinweis}: Bitte achte darauf, da\ss  jeder Auszug einen
+eindeutigen Filename-Zusatz oder Titel hat. Sonst werden mehrere
+Ausz\"{u}ge in die gleiche Datei geschrieben (und nur der letzte bleibt
+\"{u}brig).
+\end{quote}
 
 \begin{verbatim}
     "filenamepart": "-"
@@ -7730,13 +7381,26 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
 - T01
 Auszug-Nummer}{templates.extracts.notes.T01\_number\_extract - T01 Auszug-Nummer}}\label{templates.extracts.notes.T01_number_extract}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r
-templates.extracts.notes.T01\_number\_extract einf\"{u}gen
+Dies f\"{u}gt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+
+Ein sinnvolles schema ist:
+
+\begin{itemize}
+\item
+  \texttt{-A} - Sopran Alt - per default Auszug 1
+\item
+  \texttt{-B} - Tenor Bass - per default Auszug 2
+\item
+  \texttt{-M} - Nur Melodie - am besten Auszug 3 - ist aber nicht per
+  default konfiguriert
+\item
+  \texttt{-S} - Alle Stimmen - per default Auszug 0; dieser wird in der
+  Regel aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.
 
 \begin{verbatim}
-    "T01_number_extract": {"text": "{{extract_filename}}"}
-      
+"T01_number_extract": {"text": "{{extract_filename}}"}
 \end{verbatim}
+\end{itemize}
 
 \hypertarget{templates.extracts.notes.T01_number_extract.text}{%
 \subsection{\texorpdfstring{\texttt{templates.extracts.notes.T01\_number\_extract.text}
@@ -7786,9 +7450,6 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \subsection{\texorpdfstring{\texttt{templates.extracts.title} -
 Titel}{templates.extracts.title - Titel}}\label{templates.extracts.title}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r templates.extracts.title
-einf\"{u}gen
-
 \begin{verbatim}
     "title": ""
       
@@ -7798,7 +7459,8 @@ einf\"{u}gen
 \subsection{\texorpdfstring{\texttt{templates.images} -
 Bilder}{templates.images - Bilder}}\label{templates.images}}
 
-TODO:\marginpar{TODO} Helptext f\"{u}r templates.images einf\"{u}gen
+Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen
+sollen.
 
 \begin{verbatim}
     "images": {
@@ -7813,9 +7475,6 @@ TODO:\marginpar{TODO} Helptext f\"{u}r templates.images einf\"{u}gen
 \hypertarget{templates.images.height}{%
 \subsection{\texorpdfstring{\texttt{templates.images.height} -
 Bildh\"{o}he}{templates.images.height - Bildh\"{o}he}}\label{templates.images.height}}
-
-TODO:\marginpar{TODO} Helptext f\"{u}r templates.images.height
-einf\"{u}gen
 
 \begin{verbatim}
     "height": 100

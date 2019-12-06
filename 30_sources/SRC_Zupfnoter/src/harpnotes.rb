@@ -1804,6 +1804,7 @@ module Harpnotes
             'A' => 69, '*A' => 70, 'A#' => 70, 'AIS' => 70, 'AS' => 68, 'AB' => 68,
             'H' => 71, 'B' => 71, 'HB' => 70, 'BB' => 70, '*HB' => 71, '*BB' => 71
         }
+        # add the entries for octaves
         pitches.keys.each do |k|
           v                           = pitches[k]
           pitches[k + ',']            = v - 12

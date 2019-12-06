@@ -9,6 +9,9 @@
 * integrate pdf preview in harpnote preview #281
 * draw white background on annotations #279
 * added experimental packer 3
+* now support Akkordzither #289
+* now support open tuning #289
+* option to attach inline lyrics to countnotes #290 
 
 # 1.12 August 2019
 

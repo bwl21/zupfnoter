@@ -32,7 +32,7 @@ module InitConf
                      # sort within printer
                      :a3_offset, :a4_offset, :a4_pages, # sort within layout
 
-                     :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T05_printed_extracts, :T99_do_not_copy,
+                     :T01_number, :T01_number_extract, :T02_copyright_music, :T03_copyright_harpnotes, :T04_to_order, :T05_printed_extracts, :T06_legend, :T99_do_not_copy,
 
                      "0", "1", "2", "3", "4", "5", "6", :verses, # extracts
                      :cp1, :cp2, :shape, :pos, :hpos, :height, :vpos, :spos, :autopos, :apbase, :text, :style, :marks, # tuplets annotations
@@ -102,7 +102,7 @@ module InitConf
                  },
                  "countnotes_with_lyrics" => {
                      countnotes: {cntextleft: "{lyrics} {countnote}",
-                                  cntextright: "{countnote} {lyrics} "},
+                                  cntextright: "{countnote} {lyrics}"},
                  }
              },
              stdextract:            {}, # this is to get a translation, the values

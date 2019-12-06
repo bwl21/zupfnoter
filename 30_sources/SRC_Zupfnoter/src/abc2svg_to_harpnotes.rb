@@ -378,7 +378,9 @@ module Harpnotes
 
         # transform the individual notes
         duration = _convert_duration(voice_element[:notes].first[:dur])
-
+        if voice_element[:istart] == 1745
+          `debugger`
+        end
         notes = voice_element[:notes].map do |the_note|
           #duration = _convert_duration(the_note[:dur])
 
@@ -690,7 +692,7 @@ module Harpnotes
 
       def _transform_lyrics(voice_element)
         if voice_element[:a_ly]
-          result = voice_element[:a_ly].first[:t].gsub("\n", "-").gsub("_", "")
+          result = voice_element[:a_ly].first[:t].gsub("\n", "-").gsub("_", "") rescue ""
         else
           result = ""
         end

@@ -48,10 +48,11 @@ class ConfDocProvider
   end
 
   def insert (key, markdown)
-    @entries_md[key]   = markdown
+    @entries_md[key.gsub("\\", "")]   = markdown
     ## need to strip the escape characters from key. This suports "$resources". the escape key is introduced
     # by wortsammler (pandoc)
-    @entries_html[key.gsub("\\", "")] = @renderer.render(markdown)
+    # note that we have to replace '-s-' by '#' due to weaknes of redcarped mardown processor
+    @entries_html[key.gsub("\\", "")] = @renderer.render(markdown).gsub("-s-", "#")
   end
 
   def to_json
@@ -106,7 +107,9 @@ $conf_helptext = a.entries_html
 ignore_patterns  = [/^neatjson.*/, /abc_parser.*/, /^extract\.[235].*/, /^defaults.*/, /^templates.*/, /^annotations.*/, /^extract\.[1234]/,
                     /^layout.*/, /^extract\.0$/,  /^presets$/, /^presets\..*$/
 ]
-produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/, /^templates/, /^annotations/, /^presets\.notes/]
+produce_patterns = [/annotations\.vl/, /^templates\.tuplets/, /^extract$/, /^templates/, /^annotations/,
+                    /^presets\.notes/, /^presets\.barnumbers_countnotes\.countnotes_with_lyrics\..*/]
+cleanup_patterns = [/presets\.notes.*\.value/, /presets\.notes.*\.T01_number_extract_value\.*/]
 extra_keys       = ['extract.0.notebound.minc', 'extract.0.notebound.minc.x.minc_f', "extract.0.notebound.tuplet"]
 
 locale = JSON.parse(File.read('../public/locale/de-de.json'))
@@ -116,7 +119,8 @@ $conf.push(InitConf.init_conf.stringify_keys)
 
 ignore_keys  = $conf.keys.select {|k| ignore_patterns.select {|ik| k.match(ik)}.count > 0}
 produce_keys = $conf.keys.select {|k| produce_patterns.select {|ik| k.match(ik)}.count > 0}
-show_keys    = ($conf.keys - ignore_keys + produce_keys + extra_keys).uniq.sort_by {|k| k.gsub('templates', 'extract.0')}
+cleanup_keys = $conf.keys.select {|k| cleanup_patterns.select {|ik| k.match(ik)}.count > 0}
+show_keys    = ($conf.keys - ignore_keys + produce_keys + extra_keys - cleanup_keys).uniq.sort_by {|k| k.gsub('templates', 'extract.0')}
 
 mdhelp = []
 show_keys.sort.each do |key|
@@ -130,13 +134,12 @@ show_keys.sort.each do |key|
 
   #\\index{#{keyparts.last.gsub("_", "-")}}\\index{#{keyparts.join(",").gsub("_", "-")}}
 
-  require 'pry'
-
+  # note that we have to replace '-s-' by '#' due to weaknes of redcarped mardown processor
   result   = %Q{
 
 ## `#{show_key}` - #{locale['phrases'][key.split(".").last]} {##{show_key}}
 
-  #{helptext}
+  #{helptext.gsub('-s-', '#')}
 
   #{get_example($conf, key) rescue "... kein Beispiel verfügbar ..."}
   }

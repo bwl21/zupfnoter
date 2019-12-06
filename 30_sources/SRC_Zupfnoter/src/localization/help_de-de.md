@@ -61,7 +61,7 @@ besonders bei mehrstimmigen Sätzen sinnvoll.
 `extract.0` spezifiziert den Auszug 0; `extract.1` spezifiziert den
 Auszug 1 usw.
 
-## extract.0.filenamepart
+## filenamepart
 
 Hier kannst du einen Zusatz angeben, um welchen der Filename der
 PDF-Dateien für diesen Auszug ergänzt werden soll. Auf diese Weise wird
@@ -183,6 +183,12 @@ ausgegeben werden sollen.
 Hier kannst du eine Liste der Stimmen angeben, die Taktnummern bekommen
 sollen.
 
+## extract.0.chords
+
+Hier kannst du die Darstellung von Akkordsymbolen einstellen.
+Akkordsymbole werden aus den Akkorden im ABC-code abgeleitet. Diese
+Funktion ist in erster Linie für Akkordzithern gedacht.
+
 ## extract.0.countnotes
 
 Hier kannst du angeben, ob und wie Zählmarken in deinem
@@ -207,6 +213,24 @@ einstellen.
 >     berechet, dass die Zählmarke gegenüber der eingehenden Flusslinie
 >     steht.
 
+## apanchor
+
+Hier kannst du die vertikale Verankerung der eines notenbezogenen
+Objektes an der Note einstellen.
+
+-   `center`: das Objekt wird an der Mitte der Note verankert
+-   `box`: das Objekt wird am unteren Rand der Note verankert
+
+## apbase
+
+Hier kannst du die Grundlage für die automatische Positionierung von
+notenbezogenen Objekten einstellen.
+
+Es werden zwei Werte erwartet: horizontal, vertikal.
+
+-   Positive Werte schieben das Objekt **weiter** von der Note weg.
+-   Negative Werte schieben das Objekt **näher** an die Note heran.
+
 ## countnotes.apbase
 
 Hier kannst du die Grundlage für die automatische Positionierung von
@@ -230,6 +254,60 @@ Es werden zwei Werte erwartet: horizontal, vertikal.
 
 Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen
 angeben, die Zählmarken bekommen sollen.
+
+## countnotes.cntextleft
+
+Hier kannst du ein Textmuster für die Zählmarken **links** von der Note
+angegben. Dabei kannst du die entsprechneden Silben aus den Liedtexten
+im Notensysstem (angelegt mit `w:` Zeilen ) einfügen.
+
+Hierfür gibt es auch die Schnelleinstellung `Zählmarken mit Text`.
+
+> **Hinweis**: in ABC gibt es ja die Möglichkeit Liedtexte nach den
+> Noten einzufügen mit `W:` (groß) - Zeilen. Das sind die Texte die
+> Zupfnoter über die Konfiguration `Liedtexte` auf dem Blatt
+> positioniert.
+>
+> Es gibt aber auch Liedtexte, die silbengnau den Noten zugeordnet
+> werden as sind `w:` (klein) - Zeilen innerhalb einer Stimme. Diese
+> Texte können an die Zählmarken angefügt wrerden.
+
+Damit kannst du den Rythmus über das "Sprechen" unterstützen, oder gar
+eine eigene Rythmussprache (z.b. nach Zoltan-Kodaly) verwenden.
+
+Dabei gibt es die Platzhalter
+
+-   `{countnote}`
+-   `{lyrics}`
+
+Beispiel: `{lyrics} - {countnote}`
+
+## countnotes.cntextright
+
+Hier kannst du ein Textmuster für die Zählmarken **rechts** von der Note
+angegben. Dabei kannst du die entsprechneden Silben aus den Liedtexten
+im Notensysstem (angelegt mit `w:` Zeilen ) einfügen.
+
+Hierfür gibt es auch die Schnelleinstellung `Zählmarken mit Text`.
+
+> **Hinweis**: in ABC gibt es ja die Möglichkeit Liedtexte nach den
+> Noten einzufügen mit `W:` (groß) - Zeilen. Das sind die Texte die
+> Zupfnoter über die Konfiguration `Liedtexte` auf dem Blatt
+> positioniert.
+>
+> Es gibt aber auch Liedtexte, die silbengnau den Noten zugeordnet
+> werden as sind `w:` (klein) - Zeilen innerhalb einer Stimme. Diese
+> Texte können an die Zählmarken angefügt wrerden.
+
+Damit kannst du den Rythmus über das "Sprechen" unterstützen, oder gar
+eine eigene Rythmussprache (z.b. nach Zoltan-Kodaly) verwenden.
+
+Dabei gibt es die Platzhalter
+
+-   `{countnote}`
+-   `{lyrics}`
+
+Beispiel: `{countnote} - {lyrics}`
 
 ## extract.0.flowlines
 
@@ -280,6 +358,11 @@ Es gibt folgende Einstellunge:
     e
 -   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
     einer G-Bass-Saite
+
+## images
+
+Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen
+sollen.
 
 ## imagename
 
@@ -349,6 +432,11 @@ einstellen. Der wert wird in mm gerechnet.
 
 **Hinweis:** wenn du den Wert "0" angibst, wird die Sprunglinie komplett
 gezeichnet.
+
+## layout.DRAWING\_AREA\_SIZE
+
+Hier gibst du die Größe der Zeichenfläche an. Die Größe wird als
+*breite*, *höhe* angegeben.
 
 ## layout.limit\_a3
 
@@ -578,10 +666,10 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 > spezifische Verwendung hervorzuheben z.B. `notes.T_Copyright`. Das ist
 > allerdings nur in der Textansicht möglich.
 
-## notes.0.T01\_number
+## T01\_number
 
-Dieses Template fügt eine Nummer im Notenblatt ein. Damit kannst du
-deine eigenen Ordnungskriterien realiseren.
+Dies fügt Nummer im Notenblatt ein. Damit kannst du deine eigenen
+Ordnungskriterien realiseren.
 
 Das vorgesehene Numernschema setzt sich aus zwei Blöcken zusammen
 
@@ -593,8 +681,7 @@ Beispiel: `BWL-001` - Bernhard Weichel - Blatt 001
 
 ## notes.T01\_number\_extract
 
-Dieses Template fügt zwei Zeichem am Ende der Nummer an. Damit kann man
-den jeweiligen Auszug kennzeichen.
+Dies fügt eine Kennzeichung des Auszuges am Ender der Nummer ein.
 
 Ein sinnvolles schema ist:
 
@@ -607,25 +694,37 @@ Ein sinnvolles schema ist:
 
 ## notes.T02\_copyright\_music
 
-Dieses Template fügt einen Copyrightvermerk für die Musik ein. Hier wird
-das Copyright auf die Komposition angegeben.
+Dies fügt einen Copyrightvermerk für die Musik ein. Hier wird das
+Copyright auf die Komposition angegeben.
 
 ## notes.T03\_copyright\_harpnotes
 
-Dieses Template fügt einen Copyrightvermerk für das Unterlgnotenbild
-ein. Damit reklamierst du ein Copyright für die Umsetzung auf die
-Tischharfe
+Dies fügt einen Copyrightvermerk für das Unterlgnotenbild ein. Damit
+reklamierst du ein Copyright für die Umsetzung auf die Tischharfe
 
 ## notes.T04\_to\_order
 
-Dieses Template fügt eine Notiz ein wo man das Unterlegnotenblatt
-beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner
-Weise vertrieben werden.
+Dies fügt eine Notiz ein wo man das Unterlegnotenblatt beziehen kann.
+Das ist sinnvoll, wenn die Unterlegoten in irgendeiner Weise vertrieben
+werden.
 
-## notes.T09\_do\_not\_copy
+## notes.T05\_printed\_extracts
 
-Dieses Template fügt eine Notiz ein, die darauf hinweist, dass das Blatt
-nicht ohne Erlaubnis kopiert werden darf.
+Dies fügt einen Hinweis im Notenblatt ein, welche Auszüge insgesamt zur
+Verfügung stehen. Das hilft festzustellen, ob alle verfügbaren Stimmen
+bzw. Auszüge vorliegen.
+
+## T06\_legend
+
+Hier kannst du eine eigene Legende gestalten. Dadurch wird die von
+Zupfnoter generierte Standard-Legende überschrieben.
+
+Die Voreinstellungn entspricht der Standardlegende von Zupfnoter.
+
+## notes.T99\_do\_not\_copy
+
+Dies fügt eine Notiz ein, die darauf hinweist, dass das Blatt nicht ohne
+Erlaubnis kopiert werden darf.
 
 ## notes.0.pos
 
@@ -833,10 +932,13 @@ den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.
 ## stringnames.text
 
 Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.
-Die Liste wird so oft zusamengefügt, dass alle Saiten einen Nanen
-bekommen.
 
-In der Regel reicht es also, die Saitennamen für eine Oktave anzugeben.
+> **Hinweis:** Dieses Feld wird bei einer **offenen** Stimmung besonders
+> interpretiert. Siehe auch parameter `layout.tuning`.
+
+Die Liste der Saitennamen wird so oft zusamengefügt, dass alle Saiten
+einen Namen bekommen. In der Regel reicht es also, die Saitennamen für
+eine Oktave anzugeben.
 
 **Beispiel:**
 
@@ -877,6 +979,40 @@ der in diesem Parameter angegebenen Name zum Speichern verwendet
 
 Hier kannst du einen informativen Titel für die Vorlage angeben. Damit
 kannst du die Vorlage identifizieren.
+
+## tuning
+
+Hier kannst du einstellen, ob dein Instrument umgestimmt wurde. Diese
+Umstimmung erfolgt entweder durch verstimmung der Saiten oder durch
+umlegen einer Klappe (z.b. bei Okon-Harfe). Es gibt zwei Einträge
+
+**feste stimmung: `fixed`**
+
+Mit dieser Einstellung ist die Stimmung des Instrumentes fest
+vorgegegeben.
+
+**offene Stimmung: `open`**
+
+Wenn der Parameter `tuning` auf den Wert `offen` gesetzt ist, wird die
+Stimmung der Saiten aus den Saitennamen abgeleitet.
+
+Dabei gelten folgende Regeln.
+
+-   `C,` `C` `c` `c'` spannt vier Oktaven auf
+
+-   Saitennamen sind:
+
+    -   `C *C C-s- CIS`
+    -   `D *D D-s- DIS DES DB`
+    -   `E EB ES`
+    -   `F  *F F-s- FIS`
+    -   `G *G G-s- GIS GES GB`
+    -   `A *A A-s-  AIS AS AB`
+    -   `H B HB BB *HB *BB`
+
+-   ein nachgestelltes `-s-` bzw' `b` stellt ein Vorzeichen dar
+-   ein vorangestelltes `*` markiert eine Klappe, die Saite gilt dann
+    auch als einen Halbton höher gestimmt.
 
 ## tuplet
 
@@ -1007,6 +1143,14 @@ Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.
 
 Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.
 
+## X\_OFFSET
+
+Hier gibst du an, wie weit das Druckbild auf dem A3-Blatt von links nach
+rechts geschoben werden soll.
+
+> Hinweis: es gibt zusätzliche Möglichkeiten, das Blatt auf dem Drucker
+> zu verschieben `extract.0.printer`
+
 ## \$resources
 
 Hier siehst du eine Liste alle Bilder, die du geladen hast.
@@ -1020,3 +1164,21 @@ Hier siehst du eine Liste alle Bilder, die du geladen hast.
 > **Hinweis**: Du kannst Bilder im JPG-Format hinzufügen über das Menü
 > `Datei / Import`. Alternativ kannst du eine JPG Datei in Zupfnoter
 > hineinziehen.
+
+## T01\_T99
+
+## T01\_number
+
+<!-- here we have some dummy entries-->
+
+## templates.extracts
+
+## templates.extracts.title
+
+## templates. extracts.filenamepart
+
+## templates.images.height
+
+## annotations.vr
+
+## annotations.vt

@@ -27170,7 +27170,7 @@ Opal.modules["harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $send = Opal.send, $truthy = Opal.truthy, $hash2 = Opal.hash2, $gvars = Opal.gvars, $hash = Opal.hash, $range = Opal.range;
 
-  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$-', '$instance_variables', '$instance_variable_get', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$uniq', '$flatten', '$measure_start', '$proxy_note', '$alias_method', '$each', '$beat=', '$get_proxy_object', '$variant', '$sheet_drawable', '$prev_playable', '$prev_playable=', '$next_playable', '$next_playable=', '$!', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$expanded_beat_maps', '$select', '$left', '$right', '$product', '$min_by', '$abs', '$new', '$max', '$keys', '$last_beat', '$private', '$inject', '$index', '$/', '$time', '$floor', '$>', '$start_pos', '$error', '$tuplet', '$[]=', '$index=', '$==', '$reset', '$_check1', '$center', '$size', '$conf_key', '$origin', '$_rect_overlap?', '$empty?', '$warning', '$t', '$count', '$push', '$shapes', '$get', '$clone', '$dotted?', '$dotted', '$gsub', '$length', '$strip', '$*', '$to_f', '$font_size=', '$font_style=', '$get_text_dimensions', '$split', '$match', '$include', '$lambda', '$===', '$_instrument_zipino', '$_instrument_saitenspiel', '$_instrument_okon', '$_instrument_akkordzither', '$join', '$tap', '$Vector2d', '$conf_key=', '$conf_value=', '$draginfo=', '$line_width=', '$%', '$_layout_prepare_options', '$meta_data', '$layout_debug_grid', '$layout_images', '$_layout_voices', '$_layout_synclines', '$_layout_sheetmarks', '$_layout_sortmark', '$_layout_instrument', '$_layout_cutmarks', '$_layout_legend', '$_layout_zn_annotations', '$_layout_lyrics', '$_layout_sheet_annotations', '$printer_config=', '$pop', '$strict=', '$<=>', '$<', '$_layout_voice_handle_visibility', '$_layout_voice_playables', '$benchmark', '$layout_barnumbers_countnotes', '$_layout_voice_flowlines', '$_layout_voice_subflowlines', '$_layout_voice_chordsymbols', '$_layout_voice_tuplets', '$_layout_voice_slurs', '$_layout_voice_gotos', '$color=', '$_laoyut_voice_repeatmarks', '$_layout_voice_notebound_annotations', '$create_annotation_background_rect', '$decorations', '$each_with_index', '$znid', '$round', '$-@', '$policy', '$to', '$from', '$<=', '$next_pitch', '$prev_pitch', '$to_s', '$to_a', '$_mk_pitches_table', '$start_with?', '$upcase', '$_mkflaps_pitches', '$_mk_pitch_to_xpos', '$call', '$flaps_y', '$to_i', '$position', '$style', '$companion', '$text', '$include?', '$make_repeatsign_annotation', '$debug', '$compute_vertical_cut', '$make_path_from_jumpline', '$tie_end?', '$make_slur_path', '$notes', '$compute_color_by_variant_no', '$message', '$tie_start?', '$slur_starts', '$slur_ends', '$tuplet_start?', '$tuplet_end?', '$make_annotated_bezier_path', '$visible', '$first_in_part?', '$layout_playable', '$proxy', '$make_decorations_per_playable', '$more_conf_keys', '$visible=', '$resolve_placeholder', '$align=', '$harpnote_options', '$squeeze', '$delete', '$strftime', '$now', '$checksum', '$ord', '$build_synch_points', '$make_sheetmark_path', '$compute_beat_compression', '$values', '$min', '$synched_notes', '$voices', '$layout_voice', '$_get_options_by_voice', '$loglevel?', '$check_annotations', '$get_print_options', '$initialize', '$set_instrument_handlers', '$&', '$size_with_dot', '$reverse', '$compute_note_position', '$!=', '$count_note', '$lyrics', '$shift_eu=', '$measure_start?', '$measure_count', '$align', '$shift_eu?', '$compute_beat_compression_1', '$compute_beat_compression_2', '$compute_beat_compression_3', '$compute_beat_compression_10', '$compute_beat_compression_0', '$group_by', '$sort', '$beat_maps', '$duration_to_id', '$get_minc_factor', '$notes_on_beat', '$>=', '$next_first_in_part', '$sort_by', '$layout_note', '$layout_accord', '$layout_pause', '$convert_pitch_to_xpos', '$compute_ellipse_properties_from_note', '$layout_note_shift', '$sheet_drawable=', '$layout_note_flags', '$times', '$odd?', '$check_duration', '$shift', '$unshift', '$x', '$y', '$normalize', '$to_sym', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular', '$scan']);
+  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$-', '$instance_variables', '$instance_variable_get', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$uniq', '$flatten', '$measure_start', '$proxy_note', '$alias_method', '$each', '$beat=', '$get_proxy_object', '$variant', '$sheet_drawable', '$prev_playable', '$prev_playable=', '$next_playable', '$next_playable=', '$!', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$expanded_beat_maps', '$select', '$left', '$right', '$product', '$min_by', '$abs', '$new', '$max', '$keys', '$last_beat', '$private', '$inject', '$index', '$/', '$time', '$floor', '$>', '$start_pos', '$error', '$tuplet', '$[]=', '$index=', '$==', '$reset', '$_check1', '$center', '$size', '$conf_key', '$origin', '$_rect_overlap?', '$empty?', '$warning', '$t', '$count', '$push', '$shapes', '$get', '$clone', '$dotted?', '$dotted', '$gsub', '$length', '$strip', '$*', '$to_f', '$font_size=', '$font_style=', '$get_text_dimensions', '$split', '$match', '$include', '$lambda', '$===', '$_instrument_zipino', '$_instrument_saitenspiel', '$_instrument_okon', '$_instrument_akkordzither', '$join', '$tap', '$Vector2d', '$conf_key=', '$conf_value=', '$draginfo=', '$line_width=', '$%', '$_layout_prepare_options', '$meta_data', '$layout_debug_grid', '$layout_images', '$_layout_voices', '$_layout_synclines', '$_layout_sheetmarks', '$_layout_sortmark', '$_layout_instrument', '$_layout_cutmarks', '$_layout_legend', '$_layout_zn_annotations', '$_layout_lyrics', '$_layout_sheet_annotations', '$printer_config=', '$pop', '$strict=', '$<=>', '$<', '$_layout_voice_handle_visibility', '$_layout_voice_playables', '$benchmark', '$layout_barnumbers_countnotes', '$_layout_voice_flowlines', '$_layout_voice_subflowlines', '$_layout_voice_chordsymbols', '$_layout_voice_tuplets', '$_layout_voice_slurs', '$_layout_voice_gotos', '$color=', '$_laoyut_voice_repeatmarks', '$_layout_voice_notebound_annotations', '$create_annotation_background_rect', '$decorations', '$each_with_index', '$znid', '$round', '$-@', '$policy', '$to', '$from', '$<=', '$next_pitch', '$prev_pitch', '$to_s', '$to_a', '$_mk_pitches_table', '$start_with?', '$downcase', '$_mkflaps_pitches', '$_mk_pitch_to_xpos', '$call', '$flaps_y', '$to_i', '$position', '$style', '$companion', '$text', '$include?', '$make_repeatsign_annotation', '$debug', '$compute_vertical_cut', '$make_path_from_jumpline', '$tie_end?', '$make_slur_path', '$notes', '$compute_color_by_variant_no', '$message', '$tie_start?', '$slur_starts', '$slur_ends', '$tuplet_start?', '$tuplet_end?', '$make_annotated_bezier_path', '$visible', '$first_in_part?', '$layout_playable', '$proxy', '$make_decorations_per_playable', '$more_conf_keys', '$visible=', '$resolve_placeholder', '$align=', '$harpnote_options', '$squeeze', '$delete', '$strftime', '$now', '$checksum', '$upcase', '$ord', '$build_synch_points', '$make_sheetmark_path', '$compute_beat_compression', '$values', '$min', '$synched_notes', '$voices', '$layout_voice', '$_get_options_by_voice', '$loglevel?', '$check_annotations', '$get_print_options', '$initialize', '$set_instrument_handlers', '$&', '$size_with_dot', '$reverse', '$compute_note_position', '$!=', '$count_note', '$lyrics', '$shift_eu=', '$measure_start?', '$measure_count', '$align', '$shift_eu?', '$compute_beat_compression_1', '$compute_beat_compression_2', '$compute_beat_compression_3', '$compute_beat_compression_10', '$compute_beat_compression_0', '$group_by', '$sort', '$beat_maps', '$duration_to_id', '$get_minc_factor', '$notes_on_beat', '$>=', '$next_first_in_part', '$sort_by', '$layout_note', '$layout_accord', '$layout_pause', '$convert_pitch_to_xpos', '$compute_ellipse_properties_from_note', '$layout_note_shift', '$sheet_drawable=', '$layout_note_flags', '$times', '$odd?', '$check_duration', '$shift', '$unshift', '$x', '$y', '$normalize', '$to_sym', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular', '$scan']);
   return (function($base, $parent_nesting) {
     var self = $module($base, 'Harpnotes');
 
@@ -29078,14 +29078,14 @@ Opal.modules["harpnotes"] = function(Opal) {
             } else {
               return nil
             };}, $$146.$$s = self, $$146.$$arity = 2, $$146));
-          return [string_by_pitch, flap_by_pitch];
+          return [string_by_pitch, flap_by_pitch.$keys()];
         }, $Default__mkflaps_pitches$145.$$arity = 1);
         
         Opal.def(self, '$_mk_pitches_table', $Default__mk_pitches_table$147 = function $$_mk_pitches_table() {
           var $$148, self = this, pitches = nil;
 
           
-          pitches = $hash2(["c", "*c", "c#", "cis", "d", "*d", "d#", "dis", "des", "db", "e", "eb", "es", "f", "*f", "f#", "fis", "g", "*g", "g#", "gis", "ges", "gb", "a", "*a", "a#", "ais", "as", "ab", "h", "b", "hb", "bb", "*hb", "*bb"], {"c": 60, "*c": 61, "c#": 61, "cis": 61, "d": 62, "*d": 63, "d#": 63, "dis": 63, "des": 61, "db": 61, "e": 64, "eb": 63, "es": 63, "f": 65, "*f": 66, "f#": 66, "fis": 66, "g": 67, "*g": 68, "g#": 68, "gis": 68, "ges": 66, "gb": 66, "a": 69, "*a": 70, "a#": 70, "ais": 70, "as": 68, "ab": 68, "h": 71, "b": 71, "hb": 70, "bb": 70, "*hb": 71, "*bb": 71});
+          pitches = $hash2(["C", "*C", "C#", "CIS", "D", "*D", "D#", "DIS", "DES", "DB", "E", "EB", "ES", "F", "*F", "F#", "FIS", "G", "*G", "G#", "GIS", "GES", "GB", "A", "*A", "A#", "AIS", "AS", "AB", "H", "B", "HB", "BB", "*HB", "*BB"], {"C": 60, "*C": 61, "C#": 61, "CIS": 61, "D": 62, "*D": 63, "D#": 63, "DIS": 63, "DES": 61, "DB": 61, "E": 64, "EB": 63, "ES": 63, "F": 65, "*F": 66, "F#": 66, "FIS": 66, "G": 67, "*G": 68, "G#": 68, "GIS": 68, "GES": 66, "GB": 66, "A": 69, "*A": 70, "A#": 70, "AIS": 70, "AS": 68, "AB": 68, "H": 71, "B": 71, "HB": 70, "BB": 70, "*HB": 71, "*BB": 71});
           $send(pitches.$keys(), 'each', [], ($$148 = function(k){var self = $$148.$$s || this, v = nil, $writer = nil;
 
           
@@ -29095,10 +29095,6 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             v = pitches['$[]'](k);
             
-            $writer = [k.$upcase(), $rb_minus(v, 12)];
-            $send(pitches, '[]=', Opal.to_a($writer));
-            $writer[$rb_minus($writer["length"], 1)];;
-            
             $writer = [$rb_plus(k, ","), $rb_minus(v, 12)];
             $send(pitches, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
@@ -29107,11 +29103,19 @@ Opal.modules["harpnotes"] = function(Opal) {
             $send(pitches, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
             
-            $writer = [$rb_plus(k.$upcase(), ","), $rb_minus(v, 24)];
+            $writer = [k.$downcase(), $rb_plus(v, 12)];
             $send(pitches, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
             
-            $writer = [$rb_plus(k.$upcase(), ",,"), $rb_minus(v, 36)];
+            $writer = [$rb_plus(k.$downcase(), ","), v];
+            $send(pitches, '[]=', Opal.to_a($writer));
+            $writer[$rb_minus($writer["length"], 1)];;
+            
+            $writer = [$rb_plus(k.$downcase(), ",,"), $rb_minus(v, 12)];
+            $send(pitches, '[]=', Opal.to_a($writer));
+            $writer[$rb_minus($writer["length"], 1)];;
+            
+            $writer = [$rb_plus(k.$downcase(), ",,,"), $rb_minus(v, 24)];
             $send(pitches, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
             
@@ -29123,7 +29127,19 @@ Opal.modules["harpnotes"] = function(Opal) {
             $send(pitches, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
             
-            $writer = [$rb_plus(k, "''''"), $rb_plus(v, 36)];
+            $writer = [$rb_plus(k, "'''"), $rb_plus(v, 36)];
+            $send(pitches, '[]=', Opal.to_a($writer));
+            $writer[$rb_minus($writer["length"], 1)];;
+            
+            $writer = [$rb_plus(k.$downcase(), "'"), $rb_plus(v, 24)];
+            $send(pitches, '[]=', Opal.to_a($writer));
+            $writer[$rb_minus($writer["length"], 1)];;
+            
+            $writer = [$rb_plus(k.$downcase(), "''"), $rb_plus(v, 36)];
+            $send(pitches, '[]=', Opal.to_a($writer));
+            $writer[$rb_minus($writer["length"], 1)];;
+            
+            $writer = [$rb_plus(k.$downcase(), "'''"), $rb_plus(v, 48)];
             $send(pitches, '[]=', Opal.to_a($writer));
             return $writer[$rb_minus($writer["length"], 1)];;}, $$148.$$s = self, $$148.$$arity = 1, $$148));
           return pitches;
@@ -29177,7 +29193,7 @@ Opal.modules["harpnotes"] = function(Opal) {
         }, $Default__mk_pitch_to_xpos$152.$$arity = 4);
         
         Opal.def(self, '$_instrument_okon', $Default__instrument_okon$154 = function $$_instrument_okon(pitchoffset, xoffset, xspacing, print_variant_nr) {
-          var $a, $b, $$155, $$156, $$157, self = this, flaps = nil, pitches = nil, $case = nil, string_by_pitch = nil, flap_by_pitch = nil, flaps_y = nil, flaps_by_pitch = nil;
+          var $a, $b, $$155, $$156, $$157, self = this, flaps = nil, pitches = nil, $case = nil, string_by_pitch = nil, flaps_by_pitch = nil, flaps_y = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -29199,35 +29215,35 @@ Opal.modules["harpnotes"] = function(Opal) {
           flaps = "      59                   71                   83";}
           else if ("okon-d"['$===']($case)) {
           pitches = "55 57 59 61 62 64 66 67 69 71 73 74 76 78 79 81 83 85";
-          flaps = "      59 61       66       71 73       78       83";}
-          else if ("okon-open"['$===']($case)) {
-          $b = self.$_mkflaps_pitches($gvars.conf['$[]']("" + "extract." + (print_variant_nr) + ".stringnames.text")), $a = Opal.to_ary($b), (string_by_pitch = ($a[0] == null ? nil : $a[0])), (flap_by_pitch = ($a[1] == null ? nil : $a[1])), $b;
-          self.pitch_to_xpos = self.$_mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch);};
-          flaps_y = $hash(59, 7, 61, 7, 66, 7, 71, 7, 73, 20, 78, 65, 83, 110);
-          string_by_pitch = $$($nesting, 'Hash')['$[]']($send(pitches.$split(" ").$each_with_index(), 'map', [], ($$155 = function(i, k){var self = $$155.$$s || this;
-
-          
-            
-            if (i == null) {
-              i = nil;
-            };
-            
-            if (k == null) {
-              k = nil;
-            };
-            return [i.$to_i(), k];}, $$155.$$s = self, $$155.$$arity = 2, $$155)));
-          flaps_by_pitch = $send(flaps.$split(" "), 'map', [], ($$156 = function(i){var self = $$156.$$s || this;
-
-          
-            
-            if (i == null) {
-              i = nil;
-            };
-            return i.$to_i();}, $$156.$$s = self, $$156.$$arity = 1, $$156));
-          if ($gvars.conf['$[]']("layout.instrument")['$==']("okon-open")) {
+          flaps = "      59 61       66       71 73       78       83";};
+          string_by_pitch = $hash2([], {});
+          if ("open"['$==']($gvars.conf['$[]']("" + "extract." + (print_variant_nr) + ".layout.tuning"))) {
+            $b = self.$_mkflaps_pitches($gvars.conf['$[]']("" + "extract." + (print_variant_nr) + ".stringnames.text")), $a = Opal.to_ary($b), (string_by_pitch = ($a[0] == null ? nil : $a[0])), (flaps_by_pitch = ($a[1] == null ? nil : $a[1])), $b
           } else {
-            self.pitch_to_xpos = self.$_mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+            
+            string_by_pitch = $$($nesting, 'Hash')['$[]']($send(pitches.$split(" ").$each_with_index(), 'map', [], ($$155 = function(i, k){var self = $$155.$$s || this;
+
+            
+              
+              if (i == null) {
+                i = nil;
+              };
+              
+              if (k == null) {
+                k = nil;
+              };
+              return [i.$to_i(), k];}, $$155.$$s = self, $$155.$$arity = 2, $$155)));
+            flaps_by_pitch = $send(flaps.$split(" "), 'map', [], ($$156 = function(i){var self = $$156.$$s || this;
+
+            
+              
+              if (i == null) {
+                i = nil;
+              };
+              return i.$to_i();}, $$156.$$s = self, $$156.$$arity = 1, $$156));
           };
+          self.pitch_to_xpos = self.$_mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch);
+          flaps_y = $hash(59, 7, 61, 7, 66, 7, 71, 7, 73, 20, 78, 65, 83, 110);
           self.bottom_annotation_positions = [[xoffset, 290], [$rb_plus(xoffset, 200), 290], [$rb_plus(xoffset, 270), 290]];
           return (self.draw_instrument = $send(self, 'lambda', [], ($$157 = function(){var self = $$157.$$s || this, $$158, result = nil, res = nil, $writer = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
@@ -29407,7 +29423,6 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (annotation == null) {
               annotation = nil;
             };
-            debugger;
             notebound_pos_key = $rb_plus(annotation.$conf_key(), ".pos");
             show_from_config = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".show"));
             show = (function() {if ($truthy(show_from_config['$nil?']())) {
@@ -29528,7 +29543,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($a = goto$.$policy()['$[]']("from_anchor")) ? $a : "after");
             to_anchor = ($truthy($a = goto$.$policy()['$[]']("to_anchor")) ? $a : "before");
             vertical_anchor = ($truthy($a = goto$.$policy()['$[]']("vertical_anchor")) ? $a : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2021));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2023));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -33757,6 +33772,8 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           decorations = self.$_parse_decorations(voice_element);
           self.$_transform_measure_start(voice_element);
           duration = self.$_convert_duration(voice_element['$[]']("notes").$first()['$[]']("dur"));
+          if (voice_element['$[]']("istart")['$=='](1745)) {
+            debugger};
           notes = $send(voice_element['$[]']("notes"), 'map', [], ($$27 = function(the_note){var self = $$27.$$s || this, result = nil, $writer = nil;
             if (self.measure_count == null) self.measure_count = nil;
             if (self.variant_no == null) self.variant_no = nil;
@@ -34267,7 +34284,15 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
 
           
           if ($truthy(voice_element['$[]']("a_ly"))) {
-            result = voice_element['$[]']("a_ly").$first()['$[]']("t").$gsub("\n", "-").$gsub("_", "")
+            result = (function() { try {
+              return voice_element['$[]']("a_ly").$first()['$[]']("t").$gsub("\n", "-").$gsub("_", "")
+            } catch ($err) {
+              if (Opal.rescue($err, [$$($nesting, 'StandardError')])) {
+                try {
+                  return ""
+                } finally { Opal.pop_exception() }
+              } else { throw $err; }
+            }})()
           } else {
             result = ""
           };
@@ -37091,8 +37116,8 @@ Opal.modules["init_conf"] = function(Opal) {
       var $$4, $$5, $$6, $$7, $$8, $$9, $$10, $$11, $$12, $$13, $$14, $$15, $$16, $$17, $$18, $$19, $$20, $$21, $$22, $$23, $$24, $$25, $$26, $$27, $$28, $$29, $$30, $$31, $$32, $$33, $$34, $$35, self = this, explicit_sort = nil, result = nil;
 
       
-      explicit_sort = ["produce", "annotations", "restposition", "default", "repeatstart", "repeatend", "extract", "title", "filenamepart", "startpos", "voices", "flowlines", "subflowlines", "synchlines", "jumplines", "repeatsigns", "layoutlines", "barnumbers", "countnotes", "legend", "nonflowrest", "lyrics", "notes", "images", "tuplets", "layout", "printer", "annotation", "decoration", "partname", "variantend", "countnote", "c_jumplines", "tuplet", "minc", "flowline", "imagename", "stringnames", "limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "bottomup", "beams", "packer", "pack_method", "pack_max_spreadfactor", "pack_min_increment", "sortmark", "show", "fill", "size", "PITCH_OFFSET", "X_OFFSET", "X_SPACING", "jumpline_anchor", "jumpline_vcut", "a3_offset", "a4_offset", "a4_pages", "T01_number", "T01_number_extract", "T02_copyright_music", "T03_copyright_harpnotes", "T04_to_order", "T05_printed_extracts", "T99_do_not_copy", "0", "1", "2", "3", "4", "5", "6", "verses", "cp1", "cp2", "shape", "pos", "hpos", "height", "vpos", "spos", "autopos", "apbase", "text", "style", "marks", "resources", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"];
-      result = $hash2(["produce", "abc_parser", "restposition", "template", "wrap", "defaults", "templates", "presets", "annotations", "extract", "layout", "neatjson"], {"produce": [0], "abc_parser": "ABC2SVG", "restposition": $hash2(["default", "repeatstart", "repeatend"], {"default": "center", "repeatstart": "next", "repeatend": "default"}), "template": $hash2(["filebase", "title"], {"filebase": "-no-template-", "title": "- no template -"}), "wrap": 60, "defaults": $hash2(["notebound"], {"notebound": $hash2(["annotation", "chord", "partname", "variantend", "tuplet", "flowline"], {"annotation": $hash2(["pos"], {"pos": [5, -7]}), "chord": $hash2(["pos"], {"pos": [0, 0]}), "partname": $hash2(["pos"], {"pos": [-4, -7]}), "variantend": $hash2(["pos"], {"pos": [-4, -7]}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "flowline": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [0, 10], "cp2": [0, -10], "shape": ["c"], "show": true})})}), "templates": $hash2(["notes", "lyrics", "images", "tuplet", "annotations", "extracts"], {"notes": $hash2(["pos", "text", "style"], {"pos": [320, 6], "text": "ENTER_NOTE", "style": "large"}), "lyrics": $hash2(["verses", "pos", "style"], {"verses": [1], "pos": [350, 70], "style": "regular"}), "images": $hash2(["imagename", "show", "pos", "height"], {"imagename": "", "show": true, "pos": [10, 10], "height": 100}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "annotations": $hash2(["text", "pos"], {"text": "_vorlage_", "pos": [-5, -6]}), "extracts": $hash2(["title", "filenamepart", "notes"], {"title": "", "filenamepart": "-", "notes": $hash2(["T01_number_extract"], {"T01_number_extract": $hash2(["text"], {"text": "{{extract_filename}}"})})})}), "presets": $hash2(["barnumbers_countnotes", "stdextract", "layout", "instrument", "notes", "printer"], {"barnumbers_countnotes": $hash2(["anchor_at_box", "anchor_at_center", "countnotes_with_lyrics"], {"anchor_at_box": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, 1]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, -0.5]})}), "anchor_at_center": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0.3]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0]})}), "countnotes_with_lyrics": $hash2(["countnotes"], {"countnotes": $hash2(["cntextleft", "cntextright"], {"cntextleft": "{lyrics} {countnote}", "cntextright": "{countnote} {lyrics} "})})}), "stdextract": $hash2([], {}), "layout": $hash2(["notes_small", "notes_regular", "notes_large", "notes_with_beams", "-", "packer_compact", "packer_regular", "--", "color_on", "color_off", "---", "jumpline_anchor_close", "jumpline_anchor_medium", "jumpline_anchor_wide", "jumpline_open", "jumpline_close"], {"notes_small": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": 0.2, "LINE_THICK": 0.3, "ELLIPSE_SIZE": [3.5, 1.3], "REST_SIZE": [4, 1.5], "beams": false}), "notes_regular": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": $send(self, 'lambda', [], ($$4 = function(){var self = $$4.$$s || this;
+      explicit_sort = ["produce", "annotations", "restposition", "default", "repeatstart", "repeatend", "extract", "title", "filenamepart", "startpos", "voices", "flowlines", "subflowlines", "synchlines", "jumplines", "repeatsigns", "layoutlines", "barnumbers", "countnotes", "legend", "nonflowrest", "lyrics", "notes", "images", "tuplets", "layout", "printer", "annotation", "decoration", "partname", "variantend", "countnote", "c_jumplines", "tuplet", "minc", "flowline", "imagename", "stringnames", "limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "bottomup", "beams", "packer", "pack_method", "pack_max_spreadfactor", "pack_min_increment", "sortmark", "show", "fill", "size", "PITCH_OFFSET", "X_OFFSET", "X_SPACING", "jumpline_anchor", "jumpline_vcut", "a3_offset", "a4_offset", "a4_pages", "T01_number", "T01_number_extract", "T02_copyright_music", "T03_copyright_harpnotes", "T04_to_order", "T05_printed_extracts", "T06_legend", "T99_do_not_copy", "0", "1", "2", "3", "4", "5", "6", "verses", "cp1", "cp2", "shape", "pos", "hpos", "height", "vpos", "spos", "autopos", "apbase", "text", "style", "marks", "resources", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"];
+      result = $hash2(["produce", "abc_parser", "restposition", "template", "wrap", "defaults", "templates", "presets", "annotations", "extract", "layout", "neatjson"], {"produce": [0], "abc_parser": "ABC2SVG", "restposition": $hash2(["default", "repeatstart", "repeatend"], {"default": "center", "repeatstart": "next", "repeatend": "default"}), "template": $hash2(["filebase", "title"], {"filebase": "-no-template-", "title": "- no template -"}), "wrap": 60, "defaults": $hash2(["notebound"], {"notebound": $hash2(["annotation", "chord", "partname", "variantend", "tuplet", "flowline"], {"annotation": $hash2(["pos"], {"pos": [5, -7]}), "chord": $hash2(["pos"], {"pos": [0, 0]}), "partname": $hash2(["pos"], {"pos": [-4, -7]}), "variantend": $hash2(["pos"], {"pos": [-4, -7]}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "flowline": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [0, 10], "cp2": [0, -10], "shape": ["c"], "show": true})})}), "templates": $hash2(["notes", "lyrics", "images", "tuplet", "annotations", "extracts"], {"notes": $hash2(["pos", "text", "style"], {"pos": [320, 6], "text": "ENTER_NOTE", "style": "large"}), "lyrics": $hash2(["verses", "pos", "style"], {"verses": [1], "pos": [350, 70], "style": "regular"}), "images": $hash2(["imagename", "show", "pos", "height"], {"imagename": "", "show": true, "pos": [10, 10], "height": 100}), "tuplet": $hash2(["cp1", "cp2", "shape", "show"], {"cp1": [5, 2], "cp2": [5, -2], "shape": ["c"], "show": true}), "annotations": $hash2(["text", "pos"], {"text": "_vorlage_", "pos": [-5, -6]}), "extracts": $hash2(["title", "filenamepart", "notes"], {"title": "", "filenamepart": "-", "notes": $hash2(["T01_number_extract"], {"T01_number_extract": $hash2(["text"], {"text": "{{extract_filename}}"})})})}), "presets": $hash2(["barnumbers_countnotes", "stdextract", "layout", "instrument", "notes", "printer"], {"barnumbers_countnotes": $hash2(["anchor_at_box", "anchor_at_center", "countnotes_with_lyrics"], {"anchor_at_box": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, 1]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "box", "apbase": [1, -0.5]})}), "anchor_at_center": $hash2(["barnumbers", "countnotes"], {"barnumbers": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0.3]}), "countnotes": $hash2(["apanchor", "apbase"], {"apanchor": "center", "apbase": [1, 0]})}), "countnotes_with_lyrics": $hash2(["countnotes"], {"countnotes": $hash2(["cntextleft", "cntextright"], {"cntextleft": "{lyrics} {countnote}", "cntextright": "{countnote} {lyrics}"})})}), "stdextract": $hash2([], {}), "layout": $hash2(["notes_small", "notes_regular", "notes_large", "notes_with_beams", "-", "packer_compact", "packer_regular", "--", "color_on", "color_off", "---", "jumpline_anchor_close", "jumpline_anchor_medium", "jumpline_anchor_wide", "jumpline_open", "jumpline_close"], {"notes_small": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": 0.2, "LINE_THICK": 0.3, "ELLIPSE_SIZE": [3.5, 1.3], "REST_SIZE": [4, 1.5], "beams": false}), "notes_regular": $hash2(["LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "beams"], {"LINE_MEDIUM": $send(self, 'lambda', [], ($$4 = function(){var self = $$4.$$s || this;
         if ($gvars.conf == null) $gvars.conf = nil;
 
       return $gvars.conf['$[]']("extract.0.layout.LINE_MEDIUM")}, $$4.$$s = self, $$4.$$arity = 0, $$4)), "LINE_THICK": $send(self, 'lambda', [], ($$5 = function(){var self = $$5.$$s || this;
@@ -37175,7 +37200,7 @@ Opal.modules["init_conf"] = function(Opal) {
       return $gvars.conf['$[]']("extract.0.layout.X_SPACING")}, $$30.$$s = self, $$30.$$arity = 0, $$30)), "X_OFFSET": 28.5}), "stringnames": $hash2(["text", "marks"], {"text": $send(self, 'lambda', [], ($$31 = function(){var self = $$31.$$s || this;
         if ($gvars.conf == null) $gvars.conf = nil;
 
-      return self.$cut_string_names($gvars.conf['$[]']("extract.0.stringnames.text"), 16, 33)}, $$31.$$s = self, $$31.$$arity = 0, $$31)), "marks": $hash2(["hpos"], {"hpos": [59, 76]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [40, 0]})}), "saitenspiel": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "saitenspiel", "limit_a3": false, "beams": false, "bottomup": false, "PITCH_OFFSET": -24, "X_SPACING": 14.5, "X_OFFSET": 240}), "stringnames": $hash2(["text", "marks"], {"text": "G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Zipino": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE"], {"instrument": "Zipino", "limit_a3": true, "beams": true, "bottomup": false, "PITCH_OFFSET": 0, "X_SPACING": 12.5, "X_OFFSET": 230, "ELLIPSE_SIZE": [2, 2], "REST_SIZE": [2, 2]}), "stringnames": $hash2(["text", "marks"], {"text": "F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~", "marks": $hash2(["hpos"], {"hpos": [54]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Okon-Harfe": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "beams", "bottomup", "limit_a3", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "okon-f", "beams": true, "bottomup": true, "limit_a3": false, "PITCH_OFFSET": 0, "X_SPACING": 15, "X_OFFSET": 50}), "stringnames": $hash2(["text", "marks"], {"text": "G A B C D E F G A B C D E F G A B C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [1, 2], "a3_offset": [-35, 0], "a4_offset": [70, 0]})}), "Akkordzither": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "tuning", "beams", "bottomup", "limit_a3", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "akkordzither", "tuning": "open", "beams": true, "bottomup": false, "limit_a3": false, "PITCH_OFFSET": 0, "X_SPACING": 15, "X_OFFSET": 50}), "stringnames": $hash2(["text", "marks"], {"text": "", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [1, 2], "a3_offset": [-35, 0], "a4_offset": [70, 0]})})}), "notes": $hash2(["T01_number", "T01_number_extract", "T01_number_extract_value", "T02_copyright_music", "T03_copyright_harpnotes", "T04_to_order", "T05_printed_extracts", "T06_legend", "T99_do_not_copy", "T01_T99"], {"T01_number": $hash2(["value"], {"value": $hash2(["pos", "text", "style", "align"], {"pos": [410, 17], "text": "XXX-{{number}}", "style": "bold", "align": "l"})}), "T01_number_extract": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [411, 17], "text": "{{extract_filename}}", "style": "bold"})}), "T01_number_extract_value": $hash2(["key", "value"], {"key": "T01_number_extract", "value": $hash2(["text"], {"text": "{{extract_filename}}"})}), "T02_copyright_music": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 251], "text": $send(self, 'lambda', [], ($$32 = function(){var self = $$32.$$s || this;
+      return self.$cut_string_names($gvars.conf['$[]']("extract.0.stringnames.text"), 16, 33)}, $$31.$$s = self, $$31.$$arity = 0, $$31)), "marks": $hash2(["hpos"], {"hpos": [59, 76]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [40, 0]})}), "saitenspiel": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "saitenspiel", "limit_a3": false, "beams": false, "bottomup": false, "PITCH_OFFSET": -24, "X_SPACING": 14.5, "X_OFFSET": 240}), "stringnames": $hash2(["text", "marks"], {"text": "G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Zipino": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "limit_a3", "beams", "bottomup", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE"], {"instrument": "Zipino", "limit_a3": true, "beams": true, "bottomup": false, "PITCH_OFFSET": 0, "X_SPACING": 12.5, "X_OFFSET": 230, "ELLIPSE_SIZE": [2, 2], "REST_SIZE": [2, 2]}), "stringnames": $hash2(["text", "marks"], {"text": "F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~", "marks": $hash2(["hpos"], {"hpos": [54]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [2], "a3_offset": [0, 0], "a4_offset": [35, 0]})}), "Okon-Harfe": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "beams", "bottomup", "limit_a3", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "okon-f", "beams": true, "bottomup": true, "limit_a3": false, "PITCH_OFFSET": 0, "X_SPACING": 15, "X_OFFSET": 50}), "stringnames": $hash2(["text", "marks"], {"text": "G, A, BB, C D E F G A BB c d e f g a bb c' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~", "marks": $hash2(["hpos"], {"hpos": [55, 74]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [1, 2], "a3_offset": [-35, 0], "a4_offset": [70, 0]})}), "Akkordzither": $hash2(["layout", "stringnames", "printer"], {"layout": $hash2(["instrument", "tuning", "beams", "bottomup", "limit_a3", "PITCH_OFFSET", "X_SPACING", "X_OFFSET"], {"instrument": "akkordzither", "tuning": "open", "beams": true, "bottomup": false, "limit_a3": false, "PITCH_OFFSET": 0, "X_SPACING": 15, "X_OFFSET": 50}), "stringnames": $hash2(["text", "marks"], {"text": "C C# D E F F# G G# A B C' C# D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ", "marks": $hash2(["hpos"], {"hpos": [60]})}), "printer": $hash2(["a4_pages", "a3_offset", "a4_offset"], {"a4_pages": [1, 2], "a3_offset": [-35, 0], "a4_offset": [70, 0]})})}), "notes": $hash2(["T01_number", "T01_number_extract", "T01_number_extract_value", "T02_copyright_music", "T03_copyright_harpnotes", "T04_to_order", "T05_printed_extracts", "T06_legend", "T99_do_not_copy", "T01_T99"], {"T01_number": $hash2(["value"], {"value": $hash2(["pos", "text", "style", "align"], {"pos": [410, 17], "text": "XXX-{{number}}", "style": "bold", "align": "l"})}), "T01_number_extract": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [411, 17], "text": "{{extract_filename}}", "style": "bold"})}), "T01_number_extract_value": $hash2(["key", "value"], {"key": "T01_number_extract", "value": $hash2(["text"], {"text": "{{extract_filename}}"})}), "T02_copyright_music": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 251], "text": $send(self, 'lambda', [], ($$32 = function(){var self = $$32.$$s || this;
 
       return "" + "© " + ($$($nesting, 'Time').$now().$year()) + "\n" + ($$($nesting, 'I18n').$t("Private copy"))}, $$32.$$s = self, $$32.$$arity = 0, $$32)), "style": "small"})}), "T03_copyright_harpnotes": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 260], "text": "" + "© " + ($$($nesting, 'Time').$now().$year()) + " Notenbild: zupfnoter.de", "style": "small"})}), "T04_to_order": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [340, 242], "text": $send(self, 'lambda', [], ($$33 = function(){var self = $$33.$$s || this;
 
@@ -40227,7 +40252,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.12.1-13-gb922eae1");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.12.1-15-g8b9ef33d");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
