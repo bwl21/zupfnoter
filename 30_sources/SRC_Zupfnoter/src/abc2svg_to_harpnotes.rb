@@ -485,7 +485,7 @@ module Harpnotes
             match = name.match(/^([^!#\<\>]+)([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
               text     = match[1]
-              position = $conf['defaults.notebound.annotation.pos']
+              position = $conf['defaults.notebound.chord.pos']
               conf_key = "notebound.chord.#{voice_id}.#{entity.znid}.#{index}"
               result << Harpnotes::Music::Chordsymbol.new(entity, {style: 'large', pos: position, text: text}, conf_key)
             else

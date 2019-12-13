@@ -53,7 +53,7 @@ module InitConf
          # such that there is no explicit default in the configuration
          defaults: {
              notebound: {annotation: {pos: [5, -7]},
-                         chord:{pos: [0,0]},
+                         chord:      {pos: [0,0]},
                          partname:   {pos: [-4, -7]},
                          variantend: {pos: [-4, -7]},
                          tuplet:     {

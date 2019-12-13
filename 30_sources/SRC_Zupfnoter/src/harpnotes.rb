@@ -1961,19 +1961,22 @@ module Harpnotes
 
       def _layout_voice_chordsymbols(print_variant_nr, show_options, voice)
         res_annotations = voice.select { |c| c.is_a? Chordsymbol }.map do |annotation|
+          chord_options = show_options[:chords]
           notebound_pos_key = annotation.conf_key + ".pos"
           show_from_config  = show_options[:print_options_raw].get(annotation.conf_key + ".show")
           show              = show_from_config.nil? ? true : show_from_config
+          cs_fixpos         = chord_options[:pos]
+
           if notebound_pos_key
             conf_key = "extract.#{print_variant_nr}.#{notebound_pos_key}"
             annotationoffset = show_options[:print_options_raw].get(notebound_pos_key) rescue nil
-            annotationoffset = annotation.position unless annotationoffset
+            annotationoffset = cs_fixpos unless annotationoffset
           else
-            annotationoffset = annotation.position
+            annotationoffset = cs_fixpos
             conf_key         = nil
           end
 
-          style = show_options[:print_options_raw].get(annotation.conf_key + ".style") || annotation.style
+          style = chord_options[:style] || annotation.style
 
           position = Vector2d(annotation.companion.sheet_drawable.center) + annotationoffset
           result   = Harpnotes::Drawing::Annotation.new(position.to_a, annotation.text, style, annotation.companion.origin,
@@ -1982,6 +1985,7 @@ module Harpnotes
           result   = nil if show == false
           result
         end
+        res_annotations
       end
 
       def _laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr)
