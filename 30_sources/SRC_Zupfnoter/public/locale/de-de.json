@@ -302,6 +302,7 @@
     "err": "Fehler",
     "Error from Dropbox with failed retries": "Fehler mit Dropbox (trotz wiederholter Versuche)",
     "Errors occurred": "Es sind Fehler aufgetreten",
+    "validationerrors": "Konfigurationsfehler",
     "explicit_sort": "**--explicit_sort",
     "Extract 0": "Auszug 0",
     "Extract 1": "Auszug 1",

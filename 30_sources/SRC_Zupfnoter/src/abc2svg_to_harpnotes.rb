@@ -692,11 +692,12 @@ module Harpnotes
 
       def _transform_lyrics(voice_element)
         if voice_element[:a_ly]
-          result = voice_element[:a_ly].first[:t].gsub("\n", "-").gsub("_", "") rescue ""
+          result = voice_element[:a_ly].first
+          result = result[:t]&.gsub("\n", "-").gsub("_", "") if result
         else
           result = ""
         end
-        result
+        result || ""
       end
 
       # here we handle meter changes
