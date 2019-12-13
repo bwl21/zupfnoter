@@ -40202,15 +40202,15 @@ Opal.modules["opal-ajv"] = function(Opal) {
   function $rb_minus(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs - rhs : lhs['$-'](rhs);
   }
-  function $rb_gt(lhs, rhs) {
-    return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs > rhs : lhs['$>'](rhs);
-  }
   function $rb_plus(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs + rhs : lhs['$+'](rhs);
   }
+  function $rb_gt(lhs, rhs) {
+    return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs > rhs : lhs['$>'](rhs);
+  }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $truthy = Opal.truthy, $send = Opal.send, $range = Opal.range, $gvars = Opal.gvars, $hash2 = Opal.hash2, $hash = Opal.hash;
 
-  Opal.add_stubs(['$==', '$add_schema', '$_schema', '$to_n', '$each', '$start_with?', '$gsub', '$[]', '$push', '$error', '$new', '$strict=', '$-', '$get', '$keys', '$validate', '$validate_filenameparts', '$select', '$include?', '$map', '$keep_if', '$group_by', '$>', '$length', '$empty?', '$+', '$t', '$join']);
+  Opal.add_stubs(['$==', '$add_schema', '$_schema', '$to_n', '$each', '$start_with?', '$gsub', '$[]', '$push', '$error', '$new', '$strict=', '$-', '$get', '$keys', '$validate_filenameparts', '$+', '$validate', '$select', '$include?', '$inject', '$[]=', '$keep_if', '$>', '$length', '$t', '$join', '$uniq', '$flatten', '$values']);
   return (function($base, $parent_nesting) {
     var self = $module($base, 'Ajv');
 
@@ -40219,7 +40219,7 @@ Opal.modules["opal-ajv"] = function(Opal) {
     (function($base, $super, $parent_nesting) {
       var self = $klass($base, $super, 'JsonValidator');
 
-      var $nesting = [self].concat($parent_nesting), $JsonValidator_initialize$1, $JsonValidator_add_schema$2, $JsonValidator_validate$3, $JsonValidator_validate_conf$5, $JsonValidator_validate_filenameparts$7, $JsonValidator__schema$13;
+      var $nesting = [self].concat($parent_nesting), $JsonValidator_initialize$1, $JsonValidator_add_schema$2, $JsonValidator_validate$3, $JsonValidator_validate_conf$5, $JsonValidator_validate_filenameparts$7, $JsonValidator__schema$12;
 
       self.$$prototype.root = nil;
       
@@ -40280,7 +40280,7 @@ Opal.modules["opal-ajv"] = function(Opal) {
       }, $JsonValidator_validate$3.$$arity = 2);
       
       Opal.def(self, '$validate_conf', $JsonValidator_validate_conf$5 = function $$validate_conf(conf) {
-        var $$6, self = this, resconf = nil, $writer = nil, extract0 = nil, x = nil;
+        var $$6, self = this, resconf = nil, $writer = nil, extract0 = nil, x = nil, result = nil;
 
         
         resconf = $$($nesting, 'Confstack').$new();
@@ -40300,13 +40300,12 @@ Opal.modules["opal-ajv"] = function(Opal) {
           return resconf.$push($hash2(["extract"], {"extract": $hash(key, extract0)}));}, $$6.$$s = self, $$6.$$arity = 1, $$6));
         resconf.$push($hash2(["extract"], {"extract": conf.$get("extract")}));
         x = resconf.$get();
-        self.$validate("zupfnoter", resconf.$get());
-        return self.$validate_filenameparts(resconf);
+        result = self.$validate_filenameparts(resconf);
+        return (result = $rb_plus(result, self.$validate("zupfnoter", resconf.$get())));
       }, $JsonValidator_validate_conf$5.$$arity = 1);
       
       Opal.def(self, '$validate_filenameparts', $JsonValidator_validate_filenameparts$7 = function $$validate_filenameparts(conf) {
-        var $$8, $$9, $$10, $$11, $$12, self = this, filenamekeys = nil, filenames = nil, duplicate_filenames = nil, message = nil;
-        if ($gvars.log == null) $gvars.log = nil;
+        var $$8, $$9, $$10, $$11, self = this, filenamekeys = nil, filenameparts = nil;
 
         
         filenamekeys = $send(conf.$keys(), 'select', [], ($$8 = function(i){var self = $$8.$$s || this;
@@ -40317,53 +40316,54 @@ Opal.modules["opal-ajv"] = function(Opal) {
             i = nil;
           };
           return i['$include?']("filenamepart");}, $$8.$$s = self, $$8.$$arity = 1, $$8));
-        filenames = $send(filenamekeys, 'map', [], ($$9 = function(i){var self = $$9.$$s || this;
+        filenameparts = $send(filenamekeys, 'inject', [$hash2([], {})], ($$9 = function(result, element){var self = $$9.$$s || this, $a, $writer = nil;
+          if ($gvars.conf == null) $gvars.conf = nil;
 
         
           
-          if (i == null) {
-            i = nil;
+          if (result == null) {
+            result = nil;
           };
-          return conf['$[]'](i);}, $$9.$$s = self, $$9.$$arity = 1, $$9));
-        duplicate_filenames = $send($send(filenames, 'group_by', [], ($$10 = function(e){var self = $$10.$$s || this;
+          
+          if (element == null) {
+            element = nil;
+          };
+          ($truthy($a = result['$[]']($gvars.conf['$[]'](element))) ? $a : (($writer = [$gvars.conf['$[]'](element), []]), $send(result, '[]=', Opal.to_a($writer)), $writer[$rb_minus($writer["length"], 1)]));
+          result['$[]']($gvars.conf['$[]'](element)).$push(element);
+          return result;}, $$9.$$s = self, $$9.$$arity = 2, $$9));
+        filenameparts = $send(filenameparts, 'keep_if', [], ($$10 = function(k, v){var self = $$10.$$s || this;
 
         
           
-          if (e == null) {
-            e = nil;
+          if (k == null) {
+            k = nil;
           };
-          return e;}, $$10.$$s = self, $$10.$$arity = 1, $$10)), 'keep_if', [], ($$11 = function(_, e){var self = $$11.$$s || this;
+          
+          if (v == null) {
+            v = nil;
+          };
+          return $rb_gt(v.$length(), 1);}, $$10.$$s = self, $$10.$$arity = 2, $$10));
+        $send(filenameparts, 'each', [], ($$11 = function(k, v){var self = $$11.$$s || this, message = nil;
+          if ($gvars.log == null) $gvars.log = nil;
 
         
           
-          if (_ == null) {
-            _ = nil;
+          if (k == null) {
+            k = nil;
           };
           
-          if (e == null) {
-            e = nil;
+          if (v == null) {
+            v = nil;
           };
-          return $rb_gt(e.$length(), 1);}, $$11.$$s = self, $$11.$$arity = 2, $$11)).$keys();
-        if ($truthy(duplicate_filenames['$empty?']())) {
-        } else {
-          
-          message = $rb_plus($$($nesting, 'I18n').$t("duplicate filenameparts"), "" + ": " + ($send(duplicate_filenames, 'map', [], ($$12 = function(i){var self = $$12.$$s || this;
-
-          
-            
-            if (i == null) {
-              i = nil;
-            };
-            return "" + "\"" + (i) + "\"";}, $$12.$$s = self, $$12.$$arity = 1, $$12)).$join(", ")));
-          $gvars.log.$error(message);
-        };
-        return nil;
+          message = $rb_plus($rb_plus($$($nesting, 'I18n').$t("duplicate filenameparts"), ": "), v.$join(", "));
+          return $gvars.log.$error(message);}, $$11.$$s = self, $$11.$$arity = 2, $$11));
+        return filenameparts.$values().$flatten().$uniq();
       }, $JsonValidator_validate_filenameparts$7.$$arity = 1);
-      return (Opal.def(self, '$_schema', $JsonValidator__schema$13 = function $$_schema() {
+      return (Opal.def(self, '$_schema', $JsonValidator__schema$12 = function $$_schema() {
         var self = this;
 
         return $hash2(["$schema", "description", "type", "required", "definitions", "properties"], {"$schema": "http://json-schema.org/draft-04/schema#", "description": "Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7", "type": "object", "required": ["produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"], "definitions": $hash2(["apanchor", "pos", "notes_entry", "nb_annotation_xx", "minc_entry", "nconf_entry", "align", "notebound_pos", "notebound_repeat_outdated", "annotated_bezier", "extract_layout"], {"apanchor": $hash2(["type", "enum"], {"type": "string", "enum": ["manual", "box", "center"]}), "pos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "number"})}), "notes_entry": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "align", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "style": $hash2(["type"], {"type": "string"})})}), "nb_annotation_xx": $hash2(["type", "required", "properties"], {"type": "object", "required": ["voices", "pos", "autopos", "style"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"})})}), "minc_entry": $hash2(["type", "required", "additionalProperties", "properties"], {"type": "object", "required": ["minc_f"], "additionalProperties": false, "properties": $hash2(["minc_f"], {"minc_f": $hash2(["type"], {"type": "number"})})}), "nconf_entry": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["t_d*"], {"t_d*": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["n_d*"], {"n_d*": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["nshift"], {"nshift": $hash2(["type"], {"type": "number"})})})})})})}), "align": $hash2(["type", "enum"], {"type": "string", "enum": ["l", "r", "auto"]}), "notebound_pos": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["t_\\d*|\\d*"], {"t_\\d*|\\d*": $hash2(["type", "additionalProperties", "properties", "patternProperties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["pos", "align", "show", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "show": $hash2(["type"], {"type": "boolean"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})}), "patternProperties": $hash2(["\\d+"], {"\\d+": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["pos", "align", "show", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "show": $hash2(["type"], {"type": "boolean"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})})})})})})})}), "notebound_repeat_outdated": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["text", "style", "pos"], {"text": "integer", "style": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})})}), "annotated_bezier": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["cp1", "cp2", "pos", "shape", "show", "style"], {"cp1": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "cp2": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "shape": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "string"})}), "show": $hash2(["type"], {"type": "boolean"}), "style": $hash2(["type"], {"type": "string"})})}), "extract_layout": $hash2(["type", "requiredx", "additionalProperties", "properties"], {"type": "object", "requiredx": ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"], "additionalProperties": false, "properties": $hash2(["limit_a3", "beams", "bottomup", "jumpline_anchor", "jumpline_vcut", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "instrument", "tuning", "DRAWING_AREA_SIZE", "ELLIPSE_SIZE", "REST_SIZE", "grid", "color", "packer"], {"limit_a3": $hash2(["type"], {"type": "boolean"}), "beams": $hash2(["type"], {"type": "boolean"}), "bottomup": $hash2(["type"], {"type": "boolean"}), "jumpline_anchor": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "jumpline_vcut": $hash2(["type"], {"type": "number"}), "LINE_THIN": $hash2(["type"], {"type": "number"}), "LINE_MEDIUM": $hash2(["type"], {"type": "number"}), "LINE_THICK": $hash2(["type"], {"type": "number"}), "PITCH_OFFSET": $hash2(["type"], {"type": "integer"}), "X_SPACING": $hash2(["type"], {"type": "number"}), "X_OFFSET": $hash2(["type"], {"type": "number"}), "instrument": $hash2(["type"], {"type": "string"}), "tuning": $hash2(["type"], {"type": "string"}), "DRAWING_AREA_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "ELLIPSE_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "REST_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "grid": $hash2(["type"], {"type": "boolean"}), "color": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": $hash2(["type"], {"type": "string"}), "color_variant1": $hash2(["type"], {"type": "string"}), "color_variant2": $hash2(["type"], {"type": "string"})})}), "packer": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["pack_method", "pack_max_spread_factor", "pack_min_increment"], {"pack_method": $hash2(["type"], {"type": "integer"}), "pack_max_spread_factor": $hash2(["type"], {"type": "number"}), "pack_min_increment": $hash2(["type"], {"type": "number"})})})})})}), "properties": $hash2(["confstack", "produce", "template", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"], {"confstack": $hash2(["type", "required", "properties"], {"type": "object", "required": ["env"], "properties": $hash2(["env"], {"env": $hash2(["type"], {"type": "string"})})}), "produce": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "template": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["filebase", "title"], {"filebase": $hash2(["type"], {"type": "string"}), "title": $hash2(["type"], {"type": "string"})})}), "abc_parser": $hash2(["type"], {"type": "string"}), "restposition": $hash2(["type", "additionalProperties", "required", "properties"], {"type": "object", "additionalProperties": false, "required": ["default", "repeatstart", "repeatend"], "properties": $hash2(["default", "repeatstart", "repeatend"], {"default": $hash2(["type"], {"type": "string"}), "repeatstart": $hash2(["type"], {"type": "string"}), "repeatend": $hash2(["type"], {"type": "string"})})}), "wrap": $hash2(["type"], {"type": "integer"}), "defaults": $hash2(["type", "required", "properties"], {"type": "object", "required": ["notebound"], "properties": $hash2(["notebound"], {"notebound": $hash2(["type", "required", "properties"], {"type": "object", "required": ["annotation", "partname", "variantend", "tuplet", "chord"], "properties": $hash2(["annotation", "chord", "partname", "variantend", "tuplet"], {"annotation": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "chord": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "partname": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style", "show"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"}), "show": $hash2(["type"], {"type": "boolean"})})}), "variantend": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "tuplet": $hash2(["$ref", "required"], {"$ref": "#/definitions/annotated_bezier", "required": ["cp1", "cp2", "shape"]})})})})}), "templates": $hash2(["type", "required", "properties"], {"type": "object", "required": ["notes", "lyrics", "tuplet", "annotations"], "properties": $hash2(["notes", "lyrics", "tuplet", "annotations"], {"notes": $hash2(["$ref"], {"$ref": "#/definitions/notes_entry"}), "lyrics": $hash2(["type", "required", "properties"], {"type": "object", "required": ["verses", "pos"], "properties": $hash2(["verses", "pos", "style"], {"verses": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "tuplet": $hash2(["type", "required", "properties"], {"type": "object", "required": ["cp1", "cp2", "shape"], "properties": $hash2(["cp1", "cp2", "shape"], {"cp1": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "cp2": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "shape": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "string"})})})}), "annotations": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos", "style"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})})})}), "annotations": $hash2(["type", "required", "properties"], {"type": "object", "required": ["vl", "vt", "vr"], "properties": $hash2(["vl", "vt", "vr"], {"vl": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})}), "vt": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})}), "vr": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})})})}), "extract": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*", "4", "5"], {"d*": $hash2(["type", "additionalProperties", "requiredx", "properties"], {"type": "object", "additionalProperties": false, "requiredx": ["title", "filenamepart", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "layout", "nonflowrest", "notes", "barnumbers", "countnotes", "chords", "stringnames", "printer"], "properties": $hash2(["title", "filenamepart", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "layout", "nonflowrest", "notes", "notebound", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "sortmark", "printer", "images"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "startpos": $hash2(["type"], {"type": "integer"}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "synchlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})}), "flowlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "subflowlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "jumplines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "repeatsigns": $hash2(["type", "requiredx", "properties"], {"type": "object", "requiredx": ["voices", "left", "right"], "properties": $hash2(["voices", "left", "right"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "left": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})}), "right": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})})})}), "layoutlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "legend": $hash2(["type", "required", "properties"], {"type": "object", "required": ["spos", "pos"], "properties": $hash2(["spos", "pos", "align", "style"], {"spos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "style": $hash2(["type"], {"type": "string"})})}), "lyrics": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2([".*"], {".*": $hash2(["type", "required"], {"type": "object", "required": ["verses", "pos"]})})}), "layout": $hash2(["$ref"], {"$ref": "#/definitions/extract_layout"}), "nonflowrest": $hash2(["type"], {"type": "boolean"}), "notes": $hash2(["patternProperties"], {"patternProperties": $hash2([".*"], {".*": $hash2(["$ref"], {"$ref": "#/definitions/notes_entry"})})}), "notebound": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["annotation", "chord", "barnumber", "c_jumplines", "countnote", "decoration", "flowline", "minc", "nconf", "partname", "repeat_begin", "repeat_end", "tuplet", "variantend"], {"annotation": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "chord": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "barnumber": $hash2(["$ref", "align"], {"$ref": "#/definitions/notebound_pos", "align": $hash2(["$ref"], {"$ref": "#/definitions/align"})}), "c_jumplines": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["p_repeat", "p_begin", "p_end", "p_follow"], {"p_repeat": $hash2(["type"], {"type": "number"}), "p_begin": $hash2(["type"], {"type": "number"}), "p_end": $hash2(["type"], {"type": "number"}), "p_follow": $hash2(["type"], {"type": "number"})})})}), "countnote": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "decoration": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d+"], {"d+": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"})})}), "flowline": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["v_d+"], {"v_d+": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/annotated_bezier"})})})})}), "minc": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/minc_entry"})})}), "nconf": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["$ref"], {"$ref": "#/definitions/nconf_entry"})})}), "partname": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "repeat_begin": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "repeat_end": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "tuplet": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/annotated_bezier"})})})})}), "variantend": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"})})}), "tuplets": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["text"], {"text": $hash2(["type"], {"type": "string"})})}), "barnumbers": $hash2(["type", "required", "properties"], {"type": "object", "required": ["voices", "pos", "autopos", "style", "prefix"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style", "prefix"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"}), "prefix": $hash2(["type"], {"type": "string"})})}), "countnotes": $hash2(["type", "required", "properties", "cntextleft", "cntextright"], {"type": "object", "required": ["voices", "pos", "autopos", "style"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"})}), "cntextleft": $hash2(["type"], {"type": "string"}), "cntextright": $hash2(["type"], {"type": "string"})}), "chords": $hash2(["ref", "style"], {"ref": "#/definitions/nb_annotations", "style": $hash2(["type"], {"type": "string"})}), "stringnames": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "vpos", "style", "marks"], "properties": $hash2(["text", "vpos", "style", "marks"], {"text": $hash2(["type"], {"type": "string"}), "vpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "style": $hash2(["type"], {"type": "string"}), "marks": $hash2(["type", "required", "properties"], {"type": "object", "required": ["vpos", "hpos"], "properties": $hash2(["vpos", "hpos"], {"vpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "hpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})})})}), "sortmark": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["show"], {"show": $hash2(["type"], {"type": "boolean"})})}), "printer": $hash2(["type", "required", "properties"], {"type": "object", "required": ["a3_offset", "a4_offset", "show_border"], "properties": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": $hash2(["type", "minItems", "axItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "axItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "a4_offset": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "show_border": $hash2(["type"], {"type": "boolean"})})}), "images": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["imagename", "show", "pos", "height"], {"imagename": $hash2(["type"], {"type": "string"}), "show": $hash2(["type"], {"type": "boolean"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "height": $hash2(["type"], {"type": "number"})})})})})})}), "4": $hash2(["type", "required", "properties"], {"type": "object", "required": ["title", "voices"], "properties": $hash2(["title", "filenamepart", "voices"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})}), "5": $hash2(["type", "required", "properties"], {"type": "object", "required": ["title", "voices"], "properties": $hash2(["title", "filenamepart", "voices"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})})})}), "layout": $hash2(["type", "required", "properties"], {"type": "object", "required": ["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "REST_TO_GLYPH"], "properties": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "REST_TO_GLYPH"], {"grid": $hash2(["type"], {"type": "boolean"}), "limit_a3": $hash2(["type"], {"type": "boolean"}), "SHOW_SLUR": $hash2(["type"], {"type": "boolean"}), "LINE_THIN": $hash2(["type"], {"type": "number"}), "LINE_MEDIUM": $hash2(["type"], {"type": "number"}), "LINE_THICK": $hash2(["type"], {"type": "number"}), "ELLIPSE_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "number"})}), "REST_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "number"})}), "X_SPACING": $hash2(["type"], {"type": "number"}), "X_OFFSET": $hash2(["type"], {"type": "number"}), "Y_SCALE": $hash2(["type"], {"type": "integer"}), "DRAWING_AREA_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "BEAT_RESOLUTION": $hash2(["type"], {"type": "integer"}), "SHORTEST_NOTE": $hash2(["type"], {"type": "integer"}), "BEAT_PER_DURATION": $hash2(["type"], {"type": "integer"}), "PITCH_OFFSET": $hash2(["type"], {"type": "integer"}), "FONT_STYLE_DEF": $hash2(["type", "required", "patternProperties"], {"type": "object", "required": ["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], "patternProperties": $hash2([".*"], {".*": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text_color", "font_size", "font_style"], "properties": $hash2(["text_color", "font_size", "font_style"], {"text_color": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 3, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "font_size": $hash2(["type"], {"type": "integer"}), "font_style": $hash2(["type"], {"type": "string"})})})})}), "MM_PER_POINT": $hash2(["type"], {"type": "number"}), "DURATION_TO_STYLE": $hash2(["type", "required", "patternProperties"], {"type": "object", "required": ["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], "patternProperties": $hash2([".*"], {".*": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 3, "uniqueItems": false, "items": $hash2(["type"], {"type": ["number", "string", "boolean"]})})})}), "REST_TO_GLYPH": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2([".*"], {".*": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": [$hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": false, "items": $hash2(["type"], {"type": "number"})}), $hash2(["type"], {"type": "string"}), $hash2(["type"], {"type": "boolean"})]})})})})}), "neatjson": $hash2(["type", "required", "properties"], {"type": "object", "required": ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "explicit_sort"], "properties": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "sorted", "explicit_sort"], {"wrap": $hash2(["type"], {"type": "integer"}), "aligned": $hash2(["type"], {"type": "boolean"}), "after_comma": $hash2(["type"], {"type": "integer"}), "after_colon_1": $hash2(["type"], {"type": "integer"}), "after_colon_n": $hash2(["type"], {"type": "integer"}), "before_colon_n": $hash2(["type"], {"type": "integer"}), "sorted": $hash2(["type"], {"type": "boolean"}), "explicit_sort": $hash2(["type"], {"type": "object"})})})})})
-      }, $JsonValidator__schema$13.$$arity = 0), nil) && '_schema';
+      }, $JsonValidator__schema$12.$$arity = 0), nil) && '_schema';
     })($nesting[0], null, $nesting)
   })($nesting[0], $nesting)
 };
@@ -42967,20 +42967,22 @@ Opal.modules["harpnotes"] = function(Opal) {
         Opal.def(self, '$_layout_voice_chordsymbols', $Default__layout_voice_chordsymbols$170 = function $$_layout_voice_chordsymbols(print_variant_nr, show_options, voice) {
           var $$171, $$172, self = this, res_annotations = nil;
 
-          return (res_annotations = $send($send(voice, 'select', [], ($$171 = function(c){var self = $$171.$$s || this;
+          
+          res_annotations = $send($send(voice, 'select', [], ($$171 = function(c){var self = $$171.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return c['$is_a?']($$($nesting, 'Chordsymbol'));}, $$171.$$s = self, $$171.$$arity = 1, $$171)), 'map', [], ($$172 = function(annotation){var self = $$172.$$s || this, $a, $$173, notebound_pos_key = nil, show_from_config = nil, show = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
+            return c['$is_a?']($$($nesting, 'Chordsymbol'));}, $$171.$$s = self, $$171.$$arity = 1, $$171)), 'map', [], ($$172 = function(annotation){var self = $$172.$$s || this, $a, $$173, chord_options = nil, notebound_pos_key = nil, show_from_config = nil, show = nil, cs_fixpos = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
 
           
             
             if (annotation == null) {
               annotation = nil;
             };
+            chord_options = show_options['$[]']("chords");
             notebound_pos_key = $rb_plus(annotation.$conf_key(), ".pos");
             show_from_config = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".show"));
             show = (function() {if ($truthy(show_from_config['$nil?']())) {
@@ -42988,6 +42990,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             } else {
               return show_from_config
             }; return nil; })();
+            cs_fixpos = chord_options['$[]']("pos");
             if ($truthy(notebound_pos_key)) {
               
               conf_key = "" + "extract." + (print_variant_nr) + "." + (notebound_pos_key);
@@ -43002,14 +43005,14 @@ Opal.modules["harpnotes"] = function(Opal) {
               }})();
               if ($truthy(annotationoffset)) {
               } else {
-                annotationoffset = annotation.$position()
+                annotationoffset = cs_fixpos
               };
             } else {
               
-              annotationoffset = annotation.$position();
+              annotationoffset = cs_fixpos;
               conf_key = nil;
             };
-            style = ($truthy($a = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".style"))) ? $a : annotation.$style());
+            style = ($truthy($a = chord_options['$[]']("style")) ? $a : annotation.$style());
             position = $rb_plus(self.$Vector2d(annotation.$companion().$sheet_drawable().$center()), annotationoffset);
             result = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), annotation.$text(), style, annotation.$companion().$origin(), conf_key, annotationoffset), 'tap', [], ($$173 = function(s){var self = $$173.$$s || this, $writer = nil;
 
@@ -43025,7 +43028,8 @@ Opal.modules["harpnotes"] = function(Opal) {
               result = nil};
             if (show['$=='](false)) {
               result = nil};
-            return result;}, $$172.$$s = self, $$172.$$arity = 1, $$172)))
+            return result;}, $$172.$$s = self, $$172.$$arity = 1, $$172));
+          return res_annotations;
         }, $Default__layout_voice_chordsymbols$170.$$arity = 3);
         
         Opal.def(self, '$_laoyut_voice_repeatmarks', $Default__laoyut_voice_repeatmarks$174 = function $$_laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr) {
@@ -43101,7 +43105,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($a = goto$.$policy()['$[]']("from_anchor")) ? $a : "after");
             to_anchor = ($truthy($a = goto$.$policy()['$[]']("to_anchor")) ? $a : "before");
             vertical_anchor = ($truthy($a = goto$.$policy()['$[]']("vertical_anchor")) ? $a : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2023));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2027));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -47541,7 +47545,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               if ($truthy(match)) {
                 
                 text = match['$[]'](1);
-                position = $gvars.conf['$[]']("defaults.notebound.annotation.pos");
+                position = $gvars.conf['$[]']("defaults.notebound.chord.pos");
                 conf_key = "" + "notebound.chord." + (voice_id) + "." + (entity.$znid()) + "." + (index);
                 return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Chordsymbol').$new(entity, $hash2(["style", "pos", "text"], {"style": "large", "pos": position, "text": text}), conf_key));
               } else {
@@ -47838,23 +47842,18 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
         }, $Abc2svgToHarpnotes__transform_key$47.$$arity = 1);
         
         Opal.def(self, '$_transform_lyrics', $Abc2svgToHarpnotes__transform_lyrics$48 = function $$_transform_lyrics(voice_element) {
-          var self = this, result = nil;
+          var $a, $b, self = this, result = nil;
 
           
           if ($truthy(voice_element['$[]']("a_ly"))) {
-            result = (function() { try {
-              return voice_element['$[]']("a_ly").$first()['$[]']("t").$gsub("\n", "-").$gsub("_", "")
-            } catch ($err) {
-              if (Opal.rescue($err, [$$($nesting, 'StandardError')])) {
-                try {
-                  return ""
-                } finally { Opal.pop_exception() }
-              } else { throw $err; }
-            }})()
+            
+            result = voice_element['$[]']("a_ly").$first();
+            if ($truthy(result)) {
+              result = ($a = result['$[]']("t"), ($a === nil || $a == null) ? nil : $send($a, 'gsub', ["\n", "-"])).$gsub("_", "")};
           } else {
             result = ""
           };
-          return result;
+          return ($truthy($b = result) ? $b : "");
         }, $Abc2svgToHarpnotes__transform_lyrics$48.$$arity = 1);
         
         Opal.def(self, '$_transform_meter', $Abc2svgToHarpnotes__transform_meter$49 = function $$_transform_meter(voice_element) {
@@ -52117,6 +52116,7 @@ Opal.modules["controller"] = function(Opal) {
         
         $send($gvars.log, 'benchmark', ["validate default conf"], ($$107 = function(){var self = $$107.$$s || this, $a;
           if (self.json_validator == null) self.json_validator = nil;
+          if (self.validation_errors == null) self.validation_errors = nil;
           if ($gvars.log == null) $gvars.log = nil;
           if ($gvars.settings == null) $gvars.settings = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
@@ -52124,10 +52124,8 @@ Opal.modules["controller"] = function(Opal) {
         
           self.validation_errors = [];
           if ($truthy(($truthy($a = $gvars.log.$loglevel()['$==']("debug")) ? $a : $gvars.settings['$[]']("validate")['$==']("true")))) {
-            return (self.validation_errors = self.json_validator.$validate_conf($gvars.conf))
-          } else {
-            return nil
-          };}, $$107.$$s = self, $$107.$$arity = 0, $$107));
+            self.validation_errors = self.json_validator.$validate_conf($gvars.conf)};
+          return self.validation_errors;}, $$107.$$s = self, $$107.$$arity = 0, $$107));
         self.$call_consumers("document_title");
         result = nil;
         $send($gvars.log, 'benchmark', ["computing layout"], ($$108 = function(){var self = $$108.$$s || this, layouter = nil, $writer = nil;
@@ -54604,7 +54602,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.12.1-15-g8b9ef33d");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.13-1-ge8b98e60");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

@@ -2,6 +2,22 @@
 
 # Änderungsgeschichte
 
+## V 1.13 Dezember 2019
+
+### fix
+
+-   Ausrichtung von Saitennamen verfeinert \#281
+
+### enhancement
+
+-   Harfenvorschau kann unn auch PDF anzeigen \#281
+-   Taktnummern, Zählmarken, Anmerkungen unterbrechen nun Flusslinen
+    \#279
+-   added experimental packer 3
+-   now support Akkordzither \#289
+-   now support open tuning \#289
+-   option to attach inline lyrics to countnotes \#290
+
 ## V 1.12 August 2019
 
 ### Fehlerbehebung

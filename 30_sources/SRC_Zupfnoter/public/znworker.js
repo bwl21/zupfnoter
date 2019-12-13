@@ -29409,20 +29409,22 @@ Opal.modules["harpnotes"] = function(Opal) {
         Opal.def(self, '$_layout_voice_chordsymbols', $Default__layout_voice_chordsymbols$170 = function $$_layout_voice_chordsymbols(print_variant_nr, show_options, voice) {
           var $$171, $$172, self = this, res_annotations = nil;
 
-          return (res_annotations = $send($send(voice, 'select', [], ($$171 = function(c){var self = $$171.$$s || this;
+          
+          res_annotations = $send($send(voice, 'select', [], ($$171 = function(c){var self = $$171.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return c['$is_a?']($$($nesting, 'Chordsymbol'));}, $$171.$$s = self, $$171.$$arity = 1, $$171)), 'map', [], ($$172 = function(annotation){var self = $$172.$$s || this, $a, $$173, notebound_pos_key = nil, show_from_config = nil, show = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
+            return c['$is_a?']($$($nesting, 'Chordsymbol'));}, $$171.$$s = self, $$171.$$arity = 1, $$171)), 'map', [], ($$172 = function(annotation){var self = $$172.$$s || this, $a, $$173, chord_options = nil, notebound_pos_key = nil, show_from_config = nil, show = nil, cs_fixpos = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
 
           
             
             if (annotation == null) {
               annotation = nil;
             };
+            chord_options = show_options['$[]']("chords");
             notebound_pos_key = $rb_plus(annotation.$conf_key(), ".pos");
             show_from_config = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".show"));
             show = (function() {if ($truthy(show_from_config['$nil?']())) {
@@ -29430,6 +29432,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             } else {
               return show_from_config
             }; return nil; })();
+            cs_fixpos = chord_options['$[]']("pos");
             if ($truthy(notebound_pos_key)) {
               
               conf_key = "" + "extract." + (print_variant_nr) + "." + (notebound_pos_key);
@@ -29444,14 +29447,14 @@ Opal.modules["harpnotes"] = function(Opal) {
               }})();
               if ($truthy(annotationoffset)) {
               } else {
-                annotationoffset = annotation.$position()
+                annotationoffset = cs_fixpos
               };
             } else {
               
-              annotationoffset = annotation.$position();
+              annotationoffset = cs_fixpos;
               conf_key = nil;
             };
-            style = ($truthy($a = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".style"))) ? $a : annotation.$style());
+            style = ($truthy($a = chord_options['$[]']("style")) ? $a : annotation.$style());
             position = $rb_plus(self.$Vector2d(annotation.$companion().$sheet_drawable().$center()), annotationoffset);
             result = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), annotation.$text(), style, annotation.$companion().$origin(), conf_key, annotationoffset), 'tap', [], ($$173 = function(s){var self = $$173.$$s || this, $writer = nil;
 
@@ -29467,7 +29470,8 @@ Opal.modules["harpnotes"] = function(Opal) {
               result = nil};
             if (show['$=='](false)) {
               result = nil};
-            return result;}, $$172.$$s = self, $$172.$$arity = 1, $$172)))
+            return result;}, $$172.$$s = self, $$172.$$arity = 1, $$172));
+          return res_annotations;
         }, $Default__layout_voice_chordsymbols$170.$$arity = 3);
         
         Opal.def(self, '$_laoyut_voice_repeatmarks', $Default__laoyut_voice_repeatmarks$174 = function $$_laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr) {
@@ -29543,7 +29547,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($a = goto$.$policy()['$[]']("from_anchor")) ? $a : "after");
             to_anchor = ($truthy($a = goto$.$policy()['$[]']("to_anchor")) ? $a : "before");
             vertical_anchor = ($truthy($a = goto$.$policy()['$[]']("vertical_anchor")) ? $a : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2023));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2027));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -33983,7 +33987,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               if ($truthy(match)) {
                 
                 text = match['$[]'](1);
-                position = $gvars.conf['$[]']("defaults.notebound.annotation.pos");
+                position = $gvars.conf['$[]']("defaults.notebound.chord.pos");
                 conf_key = "" + "notebound.chord." + (voice_id) + "." + (entity.$znid()) + "." + (index);
                 return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Chordsymbol').$new(entity, $hash2(["style", "pos", "text"], {"style": "large", "pos": position, "text": text}), conf_key));
               } else {
@@ -40247,7 +40251,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.12.1-15-g68b27ba8");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.13-1-ge8b98e60");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

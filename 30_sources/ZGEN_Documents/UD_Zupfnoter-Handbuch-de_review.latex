@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.12.1-15-g8b9ef33d
+Version V\_1.13-1-ge8b98e60
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -7763,6 +7763,38 @@ erh\"{o}hen.
 \hypertarget{aux308nderungsgeschichte}{%
 \section{\"{A}nderungsgeschichte}\label{aux308nderungsgeschichte}}
 
+\hypertarget{v-1.13-dezember-2019}{%
+\subsection{V 1.13 Dezember 2019}\label{v-1.13-dezember-2019}}
+
+\hypertarget{fix}{%
+\subsubsection{fix}\label{fix}}
+
+\begin{itemize}
+\tightlist
+\item
+  Ausrichtung von Saitennamen verfeinert \#281
+\end{itemize}
+
+\hypertarget{enhancement}{%
+\subsubsection{enhancement}\label{enhancement}}
+
+\begin{itemize}
+\tightlist
+\item
+  Harfenvorschau kann unn auch PDF anzeigen \#281
+\item
+  Taktnummern, Z\"{a}hlmarken, Anmerkungen unterbrechen nun Flusslinen
+  \#279
+\item
+  added experimental packer 3
+\item
+  now support Akkordzither \#289
+\item
+  now support open tuning \#289
+\item
+  option to attach inline lyrics to countnotes \#290
+\end{itemize}
+
 \hypertarget{v-1.12-august-2019}{%
 \subsection{V 1.12 August 2019}\label{v-1.12-august-2019}}
 
@@ -7816,8 +7848,8 @@ erh\"{o}hen.
 \hypertarget{v-1.11-18.4.2019}{%
 \subsection{V 1.11 18.4.2019}\label{v-1.11-18.4.2019}}
 
-\hypertarget{fix}{%
-\subsubsection{fix}\label{fix}}
+\hypertarget{fix-1}{%
+\subsubsection{fix}\label{fix-1}}
 
 \begin{itemize}
 \tightlist
@@ -7838,8 +7870,8 @@ erh\"{o}hen.
   \#217
 \end{itemize}
 
-\hypertarget{enhancement}{%
-\subsubsection{enhancement}\label{enhancement}}
+\hypertarget{enhancement-1}{%
+\subsubsection{enhancement}\label{enhancement-1}}
 
 \begin{itemize}
 \tightlist
@@ -7872,8 +7904,8 @@ erh\"{o}hen.
 \hypertarget{v.1.10-nov-2018}{%
 \subsection{V.1.10 Nov 2018}\label{v.1.10-nov-2018}}
 
-\hypertarget{fix-1}{%
-\subsubsection{fix}\label{fix-1}}
+\hypertarget{fix-2}{%
+\subsubsection{fix}\label{fix-2}}
 
 \begin{itemize}
 \tightlist
@@ -7889,8 +7921,8 @@ erh\"{o}hen.
   \#239
 \end{itemize}
 
-\hypertarget{enhancement-1}{%
-\subsubsection{enhancement}\label{enhancement-1}}
+\hypertarget{enhancement-2}{%
+\subsubsection{enhancement}\label{enhancement-2}}
 
 \begin{itemize}
 \tightlist
@@ -8184,8 +8216,8 @@ internal release
 \hypertarget{v-1.7.1}{%
 \subsection{v 1.7.1}\label{v-1.7.1}}
 
-\hypertarget{fix-2}{%
-\subsubsection{fix}\label{fix-2}}
+\hypertarget{fix-3}{%
+\subsubsection{fix}\label{fix-3}}
 
 \begin{itemize}
 \tightlist
@@ -8201,8 +8233,8 @@ internal release
 \hypertarget{v-1.7}{%
 \subsection{v 1.7}\label{v-1.7}}
 
-\hypertarget{fix-3}{%
-\subsubsection{fix}\label{fix-3}}
+\hypertarget{fix-4}{%
+\subsubsection{fix}\label{fix-4}}
 
 \begin{itemize}
 \tightlist
@@ -8246,8 +8278,8 @@ internal release
   BWC: no longer show (Original in ) in case of transpositions (\#174)
 \end{itemize}
 
-\hypertarget{enhancement-2}{%
-\subsubsection{enhancement}\label{enhancement-2}}
+\hypertarget{enhancement-3}{%
+\subsubsection{enhancement}\label{enhancement-3}}
 
 \begin{itemize}
 \tightlist
@@ -8474,8 +8506,8 @@ issues}\label{backward-compatibility-issues}}
   in configuration \#95
 \end{itemize}
 
-\hypertarget{fix-4}{%
-\subsubsection{Fix}\label{fix-4}}
+\hypertarget{fix-5}{%
+\subsubsection{Fix}\label{fix-5}}
 
 \begin{itemize}
 \tightlist
@@ -8511,8 +8543,8 @@ issues}\label{backward-compatibility-issues}}
   Now yield 1.50 instead of 1.49999999 to minimize rounding effects \#95
 \end{itemize}
 
-\hypertarget{enhancement-3}{%
-\subsubsection{Enhancement}\label{enhancement-3}}
+\hypertarget{enhancement-4}{%
+\subsubsection{Enhancement}\label{enhancement-4}}
 
 \begin{itemize}
 \tightlist
@@ -8545,8 +8577,8 @@ issues}\label{backward-compatibility-issues}}
 \hypertarget{v-1.4.2}{%
 \subsection{V 1.4.2}\label{v-1.4.2}}
 
-\hypertarget{fix-5}{%
-\subsubsection{Fix}\label{fix-5}}
+\hypertarget{fix-6}{%
+\subsubsection{Fix}\label{fix-6}}
 
 \begin{itemize}
 \tightlist
@@ -8563,8 +8595,8 @@ issues}\label{backward-compatibility-issues}}
 \hypertarget{v-1.4.2-1}{%
 \subsection{V 1.4.2}\label{v-1.4.2-1}}
 
-\hypertarget{fix-6}{%
-\subsubsection{Fix}\label{fix-6}}
+\hypertarget{fix-7}{%
+\subsubsection{Fix}\label{fix-7}}
 
 \begin{itemize}
 \tightlist
@@ -8572,8 +8604,8 @@ issues}\label{backward-compatibility-issues}}
   remove copyright note from sheet annotation \#69
 \end{itemize}
 
-\hypertarget{enhancement-4}{%
-\subsubsection{enhancement}\label{enhancement-4}}
+\hypertarget{enhancement-5}{%
+\subsubsection{enhancement}\label{enhancement-5}}
 
 \begin{itemize}
 \tightlist
