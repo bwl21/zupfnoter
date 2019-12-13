@@ -734,7 +734,7 @@ class Controller
             template:              {keys: ['template.filebase', 'template.title'], scope: :global},
             extract0:              {keys: ['extract.0'], scope: :global},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
-            errors:                {keys: @validation_errors, scope: :global},
+            validationerrors:      {keys: @validation_errors, scope: :global},
             all_parameters:        {keys: ['.'], scope: :global, quicksetting_commands: ['stdextract']}
         }
 

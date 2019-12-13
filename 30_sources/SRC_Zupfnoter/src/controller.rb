@@ -772,8 +772,8 @@ class Controller
       $log.benchmark("validate default conf") do
         @validation_errors = []
         @validation_errors = @json_validator.validate_conf($conf) if ($log.loglevel == :debug || $settings[:validate] == :true)
+        @validation_errors
       end
-
 
       call_consumers(:document_title)
 

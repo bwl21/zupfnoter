@@ -753,6 +753,9 @@ class ConfstackEditor
         {id: 'notebound', icon: 'fa fa-adjust', text: 'notebound', tooltip: "edit notebound settings"},
         {id: 'images', icon: 'fa fa-image', text: 'images', tooltip: "edit placement of images"},
         {},
+        {id: 'validationerrors', icon: 'fa fa-exclamation-circle', text: 'validationerrors', tooltip: "fix invalid configuration parameters" },
+        {},
+
         # {id: 'template', icon: 'fa fa-file-code-o', text: 'template', tooltip:"edit Template properties"},
         {id: 'all_parameters', icon: 'fa fa-list', text: 'all parameters', tooltip: 'edit all parameters'},
         {id: 'template', icon: 'fa fa-pencil-square-o ', text: 'configtemplate', tooltip: 'edit template configuration'}

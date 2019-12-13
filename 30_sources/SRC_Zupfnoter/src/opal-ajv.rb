@@ -51,20 +51,24 @@ module Ajv
       end
       resconf.push({'extract' => conf.get('extract')}) # push extract-specific paramters
       x = resconf.get
-      validate('zupfnoter', resconf.get)
-      validate_filenameparts(resconf)
+      result = validate_filenameparts(resconf)
+      result += validate('zupfnoter', resconf.get)
     end
-
 
     def validate_filenameparts(conf)
       filenamekeys        = conf.keys.select { |i| i.include? 'filenamepart' }
-      filenames           = filenamekeys.map { |i| conf[i] }
-      duplicate_filenames = filenames.group_by { |e| e }.keep_if { |_, e| e.length > 1 }.keys
-      unless duplicate_filenames.empty?
-        message = I18n.t("duplicate filenameparts") + %Q{: #{duplicate_filenames.map{|i| %Q{"#{i}"}}.join(", ")}}
+      filenameparts = filenamekeys.inject({}) do |result, element|
+        result[$conf[element]] ||= []
+        result[$conf[element]].push element
+        result
+      end
+
+      filenameparts = filenameparts.keep_if{|k, v| v.length > 1}
+      filenameparts.each do |k,v|
+        message = I18n.t("duplicate filenameparts") + ": " + v.join(", ")
         $log.error(message)
       end
-      nil
+      filenameparts.values.flatten.uniq
     end
 
     def _schema
