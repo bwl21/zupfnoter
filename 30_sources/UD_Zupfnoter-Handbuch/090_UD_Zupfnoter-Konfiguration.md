@@ -1577,6 +1577,8 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 
 ## `presets.notes.T01_T99` - T01 .. T99 Alle .. {#presets.notes.T01_T99}
 
+TODO: Helptext für presets.notes.T01\_T99 einfügen
+
         "T01_T99": {"value": {}}
           
 
@@ -1605,7 +1607,7 @@ Beispiel: `BWL-001` - Bernhard Weichel - Blatt 001
 
 ## `presets.notes.T01_number_extract` - T01 Auszug-Nummer {#presets.notes.T01_number_extract}
 
-Dies fügt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+Dies fügt eine Kennzeichung des Auszuges am Ende der Nummer ein.
 
 Ein sinnvolles schema ist:
 
@@ -1901,7 +1903,7 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
 
 ## `templates.extracts.notes.T01_number_extract` - T01 Auszug-Nummer {#templates.extracts.notes.T01_number_extract}
 
-Dies fügt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+Dies fügt eine Kennzeichung des Auszuges am Ende der Nummer ein.
 
 Ein sinnvolles schema ist:
 

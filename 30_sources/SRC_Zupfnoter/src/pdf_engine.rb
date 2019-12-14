@@ -52,8 +52,8 @@ module Harpnotes
 
     def draw_sheet(sheet)
       if sheet.printer_config['show_border']
-        @pdf.rect(1.0, 1.0, 418, 295)
-        @pdf.rect(0.0, 0.0, 420.0, 297.0)
+        @pdf.rect(1.0, 1.0, 418, 295, :S)
+        @pdf.rect(0.0, 0.0, 420.0, 297.0, :S )
       end
 
       sheet.children.each do |child|

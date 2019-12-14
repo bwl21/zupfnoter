@@ -439,7 +439,7 @@ class ConfstackEditor
           IntegerList     => ['a4_pages', 'voices', 'flowlines', 'subflowlines', 'jumplines', 'layoutlines', 'verses', 'hpos', 'vpos', "produce", "llpos", "trpos"],
           Integer         => ['startpos', 'pack_method', 'p_repeat', 'p_begin', 'p_end', 'p_follow', 'PITCH_OFFSET', 'jumpline_vcut'],
           OneLineString   => ['title', 'filenamepart', 'url', 'filebase', 'imagename', 'prefix', 'cntextleft', 'cntextright'],
-          MultiLineString => ['text'],
+          MultiLineString => ['text', 'instrument_shape'],
           NoteAlign       => ['align'],
           NoteAnchor      => ['apanchor'],
           Boolean         => ['autopos', 'limit_a3', 'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],

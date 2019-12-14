@@ -1406,6 +1406,7 @@ module Harpnotes
         @color_variant1       = $conf.get('layout.color.color_variant1')
         @color_variant2       = $conf.get('layout.color.color_variant2')
         @draw_instrument      = nil
+        @draw_instrument_shape     = nil
         @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholder=
       end
 
@@ -1438,9 +1439,15 @@ module Harpnotes
 
         when "akkordzither", "Akkordzither"
           _instrument_akkordzither(pitchoffset, xoffset, xspacing, print_variant_nr)
-
         else
 
+        end
+
+        shape = $conf.get(%Q{extract.#{print_variant_nr}.instrument_shape})
+        if shape
+          @instrument_shape = JSON.parse(shape)
+        else
+          @instrument_shape = nil
         end
       end
 
@@ -1832,13 +1839,9 @@ module Harpnotes
           flaps_by_pitch.each do |f|
             result.push(Harpnotes::Drawing::Annotation.new([@pitch_to_xpos.call(f), flaps_y[f]], "*", :large))
           end
-
-          res            = Harpnotes::Drawing::Path.new([['M', 228, 0], ['L',  335, 185], ['L', 335,297]],:open)
-          res.line_width = $conf.get('layout.LINE_THICK');
-          result.push(res)
         }
 
-        @bottom_annotation_positions = [[10, 287], [10, 290], [120, 290]]
+        @bottom_annotation_positions = [[150, 287], [150, 290], [260, 290]]
 
       end
 
@@ -2378,6 +2381,11 @@ module Harpnotes
       def _layout_instrument
         res_instrument = []
         @draw_instrument.call.each { |r| res_instrument.push(r) } if @draw_instrument
+        if @instrument_shape
+          res            = Harpnotes::Drawing::Path.new(@instrument_shape, :open)
+          res.line_width = $conf.get('layout.LINE_THICK');
+          res_instrument.push(res)
+        end
         res_instrument
       end
 

@@ -359,6 +359,23 @@ Es gibt folgende Einstellunge:
 -   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
     einer G-Bass-Saite
 
+## instrument\_shape
+
+**Dieser Parameter ist vorläufig und kann wieder geändert werden.**
+
+Hier kannst du einen SVG-Pfad angeben, der auf das Blatt gezeichnet
+wird. Das braucht man vor allem bei Instrumenten wie Akkordzither. Der
+Text ist ein in JSON - formulierter Pfad.
+
+Folgende Befehle werden unterstützt:
+
+-   `['M', x, y]` - Bewege den Schreibpunkt zu x, y
+-   `['L', x, y]` - Zeichne eine Linie nach x,y
+-   `['l', x, y]` - zeichne **weiter** um x, y
+-   `['c', x, y, c1x, c1y, c2x, c2y ]` - zeichne weiter mit einer
+    Bezièrs-Kurve
+-   `['z]` - schliesse die Kurve
+
 ## images
 
 Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen
@@ -681,7 +698,7 @@ Beispiel: `BWL-001` - Bernhard Weichel - Blatt 001
 
 ## notes.T01\_number\_extract
 
-Dies fügt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+Dies fügt eine Kennzeichung des Auszuges am Ende der Nummer ein.
 
 Ein sinnvolles schema ist:
 
@@ -1164,10 +1181,6 @@ Hier siehst du eine Liste alle Bilder, die du geladen hast.
 > **Hinweis**: Du kannst Bilder im JPG-Format hinzufügen über das Menü
 > `Datei / Import`. Alternativ kannst du eine JPG Datei in Zupfnoter
 > hineinziehen.
-
-## T01\_T99
-
-## T01\_number
 
 <!-- here we have some dummy entries-->
 

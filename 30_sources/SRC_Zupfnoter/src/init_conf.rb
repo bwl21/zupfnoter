@@ -187,6 +187,7 @@ module InitConf
                      stringnames: {text:  lambda { $conf['extract.0.stringnames.text'] },
                                    marks: {hpos: [43, 79]}
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [0, 1, 2],
                                    a4_offset: lambda { $conf['extract.0.printer.a4_offset'] },
                                    a3_offset: lambda { $conf['extract.0.printer.a3_offset'] }
@@ -205,6 +206,7 @@ module InitConf
                                    marks: {hpos: [55, 79]
                                    }
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [1, 2],
                                    a3_offset: [-5, 0],
                                    a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
@@ -222,6 +224,7 @@ module InitConf
                                    marks: {hpos: [43, 67]
                                    }
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [1, 2],
                                    a3_offset: [-5, 0],
                                    a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
@@ -239,6 +242,7 @@ module InitConf
                                    marks: {hpos: [57, 77]
                                    }
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [1, 2],
                                    a3_offset: [-5, 0],
                                    a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
@@ -255,6 +259,7 @@ module InitConf
                      stringnames: {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 16, 33) },
                                    marks: {hpos: [59, 76]}
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [2],
                                    a3_offset: [0, 0],
                                    a4_offset: [40, 0]}
@@ -271,6 +276,7 @@ module InitConf
                      stringnames: {text:  'G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~',
                                    marks: {hpos: [55, 74]}
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [2],
                                    a3_offset: [0, 0],
                                    a4_offset: [35, 0]}
@@ -289,6 +295,7 @@ module InitConf
                      stringnames: {text:  'F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~',
                                    marks: {hpos: [54]}
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [2],
                                    a3_offset: [0, 0],
                                    a4_offset: [35, 0]}
@@ -305,6 +312,7 @@ module InitConf
                      stringnames: {text:  %Q{G, A, BB, C D E F G A BB c d e f g a bb c' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~},
                                    marks: {hpos: [55, 74]}
                      },
+                     instrument_shape: nil,
                      printer:     {a4_pages:  [1, 2],
                                    a3_offset: [-35, 0],
                                    a4_offset: [70, 0]}
@@ -316,15 +324,16 @@ module InitConf
                                    bottomup:     false,
                                    limit_a3:     false,
                                    PITCH_OFFSET: 0, # adapt if you pitches in
-                                   X_SPACING: 15,
-                                   X_OFFSET:  50
+                                   X_SPACING: 8.9 ,
+                                   X_OFFSET:  140
                      },
                      stringnames: {text:  %Q{C C# D E F F# G G# A B C' C# D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ },
                                    marks: {hpos: [60]}
                      },
-                     printer:     {a4_pages:  [1, 2],
-                                   a3_offset: [-35, 0],
-                                   a4_offset: [70, 0]}
+                     instrument_shape: %Q{[["M", 263, 0], ["L",  370, 185], ["L", 370,297]]},
+                     printer:     {a4_pages:  [1, 2, 3],
+                                   a3_offset: [0, 0],
+                                   a4_offset: [108, 0]}
                  },
              },
 

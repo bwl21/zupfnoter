@@ -557,6 +557,8 @@
     "Zombie token or zombie login occured. Maybe you hit the back button in the browser.": "Zombie Zugriffstoken oder login aufgetreten. Bitte drücke nicht die ZURÜCK-Taste des Borwsers nach dem Einloggen in Dropbox.",
     "zoom harpnote preview": "Zoom in Vorschau der Harfennoten",
     "Zupfnoter": "Zupfnoter",
+    "fix invalid configuration parameters": "fehlerhafte Konfigurationsparameter korrigieren",
+    "instrument_shape": "Instr. Rahmen",
 
 
 

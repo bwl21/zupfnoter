@@ -526,6 +526,7 @@ module Ajv
                                                                                                   :minItems    => 0,    # support empty array for no stringmarks
                                                                                                   :uniqueItems => true,
                                                                                                   :items       => {:type => "integer"}}}}}},
+                                                 :instrument_shape => {:type => "string"},
                                                  :sortmark     => {:type       => 'object',
                                                                    :properties => {
                                                                        :show => {:type => 'boolean'}
