@@ -13,11 +13,13 @@
 -   Harfenvorschau kann unn auch PDF anzeigen \#281
 -   Taktnummern, Zählmarken, Anmerkungen unterbrechen nun Flusslinen
     \#279
--   added experimental packer 3
--   now support Akkordzither \#289
--   now support open tuning \#289
--   option to attach inline lyrics to countnotes \#290
+-   experimenteller Packer Nr. 3
+-   Unterstützung für Akkordzither und beliebig gestimmte
+    Instrumente\#289
+-   Liedtexte an Zählnummern anfügen \#290
 -   Weitere Bearbeitung von Akkorden im ABC-Code
+-   "Offene" Sprunglinien \#285
+-   PDF-Tab in Harfenvorschau \#281
 
 ## V 1.12 August 2019
 

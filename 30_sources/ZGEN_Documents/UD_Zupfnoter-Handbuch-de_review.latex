@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.13
+Version V\_1.13-1-g80e62e2f
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -7789,13 +7789,18 @@ erh\"{o}hen.
   Taktnummern, Z\"{a}hlmarken, Anmerkungen unterbrechen nun Flusslinen
   \#279
 \item
-  added experimental packer 3
+  experimenteller Packer Nr. 3
 \item
-  now support Akkordzither \#289
+  Unterst\"{u}tzung f\"{u}r Akkordzither und beliebig gestimmte
+  Instrumente\#289
 \item
-  now support open tuning \#289
+  Liedtexte an Z\"{a}hlnummern anf\"{u}gen \#290
 \item
-  option to attach inline lyrics to countnotes \#290
+  Weitere Bearbeitung von Akkorden im ABC-Code
+\item
+  ``Offene'' Sprunglinien \#285
+\item
+  PDF-Tab in Harfenvorschau \#281
 \end{itemize}
 
 \hypertarget{v-1.12-august-2019}{%
