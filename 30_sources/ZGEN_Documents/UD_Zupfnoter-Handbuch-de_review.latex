@@ -205,7 +205,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.13-1-ge8b98e60
+Version V\_1.13
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de
@@ -6907,6 +6907,9 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
 Alle
 ..}{presets.notes.T01\_T99 - T01 .. T99 Alle ..}}\label{presets.notes.T01_T99}}
 
+TODO:\marginpar{TODO} Helptext f\"{u}r presets.notes.T01\_T99
+einf\"{u}gen
+
 \begin{verbatim}
     "T01_T99": {"value": {}}
       
@@ -6949,7 +6952,7 @@ Beispiel: \texttt{BWL-001} - Bernhard Weichel - Blatt 001
 - T01
 Auszug-Nummer}{presets.notes.T01\_number\_extract - T01 Auszug-Nummer}}\label{presets.notes.T01_number_extract}}
 
-Dies f\"{u}gt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+Dies f\"{u}gt eine Kennzeichung des Auszuges am Ende der Nummer ein.
 
 Ein sinnvolles schema ist:
 
@@ -7381,7 +7384,7 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
 - T01
 Auszug-Nummer}{templates.extracts.notes.T01\_number\_extract - T01 Auszug-Nummer}}\label{templates.extracts.notes.T01_number_extract}}
 
-Dies f\"{u}gt eine Kennzeichung des Auszuges am Ender der Nummer ein.
+Dies f\"{u}gt eine Kennzeichung des Auszuges am Ende der Nummer ein.
 
 Ein sinnvolles schema ist:
 

@@ -3,6 +3,7 @@
 ## fix
 
 * refine alignment of stringnames #281
+* Problem with bars within measures with repeat variant ending offbeat #284
 
 ## enhancement
 
@@ -12,6 +13,9 @@
 * now support Akkordzither #289
 * now support open tuning #289
 * option to attach inline lyrics to countnotes #290 
+* more editing methods for unisons #272
+* more customization on jumplines #285
+* PDF-tab in harp preview #281
 
 # 1.12 August 2019
 

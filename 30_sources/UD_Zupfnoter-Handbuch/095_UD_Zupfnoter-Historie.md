@@ -17,6 +17,7 @@
 -   now support Akkordzither \#289
 -   now support open tuning \#289
 -   option to attach inline lyrics to countnotes \#290
+-   Weitere Bearbeitung von Akkorden im ABC-Code
 
 ## V 1.12 August 2019
 
