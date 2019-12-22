@@ -9,8 +9,8 @@
     :vars: 
         :lang: de-de
         :fontsize: 12pt
-        :mainfont: Calibri
-        :sansfont: Calibri
+#        :mainfont: Helvetica
+#        :sansfont: Helvetica
         :geometry: a4paper 
         :logofile: ../ZAUX_Images/favicon.png
 

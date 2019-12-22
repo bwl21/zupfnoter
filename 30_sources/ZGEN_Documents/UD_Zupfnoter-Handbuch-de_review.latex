@@ -15,8 +15,6 @@
   \fi
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
   \newcommand{\euro}{€}
-    \setmainfont{Calibri}
-    \setsansfont{Calibri}
 \fi
 \usepackage[a4paper]{geometry}
 \usepackage{longtable}
@@ -205,7 +203,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.13-1-g80e62e2f
+Version V\_1.13-2-gc520eae1
 
 \begin{verbatim}
 © 2019 https://www.zupfnoter.de

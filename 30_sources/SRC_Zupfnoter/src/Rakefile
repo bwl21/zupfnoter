@@ -294,11 +294,15 @@ end
 
 desc "config doc and help"
 task :buildConfigDoc do
-  sh 'wortsammler -bi localization/help_de-de.md'
+  cmd = %Q{docker run --rm  -v #{pwd}:/workdir -w /workdir bwl21/wortsammler -bi localization/help_de-de.md}
+  sh cmd
   sh 'ruby conf_doc_source.rb'
-  sh 'wortsammler -bi ../../UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md'
+  cmd = %Q{docker run --rm  -v #{pwd}/../../:/workdir -w /workdir bwl21/wortsammler -bi UD_Zupfnoter-Handbuch/090_UD_Zupfnoter-Konfiguration.md}
+
+  sh cmd
 end
 
+#     cmd = %Q{docker run --rm  -v #{pwd}/..:/workdir -w /workdir/ZSUPP_Tools bwl21/wortsammler -bpm #{manifest}}
 
 desc "compile zupfnoter soundfonts"
 task :buildSoundfonts do

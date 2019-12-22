@@ -1,3 +1,7 @@
+.DS_Store
+*.bak
+*.log
+30_sources/TST_Cypress
 30_sources/SRC_Zupfnoter/src/doc
 30_sources/SRC_Zupfnoter/src/.yardoc
 30_sources/SRC_Zupfnoter/src/out
