@@ -330,7 +330,7 @@ module InitConf
                      stringnames: {text:  %Q{C C# D E F F# G G# A B C' C# D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ },
                                    marks: {hpos: [60]}
                      },
-                     instrument_shape: %Q{[["M", 263, 0], ["L",  370, 185], ["L", 370,297]]},
+                       instrument_shape: %Q{[["M", 228, 0], ["L",  335, 185], ["L", 335,297]]},
                      printer:     {a4_pages:  [1, 2, 3],
                                    a3_offset: [0, 0],
                                    a4_offset: [108, 0]}
