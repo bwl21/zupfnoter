@@ -719,7 +719,8 @@ module Harpnotes
 
 
     def get_config_from_text(fulltext)
-      JSON.parse(fulltext.split(@config_separator).select{|i| i.start_with? ".config"}.first.gsub(".config", ""))
+      configjson = fulltext.split(@config_separator).select{|i| i.start_with? ".config"}.first&.gsub(".config", "")
+      configjson ? JSON.parse(configjson) : nil
     end
 
     #####################################################################################

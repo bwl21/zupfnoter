@@ -267,9 +267,10 @@ class Controller
 
       command.as_action do |args|
         args[:oldval] = @editor.get_text
-        config = @editor.get_config_from_text(get_current_template)
+        config        = @editor.get_config_from_text(@dropped_abc)
+        config        = @editor.get_config_from_text(get_current_template) unless config
         @editor.set_text(@dropped_abc)
-        @editor.set_config_model(config, "pasted XML", false )
+        @editor.set_config_model(config, "pasted XML", false)
         set_status(music_model: "new")
       end
 
