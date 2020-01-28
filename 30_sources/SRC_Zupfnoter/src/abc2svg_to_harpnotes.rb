@@ -334,8 +334,8 @@ module Harpnotes
         # it shall not create a bar in harpnotes
         # but do not check this in context of variants
         #    variant is stopped and not started nex
-        if ( (voice_element[:rbstop] == 2 and not voice_element[:rbstart] == 2))
-          if type.include? ":"  #   false # @is_first_measure ## first measure after a meter statment cannot suppress bar
+        if ((voice_element[:rbstop] == 2 and not voice_element[:rbstart] == 2))
+          if type.include? ":" #   false # @is_first_measure ## first measure after a meter statment cannot suppress bar
             @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
           end
         end
@@ -484,7 +484,8 @@ module Harpnotes
 
             match = name.match(/^([^!#\<\>]+)([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
-              text     = match[1]
+              text = match[1]
+              text = text.gsub("♯", "#").gsub("♭", "b") # todo: fix this if we have unicode support #295
               position = $conf['defaults.notebound.chord.pos']
               conf_key = "notebound.chord.#{voice_id}.#{entity.znid}.#{index}"
               result << Harpnotes::Music::Chordsymbol.new(entity, {style: 'large', pos: position, text: text}, conf_key)
@@ -693,7 +694,7 @@ module Harpnotes
       def _transform_lyrics(voice_element)
         if voice_element[:a_ly]
           result = voice_element[:a_ly].first
-          result = result[:t]&.gsub("\n", "-").gsub("_", "") if result
+          result = result[:t] &.gsub("\n", "-").gsub("_", "") if result
         else
           result = ""
         end
@@ -943,7 +944,7 @@ module Harpnotes
       def _extract_chord_lines(voice_element)
         chords = voice_element[:a_gch]
         if chords
-          result = chords.select { |e| e[:type] == '^' ; true}.map { |e| e[:text] }
+          result = chords.select { |e| e[:type] == '^'; true }.map { |e| e[:text] }
         else
           result = []
         end
