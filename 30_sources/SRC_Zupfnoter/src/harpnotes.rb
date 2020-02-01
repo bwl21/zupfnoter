@@ -1078,7 +1078,14 @@ module Harpnotes
       # @param [Object] conf_value - the value for configuration (used for dragging annotation)
       def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
         super()
-        _text       = text.gsub(/[„“‚’—–]/, {'„' => '"', '“' => '"', '‚' => "'", '’' => "'", '—' => '-', "–" => "-"})
+        _text_t       = text.gsub(/[„“‚’—–]/, {'„' => '"', '“' => '"', '‚' => "'", '’' => "'", '—' => '-', "–" => "-"})
+        _text       = _text_t.gsub(/./){|c| c[0].ord > 255 ? '¿' : c }
+
+        unless _text ==_text_t
+          startchar = origin[:startChar] if origin
+          $log.error("replaced unsupported characters with '¿' #{conf_key}", [1,1] )
+        end
+
         @center     = center
         @text       = _text
         @style      = style
