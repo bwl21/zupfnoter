@@ -738,7 +738,8 @@ class Controller
             extract0:              {keys: ['extract.0'], scope: :global},
             extract_current:       {keys: expand_extract_keys($conf.keys.select { |k| k.start_with?('extract.0.') }.map { |k| k.split('extract.0.').last })},
             validationerrors:      {keys: @validation_errors, scope: :global},
-            all_parameters:        {keys: ['.'], scope: :global, quicksetting_commands: ['stdextract']}
+            all_parameters:        {keys: ['.'], scope: :global, quicksetting_commands: ['stdextract']},
+            fromtemplate:          {keys:  Confstack.new("stdextract").tap{|i| i.push(JSON.parse(`localStorage.getItem('standardextract')`))}.keys.map{|i| "extract.#{i}"} }
         }
 
         # regular expression formsets match by a regular expression
