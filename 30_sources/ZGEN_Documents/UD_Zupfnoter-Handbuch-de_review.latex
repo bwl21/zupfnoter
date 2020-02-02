@@ -203,10 +203,10 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.13-2-gc520eae1
+Version V\_1.13-7-g9cb82600
 
 \begin{verbatim}
-© 2019 https://www.zupfnoter.de
+© 2020 https://www.zupfnoter.de
 \end{verbatim}
 
 \clearpage
@@ -4933,7 +4933,13 @@ spezifiziert den Auszug 1 usw.
           "tuning"            : "fixed"
         },
         "layoutlines"  : [1, 2, 3, 4],
-        "legend"       : {"pos": [320, 7], "spos": [320, 27]},
+        "legend"       : {
+          "align"  : "r",
+          "pos"    : [320, 7],
+          "spos"   : [320, 27],
+          "style"  : "regular",
+          "tstyle" : "large"
+        },
         "lyrics"       : {},
         "nonflowrest"  : false,
         "notes"        : {},
@@ -6005,6 +6011,8 @@ unterschieden zwischen
 \item
   \texttt{pos} - Position des Titels des Musikst\"{u}ckes
 \item
+  `tstyle - Stil des titels'
+\item
   \texttt{spos} - Position der Sublegende, d.h. der weiteren Angaben zum
   Musikst\"{u}ck
 \end{itemize}
@@ -6016,16 +6024,43 @@ die Eingabe \"{u}ber die Bildschirmmaske sinnvol sein.
 \end{quote}
 
 \begin{verbatim}
-    "legend": {"pos": [320, 7], "spos": [320, 27]}
+    "legend": {
+      "align"  : "r",
+      "pos"    : [320, 7],
+      "spos"   : [320, 27],
+      "style"  : "regular",
+      "tstyle" : "large"
+    }
       
 \end{verbatim}
+
+\hypertarget{extract.0.legend.align}{%
+\subsection{\texorpdfstring{\texttt{extract.0.legend.align} -
+Ausrichtung}{extract.0.legend.align - Ausrichtung}}\label{extract.0.legend.align}}
+
+Hier kannst du die Ausrichtung des Titels auswe\"{a}hlen:
+
+\begin{itemize}
+\item
+  \texttt{l}: der Text steht links vom Bezugspunkt (und ist daher
+  rechtsb\"{u}ndig)
+\item
+  \texttt{r}: der Text steht rechts vom Bezugspunkt (und ist daher
+  linksb\"{u}ndig)
+\item
+  \texttt{auto}: wie \texttt{l}
+
+\begin{verbatim}
+"align": "r"
+\end{verbatim}
+\end{itemize}
 
 \hypertarget{extract.0.legend.pos}{%
 \subsection{\texorpdfstring{\texttt{extract.0.legend.pos} -
 Position}{extract.0.legend.pos - Position}}\label{extract.0.legend.pos}}
 
-Hier kannst du die Darstellung des Titels des Musikst\"{u}ckes angeben.
-Die Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+Hier kannst du die Position des Titels des Musikst\"{u}ckes angeben. Die
+Angabe erfolgt in mm als durch Kommas getrennt Liste von horizontaler /
 vertikaler Position.
 
 \begin{verbatim}
@@ -6043,6 +6078,30 @@ Liste von horizontaler / vertikaler Position.
 
 \begin{verbatim}
     "spos": [320, 27]
+      
+\end{verbatim}
+
+\hypertarget{extract.0.legend.style}{%
+\subsection{\texorpdfstring{\texttt{extract.0.legend.style} -
+Stil}{extract.0.legend.style - Stil}}\label{extract.0.legend.style}}
+
+Hier kannst du den Stil f\"{u}r die Legende einstellen. Du hast eine
+Auswahl aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "style": "regular"
+      
+\end{verbatim}
+
+\hypertarget{extract.0.legend.tstyle}{%
+\subsection{\texorpdfstring{\texttt{extract.0.legend.tstyle} - Stil
+f.~Titel}{extract.0.legend.tstyle - Stil f.~Titel}}\label{extract.0.legend.tstyle}}
+
+Hier kannst du die Darstellung des Titels des Musikst\"{u}ckes angeben.
+Du hast eine Auswahl aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "tstyle": "large"
       
 \end{verbatim}
 
@@ -6865,14 +6924,14 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
         "value" : {
           "pos"   : [340, 251],
           "style" : "small",
-          "text"  : "© 2019\n"
+          "text"  : "© 2020\n"
         }
       },
       "T03_copyright_harpnotes"  : {
         "value" : {
           "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2019 Notenbild: zupfnoter.de"
+          "text"  : "© 2020 Notenbild: zupfnoter.de"
         }
       },
       "T04_to_order"             : {
@@ -6987,7 +7046,7 @@ das Copyright auf die Komposition angegeben.
 
 \begin{verbatim}
     "T02_copyright_music": {
-      "value" : {"pos": [340, 251], "style": "small", "text": "© 2019\n"}
+      "value" : {"pos": [340, 251], "style": "small", "text": "© 2020\n"}
     }
       
 \end{verbatim}
@@ -7006,7 +7065,7 @@ Tischharfe
       "value" : {
         "pos"   : [340, 260],
         "style" : "small",
-        "text"  : "© 2019 Notenbild: zupfnoter.de"
+        "text"  : "© 2020 Notenbild: zupfnoter.de"
       }
     }
       

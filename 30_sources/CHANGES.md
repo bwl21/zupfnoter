@@ -4,6 +4,11 @@
 
 * refine alignment of stringnames #281
 * Problem with bars within measures with repeat variant ending offbeat #284
+* filter mor unicdoce characters #292
+* sharp chord symbols like F# now work in transposed pieces #295
+* now we can control the style of title #294
+
+
 
 ## enhancement
 

@@ -218,7 +218,13 @@ Auszug 1 usw.
               "tuning"            : "fixed"
             },
             "layoutlines"  : [1, 2, 3, 4],
-            "legend"       : {"pos": [320, 7], "spos": [320, 27]},
+            "legend"       : {
+              "align"  : "r",
+              "pos"    : [320, 7],
+              "spos"   : [320, 27],
+              "style"  : "regular",
+              "tstyle" : "large"
+            },
             "lyrics"       : {},
             "nonflowrest"  : false,
             "notes"        : {},
@@ -941,6 +947,7 @@ Hier kannst du die Darstellung der Legende konfigurieren. Dabei wird
 unterschieden zwischen
 
 -   `pos` - Position des Titels des Musikstückes
+-   'tstyle - Stil des titels'
 -   `spos` - Position der Sublegende, d.h. der weiteren Angaben zum
     Musikstück
 
@@ -948,13 +955,31 @@ unterschieden zwischen
 > Maus positioniert. Für eine genaue positionierung kann jedoch die
 > Eingabe über die Bildschirmmaske sinnvol sein.
 
-        "legend": {"pos": [320, 7], "spos": [320, 27]}
+        "legend": {
+          "align"  : "r",
+          "pos"    : [320, 7],
+          "spos"   : [320, 27],
+          "style"  : "regular",
+          "tstyle" : "large"
+        }
           
+
+## `extract.0.legend.align` - Ausrichtung {#extract.0.legend.align}
+
+Hier kannst du die Ausrichtung des Titels ausweählen:
+
+-   `l`: der Text steht links vom Bezugspunkt (und ist daher
+    rechtsbündig)
+-   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+    linksbündig)
+-   `auto`: wie `l`
+
+        "align": "r"
 
 ## `extract.0.legend.pos` - Position {#extract.0.legend.pos}
 
-Hier kannst du die Darstellung des Titels des Musikstückes angeben. Die
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+Hier kannst du die Position des Titels des Musikstückes angeben. Die
+Angabe erfolgt in mm als durch Kommas getrennt Liste von horizontaler /
 vertikaler Position.
 
         "pos": [320, 7]
@@ -967,6 +992,22 @@ Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
 von horizontaler / vertikaler Position.
 
         "spos": [320, 27]
+          
+
+## `extract.0.legend.style` - Stil {#extract.0.legend.style}
+
+Hier kannst du den Stil für die Legende einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "regular"
+          
+
+## `extract.0.legend.tstyle` - Stil f. Titel {#extract.0.legend.tstyle}
+
+Hier kannst du die Darstellung des Titels des Musikstückes angeben. Du
+hast eine Auswahl aus vordefinierten Stilen.
+
+        "tstyle": "large"
           
 
 ## `extract.0.lyrics` - Liedtexte {#extract.0.lyrics}
@@ -1541,14 +1582,14 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
             "value" : {
               "pos"   : [340, 251],
               "style" : "small",
-              "text"  : "© 2019\n"
+              "text"  : "© 2020\n"
             }
           },
           "T03_copyright_harpnotes"  : {
             "value" : {
               "pos"   : [340, 260],
               "style" : "small",
-              "text"  : "© 2019 Notenbild: zupfnoter.de"
+              "text"  : "© 2020 Notenbild: zupfnoter.de"
             }
           },
           "T04_to_order"             : {
@@ -1632,7 +1673,7 @@ Dies fügt einen Copyrightvermerk für die Musik ein. Hier wird das
 Copyright auf die Komposition angegeben.
 
         "T02_copyright_music": {
-          "value" : {"pos": [340, 251], "style": "small", "text": "© 2019\n"}
+          "value" : {"pos": [340, 251], "style": "small", "text": "© 2020\n"}
         }
           
 
@@ -1645,7 +1686,7 @@ reklamierst du ein Copyright für die Umsetzung auf die Tischharfe
           "value" : {
             "pos"   : [340, 260],
             "style" : "small",
-            "text"  : "© 2019 Notenbild: zupfnoter.de"
+            "text"  : "© 2020 Notenbild: zupfnoter.de"
           }
         }
           

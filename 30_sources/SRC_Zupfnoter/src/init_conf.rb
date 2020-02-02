@@ -450,7 +450,7 @@ module InitConf
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {spos: [320, 27], pos: [320, 7]},
+                 legend:       {spos: [320, 27], pos: [320, 7], tstyle: 'large', align: "r", style: 'regular' },
                  lyrics:       {},
                  images:       {},
                  #

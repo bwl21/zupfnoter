@@ -754,7 +754,7 @@ class Controller
             /^extract\.(\d+)\.notebound\.minc\.(\d+)$/                              => {keys: ["minc_f"]},
             /^extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)$/                 => {keys: ["cp1", "cp2"]},
 ##            /^extract\.(\d+)\.notebound\.c_jumplines\.v_(\d+)\.(\d+)$/              => {keys: ["p_repeat", "from.jumpline_vcut", "to.jumpline_vcut"]},
-            /^extract\.(\d+)\.legend$/                                              => {keys: ["pos", "align", "spos", "style"]},
+            /^extract\.(\d+)\.legend$/                                              => {keys: ["pos", "tstyle", "align", "spos", "style"]},
             /^extract\.(\d+)\.lyrics\.(\d)$/                                        => {keys: ["verses", "pos", "style"]},
             /^extract\.(\d+)\.notebound\.repeat_.+\.v_(\d+).(\d+)$/                 => {keys: ['text', 'pos', 'style']},
             /^extract\.(\d+)\.notebound\.nconf\.v_(\d+).t_(\d+).n_(\d+)$/           => {keys: ["nshift"]},

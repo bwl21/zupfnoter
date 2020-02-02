@@ -269,7 +269,7 @@ task :build_cli do #=> [:build] do
   # now pack into one bundle see
   # https://stackoverflow.com/questions/14314038/how-do-i-deploy-node-js-applications-as-a-single-executable-file
 
-  cmd = "browserify --node --dg false #{ZUPFNOTER_CLI_JS} -o #{ZUPFNOTER_CLI_JS}"
+  cmd = "npx browserify --node --dg false #{ZUPFNOTER_CLI_JS} -o #{ZUPFNOTER_CLI_JS}"
   sh cmd
   sh "./node_modules/uglify-js/bin/uglifyjs -c -m -o #{ZUPFNOTER_CLI_MIN_JS} #{ZUPFNOTER_CLI_JS}"
 end

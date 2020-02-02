@@ -253,10 +253,6 @@ class ConfstackEditor
         string[:id]
       end
 
-      def self.to_template(key)
-
-      end
-
       def self.to_neutral
         $log.error("BUG: this should not happen Neutral RestPosition #{__FILE__} #{__LINE__}")
       end
@@ -445,7 +441,7 @@ class ConfstackEditor
           Boolean         => ['autopos', 'limit_a3', 'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'nshift', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
           TupletShape     => ['shape'],
-          TextStyle       => ['style'],
+          TextStyle       => ['style', 'tstyle'],
           Tuning          => ['tuning'],
           RestPosition    => ['default', 'repeatstart', 'repeatend'],
           Instrument      => ['instrument'],

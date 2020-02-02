@@ -2449,6 +2449,7 @@ module Harpnotes
 
         title_pos = @print_options_hash[:legend][:pos]
 
+        title_style = @print_options_raw.get("legend.tstyle") || :large
         title_align = @print_options_raw.get("legend.align") || :r
         title_align = (title_align == :l) ? :right : :left
 
@@ -2456,7 +2457,7 @@ module Harpnotes
         legend     = "#{print_variant_title}\n#{composer}\nTakt: #{meter} (#{tempo})\nTonart: #{key}"
         style      = @print_options_raw.get("legend.style") || :regular
         res_legend << Harpnotes::Drawing::Annotation.new(
-            title_pos, title, :large, nil,
+            title_pos, title, title_style, nil,
             "extract.#{print_variant_nr}.legend.pos",
             title_pos).tap do |s|
           s.draginfo = {handler: :annotation}

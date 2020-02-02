@@ -95,6 +95,7 @@ Hier kannst du die Darstellung der Legende konfigurieren. Dabei wird
 unterschieden zwischen
 
 -   `pos` - Position des Titels des Musikstückes
+-   'tstyle - Stil des titels'
 -   `spos` - Position der Sublegende, d.h. der weiteren Angaben zum
     Musikstück
 
@@ -102,17 +103,37 @@ unterschieden zwischen
 > Maus positioniert. Für eine genaue positionierung kann jedoch die
 > Eingabe über die Bildschirmmaske sinnvol sein.
 
+## extract.0.legend.tstyle
+
+Hier kannst du die Darstellung des Titels des Musikstückes angeben. Du
+hast eine Auswahl aus vordefinierten Stilen.
+
 ## extract.0.legend.pos
 
-Hier kannst du die Darstellung des Titels des Musikstückes angeben. Die
-Angabe erfolgt in mm als kommagetrennte Liste von horizontaler /
+Hier kannst du die Position des Titels des Musikstückes angeben. Die
+Angabe erfolgt in mm als durch Kommas getrennt Liste von horizontaler /
 vertikaler Position.
+
+## extract.0.legend.align
+
+Hier kannst du die Ausrichtung des Titels ausweählen:
+
+-   `l`: der Text steht links vom Bezugspunkt (und ist daher
+    rechtsbündig)
+-   `r`: der Text steht rechts vom Bezugspunkt (und ist daher
+    linksbündig)
+-   `auto`: wie `l`
 
 ## extract.0.legend.spos
 
 Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des
 Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste
 von horizontaler / vertikaler Position.
+
+## extract.0.legend.style
+
+Hier kannst du den Stil für die Legende einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
 
 ## extract.0.title
 

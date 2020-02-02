@@ -26804,7 +26804,7 @@ Opal.modules["opal-ajv"] = function(Opal) {
       return (Opal.def(self, '$_schema', $JsonValidator__schema$12 = function $$_schema() {
         var self = this;
 
-        return $hash2(["$schema", "description", "type", "required", "definitions", "properties"], {"$schema": "http://json-schema.org/draft-04/schema#", "description": "Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7", "type": "object", "required": ["produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"], "definitions": $hash2(["apanchor", "pos", "notes_entry", "nb_annotation_xx", "minc_entry", "nconf_entry", "align", "notebound_pos", "notebound_repeat_outdated", "annotated_bezier", "extract_layout"], {"apanchor": $hash2(["type", "enum"], {"type": "string", "enum": ["manual", "box", "center"]}), "pos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "number"})}), "notes_entry": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "align", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "style": $hash2(["type"], {"type": "string"})})}), "nb_annotation_xx": $hash2(["type", "required", "properties"], {"type": "object", "required": ["voices", "pos", "autopos", "style"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"})})}), "minc_entry": $hash2(["type", "required", "additionalProperties", "properties"], {"type": "object", "required": ["minc_f"], "additionalProperties": false, "properties": $hash2(["minc_f"], {"minc_f": $hash2(["type"], {"type": "number"})})}), "nconf_entry": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["t_d*"], {"t_d*": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["n_d*"], {"n_d*": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["nshift"], {"nshift": $hash2(["type"], {"type": "number"})})})})})})}), "align": $hash2(["type", "enum"], {"type": "string", "enum": ["l", "r", "auto"]}), "notebound_pos": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["t_\\d*|\\d*"], {"t_\\d*|\\d*": $hash2(["type", "additionalProperties", "properties", "patternProperties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["pos", "align", "show", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "show": $hash2(["type"], {"type": "boolean"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})}), "patternProperties": $hash2(["\\d+"], {"\\d+": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["pos", "align", "show", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "show": $hash2(["type"], {"type": "boolean"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})})})})})})})}), "notebound_repeat_outdated": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["text", "style", "pos"], {"text": "integer", "style": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})})}), "annotated_bezier": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["cp1", "cp2", "pos", "shape", "show", "style"], {"cp1": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "cp2": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "shape": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "string"})}), "show": $hash2(["type"], {"type": "boolean"}), "style": $hash2(["type"], {"type": "string"})})}), "extract_layout": $hash2(["type", "requiredx", "additionalProperties", "properties"], {"type": "object", "requiredx": ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"], "additionalProperties": false, "properties": $hash2(["limit_a3", "beams", "bottomup", "jumpline_anchor", "jumpline_vcut", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "instrument", "tuning", "DRAWING_AREA_SIZE", "ELLIPSE_SIZE", "REST_SIZE", "grid", "color", "packer"], {"limit_a3": $hash2(["type"], {"type": "boolean"}), "beams": $hash2(["type"], {"type": "boolean"}), "bottomup": $hash2(["type"], {"type": "boolean"}), "jumpline_anchor": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "jumpline_vcut": $hash2(["type"], {"type": "number"}), "LINE_THIN": $hash2(["type"], {"type": "number"}), "LINE_MEDIUM": $hash2(["type"], {"type": "number"}), "LINE_THICK": $hash2(["type"], {"type": "number"}), "PITCH_OFFSET": $hash2(["type"], {"type": "integer"}), "X_SPACING": $hash2(["type"], {"type": "number"}), "X_OFFSET": $hash2(["type"], {"type": "number"}), "instrument": $hash2(["type"], {"type": "string"}), "tuning": $hash2(["type"], {"type": "string"}), "DRAWING_AREA_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "ELLIPSE_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "REST_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "grid": $hash2(["type"], {"type": "boolean"}), "color": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": $hash2(["type"], {"type": "string"}), "color_variant1": $hash2(["type"], {"type": "string"}), "color_variant2": $hash2(["type"], {"type": "string"})})}), "packer": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["pack_method", "pack_max_spread_factor", "pack_min_increment"], {"pack_method": $hash2(["type"], {"type": "integer"}), "pack_max_spread_factor": $hash2(["type"], {"type": "number"}), "pack_min_increment": $hash2(["type"], {"type": "number"})})})})})}), "properties": $hash2(["confstack", "produce", "template", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"], {"confstack": $hash2(["type", "required", "properties"], {"type": "object", "required": ["env"], "properties": $hash2(["env"], {"env": $hash2(["type"], {"type": "string"})})}), "produce": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "template": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["filebase", "title"], {"filebase": $hash2(["type"], {"type": "string"}), "title": $hash2(["type"], {"type": "string"})})}), "abc_parser": $hash2(["type"], {"type": "string"}), "restposition": $hash2(["type", "additionalProperties", "required", "properties"], {"type": "object", "additionalProperties": false, "required": ["default", "repeatstart", "repeatend"], "properties": $hash2(["default", "repeatstart", "repeatend"], {"default": $hash2(["type"], {"type": "string"}), "repeatstart": $hash2(["type"], {"type": "string"}), "repeatend": $hash2(["type"], {"type": "string"})})}), "wrap": $hash2(["type"], {"type": "integer"}), "defaults": $hash2(["type", "required", "properties"], {"type": "object", "required": ["notebound"], "properties": $hash2(["notebound"], {"notebound": $hash2(["type", "required", "properties"], {"type": "object", "required": ["annotation", "partname", "variantend", "tuplet", "chord"], "properties": $hash2(["annotation", "chord", "partname", "variantend", "tuplet"], {"annotation": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "chord": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "partname": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style", "show"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"}), "show": $hash2(["type"], {"type": "boolean"})})}), "variantend": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "tuplet": $hash2(["$ref", "required"], {"$ref": "#/definitions/annotated_bezier", "required": ["cp1", "cp2", "shape"]})})})})}), "templates": $hash2(["type", "required", "properties"], {"type": "object", "required": ["notes", "lyrics", "tuplet", "annotations"], "properties": $hash2(["notes", "lyrics", "tuplet", "annotations"], {"notes": $hash2(["$ref"], {"$ref": "#/definitions/notes_entry"}), "lyrics": $hash2(["type", "required", "properties"], {"type": "object", "required": ["verses", "pos"], "properties": $hash2(["verses", "pos", "style"], {"verses": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "tuplet": $hash2(["type", "required", "properties"], {"type": "object", "required": ["cp1", "cp2", "shape"], "properties": $hash2(["cp1", "cp2", "shape"], {"cp1": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "cp2": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "shape": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "string"})})})}), "annotations": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos", "style"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})})})}), "annotations": $hash2(["type", "required", "properties"], {"type": "object", "required": ["vl", "vt", "vr"], "properties": $hash2(["vl", "vt", "vr"], {"vl": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})}), "vt": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})}), "vr": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})})})}), "extract": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*", "4", "5"], {"d*": $hash2(["type", "additionalProperties", "requiredx", "properties"], {"type": "object", "additionalProperties": false, "requiredx": ["title", "filenamepart", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "layout", "nonflowrest", "notes", "barnumbers", "countnotes", "chords", "stringnames", "printer"], "properties": $hash2(["title", "filenamepart", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "layout", "nonflowrest", "notes", "notebound", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "instrument_shape", "sortmark", "printer", "images"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "startpos": $hash2(["type"], {"type": "integer"}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "synchlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})}), "flowlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "subflowlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "jumplines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "repeatsigns": $hash2(["type", "requiredx", "properties"], {"type": "object", "requiredx": ["voices", "left", "right"], "properties": $hash2(["voices", "left", "right"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "left": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})}), "right": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})})})}), "layoutlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "legend": $hash2(["type", "required", "properties"], {"type": "object", "required": ["spos", "pos"], "properties": $hash2(["spos", "pos", "align", "style"], {"spos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "style": $hash2(["type"], {"type": "string"})})}), "lyrics": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2([".*"], {".*": $hash2(["type", "required"], {"type": "object", "required": ["verses", "pos"]})})}), "layout": $hash2(["$ref"], {"$ref": "#/definitions/extract_layout"}), "nonflowrest": $hash2(["type"], {"type": "boolean"}), "notes": $hash2(["patternProperties"], {"patternProperties": $hash2([".*"], {".*": $hash2(["$ref"], {"$ref": "#/definitions/notes_entry"})})}), "notebound": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["annotation", "chord", "barnumber", "c_jumplines", "countnote", "decoration", "flowline", "minc", "nconf", "partname", "repeat_begin", "repeat_end", "tuplet", "variantend"], {"annotation": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "chord": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "barnumber": $hash2(["$ref", "align"], {"$ref": "#/definitions/notebound_pos", "align": $hash2(["$ref"], {"$ref": "#/definitions/align"})}), "c_jumplines": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["p_repeat", "p_begin", "p_end", "p_follow"], {"p_repeat": $hash2(["type"], {"type": "number"}), "p_begin": $hash2(["type"], {"type": "number"}), "p_end": $hash2(["type"], {"type": "number"}), "p_follow": $hash2(["type"], {"type": "number"})})})}), "countnote": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "decoration": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d+"], {"d+": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"})})}), "flowline": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["v_d+"], {"v_d+": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/annotated_bezier"})})})})}), "minc": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/minc_entry"})})}), "nconf": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["$ref"], {"$ref": "#/definitions/nconf_entry"})})}), "partname": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "repeat_begin": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "repeat_end": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "tuplet": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/annotated_bezier"})})})})}), "variantend": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"})})}), "tuplets": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["text"], {"text": $hash2(["type"], {"type": "string"})})}), "barnumbers": $hash2(["type", "required", "properties"], {"type": "object", "required": ["voices", "pos", "autopos", "style", "prefix"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style", "prefix"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"}), "prefix": $hash2(["type"], {"type": "string"})})}), "countnotes": $hash2(["type", "required", "properties", "cntextleft", "cntextright"], {"type": "object", "required": ["voices", "pos", "autopos", "style"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"})}), "cntextleft": $hash2(["type"], {"type": "string"}), "cntextright": $hash2(["type"], {"type": "string"})}), "chords": $hash2(["ref", "style"], {"ref": "#/definitions/nb_annotations", "style": $hash2(["type"], {"type": "string"})}), "stringnames": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "vpos", "style", "marks"], "properties": $hash2(["text", "vpos", "style", "marks"], {"text": $hash2(["type"], {"type": "string"}), "vpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "style": $hash2(["type"], {"type": "string"}), "marks": $hash2(["type", "required", "properties"], {"type": "object", "required": ["vpos", "hpos"], "properties": $hash2(["vpos", "hpos"], {"vpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "hpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})})})}), "instrument_shape": $hash2(["type"], {"type": "string"}), "sortmark": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["show"], {"show": $hash2(["type"], {"type": "boolean"})})}), "printer": $hash2(["type", "required", "properties"], {"type": "object", "required": ["a3_offset", "a4_offset", "show_border"], "properties": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": $hash2(["type", "minItems", "axItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "axItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "a4_offset": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "show_border": $hash2(["type"], {"type": "boolean"})})}), "images": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["imagename", "show", "pos", "height"], {"imagename": $hash2(["type"], {"type": "string"}), "show": $hash2(["type"], {"type": "boolean"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "height": $hash2(["type"], {"type": "number"})})})})})})}), "4": $hash2(["type", "required", "properties"], {"type": "object", "required": ["title", "voices"], "properties": $hash2(["title", "filenamepart", "voices"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})}), "5": $hash2(["type", "required", "properties"], {"type": "object", "required": ["title", "voices"], "properties": $hash2(["title", "filenamepart", "voices"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})})})}), "layout": $hash2(["type", "required", "properties"], {"type": "object", "required": ["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "REST_TO_GLYPH"], "properties": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "REST_TO_GLYPH"], {"grid": $hash2(["type"], {"type": "boolean"}), "limit_a3": $hash2(["type"], {"type": "boolean"}), "SHOW_SLUR": $hash2(["type"], {"type": "boolean"}), "LINE_THIN": $hash2(["type"], {"type": "number"}), "LINE_MEDIUM": $hash2(["type"], {"type": "number"}), "LINE_THICK": $hash2(["type"], {"type": "number"}), "ELLIPSE_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "number"})}), "REST_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "number"})}), "X_SPACING": $hash2(["type"], {"type": "number"}), "X_OFFSET": $hash2(["type"], {"type": "number"}), "Y_SCALE": $hash2(["type"], {"type": "integer"}), "DRAWING_AREA_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "BEAT_RESOLUTION": $hash2(["type"], {"type": "integer"}), "SHORTEST_NOTE": $hash2(["type"], {"type": "integer"}), "BEAT_PER_DURATION": $hash2(["type"], {"type": "integer"}), "PITCH_OFFSET": $hash2(["type"], {"type": "integer"}), "FONT_STYLE_DEF": $hash2(["type", "required", "patternProperties"], {"type": "object", "required": ["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], "patternProperties": $hash2([".*"], {".*": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text_color", "font_size", "font_style"], "properties": $hash2(["text_color", "font_size", "font_style"], {"text_color": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 3, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "font_size": $hash2(["type"], {"type": "integer"}), "font_style": $hash2(["type"], {"type": "string"})})})})}), "MM_PER_POINT": $hash2(["type"], {"type": "number"}), "DURATION_TO_STYLE": $hash2(["type", "required", "patternProperties"], {"type": "object", "required": ["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], "patternProperties": $hash2([".*"], {".*": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 3, "uniqueItems": false, "items": $hash2(["type"], {"type": ["number", "string", "boolean"]})})})}), "REST_TO_GLYPH": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2([".*"], {".*": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": [$hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": false, "items": $hash2(["type"], {"type": "number"})}), $hash2(["type"], {"type": "string"}), $hash2(["type"], {"type": "boolean"})]})})})})}), "neatjson": $hash2(["type", "required", "properties"], {"type": "object", "required": ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "explicit_sort"], "properties": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "sorted", "explicit_sort"], {"wrap": $hash2(["type"], {"type": "integer"}), "aligned": $hash2(["type"], {"type": "boolean"}), "after_comma": $hash2(["type"], {"type": "integer"}), "after_colon_1": $hash2(["type"], {"type": "integer"}), "after_colon_n": $hash2(["type"], {"type": "integer"}), "before_colon_n": $hash2(["type"], {"type": "integer"}), "sorted": $hash2(["type"], {"type": "boolean"}), "explicit_sort": $hash2(["type"], {"type": "object"})})})})})
+        return $hash2(["$schema", "description", "type", "required", "definitions", "properties"], {"$schema": "http://json-schema.org/draft-04/schema#", "description": "Generated from x.json with shasum 0b1781e0803dc084178858e9fbe2b4e0b65c08e7", "type": "object", "required": ["produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"], "definitions": $hash2(["apanchor", "pos", "notes_entry", "nb_annotation_xx", "minc_entry", "nconf_entry", "align", "notebound_pos", "notebound_repeat_outdated", "annotated_bezier", "extract_layout"], {"apanchor": $hash2(["type", "enum"], {"type": "string", "enum": ["manual", "box", "center"]}), "pos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "number"})}), "notes_entry": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "align", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "style": $hash2(["type"], {"type": "string"})})}), "nb_annotation_xx": $hash2(["type", "required", "properties"], {"type": "object", "required": ["voices", "pos", "autopos", "style"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"})})}), "minc_entry": $hash2(["type", "required", "additionalProperties", "properties"], {"type": "object", "required": ["minc_f"], "additionalProperties": false, "properties": $hash2(["minc_f"], {"minc_f": $hash2(["type"], {"type": "number"})})}), "nconf_entry": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["t_d*"], {"t_d*": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["n_d*"], {"n_d*": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["nshift"], {"nshift": $hash2(["type"], {"type": "number"})})})})})})}), "align": $hash2(["type", "enum"], {"type": "string", "enum": ["l", "r", "auto"]}), "notebound_pos": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["t_\\d*|\\d*"], {"t_\\d*|\\d*": $hash2(["type", "additionalProperties", "properties", "patternProperties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["pos", "align", "show", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "show": $hash2(["type"], {"type": "boolean"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})}), "patternProperties": $hash2(["\\d+"], {"\\d+": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["pos", "align", "show", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "show": $hash2(["type"], {"type": "boolean"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})})})})})})})}), "notebound_repeat_outdated": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["text", "style", "pos"], {"text": "integer", "style": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})})}), "annotated_bezier": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["cp1", "cp2", "pos", "shape", "show", "style"], {"cp1": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "cp2": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "shape": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "string"})}), "show": $hash2(["type"], {"type": "boolean"}), "style": $hash2(["type"], {"type": "string"})})}), "extract_layout": $hash2(["type", "requiredx", "additionalProperties", "properties"], {"type": "object", "requiredx": ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"], "additionalProperties": false, "properties": $hash2(["limit_a3", "beams", "bottomup", "jumpline_anchor", "jumpline_vcut", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "instrument", "tuning", "DRAWING_AREA_SIZE", "ELLIPSE_SIZE", "REST_SIZE", "grid", "color", "packer"], {"limit_a3": $hash2(["type"], {"type": "boolean"}), "beams": $hash2(["type"], {"type": "boolean"}), "bottomup": $hash2(["type"], {"type": "boolean"}), "jumpline_anchor": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "jumpline_vcut": $hash2(["type"], {"type": "number"}), "LINE_THIN": $hash2(["type"], {"type": "number"}), "LINE_MEDIUM": $hash2(["type"], {"type": "number"}), "LINE_THICK": $hash2(["type"], {"type": "number"}), "PITCH_OFFSET": $hash2(["type"], {"type": "integer"}), "X_SPACING": $hash2(["type"], {"type": "number"}), "X_OFFSET": $hash2(["type"], {"type": "number"}), "instrument": $hash2(["type"], {"type": "string"}), "tuning": $hash2(["type"], {"type": "string"}), "DRAWING_AREA_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "ELLIPSE_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "REST_SIZE": $hash2(["type", "minItems", "items"], {"type": "array", "minItems": 2, "items": $hash2(["type"], {"type": "number"})}), "grid": $hash2(["type"], {"type": "boolean"}), "color": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": $hash2(["type"], {"type": "string"}), "color_variant1": $hash2(["type"], {"type": "string"}), "color_variant2": $hash2(["type"], {"type": "string"})})}), "packer": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["pack_method", "pack_max_spread_factor", "pack_min_increment"], {"pack_method": $hash2(["type"], {"type": "integer"}), "pack_max_spread_factor": $hash2(["type"], {"type": "number"}), "pack_min_increment": $hash2(["type"], {"type": "number"})})})})})}), "properties": $hash2(["confstack", "produce", "template", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"], {"confstack": $hash2(["type", "required", "properties"], {"type": "object", "required": ["env"], "properties": $hash2(["env"], {"env": $hash2(["type"], {"type": "string"})})}), "produce": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "template": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["filebase", "title"], {"filebase": $hash2(["type"], {"type": "string"}), "title": $hash2(["type"], {"type": "string"})})}), "abc_parser": $hash2(["type"], {"type": "string"}), "restposition": $hash2(["type", "additionalProperties", "required", "properties"], {"type": "object", "additionalProperties": false, "required": ["default", "repeatstart", "repeatend"], "properties": $hash2(["default", "repeatstart", "repeatend"], {"default": $hash2(["type"], {"type": "string"}), "repeatstart": $hash2(["type"], {"type": "string"}), "repeatend": $hash2(["type"], {"type": "string"})})}), "wrap": $hash2(["type"], {"type": "integer"}), "defaults": $hash2(["type", "required", "properties"], {"type": "object", "required": ["notebound"], "properties": $hash2(["notebound"], {"notebound": $hash2(["type", "required", "properties"], {"type": "object", "required": ["annotation", "partname", "variantend", "tuplet", "chord"], "properties": $hash2(["annotation", "chord", "partname", "variantend", "tuplet"], {"annotation": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "chord": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "partname": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style", "show"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"}), "show": $hash2(["type"], {"type": "boolean"})})}), "variantend": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos"], "properties": $hash2(["pos", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "tuplet": $hash2(["$ref", "required"], {"$ref": "#/definitions/annotated_bezier", "required": ["cp1", "cp2", "shape"]})})})})}), "templates": $hash2(["type", "required", "properties"], {"type": "object", "required": ["notes", "lyrics", "tuplet", "annotations"], "properties": $hash2(["notes", "lyrics", "tuplet", "annotations"], {"notes": $hash2(["$ref"], {"$ref": "#/definitions/notes_entry"}), "lyrics": $hash2(["type", "required", "properties"], {"type": "object", "required": ["verses", "pos"], "properties": $hash2(["verses", "pos", "style"], {"verses": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})}), "tuplet": $hash2(["type", "required", "properties"], {"type": "object", "required": ["cp1", "cp2", "shape"], "properties": $hash2(["cp1", "cp2", "shape"], {"cp1": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "cp2": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "shape": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "string"})})})}), "annotations": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos", "style"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "style": $hash2(["type"], {"type": "string"})})})})}), "annotations": $hash2(["type", "required", "properties"], {"type": "object", "required": ["vl", "vt", "vr"], "properties": $hash2(["vl", "vt", "vr"], {"vl": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})}), "vt": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})}), "vr": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "pos"], "properties": $hash2(["text", "pos"], {"text": $hash2(["type"], {"type": "string"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"})})})})}), "extract": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*", "4", "5"], {"d*": $hash2(["type", "additionalProperties", "requiredx", "properties"], {"type": "object", "additionalProperties": false, "requiredx": ["title", "filenamepart", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "layout", "nonflowrest", "notes", "barnumbers", "countnotes", "chords", "stringnames", "printer"], "properties": $hash2(["title", "filenamepart", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "layout", "nonflowrest", "notes", "notebound", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "instrument_shape", "sortmark", "printer", "images"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "startpos": $hash2(["type"], {"type": "integer"}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "synchlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})}), "flowlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "subflowlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "jumplines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "repeatsigns": $hash2(["type", "requiredx", "properties"], {"type": "object", "requiredx": ["voices", "left", "right"], "properties": $hash2(["voices", "left", "right"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "left": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})}), "right": $hash2(["type", "required", "properties"], {"type": "object", "required": ["pos", "text", "style"], "properties": $hash2(["pos", "text", "style"], {"pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "text": $hash2(["type"], {"type": "string"}), "style": $hash2(["type"], {"type": "string"})})})})}), "layoutlines": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "legend": $hash2(["type", "required", "properties"], {"type": "object", "required": ["spos", "pos"], "properties": $hash2(["spos", "pos", "tstyle", "align", "style", "salign"], {"spos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "tstyle": $hash2(["type"], {"type": "string"}), "align": $hash2(["$ref"], {"$ref": "#/definitions/align"}), "style": $hash2(["type"], {"type": "string"}), "salign": $hash2(["$ref"], {"$ref": "#/definitions/align"})})}), "lyrics": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2([".*"], {".*": $hash2(["type", "required"], {"type": "object", "required": ["verses", "pos"]})})}), "layout": $hash2(["$ref"], {"$ref": "#/definitions/extract_layout"}), "nonflowrest": $hash2(["type"], {"type": "boolean"}), "notes": $hash2(["patternProperties"], {"patternProperties": $hash2([".*"], {".*": $hash2(["$ref"], {"$ref": "#/definitions/notes_entry"})})}), "notebound": $hash2(["type", "additionalProperties", "properties"], {"type": "object", "additionalProperties": false, "properties": $hash2(["annotation", "chord", "barnumber", "c_jumplines", "countnote", "decoration", "flowline", "minc", "nconf", "partname", "repeat_begin", "repeat_end", "tuplet", "variantend"], {"annotation": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "chord": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "barnumber": $hash2(["$ref", "align"], {"$ref": "#/definitions/notebound_pos", "align": $hash2(["$ref"], {"$ref": "#/definitions/align"})}), "c_jumplines": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["p_repeat", "p_begin", "p_end", "p_follow"], {"p_repeat": $hash2(["type"], {"type": "number"}), "p_begin": $hash2(["type"], {"type": "number"}), "p_end": $hash2(["type"], {"type": "number"}), "p_follow": $hash2(["type"], {"type": "number"})})})}), "countnote": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "decoration": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d+"], {"d+": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"})})}), "flowline": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["v_d+"], {"v_d+": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/annotated_bezier"})})})})}), "minc": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/minc_entry"})})}), "nconf": $hash2(["type", "additionalProperties", "patternProperties"], {"type": "object", "additionalProperties": false, "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["$ref"], {"$ref": "#/definitions/nconf_entry"})})}), "partname": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "repeat_begin": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "repeat_end": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"}), "tuplet": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["v_d*"], {"v_d*": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["$ref"], {"$ref": "#/definitions/annotated_bezier"})})})})}), "variantend": $hash2(["$ref"], {"$ref": "#/definitions/notebound_pos"})})}), "tuplets": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["text"], {"text": $hash2(["type"], {"type": "string"})})}), "barnumbers": $hash2(["type", "required", "properties"], {"type": "object", "required": ["voices", "pos", "autopos", "style", "prefix"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style", "prefix"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"}), "prefix": $hash2(["type"], {"type": "string"})})}), "countnotes": $hash2(["type", "required", "properties", "cntextleft", "cntextright"], {"type": "object", "required": ["voices", "pos", "autopos", "style"], "properties": $hash2(["voices", "pos", "autopos", "apanchor", "style"], {"voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2([], {})}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "autopos": $hash2(["type"], {"type": "boolean"}), "apanchor": $hash2(["$ref"], {"$ref": "#/definitions/apanchor"}), "style": $hash2(["type"], {"type": "string"})}), "cntextleft": $hash2(["type"], {"type": "string"}), "cntextright": $hash2(["type"], {"type": "string"})}), "chords": $hash2(["ref", "style"], {"ref": "#/definitions/nb_annotations", "style": $hash2(["type"], {"type": "string"})}), "stringnames": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text", "vpos", "style", "marks"], "properties": $hash2(["text", "vpos", "style", "marks"], {"text": $hash2(["type"], {"type": "string"}), "vpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "style": $hash2(["type"], {"type": "string"}), "marks": $hash2(["type", "required", "properties"], {"type": "object", "required": ["vpos", "hpos"], "properties": $hash2(["vpos", "hpos"], {"vpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "hpos": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 0, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})})})}), "instrument_shape": $hash2(["type"], {"type": "string"}), "sortmark": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["show"], {"show": $hash2(["type"], {"type": "boolean"})})}), "printer": $hash2(["type", "required", "properties"], {"type": "object", "required": ["a3_offset", "a4_offset", "show_border"], "properties": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": $hash2(["type", "minItems", "axItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "axItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "a4_offset": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 2, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "show_border": $hash2(["type"], {"type": "boolean"})})}), "images": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2(["d*"], {"d*": $hash2(["type", "properties"], {"type": "object", "properties": $hash2(["imagename", "show", "pos", "height"], {"imagename": $hash2(["type"], {"type": "string"}), "show": $hash2(["type"], {"type": "boolean"}), "pos": $hash2(["$ref"], {"$ref": "#/definitions/pos"}), "height": $hash2(["type"], {"type": "number"})})})})})})}), "4": $hash2(["type", "required", "properties"], {"type": "object", "required": ["title", "voices"], "properties": $hash2(["title", "filenamepart", "voices"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})}), "5": $hash2(["type", "required", "properties"], {"type": "object", "required": ["title", "voices"], "properties": $hash2(["title", "filenamepart", "voices"], {"title": $hash2(["type"], {"type": "string"}), "filenamepart": $hash2([], {}), "voices": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})})})})})}), "layout": $hash2(["type", "required", "properties"], {"type": "object", "required": ["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "REST_TO_GLYPH"], "properties": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "REST_TO_GLYPH"], {"grid": $hash2(["type"], {"type": "boolean"}), "limit_a3": $hash2(["type"], {"type": "boolean"}), "SHOW_SLUR": $hash2(["type"], {"type": "boolean"}), "LINE_THIN": $hash2(["type"], {"type": "number"}), "LINE_MEDIUM": $hash2(["type"], {"type": "number"}), "LINE_THICK": $hash2(["type"], {"type": "number"}), "ELLIPSE_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "number"})}), "REST_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "number"})}), "X_SPACING": $hash2(["type"], {"type": "number"}), "X_OFFSET": $hash2(["type"], {"type": "number"}), "Y_SCALE": $hash2(["type"], {"type": "integer"}), "DRAWING_AREA_SIZE": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": $hash2(["type"], {"type": "integer"})}), "BEAT_RESOLUTION": $hash2(["type"], {"type": "integer"}), "SHORTEST_NOTE": $hash2(["type"], {"type": "integer"}), "BEAT_PER_DURATION": $hash2(["type"], {"type": "integer"}), "PITCH_OFFSET": $hash2(["type"], {"type": "integer"}), "FONT_STYLE_DEF": $hash2(["type", "required", "patternProperties"], {"type": "object", "required": ["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], "patternProperties": $hash2([".*"], {".*": $hash2(["type", "required", "properties"], {"type": "object", "required": ["text_color", "font_size", "font_style"], "properties": $hash2(["text_color", "font_size", "font_style"], {"text_color": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 3, "uniqueItems": false, "items": $hash2(["type"], {"type": "integer"})}), "font_size": $hash2(["type"], {"type": "integer"}), "font_style": $hash2(["type"], {"type": "string"})})})})}), "MM_PER_POINT": $hash2(["type"], {"type": "number"}), "DURATION_TO_STYLE": $hash2(["type", "required", "patternProperties"], {"type": "object", "required": ["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], "patternProperties": $hash2([".*"], {".*": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 3, "uniqueItems": false, "items": $hash2(["type"], {"type": ["number", "string", "boolean"]})})})}), "REST_TO_GLYPH": $hash2(["type", "patternProperties"], {"type": "object", "patternProperties": $hash2([".*"], {".*": $hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": true, "items": [$hash2(["type", "minItems", "uniqueItems", "items"], {"type": "array", "minItems": 1, "uniqueItems": false, "items": $hash2(["type"], {"type": "number"})}), $hash2(["type"], {"type": "string"}), $hash2(["type"], {"type": "boolean"})]})})})})}), "neatjson": $hash2(["type", "required", "properties"], {"type": "object", "required": ["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "explicit_sort"], "properties": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "sorted", "explicit_sort"], {"wrap": $hash2(["type"], {"type": "integer"}), "aligned": $hash2(["type"], {"type": "boolean"}), "after_comma": $hash2(["type"], {"type": "integer"}), "after_colon_1": $hash2(["type"], {"type": "integer"}), "after_colon_n": $hash2(["type"], {"type": "integer"}), "before_colon_n": $hash2(["type"], {"type": "integer"}), "sorted": $hash2(["type"], {"type": "boolean"}), "explicit_sort": $hash2(["type"], {"type": "object"})})})})})
       }, $JsonValidator__schema$12.$$arity = 0), nil) && '_schema';
     })($nesting[0], null, $nesting)
   })($nesting[0], $nesting)
@@ -27170,7 +27170,7 @@ Opal.modules["harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $send = Opal.send, $truthy = Opal.truthy, $hash2 = Opal.hash2, $gvars = Opal.gvars, $hash = Opal.hash, $range = Opal.range;
 
-  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$-', '$instance_variables', '$instance_variable_get', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$uniq', '$flatten', '$measure_start', '$proxy_note', '$alias_method', '$each', '$beat=', '$get_proxy_object', '$variant', '$sheet_drawable', '$prev_playable', '$prev_playable=', '$next_playable', '$next_playable=', '$!', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$expanded_beat_maps', '$select', '$left', '$right', '$product', '$min_by', '$abs', '$new', '$max', '$keys', '$last_beat', '$private', '$inject', '$index', '$/', '$time', '$floor', '$>', '$start_pos', '$error', '$tuplet', '$[]=', '$index=', '$==', '$reset', '$_check1', '$center', '$size', '$conf_key', '$origin', '$_rect_overlap?', '$empty?', '$warning', '$t', '$count', '$push', '$shapes', '$get', '$clone', '$dotted?', '$dotted', '$gsub', '$length', '$strip', '$*', '$to_f', '$font_size=', '$font_style=', '$get_text_dimensions', '$split', '$match', '$include', '$lambda', '$===', '$_instrument_zipino', '$_instrument_saitenspiel', '$_instrument_okon', '$_instrument_akkordzither', '$parse', '$join', '$tap', '$Vector2d', '$conf_key=', '$conf_value=', '$draginfo=', '$line_width=', '$%', '$_layout_prepare_options', '$meta_data', '$layout_debug_grid', '$layout_images', '$_layout_voices', '$_layout_synclines', '$_layout_sheetmarks', '$_layout_sortmark', '$_layout_instrument', '$_layout_cutmarks', '$_layout_legend', '$_layout_zn_annotations', '$_layout_lyrics', '$_layout_sheet_annotations', '$printer_config=', '$pop', '$strict=', '$<=>', '$<', '$_layout_voice_handle_visibility', '$_layout_voice_playables', '$benchmark', '$layout_barnumbers_countnotes', '$_layout_voice_flowlines', '$_layout_voice_subflowlines', '$_layout_voice_chordsymbols', '$_layout_voice_tuplets', '$_layout_voice_slurs', '$_layout_voice_gotos', '$color=', '$_laoyut_voice_repeatmarks', '$_layout_voice_notebound_annotations', '$create_annotation_background_rect', '$decorations', '$each_with_index', '$znid', '$round', '$-@', '$policy', '$to', '$from', '$<=', '$next_pitch', '$prev_pitch', '$to_s', '$to_a', '$_mk_pitches_table', '$start_with?', '$downcase', '$_mkflaps_pitches', '$_mk_pitch_to_xpos', '$call', '$flaps_y', '$to_i', '$position', '$style', '$companion', '$text', '$include?', '$make_repeatsign_annotation', '$debug', '$compute_vertical_cut', '$make_path_from_jumpline', '$tie_end?', '$make_slur_path', '$notes', '$compute_color_by_variant_no', '$message', '$tie_start?', '$slur_starts', '$slur_ends', '$tuplet_start?', '$tuplet_end?', '$make_annotated_bezier_path', '$visible', '$first_in_part?', '$layout_playable', '$proxy', '$make_decorations_per_playable', '$more_conf_keys', '$visible=', '$resolve_placeholder', '$align=', '$harpnote_options', '$squeeze', '$delete', '$strftime', '$now', '$checksum', '$upcase', '$ord', '$build_synch_points', '$make_sheetmark_path', '$compute_beat_compression', '$values', '$min', '$synched_notes', '$voices', '$layout_voice', '$_get_options_by_voice', '$loglevel?', '$check_annotations', '$get_print_options', '$initialize', '$set_instrument_handlers', '$&', '$size_with_dot', '$reverse', '$compute_note_position', '$!=', '$count_note', '$lyrics', '$shift_eu=', '$measure_start?', '$measure_count', '$align', '$shift_eu?', '$compute_beat_compression_1', '$compute_beat_compression_2', '$compute_beat_compression_3', '$compute_beat_compression_10', '$compute_beat_compression_0', '$group_by', '$sort', '$beat_maps', '$duration_to_id', '$get_minc_factor', '$notes_on_beat', '$>=', '$next_first_in_part', '$sort_by', '$layout_note', '$layout_accord', '$layout_pause', '$convert_pitch_to_xpos', '$compute_ellipse_properties_from_note', '$layout_note_shift', '$sheet_drawable=', '$layout_note_flags', '$times', '$odd?', '$check_duration', '$shift', '$unshift', '$x', '$y', '$normalize', '$to_sym', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular', '$scan']);
+  Opal.add_stubs(['$attr_accessor', '$first', '$last', '$to_json', '$[]', '$+', '$class', '$map', '$-', '$instance_variables', '$instance_variable_get', '$is_a?', '$raise', '$pitch', '$beat', '$duration', '$first_in_part', '$attr_reader', '$nil?', '$uniq', '$flatten', '$measure_start', '$proxy_note', '$alias_method', '$each', '$beat=', '$get_proxy_object', '$variant', '$sheet_drawable', '$prev_playable', '$prev_playable=', '$next_playable', '$next_playable=', '$!', '$companion=', '$visible?', '$update_beats', '$<<', '$compact', '$expanded_beat_maps', '$select', '$left', '$right', '$product', '$min_by', '$abs', '$new', '$max', '$keys', '$last_beat', '$private', '$inject', '$index', '$/', '$time', '$floor', '$>', '$start_pos', '$error', '$tuplet', '$[]=', '$index=', '$==', '$reset', '$_check1', '$center', '$size', '$conf_key', '$origin', '$_rect_overlap?', '$empty?', '$warning', '$t', '$count', '$push', '$shapes', '$get', '$clone', '$dotted?', '$dotted', '$gsub', '$ord', '$length', '$strip', '$*', '$to_f', '$font_size=', '$font_style=', '$get_text_dimensions', '$split', '$match', '$include', '$lambda', '$===', '$_instrument_zipino', '$_instrument_saitenspiel', '$_instrument_okon', '$_instrument_akkordzither', '$parse', '$join', '$tap', '$Vector2d', '$conf_key=', '$conf_value=', '$draginfo=', '$line_width=', '$%', '$_layout_prepare_options', '$meta_data', '$layout_debug_grid', '$layout_images', '$_layout_voices', '$_layout_synclines', '$_layout_sheetmarks', '$_layout_sortmark', '$_layout_instrument', '$_layout_cutmarks', '$_layout_legend', '$_layout_zn_annotations', '$_layout_lyrics', '$_layout_sheet_annotations', '$printer_config=', '$pop', '$strict=', '$<=>', '$<', '$_layout_voice_handle_visibility', '$_layout_voice_playables', '$benchmark', '$layout_barnumbers_countnotes', '$_layout_voice_flowlines', '$_layout_voice_subflowlines', '$_layout_voice_chordsymbols', '$_layout_voice_tuplets', '$_layout_voice_slurs', '$_layout_voice_gotos', '$color=', '$_laoyut_voice_repeatmarks', '$_layout_voice_notebound_annotations', '$create_annotation_background_rect', '$decorations', '$each_with_index', '$znid', '$round', '$-@', '$policy', '$to', '$from', '$<=', '$next_pitch', '$prev_pitch', '$to_s', '$to_a', '$_mk_pitches_table', '$start_with?', '$downcase', '$_mkflaps_pitches', '$_mk_pitch_to_xpos', '$call', '$flaps_y', '$to_i', '$position', '$style', '$companion', '$text', '$include?', '$make_repeatsign_annotation', '$debug', '$compute_vertical_cut', '$make_path_from_jumpline', '$tie_end?', '$make_slur_path', '$notes', '$compute_color_by_variant_no', '$message', '$tie_start?', '$slur_starts', '$slur_ends', '$tuplet_start?', '$tuplet_end?', '$make_annotated_bezier_path', '$visible', '$first_in_part?', '$layout_playable', '$proxy', '$make_decorations_per_playable', '$more_conf_keys', '$visible=', '$resolve_placeholder', '$align=', '$harpnote_options', '$squeeze', '$delete', '$strftime', '$now', '$checksum', '$upcase', '$build_synch_points', '$make_sheetmark_path', '$compute_beat_compression', '$values', '$min', '$synched_notes', '$voices', '$layout_voice', '$_get_options_by_voice', '$loglevel?', '$check_annotations', '$get_print_options', '$initialize', '$set_instrument_handlers', '$&', '$size_with_dot', '$reverse', '$compute_note_position', '$!=', '$count_note', '$lyrics', '$shift_eu=', '$measure_start?', '$measure_count', '$align', '$shift_eu?', '$compute_beat_compression_1', '$compute_beat_compression_2', '$compute_beat_compression_3', '$compute_beat_compression_10', '$compute_beat_compression_0', '$group_by', '$sort', '$beat_maps', '$duration_to_id', '$get_minc_factor', '$notes_on_beat', '$>=', '$next_first_in_part', '$sort_by', '$layout_note', '$layout_accord', '$layout_pause', '$convert_pitch_to_xpos', '$compute_ellipse_properties_from_note', '$layout_note_shift', '$sheet_drawable=', '$layout_note_flags', '$times', '$odd?', '$check_duration', '$shift', '$unshift', '$x', '$y', '$normalize', '$to_sym', '$start_pos_to_s', '$end_pos', '$rotate', '$angle', '$perpendicular', '$scan']);
   return (function($base, $parent_nesting) {
     var self = $module($base, 'Harpnotes');
 
@@ -28361,7 +28361,7 @@ Opal.modules["harpnotes"] = function(Opal) {
       (function($base, $super, $parent_nesting) {
         var self = $klass($base, $super, 'Annotation');
 
-        var $nesting = [self].concat($parent_nesting), $Annotation_initialize$109, $Annotation_size_estimate$110, $Annotation_size$111, $Annotation_shift_eu$eq$112, $Annotation_shift_eu$ques$113;
+        var $nesting = [self].concat($parent_nesting), $Annotation_initialize$109, $Annotation_size_estimate$111, $Annotation_size$112, $Annotation_shift_eu$eq$113, $Annotation_shift_eu$ques$114;
 
         self.$$prototype.text = self.$$prototype.style = self.$$prototype.center = self.$$prototype.shift_eu = nil;
         
@@ -28369,7 +28369,8 @@ Opal.modules["harpnotes"] = function(Opal) {
         self.$attr_accessor("conf_key", "conf_value", "align", "baseline", "shift_eu");
         
         Opal.def(self, '$initialize', $Annotation_initialize$109 = function $$initialize(center, text, style, origin, conf_key, conf_value) {
-          var $iter = $Annotation_initialize$109.$$p, $yield = $iter || nil, self = this, _text = nil;
+          var $$110, $iter = $Annotation_initialize$109.$$p, $yield = $iter || nil, self = this, _text_t = nil, _text = nil, startchar = nil;
+          if ($gvars.log == null) $gvars.log = nil;
 
           if ($iter) $Annotation_initialize$109.$$p = null;
           
@@ -28390,7 +28391,26 @@ Opal.modules["harpnotes"] = function(Opal) {
             conf_value = $hash2([], {});
           };
           $send(self, Opal.find_super_dispatcher(self, 'initialize', $Annotation_initialize$109, false), [], null);
-          _text = text.$gsub(/[„“‚’—–]/, $hash2(["„", "“", "‚", "’", "—", "–"], {"„": "\"", "“": "\"", "‚": "'", "’": "'", "—": "-", "–": "-"}));
+          _text_t = text.$gsub(/[„“‚’—–]/, $hash2(["„", "“", "‚", "’", "—", "–"], {"„": "\"", "“": "\"", "‚": "'", "’": "'", "—": "-", "–": "-"}));
+          _text = $send(_text_t, 'gsub', [/./], ($$110 = function(c){var self = $$110.$$s || this;
+
+          
+            
+            if (c == null) {
+              c = nil;
+            };
+            if ($truthy($rb_gt(c['$[]'](0).$ord(), 255))) {
+              return "¿"
+            } else {
+              return c
+            };}, $$110.$$s = self, $$110.$$arity = 1, $$110));
+          if (_text['$=='](_text_t)) {
+          } else {
+            
+            if ($truthy(origin)) {
+              startchar = origin['$[]']("startChar")};
+            $gvars.log.$error("" + "replaced unsupported characters with '¿' " + (conf_key), [1, 1]);
+          };
           self.center = center;
           self.text = _text;
           self.style = style;
@@ -28402,7 +28422,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           return (self.shift_eu = false);
         }, $Annotation_initialize$109.$$arity = -3);
         
-        Opal.def(self, '$size_estimate', $Annotation_size_estimate$110 = function $$size_estimate() {
+        Opal.def(self, '$size_estimate', $Annotation_size_estimate$111 = function $$size_estimate() {
           var $a, self = this, font_size = nil, ysize = nil, xsize = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
           if ($gvars.log == null) $gvars.log = nil;
@@ -28423,9 +28443,9 @@ Opal.modules["harpnotes"] = function(Opal) {
             $a = [1.5, 2], (xsize = $a[0]), (ysize = $a[1]), $a
           };
           return [xsize, ysize];
-        }, $Annotation_size_estimate$110.$$arity = 0);
+        }, $Annotation_size_estimate$111.$$arity = 0);
         
-        Opal.def(self, '$size', $Annotation_size$111 = function $$size() {
+        Opal.def(self, '$size', $Annotation_size$112 = function $$size() {
           var $a, self = this, font_size = nil, font_style = nil, $writer = nil, size = nil, result = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
           if ($gvars.log == null) $gvars.log = nil;
@@ -28452,9 +28472,9 @@ Opal.modules["harpnotes"] = function(Opal) {
           size = (($a = $nesting[0].$$cvars['@@pdf']) == null ? nil : $a).$get_text_dimensions(self.text.$split("\n"));
           result = [size['$[]']("w"), size['$[]']("h")];
           return result;
-        }, $Annotation_size$111.$$arity = 0);
+        }, $Annotation_size$112.$$arity = 0);
         
-        Opal.def(self, '$shift_eu=', $Annotation_shift_eu$eq$112 = function(value) {
+        Opal.def(self, '$shift_eu=', $Annotation_shift_eu$eq$113 = function(value) {
           var self = this, $writer = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -28472,28 +28492,28 @@ Opal.modules["harpnotes"] = function(Opal) {
           } else {
             return nil
           }
-        }, $Annotation_shift_eu$eq$112.$$arity = 1);
-        return (Opal.def(self, '$shift_eu?', $Annotation_shift_eu$ques$113 = function() {
+        }, $Annotation_shift_eu$eq$113.$$arity = 1);
+        return (Opal.def(self, '$shift_eu?', $Annotation_shift_eu$ques$114 = function() {
           var self = this;
 
           return self.shift_eu
-        }, $Annotation_shift_eu$ques$113.$$arity = 0), nil) && 'shift_eu?';
+        }, $Annotation_shift_eu$ques$114.$$arity = 0), nil) && 'shift_eu?';
       })($nesting[0], $$($nesting, 'Drawable'), $nesting);
       (function($base, $super, $parent_nesting) {
         var self = $klass($base, $super, 'Glyph');
 
-        var $nesting = [self].concat($parent_nesting), $Glyph_initialize$114, $Glyph_height$115, $Glyph_dotted$ques$116, $Glyph_filled$ques$117;
+        var $nesting = [self].concat($parent_nesting), $Glyph_initialize$115, $Glyph_height$116, $Glyph_dotted$ques$117, $Glyph_filled$ques$118;
 
         self.$$prototype.size = self.$$prototype.fill = nil;
         
         self.$attr_reader("center", "size", "glyph", "origin");
         Opal.const_set($nesting[0], 'GLYPHS', $hash2(["rest_1", "rest_4", "rest_8", "rest_16", "fermata", "emphasis", "error"], {"rest_1": $hash2(["d", "w", "h"], {"d": [["M", -10, -5], ["l", 20, 0], ["l", 0, 10], ["l", -20, 0], ["l", 0, -10], ["z"]], "w": 20, "h": 10}), "rest_4": $hash2(["d", "w", "h"], {"d": [["M", -1, -10], ["c", 0.12, -0.06, 0.24, -0.06, 0.36, -0.03], ["c", 0.09, 0.06, 4.74, 5.58, 4.86, 5.82], ["c", 0.21, 0.39, 0.15, 0.78, -0.15, 1.26], ["c", -0.24, 0.33, -0.72, 0.81, -1.62, 1.56], ["c", -0.45, 0.36, -0.87, 0.75, -0.96, 0.84], ["c", -0.93, 0.99, -1.14, 2.49, -0.6, 3.63], ["c", 0.18, 0.39, 0.27, 0.48, 1.32, 1.68], ["c", 1.92, 2.25, 1.83, 2.16, 1.83, 2.34], ["c", 0, 0.18, -0.18, 0.36, -0.36, 0.39], ["c", -0.15, 0, -0.27, -0.06, -0.48, -0.27], ["c", -0.75, -0.75, -2.46, -1.29, -3.39, -1.08], ["c", -0.45, 0.09, -0.69, 0.27, -0.9, 0.69], ["c", -0.12, 0.3, -0.21, 0.66, -0.24, 1.14], ["c", -0.03, 0.66, 0.09, 1.35, 0.3, 2.01], ["c", 0.15, 0.42, 0.24, 0.66, 0.45, 0.96], ["c", 0.18, 0.24, 0.18, 0.33, 0.03, 0.42], ["c", -0.12, 0.06, -0.18, 0.03, -0.45, -0.3], ["c", -1.08, -1.38, -2.07, -3.36, -2.4, -4.83], ["c", -0.27, -1.05, -0.15, -1.77, 0.27, -2.07], ["c", 0.21, -0.12, 0.42, -0.15, 0.87, -0.15], ["c", 0.87, 0.06, 2.1, 0.39, 3.3, 0.9], ["l", 0.39, 0.18], ["l", -1.65, -1.95], ["c", -2.52, -2.97, -2.61, -3.09, -2.7, -3.27], ["c", -0.09, -0.24, -0.12, -0.48, -0.03, -0.75], ["c", 0.15, -0.48, 0.57, -0.96, 1.83, -2.01], ["c", 0.45, -0.36, 0.84, -0.72, 0.93, -0.78], ["c", 0.69, -0.75, 1.02, -1.8, 0.9, -2.79], ["c", -0.06, -0.33, -0.21, -0.84, -0.39, -1.11], ["c", -0.09, -0.15, -0.45, -0.6, -0.81, -1.05], ["c", -0.36, -0.42, -0.69, -0.81, -0.72, -0.87], ["c", -0.09, -0.18, 0, -0.42, 0.21, -0.51], ["z"]], "w": 7.888, "h": 21.435}), "rest_8": $hash2(["d", "w", "h"], {"d": [["M", -2, -6.7], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.12, 0.27, 0.33, 0.45, 0.6, 0.48], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.39, -0.18, 1.32, -1.29, 1.68, -1.98], ["c", 0.09, -0.21, 0.24, -0.3, 0.39, -0.3], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.27, 1.11, -1.86, 6.42], ["c", -1.02, 3.48, -1.89, 6.39, -1.92, 6.42], ["c", 0, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.15, -0.57, 1.68, -4.92], ["c", 0.96, -2.67, 1.74, -4.89, 1.71, -4.89], ["l", -0.51, 0.15], ["c", -1.08, 0.36, -1.74, 0.48, -2.55, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 7.534, "h": 13.883}), "rest_16": $hash2(["d", "w", "h"], {"d": [["M", -1.33, -11.12], ["c", 0.66, -0.09, 1.23, 0.09, 1.68, 0.51], ["c", 0.27, 0.3, 0.39, 0.54, 0.57, 1.26], ["c", 0.09, 0.33, 0.18, 0.66, 0.21, 0.72], ["c", 0.15, 0.39, 0.57, 0.57, 0.87, 0.42], ["c", 0.39, -0.18, 1.2, -1.23, 1.62, -2.07], ["c", 0.06, -0.15, 0.24, -0.24, 0.36, -0.24], ["c", 0.12, 0, 0.27, 0.09, 0.33, 0.18], ["c", 0.03, 0.06, -0.45, 1.86, -2.67, 10.17], ["c", -1.5, 5.55, -2.73, 10.14, -2.76, 10.17], ["c", -0.03, 0.03, -0.12, 0.12, -0.24, 0.15], ["c", -0.18, 0.09, -0.21, 0.09, -0.45, 0.09], ["c", -0.24, 0, -0.3, 0, -0.48, -0.06], ["c", -0.09, -0.06, -0.21, -0.12, -0.21, -0.15], ["c", -0.06, -0.03, 0.12, -0.57, 1.44, -4.92], ["c", 0.81, -2.67, 1.47, -4.86, 1.47, -4.89], ["c", -0.03, 0, -0.27, 0.06, -0.54, 0.15], ["c", -1.08, 0.36, -1.77, 0.48, -2.58, 0.48], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.72, -1.05, 2.22, -1.23, 3.06, -0.42], ["c", 0.3, 0.33, 0.42, 0.6, 0.6, 1.38], ["c", 0.09, 0.45, 0.21, 0.78, 0.33, 0.9], ["c", 0.09, 0.09, 0.27, 0.18, 0.45, 0.21], ["c", 0.12, 0, 0.18, 0, 0.33, -0.09], ["c", 0.33, -0.15, 1.02, -0.93, 1.41, -1.59], ["c", 0.12, -0.21, 0.18, -0.39, 0.39, -1.08], ["c", 0.66, -2.1, 1.17, -3.84, 1.17, -3.87], ["c", 0, 0, -0.21, 0.06, -0.42, 0.15], ["c", -0.51, 0.15, -1.2, 0.33, -1.68, 0.42], ["c", -0.33, 0.06, -0.51, 0.06, -0.96, 0.06], ["c", -0.66, 0, -0.84, -0.03, -1.32, -0.27], ["c", -1.32, -0.63, -1.77, -2.16, -1.02, -3.3], ["c", 0.33, -0.45, 0.84, -0.81, 1.38, -0.9], ["z"]], "w": 9.724, "h": 21.383}), "fermata": $hash2(["d", "w", "h"], {"d": [["M", -0.75, -5.34], ["c", 0.12, 0, 0.45, -0.03, 0.69, -0.03], ["c", 2.91, -0.03, 5.55, 1.53, 7.41, 4.35], ["c", 1.17, 1.71, 1.95, 3.72, 2.43, 6.03], ["c", 0.12, 0.51, 0.12, 0.57, 0.03, 0.69], ["c", -0.12, 0.21, -0.48, 0.27, -0.69, 0.12], ["c", -0.12, -0.09, -0.18, -0.24, -0.27, -0.69], ["c", -0.78, -3.63, -3.42, -6.54, -6.78, -7.38], ["c", -0.78, -0.21, -1.2, -0.24, -2.07, -0.24], ["c", -0.63, 0, -0.84, 0, -1.2, 0.06], ["c", -1.83, 0.27, -3.42, 1.08, -4.8, 2.37], ["c", -1.41, 1.35, -2.4, 3.21, -2.85, 5.19], ["c", -0.09, 0.45, -0.15, 0.6, -0.27, 0.69], ["c", -0.21, 0.15, -0.57, 0.09, -0.69, -0.12], ["c", -0.09, -0.12, -0.09, -0.18, 0.03, -0.69], ["c", 0.33, -1.62, 0.78, -3, 1.47, -4.38], ["c", 1.77, -3.54, 4.44, -5.67, 7.56, -5.97], ["z"], ["M", -0.5, 1.5], ["c", 1.38, -0.3, 2.58, 0.9, 2.31, 2.25], ["c", -0.15, 0.72, -0.78, 1.35, -1.47, 1.5], ["c", -1.38, 0.27, -2.58, -0.93, -2.31, -2.31], ["c", 0.15, -0.69, 0.78, -1.29, 1.47, -1.44], ["z"]], "w": 19.748, "h": 11.289}), "emphasis": $hash2(["d", "w", "h"], {"d": [["M", -6.45, -3.69], ["c", 0.06, -0.03, 0.15, -0.06, 0.18, -0.06], ["c", 0.06, 0, 2.85, 0.72, 6.24, 1.59], ["l", 6.33, 1.65], ["c", 0.33, 0.06, 0.45, 0.21, 0.45, 0.51], ["c", 0, 0.3, -0.12, 0.45, -0.45, 0.51], ["l", -6.33, 1.65], ["c", -3.39, 0.87, -6.18, 1.59, -6.21, 1.59], ["c", -0.21, 0, -0.48, -0.24, -0.51, -0.45], ["c", 0, -0.15, 0.06, -0.36, 0.18, -0.45], ["c", 0.09, -0.06, 0.87, -0.27, 3.84, -1.05], ["c", 2.04, -0.54, 3.84, -0.99, 4.02, -1.02], ["c", 0.15, -0.06, 1.14, -0.24, 2.22, -0.42], ["c", 1.05, -0.18, 1.92, -0.36, 1.92, -0.36], ["c", 0, 0, -0.87, -0.18, -1.92, -0.36], ["c", -1.08, -0.18, -2.07, -0.36, -2.22, -0.42], ["c", -0.18, -0.03, -1.98, -0.48, -4.02, -1.02], ["c", -2.97, -0.78, -3.75, -0.99, -3.84, -1.05], ["c", -0.12, -0.09, -0.18, -0.3, -0.18, -0.45], ["c", 0.03, -0.15, 0.15, -0.3, 0.3, -0.39], ["z"]], "w": 13.5, "h": 7.5}), "error": $hash2(["d", "w", "h"], {"d": [["M", -10, -5], ["l", 0, 10], ["l", 20, -10], ["l", 0, 10], ["z"]], "w": 20, "h": 10})}));
         
-        Opal.def(self, '$initialize', $Glyph_initialize$114 = function $$initialize(center, size, glyph_name, dotted, origin, conf_key, conf_value) {
-          var $iter = $Glyph_initialize$114.$$p, $yield = $iter || nil, self = this, glyph = nil;
+        Opal.def(self, '$initialize', $Glyph_initialize$115 = function $$initialize(center, size, glyph_name, dotted, origin, conf_key, conf_value) {
+          var $iter = $Glyph_initialize$115.$$p, $yield = $iter || nil, self = this, glyph = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
-          if ($iter) $Glyph_initialize$114.$$p = null;
+          if ($iter) $Glyph_initialize$115.$$p = null;
           
           
           if (dotted == null) {
@@ -28511,7 +28531,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           if (conf_value == null) {
             conf_value = $hash2([], {});
           };
-          $send(self, Opal.find_super_dispatcher(self, 'initialize', $Glyph_initialize$114, false), [], null);
+          $send(self, Opal.find_super_dispatcher(self, 'initialize', $Glyph_initialize$115, false), [], null);
           glyph = $$($nesting, 'GLYPHS')['$[]'](glyph_name);
           if ($truthy(glyph)) {
           } else {
@@ -28532,24 +28552,24 @@ Opal.modules["harpnotes"] = function(Opal) {
           self.conf_key = conf_key;
           self.conf_value = conf_value;
           return (self.coll_stack = []);
-        }, $Glyph_initialize$114.$$arity = -4);
+        }, $Glyph_initialize$115.$$arity = -4);
         
-        Opal.def(self, '$height', $Glyph_height$115 = function $$height() {
+        Opal.def(self, '$height', $Glyph_height$116 = function $$height() {
           var self = this;
 
           return self.size.$last()
-        }, $Glyph_height$115.$$arity = 0);
+        }, $Glyph_height$116.$$arity = 0);
         
-        Opal.def(self, '$dotted?', $Glyph_dotted$ques$116 = function() {
+        Opal.def(self, '$dotted?', $Glyph_dotted$ques$117 = function() {
           var self = this;
 
           return self.$dotted()
-        }, $Glyph_dotted$ques$116.$$arity = 0);
-        return (Opal.def(self, '$filled?', $Glyph_filled$ques$117 = function() {
+        }, $Glyph_dotted$ques$117.$$arity = 0);
+        return (Opal.def(self, '$filled?', $Glyph_filled$ques$118 = function() {
           var self = this;
 
           return self.fill['$==']("filled")
-        }, $Glyph_filled$ques$117.$$arity = 0), nil) && 'filled?';
+        }, $Glyph_filled$ques$118.$$arity = 0), nil) && 'filled?';
       })($nesting[0], $$($nesting, 'Symbol'), $nesting);
     })($nesting[0], $nesting);
     (function($base, $parent_nesting) {
@@ -28560,7 +28580,7 @@ Opal.modules["harpnotes"] = function(Opal) {
       (function($base, $super, $parent_nesting) {
         var self = $klass($base, $super, 'Default');
 
-        var $nesting = [self].concat($parent_nesting), $Default_initialize$118, $Default_set_instrument_handlers$119, $Default_layout_images$121, $Default_layout_debug_grid$124, $Default_layout$129, $Default_get_print_options$130, $Default_compute_note_position$131, $Default_layout_voice$132, $Default_make_decorations_per_playable$139, $Default_make_repeatsign_annotation$143, $Default__mkflaps_pitches$145, $Default__mk_pitches_table$147, $Default__instrument_akkordzither$149, $Default__mk_pitch_to_xpos$152, $Default__instrument_okon$154, $Default__instrument_saitenspiel$159, $Default__instrument_zipino$162, $Default__layout_voice_notebound_annotations$166, $Default__layout_voice_chordsymbols$170, $Default__laoyut_voice_repeatmarks$174, $Default__layout_voice_gotos$177, $Default__layout_voice_slurs$181, $Default__layout_voice_tuplets$189, $Default__layout_voice_subflowlines$195, $Default__layout_voice_flowlines$199, $Default__layout_voice_playables$203, $Default__layout_voice_handle_visibility$205, $Default__layout_sheet_annotations$207, $Default__layout_instrument$210, $Default__layout_lyrics$212, $Default__layout_zn_annotations$217, $Default__layout_legend$218, $Default__layout_cutmarks$221, $Default__layout_sortmark$224, $Default__layout_synclines$226, $Default__layout_sheetmarks$229, $Default__layout_voices$235, $Default__get_options_by_voice$245, $Default__layout_prepare_options$246, $Default_compute_vertical_cut$247, $Default_layout_barnumbers_countnotes$248, $Default_create_annotation_background_rect$253, $Default_compute_beat_compression$255, $Default_compute_beat_compression_2$256, $Default_compute_beat_compression_10$264, $Default_get_minc_factor$273, $Default_compute_beat_compression_0$274, $Default_compute_beat_compression_1$285, $Default_compute_beat_compression_3$299, $Default_layout_playable$314, $Default_layout_note$315, $Default_layout_note_flags$316, $Default_convert_pitch_to_xpos$319, $Default_compute_color_by_variant_no$320, $Default_compute_ellipse_properties_from_note$321, $Default_layout_note_shift$323, $Default_layout_accord$324, $Default_layout_pause$329, $Default_make_path_from_jumpline$330, $Default_duration_to_id$331, $Default_check_duration$332, $Default_make_sheetmark_path$333, $Default_make_slur_path$335, $Default_make_annotated_bezier_path$336, $Default_resolve_placeholder$337;
+        var $nesting = [self].concat($parent_nesting), $Default_initialize$119, $Default_set_instrument_handlers$120, $Default_layout_images$122, $Default_layout_debug_grid$125, $Default_layout$130, $Default_get_print_options$131, $Default_compute_note_position$132, $Default_layout_voice$133, $Default_make_decorations_per_playable$140, $Default_make_repeatsign_annotation$144, $Default__mkflaps_pitches$146, $Default__mk_pitches_table$148, $Default__instrument_akkordzither$150, $Default__mk_pitch_to_xpos$153, $Default__instrument_okon$155, $Default__instrument_saitenspiel$160, $Default__instrument_zipino$163, $Default__layout_voice_notebound_annotations$167, $Default__layout_voice_chordsymbols$171, $Default__laoyut_voice_repeatmarks$175, $Default__layout_voice_gotos$178, $Default__layout_voice_slurs$182, $Default__layout_voice_tuplets$190, $Default__layout_voice_subflowlines$196, $Default__layout_voice_flowlines$200, $Default__layout_voice_playables$204, $Default__layout_voice_handle_visibility$206, $Default__layout_sheet_annotations$208, $Default__layout_instrument$211, $Default__layout_lyrics$213, $Default__layout_zn_annotations$218, $Default__layout_legend$219, $Default__layout_cutmarks$222, $Default__layout_sortmark$225, $Default__layout_synclines$227, $Default__layout_sheetmarks$230, $Default__layout_voices$236, $Default__get_options_by_voice$246, $Default__layout_prepare_options$247, $Default_compute_vertical_cut$248, $Default_layout_barnumbers_countnotes$249, $Default_create_annotation_background_rect$254, $Default_compute_beat_compression$256, $Default_compute_beat_compression_2$257, $Default_compute_beat_compression_10$265, $Default_get_minc_factor$274, $Default_compute_beat_compression_0$275, $Default_compute_beat_compression_1$286, $Default_compute_beat_compression_3$300, $Default_layout_playable$315, $Default_layout_note$316, $Default_layout_note_flags$317, $Default_convert_pitch_to_xpos$320, $Default_compute_color_by_variant_no$321, $Default_compute_ellipse_properties_from_note$322, $Default_layout_note_shift$324, $Default_layout_accord$325, $Default_layout_pause$330, $Default_make_path_from_jumpline$331, $Default_duration_to_id$332, $Default_check_duration$333, $Default_make_sheetmark_path$334, $Default_make_slur_path$336, $Default_make_annotated_bezier_path$337, $Default_resolve_placeholder$338;
 
         self.$$prototype.placeholders = self.$$prototype.print_options_hash = self.$$prototype.print_options_raw = self.$$prototype.color_default = self.$$prototype.slur_index = self.$$prototype.draw_instrument = self.$$prototype.instrument_shape = self.$$prototype.bottom_annotation_positions = self.$$prototype.uri = self.$$prototype.y_offset = self.$$prototype.beat_spacing = self.$$prototype.conf_beat_resolution = self.$$prototype.layout_minc = self.$$prototype.instrument_orientation = self.$$prototype.pitch_to_xpos = self.$$prototype.color_variant1 = self.$$prototype.color_variant2 = self.$$prototype.print_options_keys = nil;
         
@@ -28569,7 +28589,7 @@ Opal.modules["harpnotes"] = function(Opal) {
         self.$attr_accessor("uri", "placeholders");
         Opal.const_set($nesting[0], 'MM_PER_POINT', 0.3);
         
-        Opal.def(self, '$initialize', $Default_initialize$118 = function $$initialize() {
+        Opal.def(self, '$initialize', $Default_initialize$119 = function $$initialize() {
           var self = this;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -28589,10 +28609,10 @@ Opal.modules["harpnotes"] = function(Opal) {
           } else {
             return (self.placeholders = $hash2([], {}))
           };
-        }, $Default_initialize$118.$$arity = 0);
+        }, $Default_initialize$119.$$arity = 0);
         
-        Opal.def(self, '$set_instrument_handlers', $Default_set_instrument_handlers$119 = function $$set_instrument_handlers(print_variant_nr) {
-          var $$120, self = this, xoffset = nil, xspacing = nil, pitchoffset = nil, $case = nil, shape = nil;
+        Opal.def(self, '$set_instrument_handlers', $Default_set_instrument_handlers$120 = function $$set_instrument_handlers(print_variant_nr) {
+          var $$121, self = this, xoffset = nil, xspacing = nil, pitchoffset = nil, $case = nil, shape = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -28600,14 +28620,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           xspacing = $gvars.conf['$[]']("layout.X_SPACING");
           pitchoffset = $gvars.conf.$get("layout.PITCH_OFFSET");
           self.bottom_annotation_positions = [[150, 289], [325, 289], [380, 289]];
-          self.pitch_to_xpos = $send(self, 'lambda', [], ($$120 = function(pitch){var self = $$120.$$s || this;
+          self.pitch_to_xpos = $send(self, 'lambda', [], ($$121 = function(pitch){var self = $$121.$$s || this;
 
           
             
             if (pitch == null) {
               pitch = nil;
             };
-            return $rb_plus($rb_times($rb_plus(pitchoffset, pitch), xspacing), xoffset);}, $$120.$$s = self, $$120.$$arity = 1, $$120));
+            return $rb_plus($rb_times($rb_plus(pitchoffset, pitch), xspacing), xoffset);}, $$121.$$s = self, $$121.$$arity = 1, $$121));
           $case = $gvars.conf['$[]']("layout.instrument");
           if ("Zipino"['$===']($case)) {self.$_instrument_zipino(pitchoffset, xoffset, xspacing)}
           else if ("saitenspiel"['$===']($case)) {self.$_instrument_saitenspiel(pitchoffset, xoffset, xspacing)}
@@ -28621,17 +28641,17 @@ Opal.modules["harpnotes"] = function(Opal) {
           } else {
             return (self.instrument_shape = nil)
           };
-        }, $Default_set_instrument_handlers$119.$$arity = 1);
+        }, $Default_set_instrument_handlers$120.$$arity = 1);
         
-        Opal.def(self, '$layout_images', $Default_layout_images$121 = function $$layout_images(print_options_raw, print_variant_nr) {
-          var $$122, self = this, result = nil, images = nil;
+        Opal.def(self, '$layout_images', $Default_layout_images$122 = function $$layout_images(print_options_raw, print_variant_nr) {
+          var $$123, self = this, result = nil, images = nil;
 
           
           result = [];
           images = print_options_raw['$[]']("images");
           if ($truthy(images['$nil?']())) {
           } else {
-            $send(images, 'each', [], ($$122 = function(number, image){var self = $$122.$$s || this, $$123, datauri = nil;
+            $send(images, 'each', [], ($$123 = function(number, image){var self = $$123.$$s || this, $$124, datauri = nil;
               if ($gvars.resources == null) $gvars.resources = nil;
 
             
@@ -28649,7 +28669,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                 if ($truthy(datauri['$is_a?']($$($nesting, 'Array')))) {
                   datauri = datauri.$join()};
                 if ($truthy(datauri)) {
-                  return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Image').$new(datauri, $rb_minus(self.$Vector2d(image['$[]']("pos")), [0, image['$[]']("height")]), image['$[]']("height")), 'tap', [], ($$123 = function(s){var self = $$123.$$s || this, $writer = nil;
+                  return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Image').$new(datauri, $rb_minus(self.$Vector2d(image['$[]']("pos")), [0, image['$[]']("height")]), image['$[]']("height")), 'tap', [], ($$124 = function(s){var self = $$124.$$s || this, $writer = nil;
 
                   
                     
@@ -28667,19 +28687,19 @@ Opal.modules["harpnotes"] = function(Opal) {
                     
                     $writer = [$hash2(["handler"], {"handler": "annotation"})];
                     $send(s, 'draginfo=', Opal.to_a($writer));
-                    return $writer[$rb_minus($writer["length"], 1)];;}, $$123.$$s = self, $$123.$$arity = 1, $$123)))
+                    return $writer[$rb_minus($writer["length"], 1)];;}, $$124.$$s = self, $$124.$$arity = 1, $$124)))
                 } else {
                   return nil
                 };
               } else {
                 return nil
-              };}, $$122.$$s = self, $$122.$$arity = 2, $$122))
+              };}, $$123.$$s = self, $$123.$$arity = 2, $$123))
           };
           return result;
-        }, $Default_layout_images$121.$$arity = 2);
+        }, $Default_layout_images$122.$$arity = 2);
         
-        Opal.def(self, '$layout_debug_grid', $Default_layout_debug_grid$124 = function $$layout_debug_grid() {
-          var $$125, $$126, $$127, $$128, self = this, the_options = nil, gridsize = nil, emphasis = nil, sheetsize = nil, result = nil;
+        Opal.def(self, '$layout_debug_grid', $Default_layout_debug_grid$125 = function $$layout_debug_grid() {
+          var $$126, $$127, $$128, $$129, self = this, the_options = nil, gridsize = nil, emphasis = nil, sheetsize = nil, result = nil;
 
           
           the_options = $hash2(["size", "emphasis", "line", "emphline"], {"size": 1, "emphasis": 10, "line": 0.02, "emphline": 0.2});
@@ -28687,14 +28707,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           emphasis = $rb_times(the_options['$[]']("emphasis"), gridsize);
           sheetsize = [420, 297];
           result = [];
-          $send($send(Opal.Range.$new(0, $rb_divide(sheetsize.$first(), gridsize), false), 'map', [], ($$125 = function(g){var self = $$125.$$s || this;
+          $send($send(Opal.Range.$new(0, $rb_divide(sheetsize.$first(), gridsize), false), 'map', [], ($$126 = function(g){var self = $$126.$$s || this;
 
           
             
             if (g == null) {
               g = nil;
             };
-            return $rb_times(g, gridsize);}, $$125.$$s = self, $$125.$$arity = 1, $$125)), 'each', [], ($$126 = function(g){var self = $$126.$$s || this, e = nil, $writer = nil;
+            return $rb_times(g, gridsize);}, $$126.$$s = self, $$126.$$arity = 1, $$126)), 'each', [], ($$127 = function(g){var self = $$127.$$s || this, e = nil, $writer = nil;
 
           
             
@@ -28711,15 +28731,15 @@ Opal.modules["harpnotes"] = function(Opal) {
               $writer = [the_options['$[]']("emphline")];
               $send(e, 'line_width=', Opal.to_a($writer));
               $writer[$rb_minus($writer["length"], 1)];};
-            return result['$<<'](e);}, $$126.$$s = self, $$126.$$arity = 1, $$126));
-          $send($send(Opal.Range.$new(0, $rb_divide(sheetsize.$last(), gridsize), false), 'map', [], ($$127 = function(g){var self = $$127.$$s || this;
+            return result['$<<'](e);}, $$127.$$s = self, $$127.$$arity = 1, $$127));
+          $send($send(Opal.Range.$new(0, $rb_divide(sheetsize.$last(), gridsize), false), 'map', [], ($$128 = function(g){var self = $$128.$$s || this;
 
           
             
             if (g == null) {
               g = nil;
             };
-            return $rb_times(g, gridsize);}, $$127.$$s = self, $$127.$$arity = 1, $$127)), 'each', [], ($$128 = function(g){var self = $$128.$$s || this, e = nil, $writer = nil;
+            return $rb_times(g, gridsize);}, $$128.$$s = self, $$128.$$arity = 1, $$128)), 'each', [], ($$129 = function(g){var self = $$129.$$s || this, e = nil, $writer = nil;
 
           
             
@@ -28736,11 +28756,11 @@ Opal.modules["harpnotes"] = function(Opal) {
               $writer = [the_options['$[]']("emphline")];
               $send(e, 'line_width=', Opal.to_a($writer));
               $writer[$rb_minus($writer["length"], 1)];};
-            return result['$<<'](e);}, $$128.$$s = self, $$128.$$arity = 1, $$128));
+            return result['$<<'](e);}, $$129.$$s = self, $$129.$$arity = 1, $$129));
           return result;
-        }, $Default_layout_debug_grid$124.$$arity = 0);
+        }, $Default_layout_debug_grid$125.$$arity = 0);
         
-        Opal.def(self, '$layout', $Default_layout$129 = function $$layout(music, beat_layout, print_variant_nr, page_format) {
+        Opal.def(self, '$layout', $Default_layout$130 = function $$layout(music, beat_layout, print_variant_nr, page_format) {
           var $a, $b, self = this, title = nil, filename = nil, res_debug_grid = nil, res_images = nil, active_voices = nil, required_synchlines = nil, res_voice_elements = nil, res_synch_lines = nil, res_sheetmarks = nil, sortmark_options = nil, res_instrument = nil, res_cutmarks = nil, res_legend = nil, res_zn_annotations = nil, res_lyrics = nil, res_annotations = nil, sheet_elements = nil, result = nil, $writer = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -28787,9 +28807,9 @@ Opal.modules["harpnotes"] = function(Opal) {
           $gvars.conf.$pop();
           $gvars.conf.$pop();
           return result;
-        }, $Default_layout$129.$$arity = -2);
+        }, $Default_layout$130.$$arity = -2);
         
-        Opal.def(self, '$get_print_options', $Default_get_print_options$130 = function $$get_print_options(print_variant_nr) {
+        Opal.def(self, '$get_print_options', $Default_get_print_options$131 = function $$get_print_options(print_variant_nr) {
           var self = this, print_options_raw = nil, $writer = nil, song_print_options = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
           if ($gvars.log == null) $gvars.log = nil;
@@ -28810,10 +28830,10 @@ Opal.modules["harpnotes"] = function(Opal) {
           if ($truthy(print_options_raw['$[]']("layout.beams"))) {
             print_options_raw.$push($hash2(["layout"], {"layout": $hash2(["DURATION_TO_STYLE"], {"DURATION_TO_STYLE": $gvars.conf['$[]']("layout.DURATION_TO_BEAMS")})}))};
           return print_options_raw;
-        }, $Default_get_print_options$130.$$arity = 1);
+        }, $Default_get_print_options$131.$$arity = 1);
         Opal.const_set($nesting[0], 'NOTE_POSITION_LOOKUP', $hash2(["11", "12", "13", "21", "22", "23", "31", "32", "33"], {"11": ["r", "r"], "12": ["r", "l"], "13": ["r", "l"], "21": ["r", "r"], "22": ["r", "l"], "23": ["l", "l"], "31": ["l", "r"], "32": ["l", "r"], "33": ["l", "l"]}));
         
-        Opal.def(self, '$compute_note_position', $Default_compute_note_position$131 = function $$compute_note_position(xp, x, xn, limit_a3) {
+        Opal.def(self, '$compute_note_position', $Default_compute_note_position$132 = function $$compute_note_position(xp, x, xn, limit_a3) {
           var self = this, a = nil, b = nil;
 
           
@@ -28826,10 +28846,10 @@ Opal.modules["harpnotes"] = function(Opal) {
           } else {
             return $$($nesting, 'NOTE_POSITION_LOOKUP')['$[]']("" + (a) + (b))
           };
-        }, $Default_compute_note_position$131.$$arity = 4);
+        }, $Default_compute_note_position$132.$$arity = 4);
         
-        Opal.def(self, '$layout_voice', $Default_layout_voice$132 = function $$layout_voice(voice, beat_layout, print_variant_nr, show_options) {
-          var $$133, $a, $b, $$134, $$135, $$136, $$137, $$138, self = this, voice_nr = nil, playables = nil, res_decorations = nil, res_playables = nil, res_barnumbers = nil, res_countnotes = nil, do_flowconf = nil, default_tuplet_options = nil, res_flow = nil, res_sub_flow = nil, res_chordsymbols = nil, res_tuplets = nil, res_slurs = nil, res_gotos = nil, color_default = nil, res_repeatmarks = nil, res_annotations = nil, res_barnumber_backgrounds = nil, res_countnote_backgrounds = nil, res_annotation_backgrounds = nil;
+        Opal.def(self, '$layout_voice', $Default_layout_voice$133 = function $$layout_voice(voice, beat_layout, print_variant_nr, show_options) {
+          var $$134, $a, $b, $$135, $$136, $$137, $$138, $$139, self = this, voice_nr = nil, playables = nil, res_decorations = nil, res_playables = nil, res_barnumbers = nil, res_countnotes = nil, do_flowconf = nil, default_tuplet_options = nil, res_flow = nil, res_sub_flow = nil, res_chordsymbols = nil, res_tuplets = nil, res_slurs = nil, res_gotos = nil, color_default = nil, res_repeatmarks = nil, res_annotations = nil, res_barnumber_backgrounds = nil, res_countnote_backgrounds = nil, res_annotation_backgrounds = nil;
           if ($gvars.log == null) $gvars.log = nil;
           if ($gvars.settings == null) $gvars.settings = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
@@ -28837,19 +28857,19 @@ Opal.modules["harpnotes"] = function(Opal) {
           
           self.print_options_keys = self.print_options_raw.$keys();
           voice_nr = show_options['$[]']("voice_nr");
-          playables = $send(voice, 'select', [], ($$133 = function(c){var self = $$133.$$s || this;
+          playables = $send(voice, 'select', [], ($$134 = function(c){var self = $$134.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return c['$is_a?']($$($nesting, 'Playable'));}, $$133.$$s = self, $$133.$$arity = 1, $$133));
+            return c['$is_a?']($$($nesting, 'Playable'));}, $$134.$$s = self, $$134.$$arity = 1, $$134));
           self.$_layout_voice_handle_visibility(playables, show_options);
           $b = self.$_layout_voice_playables(beat_layout, playables, print_variant_nr, show_options, voice_nr), $a = Opal.to_ary($b), (res_decorations = ($a[0] == null ? nil : $a[0])), (res_playables = ($a[1] == null ? nil : $a[1])), $b;
-          $b = $send($gvars.log, 'benchmark', ["countnotes / barnumbers"], ($$134 = function(){var self = $$134.$$s || this;
+          $b = $send($gvars.log, 'benchmark', ["countnotes / barnumbers"], ($$135 = function(){var self = $$135.$$s || this;
 
-          return self.$layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)}, $$134.$$s = self, $$134.$$arity = 0, $$134)), $a = Opal.to_ary($b), (res_barnumbers = ($a[0] == null ? nil : $a[0])), (res_countnotes = ($a[1] == null ? nil : $a[1])), $b;
+          return self.$layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr)}, $$135.$$s = self, $$135.$$arity = 0, $$135)), $a = Opal.to_ary($b), (res_barnumbers = ($a[0] == null ? nil : $a[0])), (res_countnotes = ($a[1] == null ? nil : $a[1])), $b;
           do_flowconf = $gvars.settings['$[]']("flowconf")['$==']("true");
           default_tuplet_options = $gvars.conf['$[]']("defaults.notebound.flowline");
           res_flow = self.$_layout_voice_flowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr);
@@ -28883,7 +28903,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             res_gotos = []
           };
           color_default = self.color_default;
-          $send(res_gotos, 'each', [], ($$135 = function(the_goto){var self = $$135.$$s || this, $writer = nil;
+          $send(res_gotos, 'each', [], ($$136 = function(the_goto){var self = $$136.$$s || this, $writer = nil;
 
           
             
@@ -28892,38 +28912,38 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             $writer = [color_default];
             $send(the_goto, 'color=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];}, $$135.$$s = self, $$135.$$arity = 1, $$135));
+            return $writer[$rb_minus($writer["length"], 1)];}, $$136.$$s = self, $$136.$$arity = 1, $$136));
           res_repeatmarks = self.$_laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr);
           res_annotations = self.$_layout_voice_notebound_annotations(print_variant_nr, show_options, voice);
-          res_barnumber_backgrounds = $send(res_barnumbers, 'map', [], ($$136 = function(i){var self = $$136.$$s || this;
+          res_barnumber_backgrounds = $send(res_barnumbers, 'map', [], ($$137 = function(i){var self = $$137.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return self.$create_annotation_background_rect(i, 0.2);}, $$136.$$s = self, $$136.$$arity = 1, $$136));
-          res_countnote_backgrounds = $send(res_countnotes, 'map', [], ($$137 = function(i){var self = $$137.$$s || this;
+            return self.$create_annotation_background_rect(i, 0.2);}, $$137.$$s = self, $$137.$$arity = 1, $$137));
+          res_countnote_backgrounds = $send(res_countnotes, 'map', [], ($$138 = function(i){var self = $$138.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return self.$create_annotation_background_rect(i, -0.05);}, $$137.$$s = self, $$137.$$arity = 1, $$137));
-          res_annotation_backgrounds = $send($rb_plus($rb_plus(res_annotations, res_repeatmarks), res_chordsymbols).$compact(), 'map', [], ($$138 = function(i){var self = $$138.$$s || this;
+            return self.$create_annotation_background_rect(i, -0.05);}, $$138.$$s = self, $$138.$$arity = 1, $$138));
+          res_annotation_backgrounds = $send($rb_plus($rb_plus(res_annotations, res_repeatmarks), res_chordsymbols).$compact(), 'map', [], ($$139 = function(i){var self = $$139.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return self.$create_annotation_background_rect(i, 0.5);}, $$138.$$s = self, $$138.$$arity = 1, $$138));
+            return self.$create_annotation_background_rect(i, 0.5);}, $$139.$$s = self, $$139.$$arity = 1, $$139));
           return $rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus($rb_plus(res_flow, res_sub_flow), res_slurs), res_tuplets), res_playables), res_countnote_backgrounds), res_countnotes), res_barnumber_backgrounds), res_barnumbers), res_decorations), res_gotos), res_annotation_backgrounds), res_annotations), res_chordsymbols), res_repeatmarks).$compact();
-        }, $Default_layout_voice$132.$$arity = 4);
+        }, $Default_layout_voice$133.$$arity = 4);
         
-        Opal.def(self, '$make_decorations_per_playable', $Default_make_decorations_per_playable$139 = function $$make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr) {
-          var $$140, $$141, self = this, decorations = nil, decoration_distance = nil, decoration_scale = nil, decoration_size = nil, decoration_result = nil;
+        Opal.def(self, '$make_decorations_per_playable', $Default_make_decorations_per_playable$140 = function $$make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr) {
+          var $$141, $$142, self = this, decorations = nil, decoration_distance = nil, decoration_scale = nil, decoration_size = nil, decoration_result = nil;
 
           
           decorations = nil;
@@ -28937,16 +28957,16 @@ Opal.modules["harpnotes"] = function(Opal) {
               return 1
             }; return nil; })();
             decoration_scale = 0.8;
-            decoration_size = $send(decoration_root.$size(), 'map', [], ($$140 = function(i){var self = $$140.$$s || this;
+            decoration_size = $send(decoration_root.$size(), 'map', [], ($$141 = function(i){var self = $$141.$$s || this;
 
             
               
               if (i == null) {
                 i = nil;
               };
-              return $rb_times(i, decoration_scale);}, $$140.$$s = self, $$140.$$arity = 1, $$140));
+              return $rb_times(i, decoration_scale);}, $$141.$$s = self, $$141.$$arity = 1, $$141));
             decoration_result = [];
-            $send(decorations, 'each_with_index', [], ($$141 = function(decoration, index){var self = $$141.$$s || this, $$142, notebound_pos_key = nil, conf_key = nil, annotationoffset = nil, decoration_center = nil, r = nil;
+            $send(decorations, 'each_with_index', [], ($$142 = function(decoration, index){var self = $$142.$$s || this, $$143, notebound_pos_key = nil, conf_key = nil, annotationoffset = nil, decoration_center = nil, r = nil;
 
             
               
@@ -28974,7 +28994,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               decoration_center = [$rb_plus(decoration_root.$center().$first(), annotationoffset.$first()), $rb_plus(decoration_root.$center().$last(), annotationoffset.$last())];
               r = $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Glyph').$new(decoration_center, decoration_size, decoration, false, nil, conf_key, annotationoffset);
-              $send(r, 'tap', [], ($$142 = function(s){var self = $$142.$$s || this, $writer = nil;
+              $send(r, 'tap', [], ($$143 = function(s){var self = $$143.$$s || this, $writer = nil;
 
               
                 
@@ -28983,14 +29003,14 @@ Opal.modules["harpnotes"] = function(Opal) {
                 };
                 $writer = [$hash2(["handler"], {"handler": "annotation"})];
                 $send(s, 'draginfo=', Opal.to_a($writer));
-                return $writer[$rb_minus($writer["length"], 1)];}, $$142.$$s = self, $$142.$$arity = 1, $$142));
-              return decoration_result.$push([r]);}, $$141.$$s = self, $$141.$$arity = 2, $$141));
+                return $writer[$rb_minus($writer["length"], 1)];}, $$143.$$s = self, $$143.$$arity = 1, $$143));
+              return decoration_result.$push([r]);}, $$142.$$s = self, $$142.$$arity = 2, $$142));
           };
           return decoration_result;
-        }, $Default_make_decorations_per_playable$139.$$arity = 5);
+        }, $Default_make_decorations_per_playable$140.$$arity = 5);
         
-        Opal.def(self, '$make_repeatsign_annotation', $Default_make_repeatsign_annotation$143 = function $$make_repeatsign_annotation(goto$, point_role, print_variant_nr, show_options, voice_nr) {
-          var $a, $$144, self = this, from_anchor = nil, to_anchor = nil, companion_note = nil, attach_side = nil, repeat_key = nil, pos_key = nil, conf_key = nil, repeatsign_options = nil, annotationoffset = nil, text = nil, style = nil, position = nil;
+        Opal.def(self, '$make_repeatsign_annotation', $Default_make_repeatsign_annotation$144 = function $$make_repeatsign_annotation(goto$, point_role, print_variant_nr, show_options, voice_nr) {
+          var $a, $$145, self = this, from_anchor = nil, to_anchor = nil, companion_note = nil, attach_side = nil, repeat_key = nil, pos_key = nil, conf_key = nil, repeatsign_options = nil, annotationoffset = nil, text = nil, style = nil, position = nil;
 
           
           from_anchor = ($truthy($a = goto$.$policy()['$[]']("from_anchor")) ? $a : "after");
@@ -29040,7 +29060,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           text = ($truthy($a = show_options['$[]']("print_options_raw")['$[]']("" + (repeat_key) + ".text")) ? $a : repeatsign_options['$[]']("text"));
           style = ($truthy($a = show_options['$[]']("print_options_raw")['$[]']("" + (repeat_key) + ".style")) ? $a : repeatsign_options['$[]']("style"));
           position = $rb_plus(self.$Vector2d(companion_note.$sheet_drawable().$center()), annotationoffset);
-          return $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), text, style, companion_note.$origin(), conf_key, annotationoffset), 'tap', [], ($$144 = function(s){var self = $$144.$$s || this, $writer = nil;
+          return $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), text, style, companion_note.$origin(), conf_key, annotationoffset), 'tap', [], ($$145 = function(s){var self = $$145.$$s || this, $writer = nil;
 
           
             
@@ -29049,18 +29069,18 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             $writer = [$hash2(["handler"], {"handler": "annotation"})];
             $send(s, 'draginfo=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];}, $$144.$$s = self, $$144.$$arity = 1, $$144));
-        }, $Default_make_repeatsign_annotation$143.$$arity = 5);
+            return $writer[$rb_minus($writer["length"], 1)];}, $$145.$$s = self, $$145.$$arity = 1, $$145));
+        }, $Default_make_repeatsign_annotation$144.$$arity = 5);
         self.$private();
         
-        Opal.def(self, '$_mkflaps_pitches', $Default__mkflaps_pitches$145 = function $$_mkflaps_pitches(stringnames) {
-          var $$146, self = this, pitchtable = nil, string_by_pitch = nil, flap_by_pitch = nil;
+        Opal.def(self, '$_mkflaps_pitches', $Default__mkflaps_pitches$146 = function $$_mkflaps_pitches(stringnames) {
+          var $$147, self = this, pitchtable = nil, string_by_pitch = nil, flap_by_pitch = nil;
 
           
           pitchtable = self.$_mk_pitches_table();
           string_by_pitch = $hash2([], {});
           flap_by_pitch = $hash2([], {});
-          $send(stringnames.$split(" ").$each_with_index(), 'each', [], ($$146 = function(k, i){var self = $$146.$$s || this, pitch = nil, $writer = nil;
+          $send(stringnames.$split(" ").$each_with_index(), 'each', [], ($$147 = function(k, i){var self = $$147.$$s || this, pitch = nil, $writer = nil;
 
           
             
@@ -29083,16 +29103,16 @@ Opal.modules["harpnotes"] = function(Opal) {
               return $writer[$rb_minus($writer["length"], 1)];
             } else {
               return nil
-            };}, $$146.$$s = self, $$146.$$arity = 2, $$146));
+            };}, $$147.$$s = self, $$147.$$arity = 2, $$147));
           return [string_by_pitch, flap_by_pitch.$keys()];
-        }, $Default__mkflaps_pitches$145.$$arity = 1);
+        }, $Default__mkflaps_pitches$146.$$arity = 1);
         
-        Opal.def(self, '$_mk_pitches_table', $Default__mk_pitches_table$147 = function $$_mk_pitches_table() {
-          var $$148, self = this, pitches = nil;
+        Opal.def(self, '$_mk_pitches_table', $Default__mk_pitches_table$148 = function $$_mk_pitches_table() {
+          var $$149, self = this, pitches = nil;
 
           
           pitches = $hash2(["C", "*C", "C#", "CIS", "D", "*D", "D#", "DIS", "DES", "DB", "E", "EB", "ES", "F", "*F", "F#", "FIS", "G", "*G", "G#", "GIS", "GES", "GB", "A", "*A", "A#", "AIS", "AS", "AB", "H", "B", "HB", "BB", "*HB", "*BB"], {"C": 60, "*C": 61, "C#": 61, "CIS": 61, "D": 62, "*D": 63, "D#": 63, "DIS": 63, "DES": 61, "DB": 61, "E": 64, "EB": 63, "ES": 63, "F": 65, "*F": 66, "F#": 66, "FIS": 66, "G": 67, "*G": 68, "G#": 68, "GIS": 68, "GES": 66, "GB": 66, "A": 69, "*A": 70, "A#": 70, "AIS": 70, "AS": 68, "AB": 68, "H": 71, "B": 71, "HB": 70, "BB": 70, "*HB": 71, "*BB": 71});
-          $send(pitches.$keys(), 'each', [], ($$148 = function(k){var self = $$148.$$s || this, v = nil, $writer = nil;
+          $send(pitches.$keys(), 'each', [], ($$149 = function(k){var self = $$149.$$s || this, v = nil, $writer = nil;
 
           
             
@@ -29147,22 +29167,22 @@ Opal.modules["harpnotes"] = function(Opal) {
             
             $writer = [$rb_plus(k.$downcase(), "'''"), $rb_plus(v, 48)];
             $send(pitches, '[]=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];;}, $$148.$$s = self, $$148.$$arity = 1, $$148));
+            return $writer[$rb_minus($writer["length"], 1)];;}, $$149.$$s = self, $$149.$$arity = 1, $$149));
           return pitches;
-        }, $Default__mk_pitches_table$147.$$arity = 0);
+        }, $Default__mk_pitches_table$148.$$arity = 0);
         
-        Opal.def(self, '$_instrument_akkordzither', $Default__instrument_akkordzither$149 = function $$_instrument_akkordzither(pitchoffset, xoffset, xspacing, print_variant_nr) {
-          var $a, $b, $$150, self = this, string_by_pitch = nil, flaps_by_pitch = nil;
+        Opal.def(self, '$_instrument_akkordzither', $Default__instrument_akkordzither$150 = function $$_instrument_akkordzither(pitchoffset, xoffset, xspacing, print_variant_nr) {
+          var $a, $b, $$151, self = this, string_by_pitch = nil, flaps_by_pitch = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
           $b = self.$_mkflaps_pitches($gvars.conf['$[]']("" + "extract." + (print_variant_nr) + ".stringnames.text")), $a = Opal.to_ary($b), (string_by_pitch = ($a[0] == null ? nil : $a[0])), (flaps_by_pitch = ($a[1] == null ? nil : $a[1])), $b;
           self.pitch_to_xpos = self.$_mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch);
-          self.draw_instrument = $send(self, 'lambda', [], ($$150 = function(){var self = $$150.$$s || this, $$151, result = nil;
+          self.draw_instrument = $send(self, 'lambda', [], ($$151 = function(){var self = $$151.$$s || this, $$152, result = nil;
 
           
             result = [];
-            return $send(flaps_by_pitch, 'each', [], ($$151 = function(f){var self = $$151.$$s || this;
+            return $send(flaps_by_pitch, 'each', [], ($$152 = function(f){var self = $$152.$$s || this;
               if (self.pitch_to_xpos == null) self.pitch_to_xpos = nil;
 
             
@@ -29170,14 +29190,14 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (f == null) {
                 f = nil;
               };
-              return result.$push($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([self.pitch_to_xpos.$call(f), self.$flaps_y()['$[]'](f)], "*", "large"));}, $$151.$$s = self, $$151.$$arity = 1, $$151));}, $$150.$$s = self, $$150.$$arity = 0, $$150));
+              return result.$push($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([self.pitch_to_xpos.$call(f), self.$flaps_y()['$[]'](f)], "*", "large"));}, $$152.$$s = self, $$152.$$arity = 1, $$152));}, $$151.$$s = self, $$151.$$arity = 0, $$151));
           return (self.bottom_annotation_positions = [[150, 287], [150, 290], [260, 290]]);
-        }, $Default__instrument_akkordzither$149.$$arity = 4);
+        }, $Default__instrument_akkordzither$150.$$arity = 4);
         
-        Opal.def(self, '$_mk_pitch_to_xpos', $Default__mk_pitch_to_xpos$152 = function $$_mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch) {
-          var $$153, self = this;
+        Opal.def(self, '$_mk_pitch_to_xpos', $Default__mk_pitch_to_xpos$153 = function $$_mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch) {
+          var $$154, self = this;
 
-          return $send(self, 'lambda', [], ($$153 = function(pitch){var self = $$153.$$s || this, pitch_to_stringpos = nil, result = nil;
+          return $send(self, 'lambda', [], ($$154 = function(pitch){var self = $$154.$$s || this, pitch_to_stringpos = nil, result = nil;
 
           
             
@@ -29188,11 +29208,11 @@ Opal.modules["harpnotes"] = function(Opal) {
             result = xspacing['$-@']();
             if ($truthy(pitch_to_stringpos)) {
               result = $rb_plus($rb_times(pitch_to_stringpos, xspacing), xoffset)};
-            return result;}, $$153.$$s = self, $$153.$$arity = 1, $$153))
-        }, $Default__mk_pitch_to_xpos$152.$$arity = 4);
+            return result;}, $$154.$$s = self, $$154.$$arity = 1, $$154))
+        }, $Default__mk_pitch_to_xpos$153.$$arity = 4);
         
-        Opal.def(self, '$_instrument_okon', $Default__instrument_okon$154 = function $$_instrument_okon(pitchoffset, xoffset, xspacing, print_variant_nr) {
-          var $a, $b, $$155, $$156, $$157, self = this, flaps = nil, pitches = nil, $case = nil, string_by_pitch = nil, flaps_by_pitch = nil, flaps_y = nil;
+        Opal.def(self, '$_instrument_okon', $Default__instrument_okon$155 = function $$_instrument_okon(pitchoffset, xoffset, xspacing, print_variant_nr) {
+          var $a, $b, $$156, $$157, $$158, self = this, flaps = nil, pitches = nil, $case = nil, string_by_pitch = nil, flaps_by_pitch = nil, flaps_y = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -29220,7 +29240,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             $b = self.$_mkflaps_pitches($gvars.conf['$[]']("" + "extract." + (print_variant_nr) + ".stringnames.text")), $a = Opal.to_ary($b), (string_by_pitch = ($a[0] == null ? nil : $a[0])), (flaps_by_pitch = ($a[1] == null ? nil : $a[1])), $b
           } else {
             
-            string_by_pitch = $$($nesting, 'Hash')['$[]']($send(pitches.$split(" ").$each_with_index(), 'map', [], ($$155 = function(i, k){var self = $$155.$$s || this;
+            string_by_pitch = $$($nesting, 'Hash')['$[]']($send(pitches.$split(" ").$each_with_index(), 'map', [], ($$156 = function(i, k){var self = $$156.$$s || this;
 
             
               
@@ -29231,25 +29251,25 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (k == null) {
                 k = nil;
               };
-              return [i.$to_i(), k];}, $$155.$$s = self, $$155.$$arity = 2, $$155)));
-            flaps_by_pitch = $send(flaps.$split(" "), 'map', [], ($$156 = function(i){var self = $$156.$$s || this;
+              return [i.$to_i(), k];}, $$156.$$s = self, $$156.$$arity = 2, $$156)));
+            flaps_by_pitch = $send(flaps.$split(" "), 'map', [], ($$157 = function(i){var self = $$157.$$s || this;
 
             
               
               if (i == null) {
                 i = nil;
               };
-              return i.$to_i();}, $$156.$$s = self, $$156.$$arity = 1, $$156));
+              return i.$to_i();}, $$157.$$s = self, $$157.$$arity = 1, $$157));
           };
           self.pitch_to_xpos = self.$_mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch);
           flaps_y = $hash(59, 7, 61, 7, 66, 7, 71, 7, 73, 20, 78, 65, 83, 110);
           self.bottom_annotation_positions = [[xoffset, 290], [$rb_plus(xoffset, 200), 290], [$rb_plus(xoffset, 270), 290]];
-          return (self.draw_instrument = $send(self, 'lambda', [], ($$157 = function(){var self = $$157.$$s || this, $$158, result = nil, res = nil, $writer = nil;
+          return (self.draw_instrument = $send(self, 'lambda', [], ($$158 = function(){var self = $$158.$$s || this, $$159, result = nil, res = nil, $writer = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
           
             result = [];
-            $send(flaps_by_pitch, 'each', [], ($$158 = function(f){var self = $$158.$$s || this;
+            $send(flaps_by_pitch, 'each', [], ($$159 = function(f){var self = $$159.$$s || this;
               if (self.pitch_to_xpos == null) self.pitch_to_xpos = nil;
 
             
@@ -29257,20 +29277,20 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (f == null) {
                 f = nil;
               };
-              return result.$push($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([self.pitch_to_xpos.$call(f), flaps_y['$[]'](f)], "*", "large"));}, $$158.$$s = self, $$158.$$arity = 1, $$158));
+              return result.$push($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([self.pitch_to_xpos.$call(f), flaps_y['$[]'](f)], "*", "large"));}, $$159.$$s = self, $$159.$$arity = 1, $$159));
             res = $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new([["M", $rb_minus(xoffset, 15), 280], ["L", $rb_minus(xoffset, 15), 0], ["M", $rb_plus(xoffset, 135), 0], ["L", $rb_plus(xoffset, 290), 157], ["L", $rb_plus(xoffset, 290), 280]], "open");
             
             $writer = [$gvars.conf.$get("layout.LINE_MEDIUM")];
             $send(res, 'line_width=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
-            return result.$push(res);}, $$157.$$s = self, $$157.$$arity = 0, $$157)));
-        }, $Default__instrument_okon$154.$$arity = -4);
+            return result.$push(res);}, $$158.$$s = self, $$158.$$arity = 0, $$158)));
+        }, $Default__instrument_okon$155.$$arity = -4);
         
-        Opal.def(self, '$_instrument_saitenspiel', $Default__instrument_saitenspiel$159 = function $$_instrument_saitenspiel(pitchoffset, xoffset, xspacing) {
-          var $$160, $$161, self = this;
+        Opal.def(self, '$_instrument_saitenspiel', $Default__instrument_saitenspiel$160 = function $$_instrument_saitenspiel(pitchoffset, xoffset, xspacing) {
+          var $$161, $$162, self = this;
 
           
-          self.pitch_to_xpos = $send(self, 'lambda', [], ($$160 = function(pitch){var self = $$160.$$s || this, pitch_to_stringpos = nil, result = nil;
+          self.pitch_to_xpos = $send(self, 'lambda', [], ($$161 = function(pitch){var self = $$161.$$s || this, pitch_to_stringpos = nil, result = nil;
 
           
             
@@ -29282,9 +29302,9 @@ Opal.modules["harpnotes"] = function(Opal) {
             result = xspacing['$-@']();
             if ($truthy(pitch_to_stringpos)) {
               result = $rb_plus($rb_times(pitch_to_stringpos, xspacing), xoffset)};
-            return result;}, $$160.$$s = self, $$160.$$arity = 1, $$160));
+            return result;}, $$161.$$s = self, $$161.$$arity = 1, $$161));
           self.bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [$rb_plus(xoffset, 100), 290]];
-          return (self.draw_instrument = $send(self, 'lambda', [], ($$161 = function(){var self = $$161.$$s || this, res = nil, $writer = nil;
+          return (self.draw_instrument = $send(self, 'lambda', [], ($$162 = function(){var self = $$162.$$s || this, res = nil, $writer = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -29293,15 +29313,15 @@ Opal.modules["harpnotes"] = function(Opal) {
             $writer = [$gvars.conf.$get("layout.LINE_MEDIUM")];
             $send(res, 'line_width=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
-            return [res];}, $$161.$$s = self, $$161.$$arity = 0, $$161)));
-        }, $Default__instrument_saitenspiel$159.$$arity = 3);
+            return [res];}, $$162.$$s = self, $$162.$$arity = 0, $$162)));
+        }, $Default__instrument_saitenspiel$160.$$arity = 3);
         
-        Opal.def(self, '$_instrument_zipino', $Default__instrument_zipino$162 = function $$_instrument_zipino(pitchoffset, xoffset, xspacing) {
-          var $$163, $$164, $$165, self = this, pitches = nil, string_by_pitch = nil;
+        Opal.def(self, '$_instrument_zipino', $Default__instrument_zipino$163 = function $$_instrument_zipino(pitchoffset, xoffset, xspacing) {
+          var $$164, $$165, $$166, self = this, pitches = nil, string_by_pitch = nil;
 
           
           pitches = "54 55 57 59 60 62 64 66 67 69 71 72 74 76 78";
-          string_by_pitch = $$($nesting, 'Hash')['$[]']($send(pitches.$split(" ").$each_with_index(), 'map', [], ($$163 = function(i, k){var self = $$163.$$s || this;
+          string_by_pitch = $$($nesting, 'Hash')['$[]']($send(pitches.$split(" ").$each_with_index(), 'map', [], ($$164 = function(i, k){var self = $$164.$$s || this;
 
           
             
@@ -29312,8 +29332,8 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (k == null) {
               k = nil;
             };
-            return [i.$to_i(), k];}, $$163.$$s = self, $$163.$$arity = 2, $$163)));
-          self.pitch_to_xpos = $send(self, 'lambda', [], ($$164 = function(pitch){var self = $$164.$$s || this, pitch_to_stringpos = nil, result = nil;
+            return [i.$to_i(), k];}, $$164.$$s = self, $$164.$$arity = 2, $$164)));
+          self.pitch_to_xpos = $send(self, 'lambda', [], ($$165 = function(pitch){var self = $$165.$$s || this, pitch_to_stringpos = nil, result = nil;
 
           
             
@@ -29326,9 +29346,9 @@ Opal.modules["harpnotes"] = function(Opal) {
             } else {
               result = $rb_plus($rb_times(pitch_to_stringpos, xspacing), xoffset)
             };
-            return result;}, $$164.$$s = self, $$164.$$arity = 1, $$164));
+            return result;}, $$165.$$s = self, $$165.$$arity = 1, $$165));
           self.bottom_annotation_positions = [[xoffset, 287], [xoffset, 290], [$rb_plus(xoffset, 100), 290]];
-          self.draw_instrument = $send(self, 'lambda', [], ($$165 = function(){var self = $$165.$$s || this, res = nil, $writer = nil;
+          self.draw_instrument = $send(self, 'lambda', [], ($$166 = function(){var self = $$166.$$s || this, res = nil, $writer = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -29337,21 +29357,21 @@ Opal.modules["harpnotes"] = function(Opal) {
             $writer = [$gvars.conf.$get("layout.LINE_MEDIUM")];
             $send(res, 'line_width=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
-            return [res];}, $$165.$$s = self, $$165.$$arity = 0, $$165));
+            return [res];}, $$166.$$s = self, $$166.$$arity = 0, $$166));
           return (self.instrument_orientation = "horizontal");
-        }, $Default__instrument_zipino$162.$$arity = 3);
+        }, $Default__instrument_zipino$163.$$arity = 3);
         
-        Opal.def(self, '$_layout_voice_notebound_annotations', $Default__layout_voice_notebound_annotations$166 = function $$_layout_voice_notebound_annotations(print_variant_nr, show_options, voice) {
-          var $$167, $$168, self = this, res_annotations = nil;
+        Opal.def(self, '$_layout_voice_notebound_annotations', $Default__layout_voice_notebound_annotations$167 = function $$_layout_voice_notebound_annotations(print_variant_nr, show_options, voice) {
+          var $$168, $$169, self = this, res_annotations = nil;
 
-          return (res_annotations = $send($send(voice, 'select', [], ($$167 = function(c){var self = $$167.$$s || this;
+          return (res_annotations = $send($send(voice, 'select', [], ($$168 = function(c){var self = $$168.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return c['$is_a?']($$($nesting, 'NoteBoundAnnotation'));}, $$167.$$s = self, $$167.$$arity = 1, $$167)), 'map', [], ($$168 = function(annotation){var self = $$168.$$s || this, $a, $$169, notebound_pos_key = nil, show_from_config = nil, show = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
+            return c['$is_a?']($$($nesting, 'NoteBoundAnnotation'));}, $$168.$$s = self, $$168.$$arity = 1, $$168)), 'map', [], ($$169 = function(annotation){var self = $$169.$$s || this, $a, $$170, notebound_pos_key = nil, show_from_config = nil, show = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
 
           
             
@@ -29388,7 +29408,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             style = ($truthy($a = show_options['$[]']("print_options_raw").$get($rb_plus(annotation.$conf_key(), ".style"))) ? $a : annotation.$style());
             position = $rb_plus(self.$Vector2d(annotation.$companion().$sheet_drawable().$center()), annotationoffset);
-            result = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), annotation.$text(), style, annotation.$companion().$origin(), conf_key, annotationoffset), 'tap', [], ($$169 = function(s){var self = $$169.$$s || this, $writer = nil;
+            result = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), annotation.$text(), style, annotation.$companion().$origin(), conf_key, annotationoffset), 'tap', [], ($$170 = function(s){var self = $$170.$$s || this, $writer = nil;
 
             
               
@@ -29397,26 +29417,26 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               $writer = [$hash2(["handler"], {"handler": "annotation"})];
               $send(s, 'draginfo=', Opal.to_a($writer));
-              return $writer[$rb_minus($writer["length"], 1)];}, $$169.$$s = self, $$169.$$arity = 1, $$169));
+              return $writer[$rb_minus($writer["length"], 1)];}, $$170.$$s = self, $$170.$$arity = 1, $$170));
             if ($truthy((($a = annotation.$policy()['$==']("Goto")) ? show_options['$[]']("jumpline")['$!']() : annotation.$policy()['$==']("Goto")))) {
               result = nil};
             if (show['$=='](false)) {
               result = nil};
-            return result;}, $$168.$$s = self, $$168.$$arity = 1, $$168)))
-        }, $Default__layout_voice_notebound_annotations$166.$$arity = 3);
+            return result;}, $$169.$$s = self, $$169.$$arity = 1, $$169)))
+        }, $Default__layout_voice_notebound_annotations$167.$$arity = 3);
         
-        Opal.def(self, '$_layout_voice_chordsymbols', $Default__layout_voice_chordsymbols$170 = function $$_layout_voice_chordsymbols(print_variant_nr, show_options, voice) {
-          var $$171, $$172, self = this, res_annotations = nil;
+        Opal.def(self, '$_layout_voice_chordsymbols', $Default__layout_voice_chordsymbols$171 = function $$_layout_voice_chordsymbols(print_variant_nr, show_options, voice) {
+          var $$172, $$173, self = this, res_annotations = nil;
 
           
-          res_annotations = $send($send(voice, 'select', [], ($$171 = function(c){var self = $$171.$$s || this;
+          res_annotations = $send($send(voice, 'select', [], ($$172 = function(c){var self = $$172.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return c['$is_a?']($$($nesting, 'Chordsymbol'));}, $$171.$$s = self, $$171.$$arity = 1, $$171)), 'map', [], ($$172 = function(annotation){var self = $$172.$$s || this, $a, $$173, chord_options = nil, notebound_pos_key = nil, show_from_config = nil, show = nil, cs_fixpos = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
+            return c['$is_a?']($$($nesting, 'Chordsymbol'));}, $$172.$$s = self, $$172.$$arity = 1, $$172)), 'map', [], ($$173 = function(annotation){var self = $$173.$$s || this, $a, $$174, chord_options = nil, notebound_pos_key = nil, show_from_config = nil, show = nil, cs_fixpos = nil, conf_key = nil, annotationoffset = nil, style = nil, position = nil, result = nil;
 
           
             
@@ -29455,7 +29475,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             style = ($truthy($a = chord_options['$[]']("style")) ? $a : annotation.$style());
             position = $rb_plus(self.$Vector2d(annotation.$companion().$sheet_drawable().$center()), annotationoffset);
-            result = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), annotation.$text(), style, annotation.$companion().$origin(), conf_key, annotationoffset), 'tap', [], ($$173 = function(s){var self = $$173.$$s || this, $writer = nil;
+            result = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(position.$to_a(), annotation.$text(), style, annotation.$companion().$origin(), conf_key, annotationoffset), 'tap', [], ($$174 = function(s){var self = $$174.$$s || this, $writer = nil;
 
             
               
@@ -29464,29 +29484,29 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               $writer = [$hash2(["handler"], {"handler": "annotation"})];
               $send(s, 'draginfo=', Opal.to_a($writer));
-              return $writer[$rb_minus($writer["length"], 1)];}, $$173.$$s = self, $$173.$$arity = 1, $$173));
+              return $writer[$rb_minus($writer["length"], 1)];}, $$174.$$s = self, $$174.$$arity = 1, $$174));
             if ($truthy((($a = annotation.$policy()['$==']("Goto")) ? show_options['$[]']("jumpline")['$!']() : annotation.$policy()['$==']("Goto")))) {
               result = nil};
             if (show['$=='](false)) {
               result = nil};
-            return result;}, $$172.$$s = self, $$172.$$arity = 1, $$172));
+            return result;}, $$173.$$s = self, $$173.$$arity = 1, $$173));
           return res_annotations;
-        }, $Default__layout_voice_chordsymbols$170.$$arity = 3);
+        }, $Default__layout_voice_chordsymbols$171.$$arity = 3);
         
-        Opal.def(self, '$_laoyut_voice_repeatmarks', $Default__laoyut_voice_repeatmarks$174 = function $$_laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr) {
-          var $$175, $$176, self = this, res_repeatmarks = nil;
+        Opal.def(self, '$_laoyut_voice_repeatmarks', $Default__laoyut_voice_repeatmarks$175 = function $$_laoyut_voice_repeatmarks(print_variant_nr, show_options, voice, voice_nr) {
+          var $$176, $$177, self = this, res_repeatmarks = nil;
 
           
           res_repeatmarks = [];
           if ($truthy(show_options['$[]']("repeatsigns")['$[]']("voices")['$include?'](show_options['$[]']("voice_nr")))) {
-            res_repeatmarks = $send($send(voice, 'select', [], ($$175 = function(c){var self = $$175.$$s || this, $a;
+            res_repeatmarks = $send($send(voice, 'select', [], ($$176 = function(c){var self = $$176.$$s || this, $a;
 
             
               
               if (c == null) {
                 c = nil;
               };
-              return ($truthy($a = c['$is_a?']($$($nesting, 'Goto'))) ? c.$policy()['$[]']("is_repeat") : $a);}, $$175.$$s = self, $$175.$$arity = 1, $$175)), 'map', [], ($$176 = function(goto$){var self = $$176.$$s || this, startbar = nil, endbar = nil;
+              return ($truthy($a = c['$is_a?']($$($nesting, 'Goto'))) ? c.$policy()['$[]']("is_repeat") : $a);}, $$176.$$s = self, $$176.$$arity = 1, $$176)), 'map', [], ($$177 = function(goto$){var self = $$177.$$s || this, startbar = nil, endbar = nil;
 
             
               
@@ -29495,21 +29515,21 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               startbar = self.$make_repeatsign_annotation(goto$, "begin", print_variant_nr, show_options, voice_nr);
               endbar = self.$make_repeatsign_annotation(goto$, "end", print_variant_nr, show_options, voice_nr);
-              return [endbar, startbar];}, $$176.$$s = self, $$176.$$arity = 1, $$176)).$flatten()};
+              return [endbar, startbar];}, $$177.$$s = self, $$177.$$arity = 1, $$177)).$flatten()};
           return res_repeatmarks;
-        }, $Default__laoyut_voice_repeatmarks$174.$$arity = 4);
+        }, $Default__laoyut_voice_repeatmarks$175.$$arity = 4);
         
-        Opal.def(self, '$_layout_voice_gotos', $Default__layout_voice_gotos$177 = function $$_layout_voice_gotos(print_variant_nr, show_options, voice) {
-          var $$178, $$179, self = this, res_gotos = nil;
+        Opal.def(self, '$_layout_voice_gotos', $Default__layout_voice_gotos$178 = function $$_layout_voice_gotos(print_variant_nr, show_options, voice) {
+          var $$179, $$180, self = this, res_gotos = nil;
 
-          return (res_gotos = $send($send(voice, 'select', [], ($$178 = function(c){var self = $$178.$$s || this;
+          return (res_gotos = $send($send(voice, 'select', [], ($$179 = function(c){var self = $$179.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return c['$is_a?']($$($nesting, 'Goto'));}, $$178.$$s = self, $$178.$$arity = 1, $$178)), 'map', [], ($$179 = function(goto$){var self = $$179.$$s || this, $a, $$180, conf_key = nil, distance = nil, old_conf_key = nil, is_visible = nil, from_anchor = nil, to_anchor = nil, vertical_anchor = nil, vertical = nil, from = nil, to = nil, swap = nil, verticalcut = nil, jumpline_info = nil, path = nil, draginfo = nil;
+            return c['$is_a?']($$($nesting, 'Goto'));}, $$179.$$s = self, $$179.$$arity = 1, $$179)), 'map', [], ($$180 = function(goto$){var self = $$180.$$s || this, $a, $$181, conf_key = nil, distance = nil, old_conf_key = nil, is_visible = nil, from_anchor = nil, to_anchor = nil, vertical_anchor = nil, vertical = nil, from = nil, to = nil, swap = nil, verticalcut = nil, jumpline_info = nil, path = nil, draginfo = nil;
             if ($gvars.log == null) $gvars.log = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -29546,7 +29566,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($a = goto$.$policy()['$[]']("from_anchor")) ? $a : "after");
             to_anchor = ($truthy($a = goto$.$policy()['$[]']("to_anchor")) ? $a : "before");
             vertical_anchor = ($truthy($a = goto$.$policy()['$[]']("vertical_anchor")) ? $a : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2030));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2037));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -29563,7 +29583,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               if ($truthy(($truthy($a = goto$.$policy()['$[]']("is_repeat")) ? show_options['$[]']("repeatsigns")['$[]']("voices")['$include?'](show_options['$[]']("voice_nr")) : $a))) {
                 return nil
               } else {
-                return [$send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(path['$[]'](0), nil, goto$.$from()), 'tap', [], ($$180 = function(s){var self = $$180.$$s || this, $writer = nil;
+                return [$send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(path['$[]'](0), nil, goto$.$from()), 'tap', [], ($$181 = function(s){var self = $$181.$$s || this, $writer = nil;
                   if ($gvars.conf == null) $gvars.conf = nil;
 
                 
@@ -29586,15 +29606,15 @@ Opal.modules["harpnotes"] = function(Opal) {
                   
                   $writer = [draginfo];
                   $send(s, 'draginfo=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];;}, $$180.$$s = self, $$180.$$arity = 1, $$180)), $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(path['$[]'](1), "filled", goto$.$from()), $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(path['$[]'](2), "filled", goto$.$from())]
+                  return $writer[$rb_minus($writer["length"], 1)];;}, $$181.$$s = self, $$181.$$arity = 1, $$181)), $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(path['$[]'](1), "filled", goto$.$from()), $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(path['$[]'](2), "filled", goto$.$from())]
               }
             } else {
               return nil
-            };}, $$179.$$s = self, $$179.$$arity = 1, $$179)).$flatten().$compact())
-        }, $Default__layout_voice_gotos$177.$$arity = 3);
+            };}, $$180.$$s = self, $$180.$$arity = 1, $$180)).$flatten().$compact())
+        }, $Default__layout_voice_gotos$178.$$arity = 3);
         
-        Opal.def(self, '$_layout_voice_slurs', $Default__layout_voice_slurs$181 = function $$_layout_voice_slurs(playables) {
-          var $$182, self = this, $writer = nil, tie_start = nil, res_slurs = nil;
+        Opal.def(self, '$_layout_voice_slurs', $Default__layout_voice_slurs$182 = function $$_layout_voice_slurs(playables) {
+          var $$183, self = this, $writer = nil, tie_start = nil, res_slurs = nil;
 
           
           
@@ -29602,7 +29622,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           $send(self.slur_index, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           tie_start = playables.$first();
-          return (res_slurs = $send(playables, 'inject', [[]], ($$182 = function(result, playable){var self = $$182.$$s || this, $$183, $$185, $$186, $$187, dx = nil, p1 = nil, p2 = nil, tiepath = nil;
+          return (res_slurs = $send(playables, 'inject', [[]], ($$183 = function(result, playable){var self = $$183.$$s || this, $$184, $$186, $$187, $$188, dx = nil, p1 = nil, p2 = nil, tiepath = nil;
             if (self.slur_index == null) self.slur_index = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -29626,7 +29646,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                 return self.$make_slur_path(p1, p2)
               }; return nil; })();
               if ($truthy(playable['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint')))) {
-                $send(playable.$notes(), 'each_with_index', [], ($$183 = function(n, index){var self = $$183.$$s || this, $$184, e = nil;
+                $send(playable.$notes(), 'each_with_index', [], ($$184 = function(n, index){var self = $$184.$$s || this, $$185, e = nil;
                   if ($gvars.log == null) $gvars.log = nil;
 
                 
@@ -29645,7 +29665,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                     p1 = $rb_plus(self.$Vector2d(p1.$sheet_drawable().$center()), [dx, -0.5]);
                     p2 = $rb_plus(self.$Vector2d(n.$sheet_drawable().$center()), [dx, 0.5]);
                     tiepath = self.$make_slur_path(p1, p2);
-                    return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$184 = function(d){var self = $$184.$$s || this;
+                    return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$185 = function(d){var self = $$185.$$s || this;
                       if ($gvars.conf == null) $gvars.conf = nil;
 
                     
@@ -29660,16 +29680,16 @@ Opal.modules["harpnotes"] = function(Opal) {
                       
                       $writer = [self.$compute_color_by_variant_no(playable.$variant())];
                       $send(d, 'color=', Opal.to_a($writer));
-                      return $writer[$rb_minus($writer["length"], 1)];;}, $$184.$$s = self, $$184.$$arity = 1, $$184)));
+                      return $writer[$rb_minus($writer["length"], 1)];;}, $$185.$$s = self, $$185.$$arity = 1, $$185)));
                   } catch ($err) {
                     if (Opal.rescue($err, [$$($nesting, 'Exception')])) {e = $err;
                       try {
                         return $gvars.log.$error("" + (e.$message()) + " tied chords which doesn't have same number of notes", n.$start_pos())
                       } finally { Opal.pop_exception() }
                     } else { throw $err; }
-                  };}, $$183.$$s = self, $$183.$$arity = 2, $$183))
+                  };}, $$184.$$s = self, $$184.$$arity = 2, $$184))
               } else {
-                result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$185 = function(d){var self = $$185.$$s || this;
+                result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$186 = function(d){var self = $$186.$$s || this;
                   if ($gvars.conf == null) $gvars.conf = nil;
 
                 
@@ -29684,11 +29704,11 @@ Opal.modules["harpnotes"] = function(Opal) {
                   
                   $writer = [self.$compute_color_by_variant_no(playable.$variant())];
                   $send(d, 'color=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];;}, $$185.$$s = self, $$185.$$arity = 1, $$185)))
+                  return $writer[$rb_minus($writer["length"], 1)];;}, $$186.$$s = self, $$186.$$arity = 1, $$186)))
               };};
             if ($truthy(playable['$tie_start?']())) {
               tie_start = playable};
-            $send(playable.$slur_starts(), 'each', [], ($$186 = function(s){var self = $$186.$$s || this;
+            $send(playable.$slur_starts(), 'each', [], ($$187 = function(s){var self = $$187.$$s || this;
               if (self.slur_index == null) self.slur_index = nil;
 
             
@@ -29698,12 +29718,12 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               $writer = [s, playable];
               $send(self.slur_index, '[]=', Opal.to_a($writer));
-              return $writer[$rb_minus($writer["length"], 1)];}, $$186.$$s = self, $$186.$$arity = 1, $$186));
+              return $writer[$rb_minus($writer["length"], 1)];}, $$187.$$s = self, $$187.$$arity = 1, $$187));
             
             $writer = [playable.$slur_starts().$first(), playable];
             $send(self.slur_index, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;
-            $send(playable.$slur_ends(), 'each', [], ($$187 = function(id){var self = $$187.$$s || this, $a, $$188, begin_slur = nil, slurpath = nil;
+            $send(playable.$slur_ends(), 'each', [], ($$188 = function(id){var self = $$188.$$s || this, $a, $$189, begin_slur = nil, slurpath = nil;
               if (self.slur_index == null) self.slur_index = nil;
               if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -29717,7 +29737,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               p2 = $rb_plus(self.$Vector2d(playable.$sheet_drawable().$center()), [3, 0]);
               slurpath = self.$make_slur_path(p1, p2);
               if ($truthy($gvars.conf.$get("layout.SHOW_SLUR"))) {
-                return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(slurpath), 'tap', [], ($$188 = function(d){var self = $$188.$$s || this;
+                return result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(slurpath), 'tap', [], ($$189 = function(d){var self = $$189.$$s || this;
                   if ($gvars.conf == null) $gvars.conf = nil;
 
                 
@@ -29727,20 +29747,20 @@ Opal.modules["harpnotes"] = function(Opal) {
                   };
                   $writer = [$gvars.conf.$get("layout.LINE_MEDIUM")];
                   $send(d, 'line_width=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];}, $$188.$$s = self, $$188.$$arity = 1, $$188)))
+                  return $writer[$rb_minus($writer["length"], 1)];}, $$189.$$s = self, $$189.$$arity = 1, $$189)))
               } else {
                 return nil
-              };}, $$187.$$s = self, $$187.$$arity = 1, $$187));
-            return result;}, $$182.$$s = self, $$182.$$arity = 2, $$182)));
-        }, $Default__layout_voice_slurs$181.$$arity = 1);
+              };}, $$188.$$s = self, $$188.$$arity = 1, $$188));
+            return result;}, $$183.$$s = self, $$183.$$arity = 2, $$183)));
+        }, $Default__layout_voice_slurs$182.$$arity = 1);
         
-        Opal.def(self, '$_layout_voice_tuplets', $Default__layout_voice_tuplets$189 = function $$_layout_voice_tuplets(playables, print_variant_nr, show_options, voice_nr) {
-          var $$190, self = this, tuplet_start = nil, tuplet_notes = nil, res_tuplets = nil;
+        Opal.def(self, '$_layout_voice_tuplets', $Default__layout_voice_tuplets$190 = function $$_layout_voice_tuplets(playables, print_variant_nr, show_options, voice_nr) {
+          var $$191, self = this, tuplet_start = nil, tuplet_notes = nil, res_tuplets = nil;
 
           
           tuplet_start = playables.$first();
           tuplet_notes = [];
-          return (res_tuplets = $send(playables, 'inject', [[]], ($$190 = function(result, playable){var self = $$190.$$s || this, $a, $b, $$191, $$192, $$193, $$194, tuplet_conf_key = nil, conf_key = nil, conf_key_pos = nil, tuplet_options = nil, p1 = nil, p2 = nil, tiepath = nil, bezier_anchor = nil, cp1 = nil, cp2 = nil, pos_from_conf = nil, configured_anchor = nil, conf_value = nil, shape_drag_callback = nil, conf_key_edit = nil, style = nil, draginfo = nil, text = nil;
+          return (res_tuplets = $send(playables, 'inject', [[]], ($$191 = function(result, playable){var self = $$191.$$s || this, $a, $b, $$192, $$193, $$194, $$195, tuplet_conf_key = nil, conf_key = nil, conf_key_pos = nil, tuplet_options = nil, p1 = nil, p2 = nil, tiepath = nil, bezier_anchor = nil, cp1 = nil, cp2 = nil, pos_from_conf = nil, configured_anchor = nil, conf_value = nil, shape_drag_callback = nil, conf_key_edit = nil, style = nil, draginfo = nil, text = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -29785,22 +29805,22 @@ Opal.modules["harpnotes"] = function(Opal) {
                 } else { throw $err; }
               }})();
               configured_anchor = $rb_plus(bezier_anchor, pos_from_conf);
-              conf_value = $send($rb_minus(configured_anchor, bezier_anchor).$to_a(), 'map', [], ($$191 = function(i){var self = $$191.$$s || this;
+              conf_value = $send($rb_minus(configured_anchor, bezier_anchor).$to_a(), 'map', [], ($$192 = function(i){var self = $$192.$$s || this;
 
               
                 
                 if (i == null) {
                   i = nil;
                 };
-                return i.$round(0);}, $$191.$$s = self, $$191.$$arity = 1, $$191));
-              shape_drag_callback = $send(self, 'lambda', [], ($$192 = function(the_tuplet_options){var self = $$192.$$s || this;
+                return i.$round(0);}, $$192.$$s = self, $$192.$$arity = 1, $$192));
+              shape_drag_callback = $send(self, 'lambda', [], ($$193 = function(the_tuplet_options){var self = $$193.$$s || this;
 
               
                 
                 if (the_tuplet_options == null) {
                   the_tuplet_options = nil;
                 };
-                return nil;}, $$192.$$s = self, $$192.$$arity = 1, $$192));
+                return nil;}, $$193.$$s = self, $$193.$$arity = 1, $$193));
               if (tuplet_options['$[]']("show")['$=='](false)) {
               } else {
                 
@@ -29809,7 +29829,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                 draginfo = $hash2(["handler", "p1", "p2", "cp1", "cp2", "mp", "tuplet_options", "conf_key", "callback"], {"handler": "tuplet", "p1": p1.$to_a(), "p2": p2.$to_a(), "cp1": cp1.$to_a(), "cp2": cp2.$to_a(), "mp": bezier_anchor, "tuplet_options": tuplet_options, "conf_key": conf_key, "callback": shape_drag_callback});
                 text = ($truthy($a = show_options['$[]']("print_options_raw")['$[]']("tuplets.text")) ? $a : playable.$tuplet().$to_s());
                 text = text.$gsub("{{tuplet}}", playable.$tuplet().$to_s());
-                result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$193 = function(d){var self = $$193.$$s || this, $writer = nil;
+                result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$194 = function(d){var self = $$194.$$s || this, $writer = nil;
                   if ($gvars.conf == null) $gvars.conf = nil;
 
                 
@@ -29828,8 +29848,8 @@ Opal.modules["harpnotes"] = function(Opal) {
                   
                   $writer = [draginfo];
                   $send(d, 'draginfo=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];;}, $$193.$$s = self, $$193.$$arity = 1, $$193)));
-                result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(configured_anchor.$to_a(), text, style, tuplet_start.$origin(), $rb_plus(conf_key, "" + "." + (conf_key_pos)), conf_value.$to_a()), 'tap', [], ($$194 = function(s){var self = $$194.$$s || this, $writer = nil;
+                  return $writer[$rb_minus($writer["length"], 1)];;}, $$194.$$s = self, $$194.$$arity = 1, $$194)));
+                result.$push($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(configured_anchor.$to_a(), text, style, tuplet_start.$origin(), $rb_plus(conf_key, "" + "." + (conf_key_pos)), conf_value.$to_a()), 'tap', [], ($$195 = function(s){var self = $$195.$$s || this, $writer = nil;
 
                 
                   
@@ -29838,26 +29858,26 @@ Opal.modules["harpnotes"] = function(Opal) {
                   };
                   $writer = [$hash2(["handler"], {"handler": "annotation"})];
                   $send(s, 'draginfo=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];}, $$194.$$s = self, $$194.$$arity = 1, $$194)));
+                  return $writer[$rb_minus($writer["length"], 1)];}, $$195.$$s = self, $$195.$$arity = 1, $$195)));
               };
               tuplet_notes = [];
               tuplet_start = nil;};
-            return result;}, $$190.$$s = self, $$190.$$arity = 2, $$190)));
-        }, $Default__layout_voice_tuplets$189.$$arity = 4);
+            return result;}, $$191.$$s = self, $$191.$$arity = 2, $$191)));
+        }, $Default__layout_voice_tuplets$190.$$arity = 4);
         
-        Opal.def(self, '$_layout_voice_subflowlines', $Default__layout_voice_subflowlines$195 = function $$_layout_voice_subflowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr) {
-          var $$196, $$197, self = this, previous_note = nil, res_sub_flow = nil;
+        Opal.def(self, '$_layout_voice_subflowlines', $Default__layout_voice_subflowlines$196 = function $$_layout_voice_subflowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr) {
+          var $$197, $$198, self = this, previous_note = nil, res_sub_flow = nil;
 
           
           previous_note = nil;
-          return (res_sub_flow = $send($send(voice, 'select', [], ($$196 = function(c){var self = $$196.$$s || this, $a;
+          return (res_sub_flow = $send($send(voice, 'select', [], ($$197 = function(c){var self = $$197.$$s || this, $a;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return ($truthy($a = c['$is_a?']($$($nesting, 'Playable'))) ? $a : c['$is_a?']($$($nesting, 'SynchPoint')));}, $$196.$$s = self, $$196.$$arity = 1, $$196)), 'map', [], ($$197 = function(playable){var self = $$197.$$s || this, $a, $b, $$198, res = nil, flowlines_conf_key = nil, flowlines_conf = nil, flowline_conf_key = nil, conf_from_options = nil, conf_key = nil, conf_key_edit = nil, p1 = nil, p2 = nil, tuplet_options = nil, tiepath = nil, bezier_anchor = nil, cp1 = nil, cp2 = nil, draginfo = nil;
+            return ($truthy($a = c['$is_a?']($$($nesting, 'Playable'))) ? $a : c['$is_a?']($$($nesting, 'SynchPoint')));}, $$197.$$s = self, $$197.$$arity = 1, $$197)), 'map', [], ($$198 = function(playable){var self = $$198.$$s || this, $a, $b, $$199, res = nil, flowlines_conf_key = nil, flowlines_conf = nil, flowline_conf_key = nil, conf_from_options = nil, conf_key = nil, conf_key_edit = nil, p1 = nil, p2 = nil, tuplet_options = nil, tiepath = nil, bezier_anchor = nil, cp1 = nil, cp2 = nil, draginfo = nil;
 
           
             
@@ -29897,7 +29917,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                   } else {
                     draginfo = nil
                   };
-                  res = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath, nil, nil, "dotted"), 'tap', [], ($$198 = function(d){var self = $$198.$$s || this, $writer = nil;
+                  res = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath, nil, nil, "dotted"), 'tap', [], ($$199 = function(d){var self = $$199.$$s || this, $writer = nil;
 
                   
                     
@@ -29911,7 +29931,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                     
                     $writer = [draginfo];
                     $send(d, 'draginfo=', Opal.to_a($writer));
-                    return $writer[$rb_minus($writer["length"], 1)];;}, $$198.$$s = self, $$198.$$arity = 1, $$198));
+                    return $writer[$rb_minus($writer["length"], 1)];;}, $$199.$$s = self, $$199.$$arity = 1, $$199));
                 } else {
                   res = $$($nesting, 'FlowLine').$new(previous_note.$sheet_drawable(), playable.$sheet_drawable(), "dotted")
                 };};
@@ -29919,24 +29939,24 @@ Opal.modules["harpnotes"] = function(Opal) {
                 res = nil};
             };
             previous_note = playable;
-            return res;}, $$197.$$s = self, $$197.$$arity = 1, $$197)).$compact());
-        }, $Default__layout_voice_subflowlines$195.$$arity = 6);
+            return res;}, $$198.$$s = self, $$198.$$arity = 1, $$198)).$compact());
+        }, $Default__layout_voice_subflowlines$196.$$arity = 6);
         
-        Opal.def(self, '$_layout_voice_flowlines', $Default__layout_voice_flowlines$199 = function $$_layout_voice_flowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr) {
-          var $a, $$200, $$201, self = this, previous_note = nil, flowlines_conf_key = nil, flowlines_conf = nil, res_flow = nil;
+        Opal.def(self, '$_layout_voice_flowlines', $Default__layout_voice_flowlines$200 = function $$_layout_voice_flowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr) {
+          var $a, $$201, $$202, self = this, previous_note = nil, flowlines_conf_key = nil, flowlines_conf = nil, res_flow = nil;
 
           
           previous_note = nil;
           flowlines_conf_key = "" + "notebound.flowline.v_" + (voice_nr);
           flowlines_conf = ($truthy($a = show_options['$[]']("print_options_raw")['$[]'](flowlines_conf_key)) ? $a : $hash2([], {}));
-          return (res_flow = $send($send(voice, 'select', [], ($$200 = function(c){var self = $$200.$$s || this;
+          return (res_flow = $send($send(voice, 'select', [], ($$201 = function(c){var self = $$201.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return c['$is_a?']($$($nesting, 'Playable'));}, $$200.$$s = self, $$200.$$arity = 1, $$200)), 'map', [], ($$201 = function(playable){var self = $$201.$$s || this, $b, $c, $$202, res = nil, flowline_conf_key = nil, conf_from_options = nil, conf_key = nil, conf_key_edit = nil, p1 = nil, p2 = nil, tuplet_options = nil, tiepath = nil, bezier_anchor = nil, cp1 = nil, cp2 = nil, draginfo = nil, $writer = nil;
+            return c['$is_a?']($$($nesting, 'Playable'));}, $$201.$$s = self, $$201.$$arity = 1, $$201)), 'map', [], ($$202 = function(playable){var self = $$202.$$s || this, $b, $c, $$203, res = nil, flowline_conf_key = nil, conf_from_options = nil, conf_key = nil, conf_key_edit = nil, p1 = nil, p2 = nil, tuplet_options = nil, tiepath = nil, bezier_anchor = nil, cp1 = nil, cp2 = nil, draginfo = nil, $writer = nil;
             if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -29975,7 +29995,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                   } else {
                     draginfo = nil
                   };
-                  res = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$202 = function(d){var self = $$202.$$s || this, $writer = nil;
+                  res = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(tiepath), 'tap', [], ($$203 = function(d){var self = $$203.$$s || this, $writer = nil;
 
                   
                     
@@ -29989,7 +30009,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                     
                     $writer = [draginfo];
                     $send(d, 'draginfo=', Opal.to_a($writer));
-                    return $writer[$rb_minus($writer["length"], 1)];;}, $$202.$$s = self, $$202.$$arity = 1, $$202));
+                    return $writer[$rb_minus($writer["length"], 1)];;}, $$203.$$s = self, $$203.$$arity = 1, $$203));
                 } else {
                   res = $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'FlowLine').$new(previous_note.$sheet_drawable(), playable.$sheet_drawable())
                 };};
@@ -30009,15 +30029,15 @@ Opal.modules["harpnotes"] = function(Opal) {
               res = nil
             };
             previous_note = playable;
-            return res;}, $$201.$$s = self, $$201.$$arity = 1, $$201)).$compact());
-        }, $Default__layout_voice_flowlines$199.$$arity = 6);
+            return res;}, $$202.$$s = self, $$202.$$arity = 1, $$202)).$compact());
+        }, $Default__layout_voice_flowlines$200.$$arity = 6);
         
-        Opal.def(self, '$_layout_voice_playables', $Default__layout_voice_playables$203 = function $$_layout_voice_playables(beat_layout, playables, print_variant_nr, show_options, voice_nr) {
-          var $$204, self = this, res_decorations = nil, res_playables = nil;
+        Opal.def(self, '$_layout_voice_playables', $Default__layout_voice_playables$204 = function $$_layout_voice_playables(beat_layout, playables, print_variant_nr, show_options, voice_nr) {
+          var $$205, self = this, res_decorations = nil, res_playables = nil;
 
           
           res_decorations = [];
-          res_playables = $send(playables, 'map', [], ($$204 = function(playable){var self = $$204.$$s || this, note_conf_base_tail = nil, note_conf_base = nil, result = nil, decoration_root = nil;
+          res_playables = $send(playables, 'map', [], ($$205 = function(playable){var self = $$205.$$s || this, note_conf_base_tail = nil, note_conf_base = nil, result = nil, decoration_root = nil;
 
           
             
@@ -30039,20 +30059,20 @@ Opal.modules["harpnotes"] = function(Opal) {
             decoration_root.$more_conf_keys().$push($hash2(["conf_key", "text", "icon"], {"conf_key": "" + "extract." + (print_variant_nr) + ".notebound.minc." + (playable.$time()) + ".minc_f", "text": $$($nesting, 'I18n').$t("Edit Minc"), "icon": "fa fa-arrows-v"}));
             decoration_root.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + ".notebound.minc." + (playable.$time()) + ".minc_f", "text": $$($nesting, 'I18n').$t("increase Minc"), "icon": "fa fa-arrow-down", "value": 0.5}));
             decoration_root.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + ".notebound.minc." + (playable.$time()) + ".minc_f", "text": $$($nesting, 'I18n').$t("decrease Minc"), "icon": "fa fa-arrow-up", "value": -0.5}));
-            return result.$shapes();}, $$204.$$s = self, $$204.$$arity = 1, $$204)).$flatten().$compact();
+            return result.$shapes();}, $$205.$$s = self, $$205.$$arity = 1, $$205)).$flatten().$compact();
           res_decorations = res_decorations.$flatten().$compact();
           return [res_decorations, res_playables];
-        }, $Default__layout_voice_playables$203.$$arity = 5);
+        }, $Default__layout_voice_playables$204.$$arity = 5);
         
-        Opal.def(self, '$_layout_voice_handle_visibility', $Default__layout_voice_handle_visibility$205 = function $$_layout_voice_handle_visibility(playables, show_options) {
-          var $$206, self = this, previous_note = nil;
+        Opal.def(self, '$_layout_voice_handle_visibility', $Default__layout_voice_handle_visibility$206 = function $$_layout_voice_handle_visibility(playables, show_options) {
+          var $$207, self = this, previous_note = nil;
 
           if ($truthy(show_options['$[]']("nonflowrest"))) {
             return nil
           } else {
             
             previous_note = nil;
-            return $send(playables, 'each', [], ($$206 = function(c){var self = $$206.$$s || this, $a, $b, $writer = nil;
+            return $send(playables, 'each', [], ($$207 = function(c){var self = $$207.$$s || this, $a, $b, $writer = nil;
 
             
               
@@ -30077,19 +30097,19 @@ Opal.modules["harpnotes"] = function(Opal) {
                   $send(previous_note, 'visible=', Opal.to_a($writer));
                   $writer[$rb_minus($writer["length"], 1)];
                 }};
-              return (previous_note = c);}, $$206.$$s = self, $$206.$$arity = 1, $$206));
+              return (previous_note = c);}, $$207.$$s = self, $$207.$$arity = 1, $$207));
           }
-        }, $Default__layout_voice_handle_visibility$205.$$arity = 2);
+        }, $Default__layout_voice_handle_visibility$206.$$arity = 2);
         
-        Opal.def(self, '$_layout_sheet_annotations', $Default__layout_sheet_annotations$207 = function $$_layout_sheet_annotations(print_variant_nr) {
-          var $$208, self = this, res_annotations = nil, e = nil;
+        Opal.def(self, '$_layout_sheet_annotations', $Default__layout_sheet_annotations$208 = function $$_layout_sheet_annotations(print_variant_nr) {
+          var $$209, self = this, res_annotations = nil, e = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           
           res_annotations = [];
           
           try {
-            $send(self.print_options_hash['$[]']("notes"), 'each', [], ($$208 = function(k, note){var self = $$208.$$s || this, $a, $$209, conf_key = nil, align = nil;
+            $send(self.print_options_hash['$[]']("notes"), 'each', [], ($$209 = function(k, note){var self = $$209.$$s || this, $a, $$210, conf_key = nil, align = nil;
 
             
               
@@ -30115,7 +30135,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               } else {
                 self.$raise("" + ($$($nesting, 'I18n').$t("missing text")) + " in " + (conf_key))
               };
-              return res_annotations['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(note['$[]']("pos"), self.$resolve_placeholder(note['$[]']("text"), conf_key), note['$[]']("style"), nil, "" + (conf_key) + ".pos", note['$[]']("pos")), 'tap', [], ($$209 = function(s){var self = $$209.$$s || this, $writer = nil;
+              return res_annotations['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(note['$[]']("pos"), self.$resolve_placeholder(note['$[]']("text"), conf_key), note['$[]']("style"), nil, "" + (conf_key) + ".pos", note['$[]']("pos")), 'tap', [], ($$210 = function(s){var self = $$210.$$s || this, $writer = nil;
 
               
                 
@@ -30129,7 +30149,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                 
                 $writer = [$hash2(["handler"], {"handler": "annotation"})];
                 $send(s, 'draginfo=', Opal.to_a($writer));
-                return $writer[$rb_minus($writer["length"], 1)];;}, $$209.$$s = self, $$209.$$arity = 1, $$209)));}, $$208.$$s = self, $$208.$$arity = 2, $$208))
+                return $writer[$rb_minus($writer["length"], 1)];;}, $$210.$$s = self, $$210.$$arity = 1, $$210)));}, $$209.$$s = self, $$209.$$arity = 2, $$209))
           } catch ($err) {
             if (Opal.rescue($err, [$$($nesting, 'Exception')])) {e = $err;
               try {
@@ -30138,23 +30158,23 @@ Opal.modules["harpnotes"] = function(Opal) {
             } else { throw $err; }
           };;
           return res_annotations;
-        }, $Default__layout_sheet_annotations$207.$$arity = 1);
+        }, $Default__layout_sheet_annotations$208.$$arity = 1);
         
-        Opal.def(self, '$_layout_instrument', $Default__layout_instrument$210 = function $$_layout_instrument() {
-          var $$211, self = this, res_instrument = nil, res = nil, $writer = nil;
+        Opal.def(self, '$_layout_instrument', $Default__layout_instrument$211 = function $$_layout_instrument() {
+          var $$212, self = this, res_instrument = nil, res = nil, $writer = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
           res_instrument = [];
           if ($truthy(self.draw_instrument)) {
-            $send(self.draw_instrument.$call(), 'each', [], ($$211 = function(r){var self = $$211.$$s || this;
+            $send(self.draw_instrument.$call(), 'each', [], ($$212 = function(r){var self = $$212.$$s || this;
 
             
               
               if (r == null) {
                 r = nil;
               };
-              return res_instrument.$push(r);}, $$211.$$s = self, $$211.$$arity = 1, $$211))};
+              return res_instrument.$push(r);}, $$212.$$s = self, $$212.$$arity = 1, $$212))};
           if ($truthy(self.instrument_shape)) {
             
             res = $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(self.instrument_shape, "open");
@@ -30164,10 +30184,10 @@ Opal.modules["harpnotes"] = function(Opal) {
             $writer[$rb_minus($writer["length"], 1)];;
             res_instrument.$push(res);};
           return res_instrument;
-        }, $Default__layout_instrument$210.$$arity = 0);
+        }, $Default__layout_instrument$211.$$arity = 0);
         
-        Opal.def(self, '$_layout_lyrics', $Default__layout_lyrics$212 = function $$_layout_lyrics(music, print_variant_nr) {
-          var $$213, $$214, self = this, res_lyrics = nil, lyrics = nil, lyric_text = nil, text = nil, verses = nil;
+        Opal.def(self, '$_layout_lyrics', $Default__layout_lyrics$213 = function $$_layout_lyrics(music, print_variant_nr) {
+          var $$214, $$215, self = this, res_lyrics = nil, lyrics = nil, lyric_text = nil, text = nil, verses = nil;
 
           
           res_lyrics = [];
@@ -30178,16 +30198,16 @@ Opal.modules["harpnotes"] = function(Opal) {
             text = lyric_text.$join("\n");
             if ($truthy(lyrics)) {
               
-              verses = $send(text.$gsub("\t", " ").$squeeze(" ").$split(/\n\n+/), 'map', [], ($$213 = function(i){var self = $$213.$$s || this;
+              verses = $send(text.$gsub("\t", " ").$squeeze(" ").$split(/\n\n+/), 'map', [], ($$214 = function(i){var self = $$214.$$s || this;
 
               
                 
                 if (i == null) {
                   i = nil;
                 };
-                return i.$strip();}, $$213.$$s = self, $$213.$$arity = 1, $$213));
+                return i.$strip();}, $$214.$$s = self, $$214.$$arity = 1, $$214));
               lyrics.$delete("versepos");
-              $send(lyrics, 'each', [], ($$214 = function(key, entry){var self = $$214.$$s || this, $a, $$215, $$216, pos = nil, the_text = nil, conf_key = nil, conf_base = nil, style = nil;
+              $send(lyrics, 'each', [], ($$215 = function(key, entry){var self = $$215.$$s || this, $a, $$216, $$217, pos = nil, the_text = nil, conf_key = nil, conf_base = nil, style = nil;
                 if (self.print_options_raw == null) self.print_options_raw = nil;
 
               
@@ -30200,7 +30220,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                   entry = nil;
                 };
                 pos = entry['$[]']("pos");
-                the_text = $send(($truthy($a = entry['$[]']("verses")) ? $a : []), 'map', [], ($$215 = function(i){var self = $$215.$$s || this, j = nil;
+                the_text = $send(($truthy($a = entry['$[]']("verses")) ? $a : []), 'map', [], ($$216 = function(i){var self = $$216.$$s || this, j = nil;
 
                 
                   
@@ -30213,11 +30233,11 @@ Opal.modules["harpnotes"] = function(Opal) {
                     j = i};
                   if ($truthy($rb_gt(i, 0))) {
                     j = $rb_minus(i, 1)};
-                  return verses['$[]'](j);}, $$215.$$s = self, $$215.$$arity = 1, $$215)).$join("\n\n");
+                  return verses['$[]'](j);}, $$216.$$s = self, $$216.$$arity = 1, $$216)).$join("\n\n");
                 conf_key = "" + "lyrics." + (key);
                 conf_base = "" + "extract." + (print_variant_nr) + "." + (conf_key);
                 style = ($truthy($a = self.print_options_raw.$get("" + (conf_key) + ".style")) ? $a : "regular");
-                return res_lyrics['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(pos, the_text, style, nil, "" + (conf_base) + ".pos", pos), 'tap', [], ($$216 = function(s){var self = $$216.$$s || this, $writer = nil;
+                return res_lyrics['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(pos, the_text, style, nil, "" + (conf_base) + ".pos", pos), 'tap', [], ($$217 = function(s){var self = $$217.$$s || this, $writer = nil;
 
                 
                   
@@ -30226,11 +30246,11 @@ Opal.modules["harpnotes"] = function(Opal) {
                   };
                   $writer = [$hash2(["handler"], {"handler": "annotation"})];
                   $send(s, 'draginfo=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];}, $$216.$$s = self, $$216.$$arity = 1, $$216)));}, $$214.$$s = self, $$214.$$arity = 2, $$214));};};
+                  return $writer[$rb_minus($writer["length"], 1)];}, $$217.$$s = self, $$217.$$arity = 1, $$217)));}, $$215.$$s = self, $$215.$$arity = 2, $$215));};};
           return res_lyrics;
-        }, $Default__layout_lyrics$212.$$arity = 2);
+        }, $Default__layout_lyrics$213.$$arity = 2);
         
-        Opal.def(self, '$_layout_zn_annotations', $Default__layout_zn_annotations$217 = function $$_layout_zn_annotations(filename, music) {
+        Opal.def(self, '$_layout_zn_annotations', $Default__layout_zn_annotations$218 = function $$_layout_zn_annotations(filename, music) {
           var self = this, res_zn_annotations = nil, datestring = nil;
 
           
@@ -30240,10 +30260,10 @@ Opal.modules["harpnotes"] = function(Opal) {
           res_zn_annotations['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(self.bottom_annotation_positions['$[]'](1), "Zupfnoter: https://www.zupfnoter.de", "smaller"));
           res_zn_annotations['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(self.bottom_annotation_positions['$[]'](2), music.$checksum(), "smaller"));
           return res_zn_annotations;
-        }, $Default__layout_zn_annotations$217.$$arity = 2);
+        }, $Default__layout_zn_annotations$218.$$arity = 2);
         
-        Opal.def(self, '$_layout_legend', $Default__layout_legend$218 = function $$_layout_legend(music, print_variant_nr, title) {
-          var $a, $$219, $$220, self = this, res_legend = nil, meter = nil, key = nil, composer = nil, tempo = nil, print_variant_title = nil, title_pos = nil, title_align = nil, legend_pos = nil, legend = nil, style = nil;
+        Opal.def(self, '$_layout_legend', $Default__layout_legend$219 = function $$_layout_legend(music, print_variant_nr, title) {
+          var $a, $$220, $$221, self = this, res_legend = nil, meter = nil, key = nil, composer = nil, tempo = nil, print_variant_title = nil, title_pos = nil, title_style = nil, title_align = nil, legend_pos = nil, legend = nil, style = nil;
 
           
           res_legend = [];
@@ -30255,6 +30275,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           tempo = music.$meta_data()['$[]']("tempo_display");
           print_variant_title = self.print_options_hash['$[]']("title");
           title_pos = self.print_options_hash['$[]']("legend")['$[]']("pos");
+          title_style = ($truthy($a = self.print_options_raw.$get("legend.tstyle")) ? $a : "large");
           title_align = ($truthy($a = self.print_options_raw.$get("legend.align")) ? $a : "r");
           title_align = (function() {if ($truthy(title_align['$==']("l"))) {
             return "right"
@@ -30264,7 +30285,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           legend_pos = self.print_options_hash['$[]']("legend")['$[]']("spos");
           legend = "" + (print_variant_title) + "\n" + (composer) + "\nTakt: " + (meter) + " (" + (tempo) + ")\nTonart: " + (key);
           style = ($truthy($a = self.print_options_raw.$get("legend.style")) ? $a : "regular");
-          res_legend['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(title_pos, title, "large", nil, "" + "extract." + (print_variant_nr) + ".legend.pos", title_pos), 'tap', [], ($$219 = function(s){var self = $$219.$$s || this, $writer = nil;
+          res_legend['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(title_pos, title, title_style, nil, "" + "extract." + (print_variant_nr) + ".legend.pos", title_pos), 'tap', [], ($$220 = function(s){var self = $$220.$$s || this, $writer = nil;
 
           
             
@@ -30278,9 +30299,9 @@ Opal.modules["harpnotes"] = function(Opal) {
             
             $writer = [title_align];
             $send(s, 'align=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];;}, $$219.$$s = self, $$219.$$arity = 1, $$219)));
+            return $writer[$rb_minus($writer["length"], 1)];;}, $$220.$$s = self, $$220.$$arity = 1, $$220)));
           if ($truthy(self.print_options_raw['$[]']("notes.T06_legend")['$nil?']())) {
-            res_legend['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(legend_pos, legend, style, nil, "" + "extract." + (print_variant_nr) + ".legend.spos", legend_pos), 'tap', [], ($$220 = function(s){var self = $$220.$$s || this, $writer = nil;
+            res_legend['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(legend_pos, legend, style, nil, "" + "extract." + (print_variant_nr) + ".legend.spos", legend_pos), 'tap', [], ($$221 = function(s){var self = $$221.$$s || this, $writer = nil;
 
             
               
@@ -30289,12 +30310,12 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               $writer = [$hash2(["handler"], {"handler": "annotation"})];
               $send(s, 'draginfo=', Opal.to_a($writer));
-              return $writer[$rb_minus($writer["length"], 1)];}, $$220.$$s = self, $$220.$$arity = 1, $$220)))};
+              return $writer[$rb_minus($writer["length"], 1)];}, $$221.$$s = self, $$221.$$arity = 1, $$221)))};
           return res_legend;
-        }, $Default__layout_legend$218.$$arity = 3);
+        }, $Default__layout_legend$219.$$arity = 3);
         
-        Opal.def(self, '$_layout_cutmarks', $Default__layout_cutmarks$221 = function $$_layout_cutmarks(page_format) {
-          var $a, $$222, self = this, res_cutmarks = nil, delta = nil;
+        Opal.def(self, '$_layout_cutmarks', $Default__layout_cutmarks$222 = function $$_layout_cutmarks(page_format) {
+          var $a, $$223, self = this, res_cutmarks = nil, delta = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -30302,14 +30323,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           if ($truthy((($a = page_format['$==']("A4")) ? $rb_gt($gvars.conf['$[]']("printer.a4_pages").$length(), 1) : page_format['$==']("A4")))) {
             
             delta = $rb_times(12.0, $gvars.conf.$get("layout.X_SPACING"));
-            $send($range(1, 2, false), 'each', [], ($$222 = function(i){var self = $$222.$$s || this, $$223;
+            $send($range(1, 2, false), 'each', [], ($$223 = function(i){var self = $$223.$$s || this, $$224;
 
             
               
               if (i == null) {
                 i = nil;
               };
-              return $send([4, 290], 'each', [], ($$223 = function(y){var self = $$223.$$s || this;
+              return $send([4, 290], 'each', [], ($$224 = function(y){var self = $$224.$$s || this;
                 if ($gvars.conf == null) $gvars.conf = nil;
 
               
@@ -30317,24 +30338,24 @@ Opal.modules["harpnotes"] = function(Opal) {
                 if (y == null) {
                   y = nil;
                 };
-                return res_cutmarks['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([$rb_plus($rb_plus($rb_times(0.25, $gvars.conf.$get("layout.X_SPACING")), $gvars.conf.$get("layout.X_OFFSET")), $rb_times(delta, i)), y], "x", "small", nil));}, $$223.$$s = self, $$223.$$arity = 1, $$223));}, $$222.$$s = self, $$222.$$arity = 1, $$222));};
+                return res_cutmarks['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([$rb_plus($rb_plus($rb_times(0.25, $gvars.conf.$get("layout.X_SPACING")), $gvars.conf.$get("layout.X_OFFSET")), $rb_times(delta, i)), y], "x", "small", nil));}, $$224.$$s = self, $$224.$$arity = 1, $$224));}, $$223.$$s = self, $$223.$$arity = 1, $$223));};
           return res_cutmarks;
-        }, $Default__layout_cutmarks$221.$$arity = 1);
+        }, $Default__layout_cutmarks$222.$$arity = 1);
         
-        Opal.def(self, '$_layout_sortmark', $Default__layout_sortmark$224 = function $$_layout_sortmark(title, options) {
-          var $$225, $a, $b, self = this, sortname = nil, b = nil, a = nil, w = nil, h = nil, fill = nil, markpos = nil, markpath = nil;
+        Opal.def(self, '$_layout_sortmark', $Default__layout_sortmark$225 = function $$_layout_sortmark(title, options) {
+          var $$226, $a, $b, self = this, sortname = nil, b = nil, a = nil, w = nil, h = nil, fill = nil, markpos = nil, markpath = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
           sortname = title.$upcase().$gsub(/[ÄÖÜYZß]/, $hash2(["Ä", "Ö", "Ü", "ß", "Y", "Z"], {"Ä": "AE", "Ö": "OE", "Ü": "UE", "ß": "ss", "Y": "X", "Z": "X"})).$gsub(/[^A-Za-z]/, "");
-          b = $send($rb_plus(sortname, "AAAA").$split(""), 'map', [], ($$225 = function(i){var self = $$225.$$s || this;
+          b = $send($rb_plus(sortname, "AAAA").$split(""), 'map', [], ($$226 = function(i){var self = $$226.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return $rb_minus(i.$ord(), "A".$ord());}, $$225.$$s = self, $$225.$$arity = 1, $$225));
+            return $rb_minus(i.$ord(), "A".$ord());}, $$226.$$s = self, $$226.$$arity = 1, $$226));
           a = $rb_plus(b['$[]'](0), $rb_divide($rb_times($rb_plus($rb_plus($rb_times(0.1, b['$[]'](1)), $rb_times(0.01, b['$[]'](2))), $rb_times(0.001, b['$[]'](3))), 0.5), 2.4));
           $b = options['$[]']("size"), $a = Opal.to_ary($b), (w = ($a[0] == null ? nil : $a[0])), (h = ($a[1] == null ? nil : $a[1])), $b;
           fill = (function() {if ($truthy(options['$[]']("fill"))) {
@@ -30345,12 +30366,12 @@ Opal.modules["harpnotes"] = function(Opal) {
           markpos = $rb_times($rb_plus(12.5, a), $gvars.conf.$get("layout.X_SPACING"));
           markpath = [["M", markpos, 0], ["l", $rb_divide(w['$-@'](), 2), h], ["l", w, 0], ["l", $rb_divide(w['$-@'](), 2), h['$-@']()], ["l", 0, h], ["l", 0, h['$-@']()], ["z"]];
           return $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(markpath, fill);
-        }, $Default__layout_sortmark$224.$$arity = 2);
+        }, $Default__layout_sortmark$225.$$arity = 2);
         
-        Opal.def(self, '$_layout_synclines', $Default__layout_synclines$226 = function $$_layout_synclines(music, required_synchlines) {
-          var $$227, self = this, res_synch_lines = nil;
+        Opal.def(self, '$_layout_synclines', $Default__layout_synclines$227 = function $$_layout_synclines(music, required_synchlines) {
+          var $$228, self = this, res_synch_lines = nil;
 
-          return (res_synch_lines = $send(required_synchlines, 'map', [], ($$227 = function(selector){var self = $$227.$$s || this, $$228, synch_points_to_show = nil;
+          return (res_synch_lines = $send(required_synchlines, 'map', [], ($$228 = function(selector){var self = $$228.$$s || this, $$229, synch_points_to_show = nil;
 
           
             
@@ -30358,7 +30379,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               selector = nil;
             };
             synch_points_to_show = music.$build_synch_points(selector);
-            return $send(synch_points_to_show, 'map', [], ($$228 = function(sp){var self = $$228.$$s || this, res = nil, $writer = nil;
+            return $send(synch_points_to_show, 'map', [], ($$229 = function(sp){var self = $$229.$$s || this, res = nil, $writer = nil;
 
             
               
@@ -30370,11 +30391,11 @@ Opal.modules["harpnotes"] = function(Opal) {
               $writer = [self.$compute_color_by_variant_no(sp.$notes().$first().$variant())];
               $send(res, 'color=', Opal.to_a($writer));
               $writer[$rb_minus($writer["length"], 1)];;
-              return res;}, $$228.$$s = self, $$228.$$arity = 1, $$228));}, $$227.$$s = self, $$227.$$arity = 1, $$227)).$flatten())
-        }, $Default__layout_synclines$226.$$arity = 2);
+              return res;}, $$229.$$s = self, $$229.$$arity = 1, $$229));}, $$228.$$s = self, $$228.$$arity = 1, $$228)).$flatten())
+        }, $Default__layout_synclines$227.$$arity = 2);
         
-        Opal.def(self, '$_layout_sheetmarks', $Default__layout_sheetmarks$229 = function $$_layout_sheetmarks(print_options_hash, print_variant_nr) {
-          var $$230, $$232, self = this, vpos = nil, marks = nil, conf_key = nil, sheet_marks = nil, no_of_names = nil, scale = nil, start_scale = nil, end_scale = nil, style = nil, x_spacing = nil, x_offset = nil;
+        Opal.def(self, '$_layout_sheetmarks', $Default__layout_sheetmarks$230 = function $$_layout_sheetmarks(print_options_hash, print_variant_nr) {
+          var $$231, $$233, self = this, vpos = nil, marks = nil, conf_key = nil, sheet_marks = nil, no_of_names = nil, scale = nil, start_scale = nil, end_scale = nil, style = nil, x_spacing = nil, x_offset = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -30384,7 +30405,7 @@ Opal.modules["harpnotes"] = function(Opal) {
           sheet_marks = [];
           if ($truthy(marks['$empty?']())) {
           } else {
-            sheet_marks = $rb_plus(sheet_marks, $send(marks, 'inject', [[]], ($$230 = function(result, pitch){var self = $$230.$$s || this, $$231;
+            sheet_marks = $rb_plus(sheet_marks, $send(marks, 'inject', [[]], ($$231 = function(result, pitch){var self = $$231.$$s || this, $$232;
 
             
               
@@ -30395,7 +30416,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (pitch == null) {
                 pitch = nil;
               };
-              $send(print_options_hash['$[]']("stringnames")['$[]']("marks")['$[]']("vpos"), 'each', [], ($$231 = function(mark_vpos){var self = $$231.$$s || this, markpath = nil;
+              $send(print_options_hash['$[]']("stringnames")['$[]']("marks")['$[]']("vpos"), 'each', [], ($$232 = function(mark_vpos){var self = $$232.$$s || this, markpath = nil;
                 if (self.pitch_to_xpos == null) self.pitch_to_xpos = nil;
 
               
@@ -30404,8 +30425,8 @@ Opal.modules["harpnotes"] = function(Opal) {
                   mark_vpos = nil;
                 };
                 markpath = self.$make_sheetmark_path([self.pitch_to_xpos.$call(pitch), mark_vpos]);
-                return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(markpath, "filled"));}, $$231.$$s = self, $$231.$$arity = 1, $$231));
-              return result;}, $$230.$$s = self, $$230.$$arity = 2, $$230)))
+                return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(markpath, "filled"));}, $$232.$$s = self, $$232.$$arity = 1, $$232));
+              return result;}, $$231.$$s = self, $$231.$$arity = 2, $$231)))
           };
           if ($truthy(vpos['$empty?']())) {
           } else {
@@ -30419,7 +30440,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             style = print_options_hash['$[]']("stringnames")['$[]']("style");
             x_spacing = $gvars.conf.$get("layout.X_SPACING");
             x_offset = $gvars.conf.$get("layout.X_OFFSET");
-            sheet_marks = $rb_plus(sheet_marks, $send(Opal.Range.$new(start_scale, end_scale, false).$to_a(), 'inject', [[]], ($$232 = function(result, pitch){var self = $$232.$$s || this, $$233, x = nil;
+            sheet_marks = $rb_plus(sheet_marks, $send(Opal.Range.$new(start_scale, end_scale, false).$to_a(), 'inject', [[]], ($$233 = function(result, pitch){var self = $$233.$$s || this, $$234, x = nil;
 
             
               
@@ -30431,14 +30452,14 @@ Opal.modules["harpnotes"] = function(Opal) {
                 pitch = nil;
               };
               x = $rb_plus($rb_times($rb_plus(start_scale['$-@'](), pitch), x_spacing), x_offset);
-              $send(vpos, 'each', [], ($$233 = function(vpos){var self = $$233.$$s || this, $$234;
+              $send(vpos, 'each', [], ($$234 = function(vpos){var self = $$234.$$s || this, $$235;
 
               
                 
                 if (vpos == null) {
                   vpos = nil;
                 };
-                return result['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([x, vpos], scale['$[]']($rb_minus(pitch, start_scale)), style, nil, conf_key), 'tap', [], ($$234 = function(d){var self = $$234.$$s || this, $writer = nil;
+                return result['$<<']($send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new([x, vpos], scale['$[]']($rb_minus(pitch, start_scale)), style, nil, conf_key), 'tap', [], ($$235 = function(d){var self = $$235.$$s || this, $writer = nil;
 
                 
                   
@@ -30447,25 +30468,25 @@ Opal.modules["harpnotes"] = function(Opal) {
                   };
                   $writer = ["center"];
                   $send(d, 'align=', Opal.to_a($writer));
-                  return $writer[$rb_minus($writer["length"], 1)];}, $$234.$$s = self, $$234.$$arity = 1, $$234)));}, $$233.$$s = self, $$233.$$arity = 1, $$233));
-              return result;}, $$232.$$s = self, $$232.$$arity = 2, $$232)));
+                  return $writer[$rb_minus($writer["length"], 1)];}, $$235.$$s = self, $$235.$$arity = 1, $$235)));}, $$234.$$s = self, $$234.$$arity = 1, $$234));
+              return result;}, $$233.$$s = self, $$233.$$arity = 2, $$233)));
           };
           return sheet_marks;
-        }, $Default__layout_sheetmarks$229.$$arity = 2);
+        }, $Default__layout_sheetmarks$230.$$arity = 2);
         
-        Opal.def(self, '$_layout_voices', $Default__layout_voices$235 = function $$_layout_voices(beat_layout, music, print_variant_nr) {
-          var $$236, $a, $$237, $$238, $$239, $$240, $$241, $$244, self = this, beat_compression_map = nil, maximal_beat = nil, full_beat_spacing = nil, factor = nil, compressed_beat_layout_proc = nil, required_synchlines = nil, synched_notes = nil, active_voices = nil, res_voice_elements = nil, collisiondetector = nil;
+        Opal.def(self, '$_layout_voices', $Default__layout_voices$236 = function $$_layout_voices(beat_layout, music, print_variant_nr) {
+          var $$237, $a, $$238, $$239, $$240, $$241, $$242, $$245, self = this, beat_compression_map = nil, maximal_beat = nil, full_beat_spacing = nil, factor = nil, compressed_beat_layout_proc = nil, required_synchlines = nil, synched_notes = nil, active_voices = nil, res_voice_elements = nil, collisiondetector = nil;
           if ($gvars.log == null) $gvars.log = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
           beat_compression_map = nil;
-          $send($gvars.log, 'benchmark', ["compute beat compression map"], ($$236 = function(){var self = $$236.$$s || this, layoutlines = nil;
+          $send($gvars.log, 'benchmark', ["compute beat compression map"], ($$237 = function(){var self = $$237.$$s || this, layoutlines = nil;
             if (self.print_options_hash == null) self.print_options_hash = nil;
 
           
             layoutlines = $rb_plus(self.print_options_hash['$[]']("voices"), self.print_options_hash['$[]']("layoutlines")).$uniq();
-            return (beat_compression_map = self.$compute_beat_compression(music, layoutlines));}, $$236.$$s = self, $$236.$$arity = 0, $$236));
+            return (beat_compression_map = self.$compute_beat_compression(music, layoutlines));}, $$237.$$s = self, $$237.$$arity = 0, $$237));
           maximal_beat = ($truthy($a = beat_compression_map.$values().$max()) ? $a : 0);
           full_beat_spacing = $rb_divide($rb_minus($gvars.conf.$get("layout.DRAWING_AREA_SIZE").$last(), self.y_offset), maximal_beat);
           if ($truthy($rb_lt(full_beat_spacing, self.beat_spacing))) {
@@ -30474,7 +30495,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             $gvars.log.$warning("" + "note distance too small (factor " + (factor) + ")");};
           self.beat_spacing = [full_beat_spacing, $rb_times($gvars.conf.$get("layout.packer.pack_max_spreadfactor"), self.beat_spacing)].$min();
           if ($truthy($gvars.conf.$get("layout.bottomup"))) {
-            beat_layout = ($truthy($a = beat_layout) ? $a : $send($$($nesting, 'Proc'), 'new', [], ($$237 = function(beat){var self = $$237.$$s || this, r = nil;
+            beat_layout = ($truthy($a = beat_layout) ? $a : $send($$($nesting, 'Proc'), 'new', [], ($$238 = function(beat){var self = $$238.$$s || this, r = nil;
               if (self.y_size == null) self.y_size = nil;
               if (self.beat_spacing == null) self.beat_spacing = nil;
 
@@ -30483,9 +30504,9 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (beat == null) {
                 beat = nil;
               };
-              return (r = self.y_size - beat * self.beat_spacing);}, $$237.$$s = self, $$237.$$arity = 1, $$237)))
+              return (r = self.y_size - beat * self.beat_spacing);}, $$238.$$s = self, $$238.$$arity = 1, $$238)))
           } else {
-            beat_layout = ($truthy($a = beat_layout) ? $a : $send($$($nesting, 'Proc'), 'new', [], ($$238 = function(beat){var self = $$238.$$s || this, r = nil;
+            beat_layout = ($truthy($a = beat_layout) ? $a : $send($$($nesting, 'Proc'), 'new', [], ($$239 = function(beat){var self = $$239.$$s || this, r = nil;
               if (self.beat_spacing == null) self.beat_spacing = nil;
               if (self.y_offset == null) self.y_offset = nil;
 
@@ -30494,17 +30515,17 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (beat == null) {
                 beat = nil;
               };
-              return (r = beat * self.beat_spacing + self.y_offset);}, $$238.$$s = self, $$238.$$arity = 1, $$238)))
+              return (r = beat * self.beat_spacing + self.y_offset);}, $$239.$$s = self, $$239.$$arity = 1, $$239)))
           };
-          compressed_beat_layout_proc = $send($$($nesting, 'Proc'), 'new', [], ($$239 = function(beat){var self = $$239.$$s || this;
+          compressed_beat_layout_proc = $send($$($nesting, 'Proc'), 'new', [], ($$240 = function(beat){var self = $$240.$$s || this;
 
           
             
             if (beat == null) {
               beat = nil;
             };
-            return beat_layout.$call(beat_compression_map['$[]'](beat));}, $$239.$$s = self, $$239.$$arity = 1, $$239));
-          required_synchlines = $send(self.print_options_hash['$[]']("synchlines"), 'select', [], ($$240 = function(sl){var self = $$240.$$s || this, $b;
+            return beat_layout.$call(beat_compression_map['$[]'](beat));}, $$240.$$s = self, $$240.$$arity = 1, $$240));
+          required_synchlines = $send(self.print_options_hash['$[]']("synchlines"), 'select', [], ($$241 = function(sl){var self = $$241.$$s || this, $b;
             if (self.print_options_hash == null) self.print_options_hash = nil;
 
           
@@ -30512,11 +30533,11 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (sl == null) {
               sl = nil;
             };
-            return ($truthy($b = self.print_options_hash['$[]']("voices")['$include?'](sl.$first())) ? self.print_options_hash['$[]']("voices")['$include?'](sl.$last()) : $b);}, $$240.$$s = self, $$240.$$arity = 1, $$240));
+            return ($truthy($b = self.print_options_hash['$[]']("voices")['$include?'](sl.$first())) ? self.print_options_hash['$[]']("voices")['$include?'](sl.$last()) : $b);}, $$241.$$s = self, $$241.$$arity = 1, $$241));
           synched_notes = [];
-          $send($gvars.log, 'benchmark', ["build_syncpoints"], ($$241 = function(){var self = $$241.$$s || this, $$242;
+          $send($gvars.log, 'benchmark', ["build_syncpoints"], ($$242 = function(){var self = $$242.$$s || this, $$243;
 
-          return (synched_notes = $send(required_synchlines, 'map', [], ($$242 = function(selector){var self = $$242.$$s || this, $$243, synch_points_to_show = nil;
+          return (synched_notes = $send(required_synchlines, 'map', [], ($$243 = function(selector){var self = $$243.$$s || this, $$244, synch_points_to_show = nil;
 
             
               
@@ -30524,16 +30545,16 @@ Opal.modules["harpnotes"] = function(Opal) {
                 selector = nil;
               };
               synch_points_to_show = music.$build_synch_points(selector);
-              return $send(synch_points_to_show, 'map', [], ($$243 = function(sp){var self = $$243.$$s || this;
+              return $send(synch_points_to_show, 'map', [], ($$244 = function(sp){var self = $$244.$$s || this;
 
               
                 
                 if (sp == null) {
                   sp = nil;
                 };
-                return sp.$synched_notes();}, $$243.$$s = self, $$243.$$arity = 1, $$243));}, $$242.$$s = self, $$242.$$arity = 1, $$242)).$flatten())}, $$241.$$s = self, $$241.$$arity = 0, $$241));
+                return sp.$synched_notes();}, $$244.$$s = self, $$244.$$arity = 1, $$244));}, $$243.$$s = self, $$243.$$arity = 1, $$243)).$flatten())}, $$242.$$s = self, $$242.$$arity = 0, $$242));
           active_voices = self.print_options_hash['$[]']("voices");
-          res_voice_elements = $send(music.$voices().$each_with_index(), 'map', [], ($$244 = function(v, index){var self = $$244.$$s || this;
+          res_voice_elements = $send(music.$voices().$each_with_index(), 'map', [], ($$245 = function(v, index){var self = $$245.$$s || this;
             if (self.print_options_hash == null) self.print_options_hash = nil;
             if (self.print_options_raw == null) self.print_options_raw = nil;
 
@@ -30550,15 +30571,15 @@ Opal.modules["harpnotes"] = function(Opal) {
               return self.$layout_voice(v, compressed_beat_layout_proc, print_variant_nr, $hash2(["voice_nr", "nonflowrest", "flowline", "subflowline", "jumpline", "repeatsigns", "synched_notes", "countnotes", "barnumbers", "chords", "print_options_raw"], {"voice_nr": index, "nonflowrest": self.print_options_hash['$[]']("nonflowrest"), "flowline": self.print_options_hash['$[]']("flowlines")['$include?'](index), "subflowline": self.print_options_hash['$[]']("subflowlines")['$include?'](index), "jumpline": self.print_options_hash['$[]']("jumplines")['$include?'](index), "repeatsigns": self.print_options_hash['$[]']("repeatsigns"), "synched_notes": synched_notes, "countnotes": self.$_get_options_by_voice(index, "countnotes"), "barnumbers": self.$_get_options_by_voice(index, "barnumbers"), "chords": self.$_get_options_by_voice(index, "chords"), "print_options_raw": self.print_options_raw}))
             } else {
               return nil
-            };}, $$244.$$s = self, $$244.$$arity = 2, $$244)).$flatten().$compact();
+            };}, $$245.$$s = self, $$245.$$arity = 2, $$245)).$flatten().$compact();
           if ($truthy($gvars.log['$loglevel?']("warning"))) {
             
             collisiondetector = $$($nesting, 'CollisionDetector').$new();
             collisiondetector.$check_annotations(res_voice_elements);};
           return [active_voices, required_synchlines, res_voice_elements];
-        }, $Default__layout_voices$235.$$arity = 3);
+        }, $Default__layout_voices$236.$$arity = 3);
         
-        Opal.def(self, '$_get_options_by_voice', $Default__get_options_by_voice$245 = function $$_get_options_by_voice(voice_id, option) {
+        Opal.def(self, '$_get_options_by_voice', $Default__get_options_by_voice$246 = function $$_get_options_by_voice(voice_id, option) {
           var self = this, options = nil;
 
           
@@ -30568,9 +30589,9 @@ Opal.modules["harpnotes"] = function(Opal) {
             options = nil
           };
           return options;
-        }, $Default__get_options_by_voice$245.$$arity = 2);
+        }, $Default__get_options_by_voice$246.$$arity = 2);
         
-        Opal.def(self, '$_layout_prepare_options', $Default__layout_prepare_options$246 = function $$_layout_prepare_options(print_variant_nr) {
+        Opal.def(self, '$_layout_prepare_options', $Default__layout_prepare_options$247 = function $$_layout_prepare_options(print_variant_nr) {
           var $a, self = this, layout_options = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -30585,9 +30606,9 @@ Opal.modules["harpnotes"] = function(Opal) {
           self.y_offset = self.print_options_hash['$[]']("startpos");
           self.y_size = $gvars.conf.$get("layout.DRAWING_AREA_SIZE").$last();
           return self.$set_instrument_handlers(print_variant_nr);
-        }, $Default__layout_prepare_options$246.$$arity = 1);
+        }, $Default__layout_prepare_options$247.$$arity = 1);
         
-        Opal.def(self, '$compute_vertical_cut', $Default_compute_vertical_cut$247 = function $$compute_vertical_cut(from, to) {
+        Opal.def(self, '$compute_vertical_cut', $Default_compute_vertical_cut$248 = function $$compute_vertical_cut(from, to) {
           var $a, self = this, verticalcut = nil, xf = nil, xt = nil, y = nil, z = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -30602,10 +30623,10 @@ Opal.modules["harpnotes"] = function(Opal) {
             verticalcut = 0
           };
           return verticalcut;
-        }, $Default_compute_vertical_cut$247.$$arity = 2);
+        }, $Default_compute_vertical_cut$248.$$arity = 2);
         
-        Opal.def(self, '$layout_barnumbers_countnotes', $Default_layout_barnumbers_countnotes$248 = function $$layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr) {
-          var $a, $$249, $b, $$250, self = this, limit_a3 = nil, bottomup = nil, cn_options = nil, bn_options = nil, res_countnotes = nil, res_barnumbers = nil, visible_playables = nil, cn_style = nil, cn_fontsize_x = nil, cn_fontsize_y = nil, cn_apanchor = nil, cn_autopos = nil, cn_fixedpos = nil, cn_apbase_x = nil, cn_apbase_y = nil, cn_text = nil, bn_style = nil, bn_fontsize_x = nil, bn_fontsize_y = nil, bn_apanchor = nil, bn_autopos = nil, bn_fixedpos = nil, bn_apbase_x = nil, bn_apbase_y = nil, bn_prefix = nil;
+        Opal.def(self, '$layout_barnumbers_countnotes', $Default_layout_barnumbers_countnotes$249 = function $$layout_barnumbers_countnotes(playables, print_variant_nr, show_options, voice_nr) {
+          var $a, $$250, $b, $$251, self = this, limit_a3 = nil, bottomup = nil, cn_options = nil, bn_options = nil, res_countnotes = nil, res_barnumbers = nil, visible_playables = nil, cn_style = nil, cn_fontsize_x = nil, cn_fontsize_y = nil, cn_apanchor = nil, cn_autopos = nil, cn_fixedpos = nil, cn_apbase_x = nil, cn_apbase_y = nil, cn_text = nil, bn_style = nil, bn_fontsize_x = nil, bn_fontsize_y = nil, bn_apanchor = nil, bn_autopos = nil, bn_fixedpos = nil, bn_apbase_x = nil, bn_apbase_y = nil, bn_prefix = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -30617,14 +30638,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           res_barnumbers = [];
           if ($truthy(($truthy($a = cn_options) ? $a : bn_options))) {
             
-            visible_playables = $send(playables, 'select', [], ($$249 = function(playable){var self = $$249.$$s || this;
+            visible_playables = $send(playables, 'select', [], ($$250 = function(playable){var self = $$250.$$s || this;
 
             
               
               if (playable == null) {
                 playable = nil;
               };
-              return playable['$visible?']();}, $$249.$$s = self, $$249.$$arity = 1, $$249));
+              return playable['$visible?']();}, $$250.$$s = self, $$250.$$arity = 1, $$250));
             if ($truthy(cn_options)) {
               
               cn_style = cn_options['$[]']("style");
@@ -30643,7 +30664,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               bn_fixedpos = bn_options['$[]']("pos");
               $b = bn_options['$[]']("apbase"), $a = Opal.to_ary($b), (bn_apbase_x = ($a[0] == null ? nil : $a[0])), (bn_apbase_y = ($a[1] == null ? nil : $a[1])), $b;
               bn_prefix = bn_options['$[]']("prefix");};
-            $send(visible_playables, 'each', [], ($$250 = function(playable){var self = $$250.$$s || this, $c, $d, $$251, $$252, the_drawable = nil, dcenter = nil, x = nil, y = nil, dsize_x = nil, dsize_y = nil, dsize_d_x = nil, dsize_d_y = nil, xp = nil, yp = nil, xn = nil, yn = nil, bn_side = nil, cn_side = nil, cn_base_key = nil, cn_pos_key = nil, cn_align_key = nil, cn_dsize_y = nil, cn_offset = nil, cn_align = nil, count_note = nil, cn_pattern = nil, cn_tie_x = nil, auto_x = nil, auto_y = nil, cn_position = nil, annotation = nil, cn_conf_base = nil, bn_base_key = nil, bn_pos_key = nil, bn_align_key = nil, bn_conf_key = nil, barnumber = nil, bn_dsize_y = nil, bn_offset = nil, bn_align = nil, bn_tie_x = nil, bn_auto_x = nil, bn_auto_y = nil, bn_position = nil;
+            $send(visible_playables, 'each', [], ($$251 = function(playable){var self = $$251.$$s || this, $c, $d, $$252, $$253, the_drawable = nil, dcenter = nil, x = nil, y = nil, dsize_x = nil, dsize_y = nil, dsize_d_x = nil, dsize_d_y = nil, xp = nil, yp = nil, xn = nil, yn = nil, bn_side = nil, cn_side = nil, cn_base_key = nil, cn_pos_key = nil, cn_align_key = nil, cn_dsize_y = nil, cn_offset = nil, cn_align = nil, count_note = nil, cn_pattern = nil, cn_tie_x = nil, auto_x = nil, auto_y = nil, cn_position = nil, annotation = nil, cn_conf_base = nil, bn_base_key = nil, bn_pos_key = nil, bn_align_key = nil, bn_conf_key = nil, barnumber = nil, bn_dsize_y = nil, bn_offset = nil, bn_align = nil, bn_tie_x = nil, bn_auto_x = nil, bn_auto_y = nil, bn_position = nil;
               if (self.print_options_keys == null) self.print_options_keys = nil;
               if (self.print_options_raw == null) self.print_options_raw = nil;
 
@@ -30723,7 +30744,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                   cn_offset = cn_fixedpos
                 };
                 cn_position = $rb_plus(self.$Vector2d(dcenter), cn_offset);
-                annotation = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(cn_position.$to_a(), count_note, cn_style, playable.$origin(), "" + "extract." + (print_variant_nr) + "." + (cn_pos_key), cn_offset), 'tap', [], ($$251 = function(s){var self = $$251.$$s || this, $writer = nil;
+                annotation = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(cn_position.$to_a(), count_note, cn_style, playable.$origin(), "" + "extract." + (print_variant_nr) + "." + (cn_pos_key), cn_offset), 'tap', [], ($$252 = function(s){var self = $$252.$$s || this, $writer = nil;
 
                 
                   
@@ -30739,7 +30760,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                   $send(s, 'draginfo=', Opal.to_a($writer));
                   $writer[$rb_minus($writer["length"], 1)];;
                   s.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + "." + (cn_align_key), "text": $$($nesting, 'I18n').$t("countnote left"), "icon": "fa fa-arrow-left", "value": "l"}));
-                  return s.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + "." + (cn_align_key), "text": $$($nesting, 'I18n').$t("countnote right"), "icon": "fa fa-arrow-right", "value": "r"}));}, $$251.$$s = self, $$251.$$arity = 1, $$251));
+                  return s.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + "." + (cn_align_key), "text": $$($nesting, 'I18n').$t("countnote right"), "icon": "fa fa-arrow-right", "value": "r"}));}, $$252.$$s = self, $$252.$$arity = 1, $$252));
                 res_countnotes.$push(annotation);};
               if ($truthy(($truthy($c = bn_options) ? playable['$measure_start?']() : $c))) {
                 
@@ -30795,7 +30816,7 @@ Opal.modules["harpnotes"] = function(Opal) {
                   bn_offset = bn_fixedpos
                 };
                 bn_position = $rb_plus(self.$Vector2d(dcenter), bn_offset);
-                annotation = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(bn_position.$to_a(), barnumber, bn_style, playable.$origin(), "" + "extract." + (print_variant_nr) + "." + (bn_pos_key), bn_offset), 'tap', [], ($$252 = function(s){var self = $$252.$$s || this, $writer = nil;
+                annotation = $send($$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Annotation').$new(bn_position.$to_a(), barnumber, bn_style, playable.$origin(), "" + "extract." + (print_variant_nr) + "." + (bn_pos_key), bn_offset), 'tap', [], ($$253 = function(s){var self = $$253.$$s || this, $writer = nil;
 
                 
                   
@@ -30811,16 +30832,16 @@ Opal.modules["harpnotes"] = function(Opal) {
                   $send(s, 'draginfo=', Opal.to_a($writer));
                   $writer[$rb_minus($writer["length"], 1)];;
                   s.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + "." + (bn_align_key), "text": $$($nesting, 'I18n').$t("barnumber left"), "icon": "fa fa-arrow-left", "value": "l"}));
-                  return s.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + "." + (bn_align_key), "text": $$($nesting, 'I18n').$t("barnumber right"), "icon": "fa fa-arrow-right", "value": "r"}));}, $$252.$$s = self, $$252.$$arity = 1, $$252));
+                  return s.$more_conf_keys().$push($hash2(["conf_key", "text", "icon", "value"], {"conf_key": "" + "extract." + (print_variant_nr) + "." + (bn_align_key), "text": $$($nesting, 'I18n').$t("barnumber right"), "icon": "fa fa-arrow-right", "value": "r"}));}, $$253.$$s = self, $$253.$$arity = 1, $$253));
                 return res_barnumbers.$push(annotation);
               } else {
                 return nil
-              };}, $$250.$$s = self, $$250.$$arity = 1, $$250));};
+              };}, $$251.$$s = self, $$251.$$arity = 1, $$251));};
           return [res_barnumbers, res_countnotes];
-        }, $Default_layout_barnumbers_countnotes$248.$$arity = 4);
+        }, $Default_layout_barnumbers_countnotes$249.$$arity = 4);
         
-        Opal.def(self, '$create_annotation_background_rect', $Default_create_annotation_background_rect$253 = function $$create_annotation_background_rect(annotation, padding) {
-          var $$254, self = this, bn_position = nil, bgsize = nil, bgsize_padded = nil, background_x = nil, background_y = nil, $writer = nil, background = nil;
+        Opal.def(self, '$create_annotation_background_rect', $Default_create_annotation_background_rect$254 = function $$create_annotation_background_rect(annotation, padding) {
+          var $$255, self = this, bn_position = nil, bgsize = nil, bgsize_padded = nil, background_x = nil, background_y = nil, $writer = nil, background = nil;
 
           
           
@@ -30828,14 +30849,14 @@ Opal.modules["harpnotes"] = function(Opal) {
             padding = 0.1;
           };
           bn_position = (bn_position = self.$Vector2d(annotation.$center()));
-          bgsize = $send(annotation.$size(), 'map', [], ($$254 = function(i){var self = $$254.$$s || this;
+          bgsize = $send(annotation.$size(), 'map', [], ($$255 = function(i){var self = $$255.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return $rb_times(i, 0.5);}, $$254.$$s = self, $$254.$$arity = 1, $$254));
+            return $rb_times(i, 0.5);}, $$255.$$s = self, $$255.$$arity = 1, $$255));
           bgsize_padded = [$rb_plus(bgsize.$first(), padding), $rb_plus(bgsize.$last(), padding)];
           background_x = (function() {if ($truthy(annotation.$align()['$==']("left"))) {
             return bgsize.$first()
@@ -30865,9 +30886,9 @@ Opal.modules["harpnotes"] = function(Opal) {
           $send(background, 'color=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           return background;
-        }, $Default_create_annotation_background_rect$253.$$arity = -2);
+        }, $Default_create_annotation_background_rect$254.$$arity = -2);
         
-        Opal.def(self, '$compute_beat_compression', $Default_compute_beat_compression$255 = function $$compute_beat_compression(music, layout_lines) {
+        Opal.def(self, '$compute_beat_compression', $Default_compute_beat_compression$256 = function $$compute_beat_compression(music, layout_lines) {
           var $a, self = this, result = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -30883,21 +30904,21 @@ Opal.modules["harpnotes"] = function(Opal) {
           if (($truthy($a = $gvars.conf.$get("layout.packer.pack_method")) ? $a : 0)['$=='](0)) {
             result = self.$compute_beat_compression_0(music, layout_lines)};
           return result;
-        }, $Default_compute_beat_compression$255.$$arity = 2);
+        }, $Default_compute_beat_compression$256.$$arity = 2);
         
-        Opal.def(self, '$compute_beat_compression_2', $Default_compute_beat_compression_2$256 = function $$compute_beat_compression_2(music, layout_lines) {
-          var $$257, $$258, $$259, $$260, $$261, $$262, $$263, self = this, compression_map = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
+        Opal.def(self, '$compute_beat_compression_2', $Default_compute_beat_compression_2$257 = function $$compute_beat_compression_2(music, layout_lines) {
+          var $$258, $$259, $$260, $$261, $$262, $$263, $$264, self = this, compression_map = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
 
           
           compression_map = $hash2([], {});
-          relevant_notes = $send($send($send(layout_lines, 'map', [], ($$257 = function(voice_id){var self = $$257.$$s || this;
+          relevant_notes = $send($send($send(layout_lines, 'map', [], ($$258 = function(voice_id){var self = $$258.$$s || this;
 
           
             
             if (voice_id == null) {
               voice_id = nil;
             };
-            return music.$voices()['$[]'](voice_id);}, $$257.$$s = self, $$257.$$arity = 1, $$257)), 'inject', [[]], ($$258 = function(result, voice){var self = $$258.$$s || this;
+            return music.$voices()['$[]'](voice_id);}, $$258.$$s = self, $$258.$$arity = 1, $$258)), 'inject', [[]], ($$259 = function(result, voice){var self = $$259.$$s || this;
 
           
             
@@ -30908,39 +30929,39 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (voice == null) {
               voice = nil;
             };
-            return result.$push(voice);}, $$258.$$s = self, $$258.$$arity = 2, $$258)).$flatten(), 'select', [], ($$259 = function(note){var self = $$259.$$s || this;
+            return result.$push(voice);}, $$259.$$s = self, $$259.$$arity = 2, $$259)).$flatten(), 'select', [], ($$260 = function(note){var self = $$260.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$259.$$s = self, $$259.$$arity = 1, $$259));
-          relevant_sp = $send($send(relevant_notes, 'select', [], ($$260 = function(note){var self = $$260.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$260.$$s = self, $$260.$$arity = 1, $$260));
+          relevant_sp = $send($send(relevant_notes, 'select', [], ($$261 = function(note){var self = $$261.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$260.$$s = self, $$260.$$arity = 1, $$260)), 'map', [], ($$261 = function(sp){var self = $$261.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$261.$$s = self, $$261.$$arity = 1, $$261)), 'map', [], ($$262 = function(sp){var self = $$262.$$s || this;
 
           
             
             if (sp == null) {
               sp = nil;
             };
-            return sp.$notes();}, $$261.$$s = self, $$261.$$arity = 1, $$261));
+            return sp.$notes();}, $$262.$$s = self, $$262.$$arity = 1, $$262));
           relevant_notes = relevant_notes.$push(relevant_sp).$flatten();
-          relevant_beats = $send(relevant_notes, 'group_by', [], ($$262 = function(playable){var self = $$262.$$s || this;
+          relevant_beats = $send(relevant_notes, 'group_by', [], ($$263 = function(playable){var self = $$263.$$s || this;
 
           
             
             if (playable == null) {
               playable = nil;
             };
-            return playable.$beat();}, $$262.$$s = self, $$262.$$arity = 1, $$262));
-          $send(relevant_beats.$keys().$sort(), 'each', [], ($$263 = function(beat){var self = $$263.$$s || this, $writer = nil;
+            return playable.$beat();}, $$263.$$s = self, $$263.$$arity = 1, $$263));
+          $send(relevant_beats.$keys().$sort(), 'each', [], ($$264 = function(beat){var self = $$264.$$s || this, $writer = nil;
 
           
             
@@ -30949,26 +30970,26 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             $writer = [beat, $rb_times(beat, 8)];
             $send(compression_map, '[]=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];}, $$263.$$s = self, $$263.$$arity = 1, $$263));
+            return $writer[$rb_minus($writer["length"], 1)];}, $$264.$$s = self, $$264.$$arity = 1, $$264));
           return compression_map;
-        }, $Default_compute_beat_compression_2$256.$$arity = 2);
+        }, $Default_compute_beat_compression_2$257.$$arity = 2);
         
-        Opal.def(self, '$compute_beat_compression_10', $Default_compute_beat_compression_10$264 = function $$compute_beat_compression_10(music, layout_lines) {
-          var $$265, $$266, $$267, $$268, self = this, max_beat = nil, current_beat = nil, last_size = nil, relevant_beat_maps = nil, relevant_keys = nil, duration_to_style = nil, result = nil;
+        Opal.def(self, '$compute_beat_compression_10', $Default_compute_beat_compression_10$265 = function $$compute_beat_compression_10(music, layout_lines) {
+          var $$266, $$267, $$268, $$269, self = this, max_beat = nil, current_beat = nil, last_size = nil, relevant_beat_maps = nil, relevant_keys = nil, duration_to_style = nil, result = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
-          max_beat = $send(music.$beat_maps(), 'map', [], ($$265 = function(map){var self = $$265.$$s || this;
+          max_beat = $send(music.$beat_maps(), 'map', [], ($$266 = function(map){var self = $$266.$$s || this;
 
           
             
             if (map == null) {
               map = nil;
             };
-            return map.$keys().$max();}, $$265.$$s = self, $$265.$$arity = 1, $$265)).$max();
+            return map.$keys().$max();}, $$266.$$s = self, $$266.$$arity = 1, $$266)).$max();
           current_beat = 0;
           last_size = 0;
-          relevant_beat_maps = $send(layout_lines, 'inject', [[]], ($$266 = function(r, i){var self = $$266.$$s || this;
+          relevant_beat_maps = $send(layout_lines, 'inject', [[]], ($$267 = function(r, i){var self = $$267.$$s || this;
 
           
             
@@ -30979,8 +31000,8 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (i == null) {
               i = nil;
             };
-            return r.$push(music.$beat_maps()['$[]'](i));}, $$266.$$s = self, $$266.$$arity = 2, $$266)).$compact();
-          relevant_keys = $send(music.$beat_maps(), 'inject', [[]], ($$267 = function(r, a){var self = $$267.$$s || this;
+            return r.$push(music.$beat_maps()['$[]'](i));}, $$267.$$s = self, $$267.$$arity = 2, $$267)).$compact();
+          relevant_keys = $send(music.$beat_maps(), 'inject', [[]], ($$268 = function(r, a){var self = $$268.$$s || this;
 
           
             
@@ -30992,9 +31013,9 @@ Opal.modules["harpnotes"] = function(Opal) {
               a = nil;
             };
             r.$push(a.$keys());
-            return r;}, $$267.$$s = self, $$267.$$arity = 2, $$267)).$flatten().$uniq().$sort();
+            return r;}, $$268.$$s = self, $$268.$$arity = 2, $$268)).$flatten().$uniq().$sort();
           duration_to_style = $gvars.conf.$get("layout.DURATION_TO_STYLE");
-          result = $$($nesting, 'Hash')['$[]']($send(relevant_keys, 'map', [], ($$268 = function(beat){var self = $$268.$$s || this, $$269, $$270, $$271, $$272, notes_on_beat = nil, max_duration_on_beat = nil, has_no_notes_on_beat = nil, is_new_part = nil, measure_start = nil, size = nil, e = nil, increment = nil;
+          result = $$($nesting, 'Hash')['$[]']($send(relevant_keys, 'map', [], ($$269 = function(beat){var self = $$269.$$s || this, $$270, $$271, $$272, $$273, notes_on_beat = nil, max_duration_on_beat = nil, has_no_notes_on_beat = nil, is_new_part = nil, measure_start = nil, size = nil, e = nil, increment = nil;
             if (self.conf_beat_resolution == null) self.conf_beat_resolution = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
@@ -31003,39 +31024,39 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (beat == null) {
               beat = nil;
             };
-            notes_on_beat = $send(relevant_beat_maps, 'map', [], ($$269 = function(bm){var self = $$269.$$s || this;
+            notes_on_beat = $send(relevant_beat_maps, 'map', [], ($$270 = function(bm){var self = $$270.$$s || this;
 
             
               
               if (bm == null) {
                 bm = nil;
               };
-              return bm['$[]'](beat);}, $$269.$$s = self, $$269.$$arity = 1, $$269)).$flatten().$compact();
-            max_duration_on_beat = $send(notes_on_beat, 'map', [], ($$270 = function(n){var self = $$270.$$s || this;
+              return bm['$[]'](beat);}, $$270.$$s = self, $$270.$$arity = 1, $$270)).$flatten().$compact();
+            max_duration_on_beat = $send(notes_on_beat, 'map', [], ($$271 = function(n){var self = $$271.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n.$duration();}, $$270.$$s = self, $$270.$$arity = 1, $$270)).$max();
+              return n.$duration();}, $$271.$$s = self, $$271.$$arity = 1, $$271)).$max();
             has_no_notes_on_beat = notes_on_beat['$empty?']();
-            is_new_part = $send(notes_on_beat, 'select', [], ($$271 = function(n){var self = $$271.$$s || this;
+            is_new_part = $send(notes_on_beat, 'select', [], ($$272 = function(n){var self = $$272.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$first_in_part?']();}, $$271.$$s = self, $$271.$$arity = 1, $$271));
-            measure_start = $send(notes_on_beat, 'select', [], ($$272 = function(n){var self = $$272.$$s || this;
+              return n['$first_in_part?']();}, $$272.$$s = self, $$272.$$arity = 1, $$272));
+            measure_start = $send(notes_on_beat, 'select', [], ($$273 = function(n){var self = $$273.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$measure_start?']();}, $$272.$$s = self, $$272.$$arity = 1, $$272)).$first();
+              return n['$measure_start?']();}, $$273.$$s = self, $$273.$$arity = 1, $$273)).$first();
             if ($truthy(has_no_notes_on_beat)) {
             } else {
               
@@ -31060,11 +31081,11 @@ Opal.modules["harpnotes"] = function(Opal) {
               increment = $rb_plus(increment, self.$get_minc_factor(notes_on_beat.$first().$time(), increment));
               current_beat = $rb_plus(current_beat, increment);
             };
-            return [beat, current_beat];}, $$268.$$s = self, $$268.$$arity = 1, $$268)));
+            return [beat, current_beat];}, $$269.$$s = self, $$269.$$arity = 1, $$269)));
           return result;
-        }, $Default_compute_beat_compression_10$264.$$arity = 2);
+        }, $Default_compute_beat_compression_10$265.$$arity = 2);
         
-        Opal.def(self, '$get_minc_factor', $Default_get_minc_factor$273 = function $$get_minc_factor(time, increment) {
+        Opal.def(self, '$get_minc_factor', $Default_get_minc_factor$274 = function $$get_minc_factor(time, increment) {
           var self = this, minc = nil;
 
           
@@ -31086,10 +31107,10 @@ Opal.modules["harpnotes"] = function(Opal) {
           } else {
             return 0
           };
-        }, $Default_get_minc_factor$273.$$arity = -2);
+        }, $Default_get_minc_factor$274.$$arity = -2);
         
-        Opal.def(self, '$compute_beat_compression_0', $Default_compute_beat_compression_0$274 = function $$compute_beat_compression_0(music, layout_lines) {
-          var $a, $$275, $$276, $$277, $$278, $$279, $$280, $$281, self = this, duration_to_style = nil, conf_min_increment = nil, newbeat = nil, compression_map = nil, last_size = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
+        Opal.def(self, '$compute_beat_compression_0', $Default_compute_beat_compression_0$275 = function $$compute_beat_compression_0(music, layout_lines) {
+          var $a, $$276, $$277, $$278, $$279, $$280, $$281, $$282, self = this, duration_to_style = nil, conf_min_increment = nil, newbeat = nil, compression_map = nil, last_size = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -31098,14 +31119,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           newbeat = 0;
           compression_map = $hash2([], {});
           last_size = 0;
-          relevant_notes = $send($send($send(layout_lines, 'map', [], ($$275 = function(voice_id){var self = $$275.$$s || this;
+          relevant_notes = $send($send($send(layout_lines, 'map', [], ($$276 = function(voice_id){var self = $$276.$$s || this;
 
           
             
             if (voice_id == null) {
               voice_id = nil;
             };
-            return music.$voices()['$[]'](voice_id);}, $$275.$$s = self, $$275.$$arity = 1, $$275)), 'inject', [[]], ($$276 = function(result, voice){var self = $$276.$$s || this;
+            return music.$voices()['$[]'](voice_id);}, $$276.$$s = self, $$276.$$arity = 1, $$276)), 'inject', [[]], ($$277 = function(result, voice){var self = $$277.$$s || this;
 
           
             
@@ -31116,39 +31137,39 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (voice == null) {
               voice = nil;
             };
-            return result.$push(voice);}, $$276.$$s = self, $$276.$$arity = 2, $$276)).$flatten(), 'select', [], ($$277 = function(note){var self = $$277.$$s || this;
+            return result.$push(voice);}, $$277.$$s = self, $$277.$$arity = 2, $$277)).$flatten(), 'select', [], ($$278 = function(note){var self = $$278.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$277.$$s = self, $$277.$$arity = 1, $$277));
-          relevant_sp = $send($send(relevant_notes, 'select', [], ($$278 = function(note){var self = $$278.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$278.$$s = self, $$278.$$arity = 1, $$278));
+          relevant_sp = $send($send(relevant_notes, 'select', [], ($$279 = function(note){var self = $$279.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$278.$$s = self, $$278.$$arity = 1, $$278)), 'map', [], ($$279 = function(sp){var self = $$279.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$279.$$s = self, $$279.$$arity = 1, $$279)), 'map', [], ($$280 = function(sp){var self = $$280.$$s || this;
 
           
             
             if (sp == null) {
               sp = nil;
             };
-            return sp.$notes();}, $$279.$$s = self, $$279.$$arity = 1, $$279));
+            return sp.$notes();}, $$280.$$s = self, $$280.$$arity = 1, $$280));
           relevant_notes = relevant_notes.$push(relevant_sp).$flatten();
-          relevant_beats = $send(relevant_notes, 'group_by', [], ($$280 = function(playable){var self = $$280.$$s || this;
+          relevant_beats = $send(relevant_notes, 'group_by', [], ($$281 = function(playable){var self = $$281.$$s || this;
 
           
             
             if (playable == null) {
               playable = nil;
             };
-            return playable.$beat();}, $$280.$$s = self, $$280.$$arity = 1, $$280));
-          $send(relevant_beats.$keys().$sort(), 'each', [], ($$281 = function(beat){var self = $$281.$$s || this, $$282, $$283, $$284, notes = nil, max_duration_on_beat = nil, is_new_part = nil, measure_start = nil, size = nil, e = nil, defaultincrement = nil, increment = nil, $writer = nil;
+            return playable.$beat();}, $$281.$$s = self, $$281.$$arity = 1, $$281));
+          $send(relevant_beats.$keys().$sort(), 'each', [], ($$282 = function(beat){var self = $$282.$$s || this, $$283, $$284, $$285, notes = nil, max_duration_on_beat = nil, is_new_part = nil, measure_start = nil, size = nil, e = nil, defaultincrement = nil, increment = nil, $writer = nil;
             if (self.conf_beat_resolution == null) self.conf_beat_resolution = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
@@ -31158,30 +31179,30 @@ Opal.modules["harpnotes"] = function(Opal) {
               beat = nil;
             };
             notes = relevant_beats['$[]'](beat);
-            max_duration_on_beat = $send(notes, 'map', [], ($$282 = function(n){var self = $$282.$$s || this;
+            max_duration_on_beat = $send(notes, 'map', [], ($$283 = function(n){var self = $$283.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n.$duration();}, $$282.$$s = self, $$282.$$arity = 1, $$282)).$max();
-            is_new_part = $send(notes, 'select', [], ($$283 = function(n){var self = $$283.$$s || this;
+              return n.$duration();}, $$283.$$s = self, $$283.$$arity = 1, $$283)).$max();
+            is_new_part = $send(notes, 'select', [], ($$284 = function(n){var self = $$284.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$first_in_part?']();}, $$283.$$s = self, $$283.$$arity = 1, $$283));
-            measure_start = $send(notes, 'select', [], ($$284 = function(n){var self = $$284.$$s || this;
+              return n['$first_in_part?']();}, $$284.$$s = self, $$284.$$arity = 1, $$284));
+            measure_start = $send(notes, 'select', [], ($$285 = function(n){var self = $$285.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$measure_start?']();}, $$284.$$s = self, $$284.$$arity = 1, $$284));
+              return n['$measure_start?']();}, $$285.$$s = self, $$285.$$arity = 1, $$285));
             
             try {
               size = self.conf_beat_resolution * duration_to_style['$[]'](self.$duration_to_id(max_duration_on_beat)).$first()
@@ -31208,12 +31229,12 @@ Opal.modules["harpnotes"] = function(Opal) {
             
             $writer = [beat, newbeat];
             $send(compression_map, '[]=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];;}, $$281.$$s = self, $$281.$$arity = 1, $$281));
+            return $writer[$rb_minus($writer["length"], 1)];;}, $$282.$$s = self, $$282.$$arity = 1, $$282));
           return compression_map;
-        }, $Default_compute_beat_compression_0$274.$$arity = 2);
+        }, $Default_compute_beat_compression_0$275.$$arity = 2);
         
-        Opal.def(self, '$compute_beat_compression_1', $Default_compute_beat_compression_1$285 = function $$compute_beat_compression_1(music, layout_lines) {
-          var $a, $$286, $$287, $$288, $$289, $$290, $$291, $$292, self = this, duration_to_style = nil, conf_min_increment = nil, collision_stack = nil, compression_map = nil, newbeat = nil, nextincrement = nil, last_size = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
+        Opal.def(self, '$compute_beat_compression_1', $Default_compute_beat_compression_1$286 = function $$compute_beat_compression_1(music, layout_lines) {
+          var $a, $$287, $$288, $$289, $$290, $$291, $$292, $$293, self = this, duration_to_style = nil, conf_min_increment = nil, collision_stack = nil, compression_map = nil, newbeat = nil, nextincrement = nil, last_size = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -31224,14 +31245,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           newbeat = 0;
           nextincrement = 0;
           last_size = 0;
-          relevant_notes = $send($send($send(layout_lines, 'map', [], ($$286 = function(voice_id){var self = $$286.$$s || this;
+          relevant_notes = $send($send($send(layout_lines, 'map', [], ($$287 = function(voice_id){var self = $$287.$$s || this;
 
           
             
             if (voice_id == null) {
               voice_id = nil;
             };
-            return music.$voices()['$[]'](voice_id);}, $$286.$$s = self, $$286.$$arity = 1, $$286)), 'inject', [[]], ($$287 = function(result, voice){var self = $$287.$$s || this;
+            return music.$voices()['$[]'](voice_id);}, $$287.$$s = self, $$287.$$arity = 1, $$287)), 'inject', [[]], ($$288 = function(result, voice){var self = $$288.$$s || this;
 
           
             
@@ -31242,39 +31263,39 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (voice == null) {
               voice = nil;
             };
-            return result.$push(voice);}, $$287.$$s = self, $$287.$$arity = 2, $$287)).$flatten(), 'select', [], ($$288 = function(note){var self = $$288.$$s || this;
+            return result.$push(voice);}, $$288.$$s = self, $$288.$$arity = 2, $$288)).$flatten(), 'select', [], ($$289 = function(note){var self = $$289.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$288.$$s = self, $$288.$$arity = 1, $$288));
-          relevant_sp = $send($send(relevant_notes, 'select', [], ($$289 = function(note){var self = $$289.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$289.$$s = self, $$289.$$arity = 1, $$289));
+          relevant_sp = $send($send(relevant_notes, 'select', [], ($$290 = function(note){var self = $$290.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$289.$$s = self, $$289.$$arity = 1, $$289)), 'map', [], ($$290 = function(sp){var self = $$290.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$290.$$s = self, $$290.$$arity = 1, $$290)), 'map', [], ($$291 = function(sp){var self = $$291.$$s || this;
 
           
             
             if (sp == null) {
               sp = nil;
             };
-            return sp.$notes();}, $$290.$$s = self, $$290.$$arity = 1, $$290));
+            return sp.$notes();}, $$291.$$s = self, $$291.$$arity = 1, $$291));
           relevant_notes = relevant_notes.$push(relevant_sp).$flatten();
-          relevant_beats = $send(relevant_notes, 'group_by', [], ($$291 = function(playable){var self = $$291.$$s || this;
+          relevant_beats = $send(relevant_notes, 'group_by', [], ($$292 = function(playable){var self = $$292.$$s || this;
 
           
             
             if (playable == null) {
               playable = nil;
             };
-            return playable.$beat();}, $$291.$$s = self, $$291.$$arity = 1, $$291));
-          $send(relevant_beats.$keys().$sort(), 'each', [], ($$292 = function(beat){var self = $$292.$$s || this, $$293, $$294, $$295, $$296, $$297, $$298, notes = nil, max_duration_on_beat = nil, size = nil, e = nil, defaultincrement = nil, collisions = nil, inversions = nil, is_new_part = nil, measure_start = nil, increment = nil, $writer = nil;
+            return playable.$beat();}, $$292.$$s = self, $$292.$$arity = 1, $$292));
+          $send(relevant_beats.$keys().$sort(), 'each', [], ($$293 = function(beat){var self = $$293.$$s || this, $$294, $$295, $$296, $$297, $$298, $$299, notes = nil, max_duration_on_beat = nil, size = nil, e = nil, defaultincrement = nil, collisions = nil, inversions = nil, is_new_part = nil, measure_start = nil, increment = nil, $writer = nil;
             if (self.conf_beat_resolution == null) self.conf_beat_resolution = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
@@ -31284,14 +31305,14 @@ Opal.modules["harpnotes"] = function(Opal) {
               beat = nil;
             };
             notes = relevant_beats['$[]'](beat);
-            max_duration_on_beat = $send(notes, 'map', [], ($$293 = function(n){var self = $$293.$$s || this;
+            max_duration_on_beat = $send(notes, 'map', [], ($$294 = function(n){var self = $$294.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n.$duration();}, $$293.$$s = self, $$293.$$arity = 1, $$293)).$max();
+              return n.$duration();}, $$294.$$s = self, $$294.$$arity = 1, $$294)).$max();
             
             try {
               size = self.conf_beat_resolution * duration_to_style['$[]'](self.$duration_to_id(max_duration_on_beat)).$first()
@@ -31304,15 +31325,15 @@ Opal.modules["harpnotes"] = function(Opal) {
             };;
             defaultincrement = $rb_divide($rb_plus(size, last_size), 2);
             last_size = size;
-            collisions = $send(notes, 'select', [], ($$294 = function(note){var self = $$294.$$s || this, $b;
+            collisions = $send(notes, 'select', [], ($$295 = function(note){var self = $$295.$$s || this, $b;
 
             
               
               if (note == null) {
                 note = nil;
               };
-              return $rb_ge(($truthy($b = collision_stack['$[]'](note.$pitch())) ? $b : -1), $rb_minus(newbeat, conf_min_increment));}, $$294.$$s = self, $$294.$$arity = 1, $$294));
-            inversions = $send(notes, 'select', [], ($$295 = function(note){var self = $$295.$$s || this, $b, a = nil, result = nil;
+              return $rb_ge(($truthy($b = collision_stack['$[]'](note.$pitch())) ? $b : -1), $rb_minus(newbeat, conf_min_increment));}, $$295.$$s = self, $$295.$$arity = 1, $$295));
+            inversions = $send(notes, 'select', [], ($$296 = function(note){var self = $$296.$$s || this, $b, a = nil, result = nil;
 
             
               
@@ -31323,23 +31344,23 @@ Opal.modules["harpnotes"] = function(Opal) {
               result = ($truthy($b = a.$sort().$reverse()['$=='](a)) ? $b : a.$sort()['$=='](a))['$!']();
               if ($truthy(note.$next_first_in_part())) {
                 result = false};
-              return result;}, $$295.$$s = self, $$295.$$arity = 1, $$295));
-            is_new_part = $send(notes, 'select', [], ($$296 = function(n){var self = $$296.$$s || this;
+              return result;}, $$296.$$s = self, $$296.$$arity = 1, $$296));
+            is_new_part = $send(notes, 'select', [], ($$297 = function(n){var self = $$297.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$first_in_part?']();}, $$296.$$s = self, $$296.$$arity = 1, $$296));
-            measure_start = $send(notes, 'select', [], ($$297 = function(n){var self = $$297.$$s || this;
+              return n['$first_in_part?']();}, $$297.$$s = self, $$297.$$arity = 1, $$297));
+            measure_start = $send(notes, 'select', [], ($$298 = function(n){var self = $$298.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$measure_start?']();}, $$297.$$s = self, $$297.$$arity = 1, $$297));
+              return n['$measure_start?']();}, $$298.$$s = self, $$298.$$arity = 1, $$298));
             increment = nextincrement;
             nextincrement = conf_min_increment;
             if ($truthy(collisions['$empty?']()['$!']())) {
@@ -31360,7 +31381,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             increment = $rb_plus(increment, self.$get_minc_factor(notes.$first().$time(), defaultincrement));
             newbeat = $rb_plus(newbeat, increment);
-            $send(notes, 'each', [], ($$298 = function(note){var self = $$298.$$s || this, $writer = nil;
+            $send(notes, 'each', [], ($$299 = function(note){var self = $$299.$$s || this, $writer = nil;
 
             
               
@@ -31369,16 +31390,16 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               $writer = [note.$pitch(), newbeat];
               $send(collision_stack, '[]=', Opal.to_a($writer));
-              return $writer[$rb_minus($writer["length"], 1)];}, $$298.$$s = self, $$298.$$arity = 1, $$298));
+              return $writer[$rb_minus($writer["length"], 1)];}, $$299.$$s = self, $$299.$$arity = 1, $$299));
             
             $writer = [beat, newbeat];
             $send(compression_map, '[]=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];;}, $$292.$$s = self, $$292.$$arity = 1, $$292));
+            return $writer[$rb_minus($writer["length"], 1)];;}, $$293.$$s = self, $$293.$$arity = 1, $$293));
           return compression_map;
-        }, $Default_compute_beat_compression_1$285.$$arity = 2);
+        }, $Default_compute_beat_compression_1$286.$$arity = 2);
         
-        Opal.def(self, '$compute_beat_compression_3', $Default_compute_beat_compression_3$299 = function $$compute_beat_compression_3(music, layout_lines) {
-          var $a, $$300, $$301, $$302, $$303, $$304, $$305, $$306, self = this, duration_to_style = nil, conf_min_increment = nil, collision_stack = nil, collision_range = nil, compression_map = nil, newbeat = nil, nextincrement = nil, last_size = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
+        Opal.def(self, '$compute_beat_compression_3', $Default_compute_beat_compression_3$300 = function $$compute_beat_compression_3(music, layout_lines) {
+          var $a, $$301, $$302, $$303, $$304, $$305, $$306, $$307, self = this, duration_to_style = nil, conf_min_increment = nil, collision_stack = nil, collision_range = nil, compression_map = nil, newbeat = nil, nextincrement = nil, last_size = nil, relevant_notes = nil, relevant_sp = nil, relevant_beats = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -31390,14 +31411,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           newbeat = 0;
           nextincrement = 0;
           last_size = 0;
-          relevant_notes = $send($send($send(layout_lines.$uniq(), 'map', [], ($$300 = function(voice_id){var self = $$300.$$s || this;
+          relevant_notes = $send($send($send(layout_lines.$uniq(), 'map', [], ($$301 = function(voice_id){var self = $$301.$$s || this;
 
           
             
             if (voice_id == null) {
               voice_id = nil;
             };
-            return music.$voices()['$[]'](voice_id);}, $$300.$$s = self, $$300.$$arity = 1, $$300)), 'inject', [[]], ($$301 = function(result, voice){var self = $$301.$$s || this;
+            return music.$voices()['$[]'](voice_id);}, $$301.$$s = self, $$301.$$arity = 1, $$301)), 'inject', [[]], ($$302 = function(result, voice){var self = $$302.$$s || this;
 
           
             
@@ -31408,39 +31429,39 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (voice == null) {
               voice = nil;
             };
-            return result.$push(voice);}, $$301.$$s = self, $$301.$$arity = 2, $$301)).$flatten(), 'select', [], ($$302 = function(note){var self = $$302.$$s || this;
+            return result.$push(voice);}, $$302.$$s = self, $$302.$$arity = 2, $$302)).$flatten(), 'select', [], ($$303 = function(note){var self = $$303.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$302.$$s = self, $$302.$$arity = 1, $$302));
-          relevant_sp = $send($send(relevant_notes, 'select', [], ($$303 = function(note){var self = $$303.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$303.$$s = self, $$303.$$arity = 1, $$303));
+          relevant_sp = $send($send(relevant_notes, 'select', [], ($$304 = function(note){var self = $$304.$$s || this;
 
           
             
             if (note == null) {
               note = nil;
             };
-            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$303.$$s = self, $$303.$$arity = 1, $$303)), 'map', [], ($$304 = function(sp){var self = $$304.$$s || this;
+            return note['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint'));}, $$304.$$s = self, $$304.$$arity = 1, $$304)), 'map', [], ($$305 = function(sp){var self = $$305.$$s || this;
 
           
             
             if (sp == null) {
               sp = nil;
             };
-            return sp.$notes();}, $$304.$$s = self, $$304.$$arity = 1, $$304));
+            return sp.$notes();}, $$305.$$s = self, $$305.$$arity = 1, $$305));
           relevant_notes = relevant_notes.$push(relevant_sp).$flatten();
-          relevant_beats = $send(relevant_notes, 'group_by', [], ($$305 = function(playable){var self = $$305.$$s || this;
+          relevant_beats = $send(relevant_notes, 'group_by', [], ($$306 = function(playable){var self = $$306.$$s || this;
 
           
             
             if (playable == null) {
               playable = nil;
             };
-            return playable.$beat();}, $$305.$$s = self, $$305.$$arity = 1, $$305));
-          $send(relevant_beats.$keys().$sort(), 'each', [], ($$306 = function(beat){var self = $$306.$$s || this, $$307, $$309, $$310, $$311, $$312, $$313, notes = nil, collision_candidate_keys = nil, collisions = nil, defaultincrement = nil, largest_increment = nil, is_new_part = nil, measure_start = nil, increment = nil, $writer = nil;
+            return playable.$beat();}, $$306.$$s = self, $$306.$$arity = 1, $$306));
+          $send(relevant_beats.$keys().$sort(), 'each', [], ($$307 = function(beat){var self = $$307.$$s || this, $$308, $$310, $$311, $$312, $$313, $$314, notes = nil, collision_candidate_keys = nil, collisions = nil, defaultincrement = nil, largest_increment = nil, is_new_part = nil, measure_start = nil, increment = nil, $writer = nil;
 
           
             
@@ -31448,7 +31469,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               beat = nil;
             };
             notes = relevant_beats['$[]'](beat);
-            collision_range = $send(notes, 'inject', [$hash2([], {})], ($$307 = function(result, note){var self = $$307.$$s || this, $$308;
+            collision_range = $send(notes, 'inject', [$hash2([], {})], ($$308 = function(result, note){var self = $$308.$$s || this, $$309;
 
             
               
@@ -31459,7 +31480,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (note == null) {
                 note = nil;
               };
-              $send($send($$($nesting, 'Range'), 'new', Opal.to_a([note.$prev_pitch(), note.$pitch()].$sort())), 'each', [], ($$308 = function(pitch){var self = $$308.$$s || this, $writer = nil;
+              $send($send($$($nesting, 'Range'), 'new', Opal.to_a([note.$prev_pitch(), note.$pitch()].$sort())), 'each', [], ($$309 = function(pitch){var self = $$309.$$s || this, $writer = nil;
 
               
                 
@@ -31472,14 +31493,14 @@ Opal.modules["harpnotes"] = function(Opal) {
                   return "line"
                 }; return nil; })()})];
                 $send(result, '[]=', Opal.to_a($writer));
-                return $writer[$rb_minus($writer["length"], 1)];}, $$308.$$s = self, $$308.$$arity = 1, $$308));
+                return $writer[$rb_minus($writer["length"], 1)];}, $$309.$$s = self, $$309.$$arity = 1, $$309));
               if (note.$pitch()['$=='](note.$prev_pitch())) {
               } else {
                 result.$delete(note.$prev_pitch())
               };
-              return result;}, $$307.$$s = self, $$307.$$arity = 2, $$307));
+              return result;}, $$308.$$s = self, $$308.$$arity = 2, $$308));
             collision_candidate_keys = collision_range.$keys()['$&'](collision_stack.$keys());
-            collisions = $send(collision_candidate_keys, 'map', [], ($$309 = function(k){var self = $$309.$$s || this, result = nil, size = nil, e = nil, collisiontype = nil, the_note = nil, $writer = nil;
+            collisions = $send(collision_candidate_keys, 'map', [], ($$310 = function(k){var self = $$310.$$s || this, result = nil, size = nil, e = nil, collisiontype = nil, the_note = nil, $writer = nil;
               if (self.conf_beat_resolution == null) self.conf_beat_resolution = nil;
               if ($gvars.log == null) $gvars.log = nil;
 
@@ -31509,38 +31530,38 @@ Opal.modules["harpnotes"] = function(Opal) {
                   $writer = ["inc", size];
                   $send(result, '[]=', Opal.to_a($writer));
                   $writer[$rb_minus($writer["length"], 1)];;}};
-              return result;}, $$309.$$s = self, $$309.$$arity = 1, $$309)).$compact();
+              return result;}, $$310.$$s = self, $$310.$$arity = 1, $$310)).$compact();
             defaultincrement = conf_min_increment;
             if ($truthy(collisions['$[]'](0))) {
               
-              largest_increment = $send(collisions, 'sort_by', [], ($$310 = function(i){var self = $$310.$$s || this;
+              largest_increment = $send(collisions, 'sort_by', [], ($$311 = function(i){var self = $$311.$$s || this;
 
               
                 
                 if (i == null) {
                   i = nil;
                 };
-                return i['$[]']("inc");}, $$310.$$s = self, $$310.$$arity = 1, $$310)).$first();
+                return i['$[]']("inc");}, $$311.$$s = self, $$311.$$arity = 1, $$311)).$first();
               defaultincrement = largest_increment['$[]']("inc");
             } else {
               defaultincrement = conf_min_increment
             };
-            is_new_part = $send(notes, 'select', [], ($$311 = function(n){var self = $$311.$$s || this;
+            is_new_part = $send(notes, 'select', [], ($$312 = function(n){var self = $$312.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$first_in_part?']();}, $$311.$$s = self, $$311.$$arity = 1, $$311));
-            measure_start = $send(notes, 'select', [], ($$312 = function(n){var self = $$312.$$s || this;
+              return n['$first_in_part?']();}, $$312.$$s = self, $$312.$$arity = 1, $$312));
+            measure_start = $send(notes, 'select', [], ($$313 = function(n){var self = $$313.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$measure_start?']();}, $$312.$$s = self, $$312.$$arity = 1, $$312));
+              return n['$measure_start?']();}, $$313.$$s = self, $$313.$$arity = 1, $$313));
             increment = defaultincrement;
             if ($truthy(is_new_part['$empty?']())) {
             } else {
@@ -31552,7 +31573,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             increment = $rb_plus(increment, self.$get_minc_factor(notes.$first().$time(), defaultincrement));
             newbeat = $rb_plus(newbeat, increment);
-            $send(collision_range.$keys(), 'each', [], ($$313 = function(k){var self = $$313.$$s || this, $writer = nil;
+            $send(collision_range.$keys(), 'each', [], ($$314 = function(k){var self = $$314.$$s || this, $writer = nil;
 
             
               
@@ -31561,15 +31582,15 @@ Opal.modules["harpnotes"] = function(Opal) {
               };
               $writer = [k, $hash2(["beat", "kind", "inc"], {"beat": newbeat, "kind": collision_range['$[]'](k)['$[]']("kind"), "inc": increment})];
               $send(collision_stack, '[]=', Opal.to_a($writer));
-              return $writer[$rb_minus($writer["length"], 1)];}, $$313.$$s = self, $$313.$$arity = 1, $$313));
+              return $writer[$rb_minus($writer["length"], 1)];}, $$314.$$s = self, $$314.$$arity = 1, $$314));
             
             $writer = [beat, newbeat];
             $send(compression_map, '[]=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];;}, $$306.$$s = self, $$306.$$arity = 1, $$306));
+            return $writer[$rb_minus($writer["length"], 1)];;}, $$307.$$s = self, $$307.$$arity = 1, $$307));
           return compression_map;
-        }, $Default_compute_beat_compression_3$299.$$arity = 2);
+        }, $Default_compute_beat_compression_3$300.$$arity = 2);
         
-        Opal.def(self, '$layout_playable', $Default_layout_playable$314 = function $$layout_playable(root, beat_layout, note_conf_base) {
+        Opal.def(self, '$layout_playable', $Default_layout_playable$315 = function $$layout_playable(root, beat_layout, note_conf_base) {
           var self = this, result = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -31584,9 +31605,9 @@ Opal.modules["harpnotes"] = function(Opal) {
             return $gvars.log.$error("" + "BUG: Missing Music -> Sheet transform: " + (root))
           }; return nil; })();
           return result;
-        }, $Default_layout_playable$314.$$arity = 3);
+        }, $Default_layout_playable$315.$$arity = 3);
         
-        Opal.def(self, '$layout_note', $Default_layout_note$315 = function $$layout_note(root, beat_layout, note_conf_base) {
+        Opal.def(self, '$layout_note', $Default_layout_note$316 = function $$layout_note(root, beat_layout, note_conf_base) {
           var $a, $b, self = this, x_offset = nil, y_offset = nil, dotted = nil, fill = nil, size = nil, flag = nil, shift = nil, color = nil, res = nil, $writer = nil, result = nil, barover_y = nil, reducer = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -31637,10 +31658,10 @@ Opal.modules["harpnotes"] = function(Opal) {
             $writer[$rb_minus($writer["length"], 1)];;
             result.$push(res);};
           return result;
-        }, $Default_layout_note$315.$$arity = 3);
+        }, $Default_layout_note$316.$$arity = 3);
         
-        Opal.def(self, '$layout_note_flags', $Default_layout_note_flags$316 = function $$layout_note_flags(x_offset, y_offset, size, shift, color, flag) {
-          var $a, $$317, $$318, self = this, p_beam_x = nil, p_beam_y = nil, linewidth = nil, f_x = nil, f_y = nil, path = nil, p_flag_x = nil, p_flag_y = nil, f_delta_x = nil, f_delta_y = nil, flagpath = nil, res = nil, $writer = nil;
+        Opal.def(self, '$layout_note_flags', $Default_layout_note_flags$317 = function $$layout_note_flags(x_offset, y_offset, size, shift, color, flag) {
+          var $a, $$318, $$319, self = this, p_beam_x = nil, p_beam_y = nil, linewidth = nil, f_x = nil, f_y = nil, path = nil, p_flag_x = nil, p_flag_y = nil, f_delta_x = nil, f_delta_y = nil, flagpath = nil, res = nil, $writer = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -31663,14 +31684,14 @@ Opal.modules["harpnotes"] = function(Opal) {
               } else { throw $err; }
             }})();
             flagpath = ["l", p_flag_x, p_flag_y];
-            $send(flag, 'times', [], ($$317 = function(i){var self = $$317.$$s || this;
+            $send(flag, 'times', [], ($$318 = function(i){var self = $$318.$$s || this;
 
             
               
               if (i == null) {
                 i = nil;
               };
-              return (path = $rb_plus(path, [["M", $rb_plus($rb_plus(f_x, p_beam_x), $rb_times(i, f_delta_x)), $rb_plus(f_y, p_beam_y)], flagpath]));}, $$317.$$s = self, $$317.$$arity = 1, $$317));
+              return (path = $rb_plus(path, [["M", $rb_plus($rb_plus(f_x, p_beam_x), $rb_times(i, f_delta_x)), $rb_plus(f_y, p_beam_y)], flagpath]));}, $$318.$$s = self, $$318.$$arity = 1, $$318));
           } else {
             
             $a = [0.1, $rb_times(2, size['$[]'](1))], (p_beam_x = $a[0]), (p_beam_y = $a[1]), $a;
@@ -31690,14 +31711,14 @@ Opal.modules["harpnotes"] = function(Opal) {
               } else { throw $err; }
             }})();
             flagpath = ["l", p_flag_x, p_flag_y];
-            $send(flag, 'times', [], ($$318 = function(i){var self = $$318.$$s || this;
+            $send(flag, 'times', [], ($$319 = function(i){var self = $$319.$$s || this;
 
             
               
               if (i == null) {
                 i = nil;
               };
-              return (path = $rb_plus(path, [["M", $rb_minus($rb_plus(f_x, p_beam_x), $rb_times(i, f_delta_x)), $rb_plus($rb_minus(y_offset, p_beam_y), $rb_times(i, f_delta_y))], flagpath]));}, $$318.$$s = self, $$318.$$arity = 1, $$318));
+              return (path = $rb_plus(path, [["M", $rb_minus($rb_plus(f_x, p_beam_x), $rb_times(i, f_delta_x)), $rb_plus($rb_minus(y_offset, p_beam_y), $rb_times(i, f_delta_y))], flagpath]));}, $$319.$$s = self, $$319.$$arity = 1, $$319));
           };
           res = $$$($$$($$($nesting, 'Harpnotes'), 'Drawing'), 'Path').$new(path, "open");
           
@@ -31709,15 +31730,15 @@ Opal.modules["harpnotes"] = function(Opal) {
           $send(res, 'color=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           return res;
-        }, $Default_layout_note_flags$316.$$arity = 6);
+        }, $Default_layout_note_flags$317.$$arity = 6);
         
-        Opal.def(self, '$convert_pitch_to_xpos', $Default_convert_pitch_to_xpos$319 = function $$convert_pitch_to_xpos(root) {
+        Opal.def(self, '$convert_pitch_to_xpos', $Default_convert_pitch_to_xpos$320 = function $$convert_pitch_to_xpos(root) {
           var self = this;
 
           return self.pitch_to_xpos.$call(root.$pitch())
-        }, $Default_convert_pitch_to_xpos$319.$$arity = 1);
+        }, $Default_convert_pitch_to_xpos$320.$$arity = 1);
         
-        Opal.def(self, '$compute_color_by_variant_no', $Default_compute_color_by_variant_no$320 = function $$compute_color_by_variant_no(variant_no) {
+        Opal.def(self, '$compute_color_by_variant_no', $Default_compute_color_by_variant_no$321 = function $$compute_color_by_variant_no(variant_no) {
           var self = this, result = nil;
 
           
@@ -31731,26 +31752,26 @@ Opal.modules["harpnotes"] = function(Opal) {
             }; return nil; })()
           };
           return result;
-        }, $Default_compute_color_by_variant_no$320.$$arity = 1);
+        }, $Default_compute_color_by_variant_no$321.$$arity = 1);
         
-        Opal.def(self, '$compute_ellipse_properties_from_note', $Default_compute_ellipse_properties_from_note$321 = function $$compute_ellipse_properties_from_note(root) {
-          var $a, $b, $$322, self = this, scale = nil, fill = nil, dotted = nil, flag = nil, size = nil;
+        Opal.def(self, '$compute_ellipse_properties_from_note', $Default_compute_ellipse_properties_from_note$322 = function $$compute_ellipse_properties_from_note(root) {
+          var $a, $b, $$323, self = this, scale = nil, fill = nil, dotted = nil, flag = nil, size = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
           $b = $gvars.conf.$get("layout.DURATION_TO_STYLE")['$[]'](self.$check_duration(root)), $a = Opal.to_ary($b), (scale = ($a[0] == null ? nil : $a[0])), (fill = ($a[1] == null ? nil : $a[1])), (dotted = ($a[2] == null ? nil : $a[2])), (flag = ($a[3] == null ? nil : $a[3])), $b;
-          size = $send($gvars.conf.$get("layout.ELLIPSE_SIZE"), 'map', [], ($$322 = function(e){var self = $$322.$$s || this;
+          size = $send($gvars.conf.$get("layout.ELLIPSE_SIZE"), 'map', [], ($$323 = function(e){var self = $$323.$$s || this;
 
           
             
             if (e == null) {
               e = nil;
             };
-            return $rb_times(e, scale);}, $$322.$$s = self, $$322.$$arity = 1, $$322));
+            return $rb_times(e, scale);}, $$323.$$s = self, $$323.$$arity = 1, $$323));
           return [dotted, fill, size, flag];
-        }, $Default_compute_ellipse_properties_from_note$321.$$arity = 1);
+        }, $Default_compute_ellipse_properties_from_note$322.$$arity = 1);
         
-        Opal.def(self, '$layout_note_shift', $Default_layout_note_shift$323 = function $$layout_note_shift(root, size, x_offset, dotted, note_conf_base) {
+        Opal.def(self, '$layout_note_shift', $Default_layout_note_shift$324 = function $$layout_note_shift(root, size, x_offset, dotted, note_conf_base) {
           var self = this, shift = nil, local_key = nil, nshift = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -31779,13 +31800,13 @@ Opal.modules["harpnotes"] = function(Opal) {
               nshift = self.print_options_raw['$[]']("" + (local_key) + ".nshift");
               shift = $rb_times($rb_times(size.$first(), 2), nshift);};};
           return shift;
-        }, $Default_layout_note_shift$323.$$arity = 5);
+        }, $Default_layout_note_shift$324.$$arity = 5);
         
-        Opal.def(self, '$layout_accord', $Default_layout_accord$324 = function $$layout_accord(root, beat_layout, note_conf_base) {
-          var $$325, $$326, $$327, $$328, self = this, res = nil, proxy_drawable = nil, resnotes_sorted = nil;
+        Opal.def(self, '$layout_accord', $Default_layout_accord$325 = function $$layout_accord(root, beat_layout, note_conf_base) {
+          var $$326, $$327, $$328, $$329, self = this, res = nil, proxy_drawable = nil, resnotes_sorted = nil;
 
           
-          res = $send(root.$notes().$reverse().$each_with_index(), 'map', [], ($$325 = function(c, i){var self = $$325.$$s || this;
+          res = $send(root.$notes().$reverse().$each_with_index(), 'map', [], ($$326 = function(c, i){var self = $$326.$$s || this;
 
           
             
@@ -31796,36 +31817,36 @@ Opal.modules["harpnotes"] = function(Opal) {
             if (i == null) {
               i = nil;
             };
-            return self.$layout_note(c, beat_layout, "" + (note_conf_base) + ".n_" + (i));}, $$325.$$s = self, $$325.$$arity = 2, $$325)).$reverse();
+            return self.$layout_note(c, beat_layout, "" + (note_conf_base) + ".n_" + (i));}, $$326.$$s = self, $$326.$$arity = 2, $$326)).$reverse();
           proxy_drawable = root.$get_proxy_object(res).$proxy();
-          resnotes_sorted = $send($send(res, 'map', [], ($$326 = function(n){var self = $$326.$$s || this;
+          resnotes_sorted = $send($send(res, 'map', [], ($$327 = function(n){var self = $$327.$$s || this;
 
           
             
             if (n == null) {
               n = nil;
             };
-            return n.$proxy();}, $$326.$$s = self, $$326.$$arity = 1, $$326)), 'sort_by', [], ($$327 = function(n){var self = $$327.$$s || this;
+            return n.$proxy();}, $$327.$$s = self, $$327.$$arity = 1, $$327)), 'sort_by', [], ($$328 = function(n){var self = $$328.$$s || this;
 
           
             
             if (n == null) {
               n = nil;
             };
-            return n.$center().$first();}, $$327.$$s = self, $$327.$$arity = 1, $$327));
-          res = $send(res, 'map', [], ($$328 = function(n){var self = $$328.$$s || this;
+            return n.$center().$first();}, $$328.$$s = self, $$328.$$arity = 1, $$328));
+          res = $send(res, 'map', [], ($$329 = function(n){var self = $$329.$$s || this;
 
           
             
             if (n == null) {
               n = nil;
             };
-            return n.$shapes();}, $$328.$$s = self, $$328.$$arity = 1, $$328));
+            return n.$shapes();}, $$329.$$s = self, $$329.$$arity = 1, $$329));
           res.$unshift($$($nesting, 'FlowLine').$new(resnotes_sorted.$first(), resnotes_sorted.$last(), "dashed"));
           return $$($nesting, 'CompoundDrawable').$new(res, proxy_drawable);
-        }, $Default_layout_accord$324.$$arity = 3);
+        }, $Default_layout_accord$325.$$arity = 3);
         
-        Opal.def(self, '$layout_pause', $Default_layout_pause$329 = function $$layout_pause(root, beat_layout, note_conf_base) {
+        Opal.def(self, '$layout_pause', $Default_layout_pause$330 = function $$layout_pause(root, beat_layout, note_conf_base) {
           var $a, $b, self = this, x_offset = nil, y_offset = nil, scale = nil, glyph = nil, dotted = nil, rest_size = nil, size = nil, shift = nil, color = nil, res = nil, $writer = nil, result = nil, barover_y = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -31886,8 +31907,8 @@ Opal.modules["harpnotes"] = function(Opal) {
             };
             result.$push(res);};
           return result;
-        }, $Default_layout_pause$329.$$arity = 3);
-        Opal.defs(self, '$make_path_from_jumpline', $Default_make_path_from_jumpline$330 = function $$make_path_from_jumpline(arg) {
+        }, $Default_layout_pause$330.$$arity = 3);
+        Opal.defs(self, '$make_path_from_jumpline', $Default_make_path_from_jumpline$331 = function $$make_path_from_jumpline(arg) {
           var $a, $b, self = this, anchorx = nil, anchory = nil, from = nil, from_offset = nil, from_anchor = nil, to = nil, to_offset = nil, to_anchor = nil, verticalpos = nil, verticalcut = nil, vertical_anchor = nil, start_of_vertical = nil, end_of_vertical = nil, start_orientation = nil, end_orientation = nil, vert_orientation = nil, start_offset = nil, end_offset = nil, p1 = nil, p2 = nil, p3 = nil, p4 = nil, p4_line = nil, a1 = nil, a2 = nil, dy = nil, verticalcuty = nil, vcp2 = nil, vcp2_line = nil, vcp3 = nil, a3 = nil, a4 = nil, vcutarrow = nil, path = nil;
 
           
@@ -31947,9 +31968,9 @@ Opal.modules["harpnotes"] = function(Opal) {
           };
           path = [[["M"].concat(Opal.to_a(p1)), ["l"].concat(Opal.to_a($rb_minus(p2, p1))), ["l"].concat(Opal.to_a($rb_minus(vcp2_line, p2))), ["M"].concat(Opal.to_a(vcp3)), ["L"].concat(Opal.to_a(p3)), ["L"].concat(Opal.to_a(p4_line))], [["M"].concat(Opal.to_a(p4)), ["l"].concat(Opal.to_a($rb_minus(a1, p4))), ["l"].concat(Opal.to_a($rb_minus(a2, a1))), ["l"].concat(Opal.to_a($rb_minus(p4, a2))), ["z"]], vcutarrow];
           return path;
-        }, $Default_make_path_from_jumpline$330.$$arity = 1);
+        }, $Default_make_path_from_jumpline$331.$$arity = 1);
         
-        Opal.def(self, '$duration_to_id', $Default_duration_to_id$331 = function $$duration_to_id(duration) {
+        Opal.def(self, '$duration_to_id', $Default_duration_to_id$332 = function $$duration_to_id(duration) {
           var self = this, result = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -31958,9 +31979,9 @@ Opal.modules["harpnotes"] = function(Opal) {
           if ($truthy($gvars.conf.$get("layout.DURATION_TO_STYLE")['$[]'](result)['$nil?']())) {
             result = "err"};
           return result;
-        }, $Default_duration_to_id$331.$$arity = 1);
+        }, $Default_duration_to_id$332.$$arity = 1);
         
-        Opal.def(self, '$check_duration', $Default_check_duration$332 = function $$check_duration(root) {
+        Opal.def(self, '$check_duration', $Default_check_duration$333 = function $$check_duration(root) {
           var self = this, result = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -31969,10 +31990,10 @@ Opal.modules["harpnotes"] = function(Opal) {
           if ($truthy(result['$===']("err"))) {
             $gvars.log.$error("" + "unsupported duration at " + (root.$start_pos_to_s()), root.$start_pos(), root.$end_pos())};
           return result;
-        }, $Default_check_duration$332.$$arity = 1);
+        }, $Default_check_duration$333.$$arity = 1);
         
-        Opal.def(self, '$make_sheetmark_path', $Default_make_sheetmark_path$333 = function $$make_sheetmark_path(note) {
-          var $$334, self = this, w = nil, h = nil, base = nil, vpath = nil, path = nil;
+        Opal.def(self, '$make_sheetmark_path', $Default_make_sheetmark_path$334 = function $$make_sheetmark_path(note) {
+          var $$335, self = this, w = nil, h = nil, base = nil, vpath = nil, path = nil;
 
           
           w = 0.5;
@@ -31980,18 +32001,18 @@ Opal.modules["harpnotes"] = function(Opal) {
           base = $rb_minus(self.$Vector2d(note), [w, $rb_divide(h, 2)]);
           vpath = [self.$Vector2d(w, $rb_times(2, w)['$-@']()), self.$Vector2d(w, $rb_times(2, w)), self.$Vector2d(0, h), self.$Vector2d(w['$-@'](), $rb_times(2, w)), self.$Vector2d(w['$-@'](), $rb_times(-2, w)), self.$Vector2d(0, h['$-@']())];
           path = [["M", base.$x(), base.$y()]];
-          $send(vpath, 'each', [], ($$334 = function(p){var self = $$334.$$s || this;
+          $send(vpath, 'each', [], ($$335 = function(p){var self = $$335.$$s || this;
 
           
             
             if (p == null) {
               p = nil;
             };
-            return path['$<<'](["l", p.$x(), p.$y()]);}, $$334.$$s = self, $$334.$$arity = 1, $$334));
+            return path['$<<'](["l", p.$x(), p.$y()]);}, $$335.$$s = self, $$335.$$arity = 1, $$335));
           return path;
-        }, $Default_make_sheetmark_path$333.$$arity = 1);
+        }, $Default_make_sheetmark_path$334.$$arity = 1);
         
-        Opal.def(self, '$make_slur_path', $Default_make_slur_path$335 = function $$make_slur_path(p1, p2) {
+        Opal.def(self, '$make_slur_path', $Default_make_slur_path$336 = function $$make_slur_path(p1, p2) {
           var self = this, deltap = nil, cp_template = nil, cp1 = nil, cp2 = nil, slurpath = nil;
 
           
@@ -32001,9 +32022,9 @@ Opal.modules["harpnotes"] = function(Opal) {
           cp2 = $rb_plus(deltap, cp_template.$reverse().$rotate(0.4));
           slurpath = [["M", p1.$x(), p1.$y()], ["c", cp1.$x(), cp1.$y(), cp2.$x(), cp2.$y(), deltap.$x(), deltap.$y()]];
           return slurpath;
-        }, $Default_make_slur_path$335.$$arity = 2);
+        }, $Default_make_slur_path$336.$$arity = 2);
         
-        Opal.def(self, '$make_annotated_bezier_path', $Default_make_annotated_bezier_path$336 = function $$make_annotated_bezier_path(points, tuplet_options) {
+        Opal.def(self, '$make_annotated_bezier_path', $Default_make_annotated_bezier_path$337 = function $$make_annotated_bezier_path(points, tuplet_options) {
           var $a, self = this, p1 = nil, p2 = nil, deltap = nil, cp_template1 = nil, cp_template2 = nil, rotate_by = nil, cp1 = nil, cp2 = nil, cpa1 = nil, cpa2 = nil, cpm1 = nil, cpm2 = nil, cpmm = nil, cpmm1 = nil, cpmm2 = nil, annotation_normal = nil, annotation_anchor = nil, start = nil, curve = nil, line = nil, slurpath = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -32045,14 +32066,14 @@ Opal.modules["harpnotes"] = function(Opal) {
           if ($truthy(tuplet_options['$[]']("shape")['$include?']("l"))) {
             slurpath = $rb_plus(slurpath, $rb_plus(start, line))};
           return [slurpath, annotation_anchor, cpa1, cpa2];
-        }, $Default_make_annotated_bezier_path$336.$$arity = 2);
-        return (Opal.def(self, '$resolve_placeholder', $Default_resolve_placeholder$337 = function $$resolve_placeholder(text, parameter) {
-          var $$338, self = this, result = nil, keys = nil;
+        }, $Default_make_annotated_bezier_path$337.$$arity = 2);
+        return (Opal.def(self, '$resolve_placeholder', $Default_resolve_placeholder$338 = function $$resolve_placeholder(text, parameter) {
+          var $$339, self = this, result = nil, keys = nil;
 
           
           result = text;
           keys = result.$scan(/\{\{([^\}]+)\}\}/);
-          $send(keys, 'each', [], ($$338 = function(key){var self = $$338.$$s || this, value = nil;
+          $send(keys, 'each', [], ($$339 = function(key){var self = $$339.$$s || this, value = nil;
             if (self.placeholders == null) self.placeholders = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
@@ -32074,9 +32095,9 @@ Opal.modules["harpnotes"] = function(Opal) {
               return (result = result.$gsub("" + "{{" + (key) + "}}", text));
             } else {
               return $gvars.log.$error("" + ($$($nesting, 'I18n').$t("wrong placeholder: ")) + " in '" + (parameter) + "': '" + (key.$first()) + "'")
-            };}, $$338.$$s = self, $$338.$$arity = 1, $$338));
+            };}, $$339.$$s = self, $$339.$$arity = 1, $$339));
           return result;
-        }, $Default_resolve_placeholder$337.$$arity = 2), nil) && 'resolve_placeholder';
+        }, $Default_resolve_placeholder$338.$$arity = 2), nil) && 'resolve_placeholder';
       })($nesting[0], null, $nesting)
     })($nesting[0], $nesting);
   })($nesting[0], $nesting)
@@ -33995,6 +34016,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               if ($truthy(match)) {
                 
                 text = match['$[]'](1);
+                text = text.$gsub("♯", "#").$gsub("♭", "b");
                 position = $gvars.conf['$[]']("defaults.notebound.chord.pos");
                 conf_key = "" + "notebound.chord." + (voice_id) + "." + (entity.$znid()) + "." + (index);
                 return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Chordsymbol').$new(entity, $hash2(["style", "pos", "text"], {"style": "large", "pos": position, "text": text}), conf_key));
@@ -37213,7 +37235,7 @@ Opal.modules["init_conf"] = function(Opal) {
 
       return $$($nesting, 'I18n').$t("provided by\n")}, $$33.$$s = self, $$33.$$arity = 0, $$33)), "style": "small"})}), "T05_printed_extracts": $hash2(["value"], {"value": $hash2(["pos", "text", "style", "align"], {"pos": [410, 22], "text": "{{printed_extracts}}", "style": "smaller", "align": "l"})}), "T06_legend": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [360, 30], "text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}", "style": "small"})}), "T99_do_not_copy": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [380, 284], "text": $send(self, 'lambda', [], ($$34 = function(){var self = $$34.$$s || this;
 
-      return $$($nesting, 'I18n').$t("Please do not copy")}, $$34.$$s = self, $$34.$$arity = 0, $$34)), "style": "small_bold"})}), "T01_T99": $hash2(["value"], {"value": $hash2([], {})})}), "printer": $hash2(["printer_left", "printer_centric", "printer_right"], {"printer_left": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [-10, 0], "a4_offset": [-5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})}), "printer_centric": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [0, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": true})}), "printer_right": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [10, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})})})}), "annotations": $hash2(["vl", "vt", "vr"], {"vl": $hash2(["text", "pos"], {"text": "v", "pos": [-5, -5]}), "vt": $hash2(["text", "pos"], {"text": "v", "pos": [-1, -5]}), "vr": $hash2(["text", "pos"], {"text": "v", "pos": [2, -5]})}), "extract": $hash2(["0", "1", "2", "3", "4", "5"], {"0": $hash2(["title", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "images", "layout", "sortmark", "nonflowrest", "notes", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "printer"], {"title": "alle Stimmen", "startpos": 15, "voices": [1, 2, 3, 4], "synchlines": [[1, 2], [3, 4]], "flowlines": [1, 3], "subflowlines": [2, 4], "jumplines": [1, 3], "repeatsigns": $hash2(["voices", "left", "right"], {"voices": [], "left": $hash2(["pos", "text", "style"], {"pos": [-7, -2], "text": "|:", "style": "bold"}), "right": $hash2(["pos", "text", "style"], {"pos": [5, -2], "text": ":|", "style": "bold"})}), "layoutlines": [1, 2, 3, 4], "legend": $hash2(["spos", "pos"], {"spos": [320, 27], "pos": [320, 7]}), "lyrics": $hash2([], {}), "images": $hash2([], {}), "layout": $hash2(["limit_a3", "bottomup", "beams", "jumpline_anchor", "color", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "tuning", "packer"], {"limit_a3": true, "bottomup": false, "beams": false, "jumpline_anchor": [3, 1], "color": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": "black", "color_variant1": "grey", "color_variant2": "dimgrey"}), "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "PITCH_OFFSET": -43, "X_SPACING": 11.5, "X_OFFSET": 2.8, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "DRAWING_AREA_SIZE": [400, 282], "instrument": "37-strings-g-g", "tuning": "fixed", "packer": $hash2(["pack_method", "pack_max_spreadfactor", "pack_min_increment"], {"pack_method": 0, "pack_max_spreadfactor": 2, "pack_min_increment": 0.2})}), "sortmark": $hash2(["size", "fill", "show"], {"size": [2, 4], "fill": true, "show": false}), "nonflowrest": false, "notes": $hash2([], {}), "tuplets": $hash2(["text"], {"text": "{{tuplet}}"}), "barnumbers": $hash2(["voices", "pos", "autopos", "apanchor", "apbase", "style", "prefix"], {"voices": [], "pos": [6, -4], "autopos": true, "apanchor": "box", "apbase": [1, 1], "style": "small_bold", "prefix": ""}), "countnotes": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "smaller"}), "chords": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "large"}), "stringnames": $hash2(["text", "vpos", "style", "marks"], {"text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G", "vpos": [], "style": "small", "marks": $hash2(["vpos", "hpos"], {"vpos": [11], "hpos": [43, 55, 79]})}), "printer": $hash2(["a3_offset", "a4_offset", "a4_pages", "show_border"], {"a3_offset": [0, 0], "a4_offset": [-5, 0], "a4_pages": [0, 1, 2], "show_border": false})}), "1": $hash2(["title", "voices"], {"title": "Sopran, Alt", "voices": [1, 2]}), "2": $hash2(["title", "voices"], {"title": "Tenor, Bass", "voices": [3, 4]}), "3": $hash2(["title", "voices"], {"title": "Melodie", "voices": [1]}), "4": $hash2(["title", "voices"], {"title": "Extract 4", "voices": [1]}), "5": $hash2(["title", "voices"], {"title": "Extract 5", "voices": [1]})}), "layout": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "DURATION_TO_BEAMS", "REST_TO_GLYPH"], {"grid": false, "limit_a3": true, "SHOW_SLUR": false, "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "X_SPACING": 11.5, "X_OFFSET": 2.8, "Y_SCALE": 4, "DRAWING_AREA_SIZE": [400, 282], "BEAT_RESOLUTION": 192, "SHORTEST_NOTE": 64, "BEAT_PER_DURATION": 3, "PITCH_OFFSET": -43, "FONT_STYLE_DEF": $hash2(["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], {"bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "bold"}), "italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "italic"}), "large": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 20, "font_style": "bold"}), "regular": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "normal"}), "small_bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "bold"}), "small_italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "italic"}), "small": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "normal"}), "smaller": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 6, "font_style": "normal"})}), "MM_PER_POINT": 0.3, "DURATION_TO_STYLE": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [2, "filled", false], "d64": [1, "empty", false], "d48": [0.75, "empty", true], "d32": [0.75, "empty", false], "d24": [0.75, "filled", true], "d16": [0.75, "filled", false], "d12": [0.5, "filled", true], "d8": [0.5, "filled", false], "d6": [0.3, "filled", true], "d4": [0.3, "filled", false], "d3": [0.1, "filled", true], "d2": [0.1, "filled", false], "d1": [0.05, "filled", false]}), "DURATION_TO_BEAMS": $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [1, "empty", false], "d48": [1, "empty", true, 0], "d32": [1, "empty", false, 0], "d24": [1, "filled", true, 0], "d16": [1, "filled", false, 0], "d12": [1, "filled", true, 1], "d8": [1, "filled", false, 1], "d6": [1, "filled", true, 2], "d4": [1, "filled", false, 2], "d3": [1, "filled", true, 3], "d2": [1, "filled", false, 3], "d1": [1, "filled", false, 4]}), "REST_TO_GLYPH": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [[2, 2], "rest_1", false], "d64": [[1, 0.8], "rest_1", false], "d48": [[0.5, 0.4], "rest_1", true], "d32": [[0.5, 0.4], "rest_1", false], "d24": [[0.4, 0.75], "rest_4", true], "d16": [[0.4, 0.75], "rest_4", false], "d12": [[0.4, 0.5], "rest_8", true], "d8": [[0.4, 0.5], "rest_8", false], "d6": [[0.4, 0.3], "rest_16", true], "d4": [[0.3, 0.3], "rest_16", false], "d3": [[0.3, 0.5], "rest_32", true], "d2": [[0.3, 0.5], "rest_32", false], "d1": [[0.3, 0.5], "rest_64", false]})}), "neatjson": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "short", "afterComma", "afterColon1", "afterColonN", "beforeColonN", "decimals", "explicit_sort"], {"wrap": 60, "aligned": true, "after_comma": 1, "after_colon_1": 1, "after_colon_n": 1, "before_colon_n": 1, "short": false, "afterComma": 1, "afterColon1": 1, "afterColonN": 1, "beforeColonN": 1, "decimals": 2, "explicit_sort": $$($nesting, 'Hash')['$[]']($send(explicit_sort.$each_with_index().$to_a(), 'map', [], ($$35 = function(i){var self = $$35.$$s || this;
+      return $$($nesting, 'I18n').$t("Please do not copy")}, $$34.$$s = self, $$34.$$arity = 0, $$34)), "style": "small_bold"})}), "T01_T99": $hash2(["value"], {"value": $hash2([], {})})}), "printer": $hash2(["printer_left", "printer_centric", "printer_right"], {"printer_left": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [-10, 0], "a4_offset": [-5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})}), "printer_centric": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [0, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": true})}), "printer_right": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [10, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})})})}), "annotations": $hash2(["vl", "vt", "vr"], {"vl": $hash2(["text", "pos"], {"text": "v", "pos": [-5, -5]}), "vt": $hash2(["text", "pos"], {"text": "v", "pos": [-1, -5]}), "vr": $hash2(["text", "pos"], {"text": "v", "pos": [2, -5]})}), "extract": $hash2(["0", "1", "2", "3", "4", "5"], {"0": $hash2(["title", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "images", "layout", "sortmark", "nonflowrest", "notes", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "printer"], {"title": "alle Stimmen", "startpos": 15, "voices": [1, 2, 3, 4], "synchlines": [[1, 2], [3, 4]], "flowlines": [1, 3], "subflowlines": [2, 4], "jumplines": [1, 3], "repeatsigns": $hash2(["voices", "left", "right"], {"voices": [], "left": $hash2(["pos", "text", "style"], {"pos": [-7, -2], "text": "|:", "style": "bold"}), "right": $hash2(["pos", "text", "style"], {"pos": [5, -2], "text": ":|", "style": "bold"})}), "layoutlines": [1, 2, 3, 4], "legend": $hash2(["spos", "pos", "tstyle", "align", "style"], {"spos": [320, 27], "pos": [320, 7], "tstyle": "large", "align": "r", "style": "regular"}), "lyrics": $hash2([], {}), "images": $hash2([], {}), "layout": $hash2(["limit_a3", "bottomup", "beams", "jumpline_anchor", "color", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "tuning", "packer"], {"limit_a3": true, "bottomup": false, "beams": false, "jumpline_anchor": [3, 1], "color": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": "black", "color_variant1": "grey", "color_variant2": "dimgrey"}), "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "PITCH_OFFSET": -43, "X_SPACING": 11.5, "X_OFFSET": 2.8, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "DRAWING_AREA_SIZE": [400, 282], "instrument": "37-strings-g-g", "tuning": "fixed", "packer": $hash2(["pack_method", "pack_max_spreadfactor", "pack_min_increment"], {"pack_method": 0, "pack_max_spreadfactor": 2, "pack_min_increment": 0.2})}), "sortmark": $hash2(["size", "fill", "show"], {"size": [2, 4], "fill": true, "show": false}), "nonflowrest": false, "notes": $hash2([], {}), "tuplets": $hash2(["text"], {"text": "{{tuplet}}"}), "barnumbers": $hash2(["voices", "pos", "autopos", "apanchor", "apbase", "style", "prefix"], {"voices": [], "pos": [6, -4], "autopos": true, "apanchor": "box", "apbase": [1, 1], "style": "small_bold", "prefix": ""}), "countnotes": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "smaller"}), "chords": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "large"}), "stringnames": $hash2(["text", "vpos", "style", "marks"], {"text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G", "vpos": [], "style": "small", "marks": $hash2(["vpos", "hpos"], {"vpos": [11], "hpos": [43, 55, 79]})}), "printer": $hash2(["a3_offset", "a4_offset", "a4_pages", "show_border"], {"a3_offset": [0, 0], "a4_offset": [-5, 0], "a4_pages": [0, 1, 2], "show_border": false})}), "1": $hash2(["title", "voices"], {"title": "Sopran, Alt", "voices": [1, 2]}), "2": $hash2(["title", "voices"], {"title": "Tenor, Bass", "voices": [3, 4]}), "3": $hash2(["title", "voices"], {"title": "Melodie", "voices": [1]}), "4": $hash2(["title", "voices"], {"title": "Extract 4", "voices": [1]}), "5": $hash2(["title", "voices"], {"title": "Extract 5", "voices": [1]})}), "layout": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "DURATION_TO_BEAMS", "REST_TO_GLYPH"], {"grid": false, "limit_a3": true, "SHOW_SLUR": false, "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "X_SPACING": 11.5, "X_OFFSET": 2.8, "Y_SCALE": 4, "DRAWING_AREA_SIZE": [400, 282], "BEAT_RESOLUTION": 192, "SHORTEST_NOTE": 64, "BEAT_PER_DURATION": 3, "PITCH_OFFSET": -43, "FONT_STYLE_DEF": $hash2(["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], {"bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "bold"}), "italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "italic"}), "large": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 20, "font_style": "bold"}), "regular": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "normal"}), "small_bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "bold"}), "small_italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "italic"}), "small": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "normal"}), "smaller": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 6, "font_style": "normal"})}), "MM_PER_POINT": 0.3, "DURATION_TO_STYLE": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [2, "filled", false], "d64": [1, "empty", false], "d48": [0.75, "empty", true], "d32": [0.75, "empty", false], "d24": [0.75, "filled", true], "d16": [0.75, "filled", false], "d12": [0.5, "filled", true], "d8": [0.5, "filled", false], "d6": [0.3, "filled", true], "d4": [0.3, "filled", false], "d3": [0.1, "filled", true], "d2": [0.1, "filled", false], "d1": [0.05, "filled", false]}), "DURATION_TO_BEAMS": $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [1, "empty", false], "d48": [1, "empty", true, 0], "d32": [1, "empty", false, 0], "d24": [1, "filled", true, 0], "d16": [1, "filled", false, 0], "d12": [1, "filled", true, 1], "d8": [1, "filled", false, 1], "d6": [1, "filled", true, 2], "d4": [1, "filled", false, 2], "d3": [1, "filled", true, 3], "d2": [1, "filled", false, 3], "d1": [1, "filled", false, 4]}), "REST_TO_GLYPH": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [[2, 2], "rest_1", false], "d64": [[1, 0.8], "rest_1", false], "d48": [[0.5, 0.4], "rest_1", true], "d32": [[0.5, 0.4], "rest_1", false], "d24": [[0.4, 0.75], "rest_4", true], "d16": [[0.4, 0.75], "rest_4", false], "d12": [[0.4, 0.5], "rest_8", true], "d8": [[0.4, 0.5], "rest_8", false], "d6": [[0.4, 0.3], "rest_16", true], "d4": [[0.3, 0.3], "rest_16", false], "d3": [[0.3, 0.5], "rest_32", true], "d2": [[0.3, 0.5], "rest_32", false], "d1": [[0.3, 0.5], "rest_64", false]})}), "neatjson": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "short", "afterComma", "afterColon1", "afterColonN", "beforeColonN", "decimals", "explicit_sort"], {"wrap": 60, "aligned": true, "after_comma": 1, "after_colon_1": 1, "after_colon_n": 1, "before_colon_n": 1, "short": false, "afterComma": 1, "afterColon1": 1, "afterColonN": 1, "beforeColonN": 1, "decimals": 2, "explicit_sort": $$($nesting, 'Hash')['$[]']($send(explicit_sort.$each_with_index().$to_a(), 'map', [], ($$35 = function(i){var self = $$35.$$s || this;
 
       
         
@@ -37242,7 +37264,7 @@ Opal.modules["text_pane"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $truthy = Opal.truthy, $send = Opal.send, $range = Opal.range, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$attr_accessor', '$reset', '$push', '$[]', '$pop', '$empty?', '$reverse', '$flatten', '$lambda', '$new', '$_clean_models', '$create_lyrics_editor', '$from_lyrics', '$on', '$Native', '$getSession', '$save_to_localstorage', '$clear_markers', '$call', '$niil', '$scan', '$+', '$===', '$join', '$editor', '$raise', '$t', '$gsub', '$_get_unison_edit_replacement', '$last_match', '$get_selection_positions', '$min', '$first', '$max', '$last', '$strip', '$_get_abc_from_editor', '$_get_config_json', '$_has_resources?', '$_get_resources_json', '$_split_parts', '$map', '$-', '$set_markers', '$to_n', '$each', '$add_marker', '$split', '$<<', '$clear', '$_get_config_model', '$to_s', '$[]=', '$==', '$do', '$_set_config_model', '$get', '$set_config_model', '$_set_config_json', '$token', '$get_selection_info', '$type', '$replace_range', '$startpos', '$endpos', '$start_with?', '$delete', '$deep_dup', '$get_lyrics_raw', '$>', '$count', '$get_abc_part', '$error', '$clear_errors', '$get_lyrics', '$replace_text', '$call_consumers', '$nil?', '$_set_abc_to_editor', '$_set_resources_json', '$set_text', '$parse', '$select', '$clean_localstorage', '$each_with_index', '$benchmark', '$neat_generate', '$undo', '$info', '$dig', '$redo', '$undo_history', '$redo_history', '$!']);
+  Opal.add_stubs(['$attr_accessor', '$reset', '$push', '$[]', '$pop', '$empty?', '$reverse', '$flatten', '$lambda', '$new', '$_clean_models', '$create_lyrics_editor', '$from_lyrics', '$on', '$Native', '$getSession', '$save_to_localstorage', '$clear_markers', '$call', '$niil', '$scan', '$+', '$===', '$join', '$editor', '$raise', '$t', '$gsub', '$_get_unison_edit_replacement', '$last_match', '$get_selection_positions', '$min', '$first', '$max', '$last', '$strip', '$_get_abc_from_editor', '$_get_config_json', '$_has_resources?', '$_get_resources_json', '$_split_parts', '$map', '$-', '$set_markers', '$to_n', '$each', '$add_marker', '$split', '$<<', '$clear', '$_get_config_model', '$to_s', '$[]=', '$==', '$do', '$_set_config_model', '$get', '$set_config_model', '$_set_config_json', '$token', '$get_selection_info', '$type', '$replace_range', '$startpos', '$endpos', '$start_with?', '$delete', '$deep_dup', '$get_lyrics_raw', '$>', '$count', '$get_abc_part', '$error', '$clear_errors', '$get_lyrics', '$replace_text', '$call_consumers', '$nil?', '$_set_abc_to_editor', '$_set_resources_json', '$set_text', '$select', '$parse', '$clean_localstorage', '$each_with_index', '$benchmark', '$neat_generate', '$undo', '$info', '$dig', '$redo', '$undo_history', '$redo_history', '$!']);
   return (function($base, $parent_nesting) {
     var self = $module($base, 'Harpnotes');
 
@@ -38083,16 +38105,22 @@ Opal.modules["text_pane"] = function(Opal) {
       }, $TextPane_clean_localstorage$63.$$arity = 0);
       
       Opal.def(self, '$get_config_from_text', $TextPane_get_config_from_text$64 = function $$get_config_from_text(fulltext) {
-        var $$65, self = this;
+        var $$65, $a, self = this, configjson = nil;
 
-        return $$($nesting, 'JSON').$parse($send(fulltext.$split(self.config_separator), 'select', [], ($$65 = function(i){var self = $$65.$$s || this;
+        
+        configjson = ($a = $send(fulltext.$split(self.config_separator), 'select', [], ($$65 = function(i){var self = $$65.$$s || this;
 
         
           
           if (i == null) {
             i = nil;
           };
-          return i['$start_with?'](".config");}, $$65.$$s = self, $$65.$$arity = 1, $$65)).$first().$gsub(".config", ""))
+          return i['$start_with?'](".config");}, $$65.$$s = self, $$65.$$arity = 1, $$65)).$first(), ($a === nil || $a == null) ? nil : $send($a, 'gsub', [".config", ""]));
+        if ($truthy(configjson)) {
+          return $$($nesting, 'JSON').$parse(configjson)
+        } else {
+          return nil
+        };
       }, $TextPane_get_config_from_text$64.$$arity = 1);
       
       Opal.def(self, '$_split_parts', $TextPane__split_parts$66 = function $$_split_parts(fulltext) {
@@ -38168,7 +38196,7 @@ Opal.modules["text_pane"] = function(Opal) {
 
         
         options = $gvars.conf['$[]']("neatjson");
-        result = $send($gvars.log, 'benchmark', ["neat_json", 767, "./text_pane.rb".$force_encoding("US-ASCII")], ($$72 = function(){var self = $$72.$$s || this;
+        result = $send($gvars.log, 'benchmark', ["neat_json", 768, "./text_pane.rb".$force_encoding("US-ASCII")], ($$72 = function(){var self = $$72.$$s || this;
 
         return $$($nesting, 'JSON').$neat_generate(self.$_get_config_model(), options)}, $$72.$$s = self, $$72.$$arity = 0, $$72));
         return result;
@@ -40259,7 +40287,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.13-3-g5fa69424");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.13-7-g9cb82600");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

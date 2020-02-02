@@ -1,5 +1,5 @@
 
-Version V_1.13-2-gc520eae1
+Version V_1.13-7-g9cb82600
 
-    © 2019 https://www.zupfnoter.de
+    © 2020 https://www.zupfnoter.de
     

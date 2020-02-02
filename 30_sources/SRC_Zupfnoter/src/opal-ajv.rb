@@ -50,21 +50,21 @@ module Ajv
         resconf.push({'extract' => {key => extract0}}) # push extract 0 to all others
       end
       resconf.push({'extract' => conf.get('extract')}) # push extract-specific paramters
-      x = resconf.get
+      x      = resconf.get
       result = validate_filenameparts(resconf)
       result += validate('zupfnoter', resconf.get)
     end
 
     def validate_filenameparts(conf)
-      filenamekeys        = conf.keys.select { |i| i.include? 'filenamepart' }
+      filenamekeys  = conf.keys.select { |i| i.include? 'filenamepart' }
       filenameparts = filenamekeys.inject({}) do |result, element|
         result[$conf[element]] ||= []
         result[$conf[element]].push element
         result
       end
 
-      filenameparts = filenameparts.keep_if{|k, v| v.length > 1}
-      filenameparts.each do |k,v|
+      filenameparts = filenameparts.keep_if { |k, v| v.length > 1 }
+      filenameparts.each do |k, v|
         message = I18n.t("duplicate filenameparts") + ": " + v.join(", ")
         $log.error(message)
       end
@@ -78,37 +78,37 @@ module Ajv
        :required    => ["produce", "abc_parser", "restposition", "wrap", "defaults", "templates", "annotations", "extract", "layout", "neatjson"],
        :definitions => {
 
-           :apanchor         => {:type => "string",
-                                 :enum => ['manual', 'box', 'center']},
-           :pos              => {:type        => "array",
-                                 :minItems    => 2,
-                                 :uniqueItems => false,
-                                 :items       => {:type => "number"}},
-           :notes_entry      => {:type       => "object",
-                                 :required   => ["pos", "text", "style"],
-                                 :properties =>
-                                     {:pos   => {:'$ref' => '#/definitions/pos'},
-                                      :text  => {:type => "string"},
-                                      :align => {:'$ref' => '#/definitions/align'},
-                                      :style => {:type => "string"}}},
-           :nb_annotation_xx => {:type       => "object",   # todo: remove this?
-                              :required   => ["voices", "pos", "autopos", "style"],
-                              :properties =>
-                                  {:voices   => {:type        => "array",
-                                                 :minItems    => 0,
-                                                 :uniqueItems => true,
-                                                 :items       => {}},
-                                   :pos      => {:'$ref' => '#/definitions/pos'},
-                                   :autopos  => {:type => "boolean"},
-                                   :apanchor => {"$ref" => "#/definitions/apanchor"},
-                                   :style    => {:type => "string"}}},
-           :minc_entry       => {
+           :apanchor                  => {:type => "string",
+                                          :enum => ['manual', 'box', 'center']},
+           :pos                       => {:type        => "array",
+                                          :minItems    => 2,
+                                          :uniqueItems => false,
+                                          :items       => {:type => "number"}},
+           :notes_entry               => {:type       => "object",
+                                          :required   => ["pos", "text", "style"],
+                                          :properties =>
+                                              {:pos   => {:'$ref' => '#/definitions/pos'},
+                                               :text  => {:type => "string"},
+                                               :align => {:'$ref' => '#/definitions/align'},
+                                               :style => {:type => "string"}}},
+           :nb_annotation_xx          => {:type => "object", # todo: remove this?
+                                          :required   => ["voices", "pos", "autopos", "style"],
+                                          :properties =>
+                                              {:voices   => {:type        => "array",
+                                                             :minItems    => 0,
+                                                             :uniqueItems => true,
+                                                             :items       => {}},
+                                               :pos      => {:'$ref' => '#/definitions/pos'},
+                                               :autopos  => {:type => "boolean"},
+                                               :apanchor => {"$ref" => "#/definitions/apanchor"},
+                                               :style    => {:type => "string"}}},
+           :minc_entry                => {
                :type                 => "object",
                :required             => [:minc_f],
                :additionalProperties => false,
                :properties           => {:minc_f => {:type => "number"}}
            },
-           :nconf_entry      => {
+           :nconf_entry               => {
                :type                 => "object",
                :additionalProperties => false,
                :patternProperties    => {
@@ -122,76 +122,76 @@ module Ajv
                    }
                }
            },
-           align:            {:type => 'string',
-                              :enum => ['l', 'r', 'auto']},
-           :notebound_pos => {:type => "object", # todo refactor to notebound_annotation_entry
-                              :additionalProperties => false,
-                              :patternProperties    => {
-                                  "v_\d*" => {:type                 => "object",
-                                              :additionalProperties => false,
-                                              :patternProperties    => {
-                                                  "t_\\d*|\\d*" => {
-                                                      :type                 => "object",
-                                                      :additionalProperties => false,
-                                                      :properties           => {
-                                                          pos:   {:'$ref' => '#/definitions/pos'},
-                                                          align: {:'$ref' => '#/definitions/align'},
-                                                          show:  {:type => 'boolean'},
-                                                          text:  {:type => 'string'},
-                                                          style: {:type => 'string'}
-                                                      },
-                                                      :patternProperties    => {
-                                                          "\\d+" => {
-                                                              :type                 => "object",
-                                                              :additionalProperties => false,
-                                                              :properties           => {
-                                                                  pos:   {:'$ref' => '#/definitions/pos'},
-                                                                  align: {:'$ref' => '#/definitions/align'},
-                                                                  show:  {:type => 'boolean'},
-                                                                  text:  {:type => 'string'},
-                                                                  style: {:type => 'string'}
+           align:                     {:type => 'string',
+                                       :enum => ['l', 'r', 'auto']},
+           :notebound_pos             => {:type => "object", # todo refactor to notebound_annotation_entry
+                                          :additionalProperties => false,
+                                          :patternProperties    => {
+                                              "v_\d*" => {:type                 => "object",
+                                                          :additionalProperties => false,
+                                                          :patternProperties    => {
+                                                              "t_\\d*|\\d*" => {
+                                                                  :type                 => "object",
+                                                                  :additionalProperties => false,
+                                                                  :properties           => {
+                                                                      pos:   {:'$ref' => '#/definitions/pos'},
+                                                                      align: {:'$ref' => '#/definitions/align'},
+                                                                      show:  {:type => 'boolean'},
+                                                                      text:  {:type => 'string'},
+                                                                      style: {:type => 'string'}
+                                                                  },
+                                                                  :patternProperties    => {
+                                                                      "\\d+" => {
+                                                                          :type                 => "object",
+                                                                          :additionalProperties => false,
+                                                                          :properties           => {
+                                                                              pos:   {:'$ref' => '#/definitions/pos'},
+                                                                              align: {:'$ref' => '#/definitions/align'},
+                                                                              show:  {:type => 'boolean'},
+                                                                              text:  {:type => 'string'},
+                                                                              style: {:type => 'string'}
+                                                                          }
+                                                                      }
+                                                                  }
                                                               }
+
                                                           }
-                                                      }
-                                                  }
 
                                               }
-
-                                  }
-                              }
+                                          }
            },
            :notebound_repeat_outdated => {:type                 => "object",
-                                 :additionalProperties => false,
-                                 :patternProperties    => {
-                                     "v_\d*" => {:text  => "integer",
-                                                 :style => {:type => "string"},
-                                                 pos:   {:'$ref' => '#/definitions/pos'}
-                                     }
-                                 }
+                                          :additionalProperties => false,
+                                          :patternProperties    => {
+                                              "v_\d*" => {:text  => "integer",
+                                                          :style => {:type => "string"},
+                                                          pos:   {:'$ref' => '#/definitions/pos'}
+                                              }
+                                          }
            },
-           :annotated_bezier => {:type       => "object",
-                                 :properties =>
-                                     {:cp1   => {:'$ref' => '#/definitions/pos'},
-                                      :cp2   => {:'$ref' => '#/definitions/pos'},
-                                      :pos   => {:'$ref' => '#/definitions/pos'},
-                                      :shape => {:type        => "array",
-                                                 :minItems    => 0,
-                                                 :uniqueItems => true,
-                                                 :items       => {:type => "string"}},
-                                      :show  => {:type => 'boolean'},
-                                      :style => {:type => "string"}
-                                     }
+           :annotated_bezier          => {:type       => "object",
+                                          :properties =>
+                                              {:cp1   => {:'$ref' => '#/definitions/pos'},
+                                               :cp2   => {:'$ref' => '#/definitions/pos'},
+                                               :pos   => {:'$ref' => '#/definitions/pos'},
+                                               :shape => {:type        => "array",
+                                                          :minItems    => 0,
+                                                          :uniqueItems => true,
+                                                          :items       => {:type => "string"}},
+                                               :show  => {:type => 'boolean'},
+                                               :style => {:type => "string"}
+                                              }
            },
-           :extract_layout   => {
+           :extract_layout            => {
                :type                 => "object",
                :requiredx            => ["limit_a3", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "grid"],
                :additionalProperties => false,
                :properties           =>
-                   {:limit_a3        => {:type => "boolean"},
-                    :beams           => {:type => "boolean"},
-                    :bottomup        => {:type => "boolean"},
-                    :jumpline_anchor => {:'$ref' => '#/definitions/pos'},
-                    :jumpline_vcut   => {:type => 'number'},
+                   {:limit_a3          => {:type => "boolean"},
+                    :beams             => {:type => "boolean"},
+                    :bottomup          => {:type => "boolean"},
+                    :jumpline_anchor   => {:'$ref' => '#/definitions/pos'},
+                    :jumpline_vcut     => {:type => 'number'},
                     :LINE_THIN         => {:type => "number"},
                     :LINE_MEDIUM       => {:type => "number"},
                     :LINE_THICK        => {:type => "number"},
@@ -263,17 +263,17 @@ module Ajv
                                                                       :properties =>
                                                                           {:pos   => {:'$ref' => '#/definitions/pos'},
                                                                            :style => {:type => "string"}}},
-                                                      :chord => {:type       => "object",
-                                                                  :required   => ["pos"],
-                                                                  :properties =>
-                                                                      {:pos   => {:'$ref' => '#/definitions/pos'},
-                                                                       :style => {:type => "string"}}},
-                                                      :partname => {:type       => "object",
-                                                                    :required   => ["pos"],
-                                                                    :properties =>
-                                                                        {:pos   => {:'$ref' => '#/definitions/pos'},
-                                                                         :style => {:type => "string"},
-                                                                         :show  => {:type => 'boolean'}}},
+                                                      :chord      => {:type       => "object",
+                                                                      :required   => ["pos"],
+                                                                      :properties =>
+                                                                          {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                           :style => {:type => "string"}}},
+                                                      :partname   => {:type       => "object",
+                                                                      :required   => ["pos"],
+                                                                      :properties =>
+                                                                          {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                           :style => {:type => "string"},
+                                                                           :show  => {:type => 'boolean'}}},
                                                       :variantend => {:type       => "object",
                                                                       :required   => ["pos"],
                                                                       :properties =>
@@ -344,75 +344,77 @@ module Ajv
                                                  "legend", "lyrics", "layout", "nonflowrest", "notes", "barnumbers",
                                                  "countnotes", "chords", "stringnames", "printer"],
                                             :properties           =>
-                                                {:title        => {:type => "string"},
-                                                 :filenamepart => {},
-                                                 :startpos     => {:type => "integer"},
-                                                 :voices       => {:type        => "array",
-                                                                   :minItems    => 1,
-                                                                   :uniqueItems => true,
-                                                                   :items       => {:type => "integer"}},
-                                                 :synchlines   => {:type        => "array",
-                                                                   :minItems    => 0,
-                                                                   :uniqueItems => true,
-                                                                   :items       => {:type        => "array",
-                                                                                    :minItems    => 1,
-                                                                                    :uniqueItems => true,
-                                                                                    :items       => {:type => "integer"}}},
-                                                 :flowlines    => {:type        => "array",
-                                                                   :minItems    => 1,
-                                                                   :uniqueItems => true,
-                                                                   :items       => {:type => "integer"}},
-                                                 :subflowlines => {:type        => "array",
-                                                                   :minItems    => 1,
-                                                                   :uniqueItems => true,
-                                                                   :items       => {:type => "integer"}},
-                                                 :jumplines    => {:type        => "array",
-                                                                   :minItems    => 1,
-                                                                   :uniqueItems => true,
-                                                                   :items       => {:type => "integer"}},
-                                                 :repeatsigns  => {:type       => "object",
-                                                                   :requiredx  => ["voices", "left", "right"],
-                                                                   :properties =>
-                                                                       {:voices => {:type        => "array",
-                                                                                    :minItems    => 0,
-                                                                                    :uniqueItems => true,
-                                                                                    :items       => {}},
-                                                                        :left   => {:type       => "object",
-                                                                                    :required   => ["pos", "text", "style"],
-                                                                                    :properties =>
-                                                                                        {:pos   => {:'$ref' => '#/definitions/pos'},
-                                                                                         :text  => {:type => "string"},
-                                                                                         :style => {:type => "string"}}},
-                                                                        :right  => {:type       => "object",
-                                                                                    :required   => ["pos", "text", "style"],
-                                                                                    :properties =>
-                                                                                        {:pos   => {:'$ref' => '#/definitions/pos'},
-                                                                                         :text  => {:type => "string"},
-                                                                                         :style => {:type => "string"}}}}},
-                                                 :layoutlines  => {:type        => "array",
-                                                                   :minItems    => 0,
-                                                                   :uniqueItems => true,
-                                                                   :items       => {:type => "integer"}},
-                                                 :legend       => {:type       => "object",
-                                                                   :required   => ["spos", "pos"],
-                                                                   :properties =>
-                                                                       {:spos  => {:"$ref" => "#/definitions/pos"},
-                                                                        :pos   => {:"$ref" => "#/definitions/pos"},
-                                                                        :align => {:'$ref' => '#/definitions/align'}, # this targets the header
-                                                                        :style => {:type => "string"} # this targets the legend
-                                                                       }
+                                                {:title            => {:type => "string"},
+                                                 :filenamepart     => {},
+                                                 :startpos         => {:type => "integer"},
+                                                 :voices           => {:type        => "array",
+                                                                       :minItems    => 1,
+                                                                       :uniqueItems => true,
+                                                                       :items       => {:type => "integer"}},
+                                                 :synchlines       => {:type        => "array",
+                                                                       :minItems    => 0,
+                                                                       :uniqueItems => true,
+                                                                       :items       => {:type        => "array",
+                                                                                        :minItems    => 1,
+                                                                                        :uniqueItems => true,
+                                                                                        :items       => {:type => "integer"}}},
+                                                 :flowlines        => {:type        => "array",
+                                                                       :minItems    => 1,
+                                                                       :uniqueItems => true,
+                                                                       :items       => {:type => "integer"}},
+                                                 :subflowlines     => {:type        => "array",
+                                                                       :minItems    => 1,
+                                                                       :uniqueItems => true,
+                                                                       :items       => {:type => "integer"}},
+                                                 :jumplines        => {:type        => "array",
+                                                                       :minItems    => 1,
+                                                                       :uniqueItems => true,
+                                                                       :items       => {:type => "integer"}},
+                                                 :repeatsigns      => {:type       => "object",
+                                                                       :requiredx  => ["voices", "left", "right"],
+                                                                       :properties =>
+                                                                           {:voices => {:type        => "array",
+                                                                                        :minItems    => 0,
+                                                                                        :uniqueItems => true,
+                                                                                        :items       => {}},
+                                                                            :left   => {:type       => "object",
+                                                                                        :required   => ["pos", "text", "style"],
+                                                                                        :properties =>
+                                                                                            {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                                             :text  => {:type => "string"},
+                                                                                             :style => {:type => "string"}}},
+                                                                            :right  => {:type       => "object",
+                                                                                        :required   => ["pos", "text", "style"],
+                                                                                        :properties =>
+                                                                                            {:pos   => {:'$ref' => '#/definitions/pos'},
+                                                                                             :text  => {:type => "string"},
+                                                                                             :style => {:type => "string"}}}}},
+                                                 :layoutlines      => {:type        => "array",
+                                                                       :minItems    => 0,
+                                                                       :uniqueItems => true,
+                                                                       :items       => {:type => "integer"}},
+                                                 :legend           => {:type       => "object",
+                                                                       :required   => ["spos", "pos"],
+                                                                       :properties =>
+                                                                           {:spos   => {:"$ref" => "#/definitions/pos"},
+                                                                            :pos    => {:"$ref" => "#/definitions/pos"},
+                                                                            :tstyle => {:type => "string"}, # this targets the header
+                                                                            :align => {:'$ref' => '#/definitions/align'}, # this targets the header
+                                                                            :style => {:type => "string"}, # this targets the legend
+                                                                            :salign => {:'$ref' => '#/definitions/align'}, # this targets the legend
+                                                                           }
                                                  },
-                                                 :lyrics       => {:type              => "object",
-                                                                   :patternProperties =>
-                                                                       {".*" => {
-                                                                           :type     => "object",
-                                                                           :required => ["verses", "pos"]
-                                                                       }}
+                                                 :lyrics           => {:type              => "object",
+                                                                       :patternProperties =>
+                                                                           {".*" => {
+                                                                               :type     => "object",
+                                                                               :required => ["verses", "pos"]
+                                                                           }}
                                                  },
-                                                 :layout       => {:'$ref' => '#/definitions/extract_layout'},
-                                                 :nonflowrest  => {:type => "boolean"},
-                                                 :notes        => {:patternProperties => {'.*' => {:"$ref" => '#/definitions/notes_entry'}}},
-                                                 :notebound    => {
+                                                 :layout           => {:'$ref' => '#/definitions/extract_layout'},
+                                                 :nonflowrest      => {:type => "boolean"},
+                                                 :notes            => {:patternProperties => {'.*' => {:"$ref" => '#/definitions/notes_entry'}}},
+                                                 :notebound        => {
                                                      :type                 => 'object',
                                                      :additionalProperties => false,
                                                      :properties           => {
@@ -431,10 +433,10 @@ module Ajv
                                                                                }
                                                                            }},
                                                          :countnote    => {:'$ref' => '#/definitions/notebound_pos'},
-                                                         :decoration => {:type              => 'object',
-                                                                         :patternProperties => {
-                                                                             "\d+" => {:'$ref' => '#/definitions/notebound_pos'}
-                                                                         }
+                                                         :decoration   => {:type              => 'object',
+                                                                           :patternProperties => {
+                                                                               "\d+" => {:'$ref' => '#/definitions/notebound_pos'}
+                                                                           }
                                                          },
                                                          :flowline     => {:type              => 'object',
                                                                            :patternProperties => {
@@ -474,91 +476,91 @@ module Ajv
                                                          :variantend   => {:'$ref' => '#/definitions/notebound_pos'},
                                                      }
                                                  },
-                                                 :tuplets      => {:type       => "object",
-                                                                   :properties =>
-                                                                       {:text => {:type => "string"}}
+                                                 :tuplets          => {:type       => "object",
+                                                                       :properties =>
+                                                                           {:text => {:type => "string"}}
                                                  },
-                                                 :barnumbers   => {:type       => "object",
-                                                                   :required   => ["voices", "pos", "autopos", "style", "prefix"],
-                                                                   :properties =>
-                                                                       {:voices   => {:type        => "array",
-                                                                                      :minItems    => 0,
-                                                                                      :uniqueItems => true,
-                                                                                      :items       => {}},
-                                                                        :pos      => {:'$ref' => '#/definitions/pos'},
-                                                                        :autopos  => {:type => "boolean"},
-                                                                        :apanchor => {"$ref" => "#/definitions/apanchor"}, :style => {:type => "string"},
-                                                                        :prefix   => {:type => "string"}}},
-                                                 :countnotes => {:type        => "object",
-                                                                 :required    => ["voices", "pos", "autopos", "style"],
-                                                                 :properties  =>
-                                                                     {:voices   => {:type        => "array",
-                                                                                    :minItems    => 0,
-                                                                                    :uniqueItems => true,
-                                                                                    :items       => {}},
-                                                                      :pos      => {:'$ref' => '#/definitions/pos'},
-                                                                      :autopos  => {:type => "boolean"},
-                                                                      :apanchor => {"$ref" => "#/definitions/apanchor"},
-                                                                      :style    => {:type => "string"}},
-                                                                 :cntextleft  => {:type => "string"},
-                                                                 :cntextright => {:type => "string"}
+                                                 :barnumbers       => {:type       => "object",
+                                                                       :required   => ["voices", "pos", "autopos", "style", "prefix"],
+                                                                       :properties =>
+                                                                           {:voices   => {:type        => "array",
+                                                                                          :minItems    => 0,
+                                                                                          :uniqueItems => true,
+                                                                                          :items       => {}},
+                                                                            :pos      => {:'$ref' => '#/definitions/pos'},
+                                                                            :autopos  => {:type => "boolean"},
+                                                                            :apanchor => {"$ref" => "#/definitions/apanchor"}, :style => {:type => "string"},
+                                                                            :prefix   => {:type => "string"}}},
+                                                 :countnotes       => {:type        => "object",
+                                                                       :required    => ["voices", "pos", "autopos", "style"],
+                                                                       :properties  =>
+                                                                           {:voices   => {:type        => "array",
+                                                                                          :minItems    => 0,
+                                                                                          :uniqueItems => true,
+                                                                                          :items       => {}},
+                                                                            :pos      => {:'$ref' => '#/definitions/pos'},
+                                                                            :autopos  => {:type => "boolean"},
+                                                                            :apanchor => {"$ref" => "#/definitions/apanchor"},
+                                                                            :style    => {:type => "string"}},
+                                                                       :cntextleft  => {:type => "string"},
+                                                                       :cntextright => {:type => "string"}
                                                  },
-                                                 :chords     => {:ref   => "#/definitions/nb_annotations",
-                                                                 :style => {:type => "string"}
+                                                 :chords           => {:ref   => "#/definitions/nb_annotations",
+                                                                       :style => {:type => "string"}
                                                  },
-                                                 :stringnames  => {:type       => "object",
-                                                                   :required   => ["text", "vpos", "style", "marks"],
-                                                                   :properties =>
-                                                                       {:text  => {:type => "string"},
-                                                                        :vpos  => {:type        => "array",
-                                                                                   :minItems    => 0, # support empty array for no stringnames
-                                                                                   :uniqueItems => true,
-                                                                                   :items       => {:type => "integer"}},
-                                                                        :style => {:type => "string"},
-                                                                        :marks => {:type       => "object",
-                                                                                   :required   => ["vpos", "hpos"],
-                                                                                   :properties =>
-                                                                                       {:vpos => {:type        => "array",
-                                                                                                  :minItems    => 0, # support empty array for no stringmarks
-                                                                                                  :uniqueItems => true,
-                                                                                                  :items       => {:type => "integer"}},
-                                                                                        :hpos => {:type        => "array",
-                                                                                                  :minItems    => 0,    # support empty array for no stringmarks
-                                                                                                  :uniqueItems => true,
-                                                                                                  :items       => {:type => "integer"}}}}}},
+                                                 :stringnames      => {:type       => "object",
+                                                                       :required   => ["text", "vpos", "style", "marks"],
+                                                                       :properties =>
+                                                                           {:text  => {:type => "string"},
+                                                                            :vpos  => {:type     => "array",
+                                                                                       :minItems => 0, # support empty array for no stringnames
+                                                                                       :uniqueItems => true,
+                                                                                       :items       => {:type => "integer"}},
+                                                                            :style => {:type => "string"},
+                                                                            :marks => {:type       => "object",
+                                                                                       :required   => ["vpos", "hpos"],
+                                                                                       :properties =>
+                                                                                           {:vpos => {:type     => "array",
+                                                                                                      :minItems => 0, # support empty array for no stringmarks
+                                                                                                      :uniqueItems => true,
+                                                                                                      :items       => {:type => "integer"}},
+                                                                                            :hpos => {:type     => "array",
+                                                                                                      :minItems => 0, # support empty array for no stringmarks
+                                                                                                      :uniqueItems => true,
+                                                                                                      :items       => {:type => "integer"}}}}}},
                                                  :instrument_shape => {:type => "string"},
-                                                 :sortmark     => {:type       => 'object',
-                                                                   :properties => {
-                                                                       :show => {:type => 'boolean'}
-                                                                   }
-                                                 },
-                                                 :printer      => {:type       => "object",
-                                                                   :required   => ["a3_offset", "a4_offset", "show_border"],
-                                                                   :properties =>
-                                                                       {:a3_offset   => {:type        => "array",
-                                                                                         :minItems    => 2,
-                                                                                         :axItems     => 2,
-                                                                                         :uniqueItems => false,
-                                                                                         :items       => {:type => "integer"}},
-                                                                        :a4_offset   => {:type        => "array",
-                                                                                         :minItems    => 2,
-                                                                                         :uniqueItems => false,
-                                                                                         :items       => {:type => "integer"}},
-                                                                        :show_border => {:type => "boolean"}
+                                                 :sortmark         => {:type       => 'object',
+                                                                       :properties => {
+                                                                           :show => {:type => 'boolean'}
                                                                        }
                                                  },
-                                                 :images       => {:type              => "object",
-                                                                   :patternProperties => {
-                                                                       :"\d*" => {
-                                                                           :type       => "object",
-                                                                           :properties => {
-                                                                               :imagename => {:type => "string"},
-                                                                               :show      => {:type => "boolean"},
-                                                                               :pos       => {:'$ref' => '#/definitions/pos'},
-                                                                               :height    => {:type => "number"}
+                                                 :printer          => {:type       => "object",
+                                                                       :required   => ["a3_offset", "a4_offset", "show_border"],
+                                                                       :properties =>
+                                                                           {:a3_offset   => {:type        => "array",
+                                                                                             :minItems    => 2,
+                                                                                             :axItems     => 2,
+                                                                                             :uniqueItems => false,
+                                                                                             :items       => {:type => "integer"}},
+                                                                            :a4_offset   => {:type        => "array",
+                                                                                             :minItems    => 2,
+                                                                                             :uniqueItems => false,
+                                                                                             :items       => {:type => "integer"}},
+                                                                            :show_border => {:type => "boolean"}
+                                                                           }
+                                                 },
+                                                 :images           => {:type              => "object",
+                                                                       :patternProperties => {
+                                                                           :"\d*" => {
+                                                                               :type       => "object",
+                                                                               :properties => {
+                                                                                   :imagename => {:type => "string"},
+                                                                                   :show      => {:type => "boolean"},
+                                                                                   :pos       => {:'$ref' => '#/definitions/pos'},
+                                                                                   :height    => {:type => "number"}
+                                                                               }
                                                                            }
                                                                        }
-                                                                   }
                                                  }
                                                 }
                                 },

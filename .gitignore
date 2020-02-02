@@ -53,3 +53,4 @@ launch.json
 30_sources/SRC_Zupfnoter/sf2_sources/*/*
 30_sources/SRC_Zupfnoter/src/.sass-cache
 .idea
+*.iml
