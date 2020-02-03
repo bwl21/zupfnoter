@@ -1,4 +1,4 @@
-# upcoming
+# 1.4 Feburar 2020
 
 ## fix
 
@@ -8,7 +8,7 @@
 * sharp chord symbols like F# now work in transposed pieces #295
 * now we can control the style of title #294
 
-
+# 1.3 December 2019
 
 ## enhancement
 
