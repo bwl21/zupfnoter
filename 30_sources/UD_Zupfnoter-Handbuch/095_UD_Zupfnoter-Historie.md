@@ -4,8 +4,6 @@
 
 ## V 1.14 Februar 202
 
-
-
 ## V 1.13 Dezember 2019
 
 ### fix

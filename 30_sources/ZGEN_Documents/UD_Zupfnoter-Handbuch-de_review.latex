@@ -203,7 +203,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.13-7-g9cb82600
+Version V\_1.14
 
 \begin{verbatim}
 © 2020 https://www.zupfnoter.de
@@ -7822,6 +7822,9 @@ erh\"{o}hen.
 
 \hypertarget{aux308nderungsgeschichte}{%
 \section{\"{A}nderungsgeschichte}\label{aux308nderungsgeschichte}}
+
+\hypertarget{v-1.14-februar-202}{%
+\subsection{V 1.14 Februar 202}\label{v-1.14-februar-202}}
 
 \hypertarget{v-1.13-dezember-2019}{%
 \subsection{V 1.13 Dezember 2019}\label{v-1.13-dezember-2019}}
