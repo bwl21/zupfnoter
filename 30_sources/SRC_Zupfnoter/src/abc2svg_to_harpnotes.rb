@@ -483,8 +483,8 @@ module Harpnotes
 
             match = name.match(/^([^!#\<\>]+)([^\@]+)?(\@(\-?[0-9\.]+),(\-?[0-9\.]+))?$/)
             if match
-              text = match[1]
-              text = text.gsub("♯", "#").gsub("♭", "b") # todo: fix this if we have unicode support #295
+              text     = match[1]
+              text     = text.gsub("♯", "#").gsub("♭", "b") # todo: fix this if we have unicode support #295
               position = $conf['defaults.notebound.chord.pos']
               conf_key = "notebound.chord.#{voice_id}.#{entity.znid}.#{index}"
               result << Harpnotes::Music::Chordsymbol.new(entity, {style: 'large', pos: position, text: text}, conf_key)
@@ -512,29 +512,32 @@ module Harpnotes
           count_start = 4 * (voice_element[:time] - @measure_start_time) / count_base # literal 4: divide one beat by 4: 1eue
           count_end   = count_start + 4 * voice_element[:dur] / count_base
 
-          if (count_start % 1 == 0) and (count_end % 1) == 0
+          replacemap = [
+              [/^<\d+>.*eue$/, "eue"],
+              [/^<\d+>.*e$/, "e"],
+              [/^u.*$/, "e"]
+          ]
+
+          if (count_start % 1 == 0) and (count_end % 1 == 0)
             count_range = (count_start ... count_end).to_a.map { |i| @countnames[i] }.join
-          else
-            if (count_start % 1) == 0 # start of tuplet
-              count_range = (count_start ... count_end.ceil).to_a.map { |i| @countnames[i] }.join('')
-            else
-              count_range = '' #(count_start % 1).to_s[1..2] # we are out of sync, don't know what to do.
-            end
+
+            count_range = count_range.gsub(/(\d+)/, '<\1>') # isolate number tokens if count is above 10
+
+            # select replacemens
+            replace_char = replacemap.select { |u| count_range.match(u.first) }.first
+            # replace too fine grained count ticks
+            count_range  = count_range.gsub(replace_char.last, "") if replace_char
+            # add separators
+            count_range  = count_range.scan(/<\d+>|[eu]/).join("-")
+            # repmove number token isolators
+            count_range  = count_range.gsub(/[<>]/, '')
+          else # in a tuplet
+            count_range = count_start % 1 == 0 ? 'tra' : 'la'
           end
 
-          # clenaup count_range
 
-          notes  = count_range.split(/[eui\?]+/)
-          fracts = count_range.split(/[0-9]+/)
-          fracts = [''] if fracts.empty? # https://github.com/bwl21/zupfnoter/issues/84
-
-          # now cleanup contnotes
-          # todo:can we use regular expressions for this
-          fracts.each_with_index { |v, i| fracts[i] = nil if i >= 1 }
-          count_range = fracts.zip(notes).flatten.compact.join(" ").strip.split.join("-")
-          count_range = count_range.gsub('ue', 'u')
-          count_range
         end
+        count_range
       end
 
       def _convert_duration(raw_duration)
@@ -693,7 +696,7 @@ module Harpnotes
       def _transform_lyrics(voice_element)
         if voice_element[:a_ly]
           result = voice_element[:a_ly].first
-          result = result[:t] &.gsub("\n", "-").gsub("_", "") if result
+          result = result[:t]&.gsub("\n", "-").gsub("_", "") if result
         else
           result = ""
         end
