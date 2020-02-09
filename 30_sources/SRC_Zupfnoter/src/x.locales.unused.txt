@@ -91,3 +91,12 @@ xxspecify layout details
 (e.g. size of symbols)
 zoom harpnote preview
 _ende_der_liste
+'}', ')' or ']' missing in %%staves
+%%select ignored
+%%voice ignored
+Bad voice ID in %%staves
+Cannot have %%fullsvg inside a tune
+Lack of ending $1 in U:/%%user
+Lack of starting ! or " in U: / %%user
+Misplaced '$1' in %%staves
+Not a note in grace note sequence
