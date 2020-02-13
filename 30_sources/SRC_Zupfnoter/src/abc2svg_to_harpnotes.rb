@@ -20,6 +20,8 @@ module Harpnotes
         @part_table        = {}
         @abc_model         = {}
 
+        @supported_decorations = $conf["layout.DECORATIIONS_AS_ANNOTATIONS"].keys + [:fermata, :emphasis]
+
         @_shortest_note = $conf.get('layout.SHORTEST_NOTE')
         _reset_state
       end
@@ -378,9 +380,6 @@ module Harpnotes
 
         # transform the individual notes
         duration = _convert_duration(voice_element[:notes].first[:dur])
-        if voice_element[:istart] == 1745
-          `debugger`
-        end
         notes = voice_element[:notes].map do |the_note|
           #duration = _convert_duration(the_note[:dur])
 
@@ -979,8 +978,7 @@ module Harpnotes
         result = a_dd.map do |dd|
           result = dd[:name].to_sym
         end
-
-        result.flatten.select { |i| [:fermata, :emphasis].include? i }
+        result.flatten .select { |i| @supported_decorations.include? i }
         #[:fermata]
       end
 

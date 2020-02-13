@@ -30,11 +30,97 @@ Diese Beschriftungsvorlagen kannst du über "Zusatz einfügen" mit einer
 Note verbinden (Notenbeschriftung).
 
         "annotations": {
-          "vl" : {"pos": [-5, -5], "text": "v"},
-          "vr" : {"pos": [2, -5], "text": "v"},
-          "vt" : {"pos": [-1, -5], "text": "v"}
+          "rit" : {"pos": [2, -5], "style": "italic", "text": "rit"},
+          "vb"  : {"pos": [-1, 2], "text": "v"},
+          "vl"  : {"pos": [-5, -5], "text": "v"},
+          "vr"  : {"pos": [2, -5], "text": "v"},
+          "vt"  : {"pos": [-1, -5], "text": "v"}
         }
           
+
+## `annotations.rit` - {#annotations.rit}
+
+TODO: Helptext für annotations.rit einfügen
+
+        "rit": {"pos": [2, -5], "style": "italic", "text": "rit"}
+          
+
+## `annotations.rit.pos` - Position {#annotations.rit.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [2, -5]
+          
+
+## `annotations.rit.style` - Stil {#annotations.rit.style}
+
+Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl
+aus vordefinierten Stilen.
+
+        "style": "italic"
+          
+
+## `annotations.rit.text` - Text {#annotations.rit.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
+
+        "text": "rit"
+
+## `annotations.vb` - {#annotations.vb}
+
+TODO: Helptext für annotations.vb einfügen
+
+        "vb": {"pos": [-1, 2], "text": "v"}
+          
+
+## `annotations.vb.pos` - Position {#annotations.vb.pos}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+        "pos": [-1, 2]
+          
+
+## `annotations.vb.text` - Text {#annotations.vb.text}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+-   `{{composer}}`: Komponist aus `C:` Zeilen
+-   `{{current_year}}`: das aktuelle Jahr
+-   `{{key}}`: Tonart aus `K:` Zeile
+-   `{{meter}}`: Taktart aus `M:` Zeile
+-   `{{number}}`: Nummer aus `X:` Zeile
+-   `{{o_key}}`: Originaltonart
+-   `{{tempo}}`: Tempo aus `Q:`Zeile
+-   `{{title}}`: Titel aus `T:` Zeilen
+-   `{{extract_title}}`: titel des auszgs aus "extract.\*.title",
+-   `{{extract_filename}}`: Filenamenszusatz aus
+    "extract.\*.filenamepart"},
+-   `{{printed_extracts}}`: erstellte Auszüge aus "produce". Es werden
+    die entsprechneden Filenamenzusätze ausgegeben.
+-   `{{watermark}}`: Wasserzeichen (mit
+    `setsettings wartermark "wasserzeichen"` eingestellt)
+
+        "text": "v"
 
 ## `annotations.vl` - 'V' links {#annotations.vl}
 

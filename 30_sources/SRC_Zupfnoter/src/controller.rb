@@ -132,6 +132,10 @@ class Controller
       end
     end
 
+    $conf        = Confstack.new(nil)
+    $conf.strict = false
+    $conf.push(_init_conf)
+
     @zupfnoter_ui = `new init_w2ui(#{self});`
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
@@ -155,9 +159,7 @@ class Controller
     $log.info ("Language: #{zupfnoter_language}");
     check_suppoerted_browser
 
-    $conf        = Confstack.new(nil)
-    $conf.strict = false
-    $conf.push(_init_conf)
+
 
 
     # this keeps  a hash of resources
@@ -304,6 +306,47 @@ class Controller
 # to be used e.g. in the editor toolbar as well.
   def get_config_form_menu_entries
     ConfstackEditor.get_config_form_menu_entries
+  end
+
+# This provides the decoration menue entries
+# they are defined in ConfstackEditor and can be retrieved
+# to be used e.g. in the editor toolbar as well.
+  def get_decoration_menu_entries
+
+    result = [
+        {   # emphasis is a glyph and therefore not in DECORATIONS_AS_ANNOTATIONS
+            id:      "!fermata!",
+            text:    "Fermata ",
+            icon:    'fa fa-bars',
+            tooltip: "insert decoration: " + %Q{Fermata: 'H'}
+        },
+        {
+            id:      "!emphasis!",
+            text:    "Emphasis ",
+            icon:    'fa fa-bars',
+            tooltip: "insert decoration: " + %Q{Emphasis: 'L'}
+        },
+        {
+            id:      %Q{"^#rit"},
+            text:    "rit",
+            icon:    'fa fa-bars',
+            tooltip: "insert Ritardando"
+        },
+        {
+            id:      %Q{"^#vb"},
+            text:    "Damper",
+            icon:    'fa fa-bars',
+            tooltip: "insert Damper below note"
+        },
+    ]
+
+    result += $conf['layout.DECORATIIONS_AS_ANNOTATIONS'].map do |name, decoration|
+      {
+          id:      %Q{!#{name}!},
+          text:    %Q{!#{name}!: comes as '#{decoration[:text]}'},
+          icon:    'fa fa-bars',
+      }
+    end
   end
 
 # this handles a command

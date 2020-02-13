@@ -19,8 +19,8 @@ class SnippetEditor
          'goto'          => Goto,
          'annotation'    => Annotation,
          'annotationref' => AnnotationRef,
-         'beforeBar'     => Goto,
-         'beforeNote'    => BeforeNote,
+         'beforeBar'     => Goto,          # used in edit_snippet
+         'beforeNote'    => BeforeNote,    # used for edit_snippert
          'shifter'       => Shifter
       }
 

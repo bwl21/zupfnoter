@@ -1,3 +1,9 @@
+# upcoming
+
+## enhancement
+
+* support decorations #30
+
 # 1.4 Feburar 2020
 
 ## fix

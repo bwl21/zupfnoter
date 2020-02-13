@@ -203,7 +203,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.14
+Version V\_1.14-2-g208ca652
 
 \begin{verbatim}
 © 2020 https://www.zupfnoter.de
@@ -1755,8 +1755,9 @@ gegeben:
 
   \begin{quote}
   \textbf{Hinweis}: Zupfnoter kennt standardm\"{a}\ss ig die
-  Noptenbeschriftungsvorlagen \texttt{vl} \texttt{vt}, \texttt{vr}.
-  Damoit kann man einfach ein ``Abd\"{a}mpfungszeichen'' anbringen.
+  Notenbeschriftungsvorlagen \texttt{vl} \texttt{vt}, \texttt{vr},
+  \texttt{vb}, `rit'. Damit kann man einfach ein
+  ``Abd\"{a}mpfungszeichen'' bzw. ein ``Ritardando'' anbringen.
   \footnote{Leider gibt es keine entsprechende Dekoration im
     ABC-Standard}.
   \end{quote}
@@ -1767,7 +1768,7 @@ gegeben:
 
   \begin{quote}
   \textbf{Hinweis} Wenn man die Notenbeschriftung mit der Maus
-  verschiebt, wirkt nur noch diese Verschiebung ud die Angabe im Zusatz
+  verschiebt, wirkt nur noch diese Verschiebung und die Angabe im Zusatz
   wird ignoriert. Diese Verschiebung wird in der Konfiguration
   gespeichert und ist an die die Startzeit der Note gebunden, solange
   keine Verschiebemarke \index{Verschiebemarke} in der ABC-Notation
@@ -3063,7 +3064,7 @@ F\"{u}r die Bedienung der Masken ist noch wichtig
 \item
   Schaltfl\"{a}che \texttt{Schnelleinst.}: Diese Taste
   (Schnelleinstellungen) \"{o}ffnet ein Men\"{u}, aus dem du f\"{u}r die
-  aktuelle Maske eine Voreinstellung ausw\"{a}hlen kannst. Eine solche
+  aktuelle Maske eine e Voreinstellung ausw\"{a}hlen kannst. Eine solche
   Voreinstellung ist eine sinnvolle Kombination von Parametern f\"{u}r
   einen bestimmten Fall (z.B. f\"{u}r ein ``kompaktes Layout''). Diese
   Schaltfl\"{a}che ist nur f\"{u}r solche Masken aktiv, f\"{u}r die es
@@ -3074,6 +3075,24 @@ F\"{u}r die Bedienung der Masken ist noch wichtig
   \texttt{Rendern} nicht vergessen (\textbf{In der Maske dr\"{u}cke erst
   TAB, dann geht auch das ``Rendern'' ab})
 \end{itemize}
+
+\hypertarget{dekorationen}{%
+\subsubsection{Dekorationen}\label{dekorationen}}
+
+Zupfnoter verarbeitet eine Reihe von Dekorationen (Fermate, ritardando
+usw.). Diese werden im ABC-Text vor die Noten eingef\"{u}gt, und sind
+dort in Ausrufezeichen eingefasst. Daf\"{u}r gibt es im Editor ein
+eigenes Men\"{u}.
+
+Allerdings wird im Unterlegnotenblatt f\"{u}r dieses optimiert und
+weicht daher von der Standard-Notendarstellung ab.
+
+\begin{quote}
+\textbf{Hinweis}: F\"{u}r Ritardando und Abd\"{a}mpfung gibt es im ABC
+leider keine standardisiert dekoratiion. Daher wird diese als
+notenbezogene Anmerkung eingef\"{u}gt, erscheinen im ABC text also in
+Anf\"{u}hrungszeichen.
+\end{quote}
 
 \hypertarget{masken-fuer-zusaetze}{%
 \subsubsection{Masken f\"{u}r Zupfnoter-spezifische
@@ -4655,12 +4674,158 @@ mit einer Note verbinden (Notenbeschriftung).
 
 \begin{verbatim}
     "annotations": {
-      "vl" : {"pos": [-5, -5], "text": "v"},
-      "vr" : {"pos": [2, -5], "text": "v"},
-      "vt" : {"pos": [-1, -5], "text": "v"}
+      "rit" : {"pos": [2, -5], "style": "italic", "text": "rit"},
+      "vb"  : {"pos": [-1, 2], "text": "v"},
+      "vl"  : {"pos": [-5, -5], "text": "v"},
+      "vr"  : {"pos": [2, -5], "text": "v"},
+      "vt"  : {"pos": [-1, -5], "text": "v"}
     }
       
 \end{verbatim}
+
+\hypertarget{annotations.rit}{%
+\subsection{\texorpdfstring{\texttt{annotations.rit}
+-}{annotations.rit -}}\label{annotations.rit}}
+
+TODO:\marginpar{TODO} Helptext f\"{u}r annotations.rit einf\"{u}gen
+
+\begin{verbatim}
+    "rit": {"pos": [2, -5], "style": "italic", "text": "rit"}
+      
+\end{verbatim}
+
+\hypertarget{annotations.rit.pos}{%
+\subsection{\texorpdfstring{\texttt{annotations.rit.pos} -
+Position}{annotations.rit.pos - Position}}\label{annotations.rit.pos}}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+\begin{verbatim}
+    "pos": [2, -5]
+      
+\end{verbatim}
+
+\hypertarget{annotations.rit.style}{%
+\subsection{\texorpdfstring{\texttt{annotations.rit.style} -
+Stil}{annotations.rit.style - Stil}}\label{annotations.rit.style}}
+
+Hier kannst du den Stil f\"{u}r den Text einstellen. Du hast eine
+Auswahl aus vordefinierten Stilen.
+
+\begin{verbatim}
+    "style": "italic"
+      
+\end{verbatim}
+
+\hypertarget{annotations.rit.text}{%
+\subsection{\texorpdfstring{\texttt{annotations.rit.text} -
+Text}{annotations.rit.text - Text}}\label{annotations.rit.text}}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
+  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
+  ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
+
+\begin{verbatim}
+"text": "rit"
+\end{verbatim}
+\end{itemize}
+
+\hypertarget{annotations.vb}{%
+\subsection{\texorpdfstring{\texttt{annotations.vb}
+-}{annotations.vb -}}\label{annotations.vb}}
+
+TODO:\marginpar{TODO} Helptext f\"{u}r annotations.vb einf\"{u}gen
+
+\begin{verbatim}
+    "vb": {"pos": [-1, 2], "text": "v"}
+      
+\end{verbatim}
+
+\hypertarget{annotations.vb.pos}{%
+\subsection{\texorpdfstring{\texttt{annotations.vb.pos} -
+Position}{annotations.vb.pos - Position}}\label{annotations.vb.pos}}
+
+Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte
+Liste von horizontaler / vertikaler Position.
+
+\begin{verbatim}
+    "pos": [-1, 2]
+      
+\end{verbatim}
+
+\hypertarget{annotations.vb.text}{%
+\subsection{\texorpdfstring{\texttt{annotations.vb.text} -
+Text}{annotations.vb.text - Text}}\label{annotations.vb.text}}
+
+Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann
+auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
+
+\begin{itemize}
+\item
+  \texttt{\{\{composer\}\}}: Komponist aus \texttt{C:} Zeilen
+\item
+  \texttt{\{\{current\_year\}\}}: das aktuelle Jahr
+\item
+  \texttt{\{\{key\}\}}: Tonart aus \texttt{K:} Zeile
+\item
+  \texttt{\{\{meter\}\}}: Taktart aus \texttt{M:} Zeile
+\item
+  \texttt{\{\{number\}\}}: Nummer aus \texttt{X:} Zeile
+\item
+  \texttt{\{\{o\_key\}\}}: Originaltonart
+\item
+  \texttt{\{\{tempo\}\}}: Tempo aus \texttt{Q:}Zeile
+\item
+  \texttt{\{\{title\}\}}: Titel aus \texttt{T:} Zeilen
+\item
+  \texttt{\{\{extract\_title\}\}}: titel des auszgs aus
+  ``extract.*.title'',
+\item
+  \texttt{\{\{extract\_filename\}\}}: Filenamenszusatz aus
+  ``extract.*.filenamepart''\},
+\item
+  \texttt{\{\{printed\_extracts\}\}}: erstellte Ausz\"{u}ge aus
+  ``produce''. Es werden die entsprechneden Filenamenzus\"{a}tze
+  ausgegeben.
+\item
+  \texttt{\{\{watermark\}\}}: Wasserzeichen (mit
+  \texttt{setsettings\ wartermark\ "wasserzeichen"} eingestellt)
+
+\begin{verbatim}
+"text": "v"
+\end{verbatim}
+\end{itemize}
 
 \hypertarget{annotations.vl}{%
 \subsection{\texorpdfstring{\texttt{annotations.vl} - `V'

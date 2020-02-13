@@ -750,7 +750,8 @@ class Controller
         # todo: implement a more flexible replacement that simplifies prefixing
         regexp_form_sets = {
             /^extract\.(\d+)\.notebound\.tuplet\.v_(\d+)\.(\w+)$/                   => {keys: ["show", "pos", "shape", "cp1", "cp2"]},
-            /^extract\.(\d+)\.notebound\.(chord|annotation|partname|)\.v_(\d+)\.(\d+).(\d+)$/   => {keys: ["show", "pos", "style"]},
+            /^extract\.(\d+)\.notebound\.(chord|annotation|partname|decoration|)\.v_(\d+)\.(\d+).(\d+)$/   => {keys: ["show", "pos", "style"]},
+            /^extract\.(\d+)\.notebound\.(decoration|)\.v_(\d+)\.t_(\d+).(\d+)$/   => {keys: ["show", "pos", "style"]},
             /^extract\.(\d+)\.notebound\.(barnumber|countnote|)\.v_(\d+)\.t_(\d+)$/ => {keys: ["pos", "align"]},
             /^extract\.(\d+)\.notebound\.minc\.(\d+)$/                              => {keys: ["minc_f"]},
             /^extract\.(\d+)\.notebound\.flowline\.v_(\d+)\.(\d+)$/                 => {keys: ["cp1", "cp2"]},
@@ -911,6 +912,24 @@ class Controller
         SnippetEditor.new.setup("zupfnoter.editable.#{args[:token]}", nil) do |value|
           @editor.patch_token(sel[:token][:type], 0, value)
         end
+        nil
+      end
+    end
+
+    @commands.add_command(:adddecoration) do |command|
+      command.undoable = false
+      command.set_help { "add a decoration" }
+
+      command.add_parameter(:token, :string) do |parameter|
+        parameter.set_help { "parameter key" }
+      end
+
+      command.as_action do |args|
+        text = args[:token]
+
+        text = %Q{"#{text}"} if text.start_with?("^")   # this is to handle "^" as decorations
+        sel = @editor.get_selection_info
+         @editor.patch_token(sel[:token][:type], 0, %Q{ #{text} })
         nil
       end
     end

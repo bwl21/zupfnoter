@@ -53,7 +53,7 @@ module InitConf
          # such that there is no explicit default in the configuration
          defaults: {
              notebound: {annotation: {pos: [5, -7]},
-                         chord:      {pos: [0,0]},
+                         chord:      {pos: [0, 0]},
                          partname:   {pos: [-4, -7]},
                          variantend: {pos: [-4, -7]},
                          tuplet:     {
@@ -78,7 +78,7 @@ module InitConf
              images:      {imagename: "", show: true, pos: [10, 10], height: 100, },
              tuplet:      {cp1: [5, 2], cp2: [5, -2], shape: ['c'], show: true},
              annotations: {text: "_vorlage_", pos: [-5, -6]}, # Notenbeschriftungsvorlage
-             extracts:    {title: "", filenamepart: "-", notes:{T01_number_extract:{text: "{{extract_filename}}"}}}
+             extracts: {title: "", filenamepart: "-", notes: {T01_number_extract: {text: "{{extract_filename}}"}}}
          },
 
          # this is used to populate a QuickSettings menu
@@ -88,20 +88,20 @@ module InitConf
          # commands.add_command(:addconf) do |command|
          presets: {
              barnumbers_countnotes: {
-                 'anchor_at_box'    => {
+                 'anchor_at_box'          => {
                      barnumbers: {apanchor: "box",
                                   apbase:   [1, 1]},
                      countnotes: {apanchor: "box",
                                   apbase:   [1, -0.5]}
                  },
-                 "anchor_at_center" => {
+                 "anchor_at_center"       => {
                      barnumbers: {apanchor: "center",
                                   apbase:   [1, 0.3]},
                      countnotes: {apanchor: "center",
                                   apbase:   [1, 0]}
                  },
                  "countnotes_with_lyrics" => {
-                     countnotes: {cntextleft: "{lyrics} {countnote}",
+                     countnotes: {cntextleft:  "{lyrics} {countnote}",
                                   cntextright: "{countnote} {lyrics}"},
                  }
              },
@@ -176,164 +176,164 @@ module InitConf
 
              instrument: {
                  '37-strings-g-g'      => {
-                     layout:      {instrument:   '37-strings-g-g',
-                                   limit_a3:     true,
-                                   beams:        false,
-                                   bottomup:     false,
-                                   PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
-                                   X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
-                                   X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
+                     layout:           {instrument:   '37-strings-g-g',
+                                        limit_a3:     true,
+                                        beams:        false,
+                                        bottomup:     false,
+                                        PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
+                                        X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
+                                        X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
                      },
-                     stringnames: {text:  lambda { $conf['extract.0.stringnames.text'] },
-                                   marks: {hpos: [43, 79]}
+                     stringnames:      {text:  lambda { $conf['extract.0.stringnames.text'] },
+                                        marks: {hpos: [43, 79]}
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [0, 1, 2],
-                                   a4_offset: lambda { $conf['extract.0.printer.a4_offset'] },
-                                   a3_offset: lambda { $conf['extract.0.printer.a3_offset'] }
+                     printer:          {a4_pages:  [0, 1, 2],
+                                        a4_offset: lambda { $conf['extract.0.printer.a4_offset'] },
+                                        a3_offset: lambda { $conf['extract.0.printer.a3_offset'] }
                      }
                  },
                  '25-strings-g-g'      => {
-                     layout:      {instrument:   '25-strings-g-g',
-                                   limit_a3:     false,
-                                   beams:        false,
-                                   bottomup:     false,
-                                   PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
-                                   X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
-                                   X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
+                     layout:           {instrument:   '25-strings-g-g',
+                                        limit_a3:     false,
+                                        beams:        false,
+                                        bottomup:     false,
+                                        PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
+                                        X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
+                                        X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
                      },
-                     stringnames: {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 12, 36) },
-                                   marks: {hpos: [55, 79]
-                                   }
+                     stringnames:      {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 12, 36) },
+                                        marks: {hpos: [55, 79]
+                                        }
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [1, 2],
-                                   a3_offset: [-5, 0],
-                                   a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
+                     printer:          {a4_pages:  [1, 2],
+                                        a3_offset: [-5, 0],
+                                        a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
                  },
                  '25-strings-G-g Bass' => {
-                     layout:      {instrument:   '25-strings-g-g',
-                                   limit_a3:     false,
-                                   beams:        false,
-                                   bottomup:     false,
-                                   PITCH_OFFSET: lambda { -31 },
-                                   X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
-                                   X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
+                     layout:           {instrument:   '25-strings-g-g',
+                                        limit_a3:     false,
+                                        beams:        false,
+                                        bottomup:     false,
+                                        PITCH_OFFSET: lambda { -31 },
+                                        X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
+                                        X_OFFSET:     lambda { $conf['extract.0.layout.X_OFFSET'] } # just to be safe
                      },
-                     stringnames: {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 12, 36) },
-                                   marks: {hpos: [43, 67]
-                                   }
+                     stringnames:      {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 12, 36) },
+                                        marks: {hpos: [43, 67]
+                                        }
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [1, 2],
-                                   a3_offset: [-5, 0],
-                                   a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
+                     printer:          {a4_pages:  [1, 2],
+                                        a3_offset: [-5, 0],
+                                        a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
                  },
                  '21-strings-a-f'      => {
-                     layout:      {instrument:   '21-strings-a-f',
-                                   limit_a3:     false,
-                                   beams:        false,
-                                   bottomup:     false,
-                                   PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
-                                   X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
-                                   X_OFFSET:     23
+                     layout:           {instrument:   '21-strings-a-f',
+                                        limit_a3:     false,
+                                        beams:        false,
+                                        bottomup:     false,
+                                        PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
+                                        X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
+                                        X_OFFSET:     23
                      },
-                     stringnames: {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 14, 34) },
-                                   marks: {hpos: [57, 77]
-                                   }
+                     stringnames:      {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 14, 34) },
+                                        marks: {hpos: [57, 77]
+                                        }
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [1, 2],
-                                   a3_offset: [-5, 0],
-                                   a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
+                     printer:          {a4_pages:  [1, 2],
+                                        a3_offset: [-5, 0],
+                                        a4_offset: lambda { $conf['extract.0.printer.a4_offset'] }}
                  },
                  '18-strings-b-e'      => {
-                     layout:      {instrument:   '18-strings-b-e',
-                                   limit_a3:     false,
-                                   beams:        false,
-                                   bottomup:     false,
-                                   PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
-                                   X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
-                                   X_OFFSET:     28.5
+                     layout:           {instrument:   '18-strings-b-e',
+                                        limit_a3:     false,
+                                        beams:        false,
+                                        bottomup:     false,
+                                        PITCH_OFFSET: lambda { $conf['extract.0.layout.PITCH_OFFSET'] },
+                                        X_SPACING:    lambda { $conf['extract.0.layout.X_SPACING'] },
+                                        X_OFFSET:     28.5
                      },
-                     stringnames: {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 16, 33) },
-                                   marks: {hpos: [59, 76]}
+                     stringnames:      {text:  lambda { self.cut_string_names($conf['extract.0.stringnames.text'], 16, 33) },
+                                        marks: {hpos: [59, 76]}
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [2],
-                                   a3_offset: [0, 0],
-                                   a4_offset: [40, 0]}
+                     printer:          {a4_pages:  [2],
+                                        a3_offset: [0, 0],
+                                        a4_offset: [40, 0]}
                  },
                  'saitenspiel'         => {
-                     layout:      {instrument:   'saitenspiel',
-                                   limit_a3:     false,
-                                   beams:        false,
-                                   bottomup:     false,
-                                   PITCH_OFFSET: -24,
-                                   X_SPACING:    14.50,
-                                   X_OFFSET:     240
+                     layout:           {instrument:   'saitenspiel',
+                                        limit_a3:     false,
+                                        beams:        false,
+                                        bottomup:     false,
+                                        PITCH_OFFSET: -24,
+                                        X_SPACING:    14.50,
+                                        X_OFFSET:     240
                      },
-                     stringnames: {text:  'G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~',
-                                   marks: {hpos: [55, 74]}
+                     stringnames:      {text:  'G C D E F G A B C D  ~ ~ ~ ~ ~ ~ ~',
+                                        marks: {hpos: [55, 74]}
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [2],
-                                   a3_offset: [0, 0],
-                                   a4_offset: [35, 0]}
+                     printer:          {a4_pages:  [2],
+                                        a3_offset: [0, 0],
+                                        a4_offset: [35, 0]}
                  },
                  'Zipino'              => {
-                     layout:      {instrument:   'Zipino',
-                                   limit_a3:     true,
-                                   beams:        true,
-                                   bottomup:     false,
-                                   PITCH_OFFSET: 0,
-                                   X_SPACING:    12.50,
-                                   X_OFFSET:     230,
-                                   ELLIPSE_SIZE:  [2,2],
-                                   REST_SIZE:  [2,2]
-                 },
-                     stringnames: {text:  'F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~',
-                                   marks: {hpos: [54]}
+                     layout:           {instrument:   'Zipino',
+                                        limit_a3:     true,
+                                        beams:        true,
+                                        bottomup:     false,
+                                        PITCH_OFFSET: 0,
+                                        X_SPACING:    12.50,
+                                        X_OFFSET:     230,
+                                        ELLIPSE_SIZE: [2, 2],
+                                        REST_SIZE:    [2, 2]
+                     },
+                     stringnames:      {text:  'F# G A B C D E F# G A B C D E F# ~ ~ ~ ~ ~ ~  ~',
+                                        marks: {hpos: [54]}
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [2],
-                                   a3_offset: [0, 0],
-                                   a4_offset: [35, 0]}
+                     printer:          {a4_pages:  [2],
+                                        a3_offset: [0, 0],
+                                        a4_offset: [35, 0]}
                  },
                  'Okon-Harfe'          => {
-                     layout:      {instrument:   'okon-f',
-                                   beams:        true,
-                                   bottomup:     true,
-                                   limit_a3:     false,
-                                   PITCH_OFFSET: 0, # adapt if you pitches in
-                                   X_SPACING: 15,
-                                   X_OFFSET:  50
+                     layout:           {instrument:   'okon-f',
+                                        beams:        true,
+                                        bottomup:     true,
+                                        limit_a3:     false,
+                                        PITCH_OFFSET: 0, # adapt if you pitches in
+                                        X_SPACING: 15,
+                                        X_OFFSET:  50
                      },
-                     stringnames: {text:  %Q{G, A, BB, C D E F G A BB c d e f g a bb c' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~},
-                                   marks: {hpos: [55, 74]}
+                     stringnames:      {text:  %Q{G, A, BB, C D E F G A BB c d e f g a bb c' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~},
+                                        marks: {hpos: [55, 74]}
                      },
                      instrument_shape: nil,
-                     printer:     {a4_pages:  [1, 2],
-                                   a3_offset: [-35, 0],
-                                   a4_offset: [70, 0]}
+                     printer:          {a4_pages:  [1, 2],
+                                        a3_offset: [-35, 0],
+                                        a4_offset: [70, 0]}
                  },
-                 'Akkordzither'          => {
-                     layout:      {instrument:   'akkordzither',
-                                   tuning:       'open',
-                                   beams:        true,
-                                   bottomup:     false,
-                                   limit_a3:     false,
-                                   PITCH_OFFSET: 0, # adapt if you pitches in
-                                   X_SPACING: 8.9 ,
-                                   X_OFFSET:  140
+                 'Akkordzither'        => {
+                     layout:           {instrument:   'akkordzither',
+                                        tuning:       'open',
+                                        beams:        true,
+                                        bottomup:     false,
+                                        limit_a3:     false,
+                                        PITCH_OFFSET: 0, # adapt if you pitches in
+                                        X_SPACING: 8.9,
+                                        X_OFFSET:  140
                      },
-                     stringnames: {text:  %Q{C C# D E F F# G G# A B C' C# D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ },
-                                   marks: {hpos: [60]}
+                     stringnames:      {text:  %Q{C C# D E F F# G G# A B C' C# D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ },
+                                        marks: {hpos: [60]}
                      },
-                       instrument_shape: %Q{[["M", 228, 0], ["L",  335, 185], ["L", 335,297]]},
-                     printer:     {a4_pages:  [1, 2, 3],
-                                   a3_offset: [0, 0],
-                                   a4_offset: [108, 0]}
+                     instrument_shape: %Q{[["M", 228, 0], ["L",  335, 185], ["L", 335,297]]},
+                     printer:          {a4_pages:  [1, 2, 3],
+                                        a3_offset: [0, 0],
+                                        a4_offset: [108, 0]}
                  },
              },
 
@@ -431,9 +431,11 @@ module InitConf
 
          # these are the builtin notebound annotations
          annotations: {
-             vl: {text: "v", pos: [-5, -5]},
-             vt: {text: "v", pos: [-1, -5]},
-             vr: {text: "v", pos: [2, -5]}
+             vl:  {text: "v", pos: [-5, -5]},
+             vt:  {text: "v", pos: [-1, -5]},
+             vb:  {text: "v", pos: [-1, 2]},
+             vr:  {text: "v", pos: [2, -5]},
+             rit: {text: "rit", pos: [2, -5], style: :italic}
          }, # default for note based annotations
 
          extract: {
@@ -450,7 +452,7 @@ module InitConf
                                 right:  {pos: [5, -2], text: ':|', style: :bold}
                  },
                  layoutlines:  [1, 2, 3, 4],
-                 legend:       {spos: [320, 27], pos: [320, 7], tstyle: 'large', align: "r", style: 'regular' },
+                 legend:       {spos: [320, 27], pos: [320, 7], tstyle: 'large', align: "r", style: 'regular'},
                  lyrics:       {},
                  images:       {},
                  #
@@ -493,7 +495,7 @@ module InitConf
                      prefix:   ""
                  },
                  countnotes:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], apanchor: 'box', style: "smaller"},
-                 chords:  {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], apanchor: 'box', style: "large"},
+                 chords:      {voices: [], pos: [3, -2], autopos: true, apbase: [1, -0.5], apanchor: 'box', style: "large"},
                  stringnames: {
                      text:  "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G",
                      vpos:  [],
@@ -609,7 +611,7 @@ module InitConf
              },
 
              # this is injected in case of layout.beams = true
-             DURATION_TO_BEAMS: {
+             DURATION_TO_BEAMS:           {
                  # key     size, fill, dot, number-of-flags (nil = no beam)
                  "d64" => [1, "empty", false],
                  "d48" => [1, "empty", true, 0],
@@ -625,7 +627,7 @@ module InitConf
                  "d1"  => [1, "filled", false, 4]
              },
 
-             REST_TO_GLYPH:     {
+             REST_TO_GLYPH:               {
                  # this basically determines the white background rectangel
                  # [sizex, sizey], glyph, dot # note that sizex has no effect.
                  :err => [[2, 2], :rest_1, false], # 1      1
@@ -641,8 +643,37 @@ module InitConf
                  :d3 => [[0.3, 0.5], :rest_32, true], # 1/32 *
                  :d2 => [[0.3, 0.5], :rest_32, false], # 1/32
                  :d1 => [[0.3, 0.5], :rest_64, false] # 1/64
+             },
+             DECORATIIONS_AS_ANNOTATIONS: {
+                 '<(':          {text: 'decresc >>', pos: [5, 0], style: :small_italic},
+                 '<)':          {text: '> decresc', pos: [5, 0], style: :small_italic},
+                 '>(':          {text: 'cresc <<', pos: [5, 0], style: :small_italic},
+                 '>)':          {text: '< cresc', pos: [5, 0], style: :small_italic},
+                 'arpeggio':    {text: "arpeggio ", pos: [-20, 0], style: :small_italic},
+                 'coda':        {text: 'Coda', pos: [0, -5], style: :bold, align: :center},
+                 'crescendo(':  {text: 'cresc <<', pos: [5, 0], style: :small_italic},
+                 'crescendo)':  {text: '< cresc ', pos: [5, 0], style: :small_italic},
+                 'D.C.':        {text: "D.C.", pos: [5, -3], style: :bold},
+                 'D.C.alfine':  {text: "D.C. al fine", pos: [5, -5], style: :bold},
+                 'D.S.':        {text: "D.S.", pos: [5, -3], style: :bold},
+                 'dacapo':      {text: 'da Capo', pos: [5, -3], style: :bold},
+                 'dacoda':      {text: 'da Coda', pos: [5, -3], style: :bold},
+                 'dasegno':     {text: 'da Segno', pos: [5, -3], style: :bold},
+                 'diminuendo(': {text: 'decresc >>', pos: [5, 0], style: :small_italic},
+                 'diminuendo)': {text: '> decresc', pos: [5, 0], style: :small_italic},
+                 'f':           {text: "f", pos: [3, 0], style: :small_italic},
+                 'ff':          {text: "ff", pos: [3, 0], style: :small_italic},
+                 'fff':         {text: "fff", pos: [3, 0], style: :small_italic},
+                 'ffff':        {text: "ffff", pos: [3, 0], style: :small_italic},
+                 'fine':        {text: "Fine", pos: [0, -5], style: :bold, align: :center},
+                 'p':           {text: "p", pos: [3, 0], style: :small_italic},
+                 'pp':          {text: "pp", pos: [3, 0], style: :small_italic},
+                 'ppp':         {text: "ppp", pos: [3, 0], style: :small_italic},
+                 'pppp':        {text: "pppp", pos: [3, 0], style: :small_italic},
+                 'segno':       {text: 'Segno', pos: [0, -5], style: :bold, align: :center}
              }
          },
+
 
          neatjson: {
              wrap:          60, aligned: true,

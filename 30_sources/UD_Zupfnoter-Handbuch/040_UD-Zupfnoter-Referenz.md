@@ -594,16 +594,16 @@ unterscheiden. Daher wird hier noch einmal eine Zusammenfassung gegeben:
     eine Notenbeschriftung erstellen.
 
     > **Hinweis**: Zupfnoter kennt standardmäßig die
-    > Noptenbeschriftungsvorlagen `vl` `vt`, `vr`. Damoit kann man
-    > einfach ein "Abdämpfungszeichen" anbringen.
-    > [^040_UD-Zupfnoter-Referenz.md_3].
+    > Notenbeschriftungsvorlagen `vl` `vt`, `vr`, `vb`, 'rit'. Damit
+    > kann man einfach ein "Abdämpfungszeichen" bzw. ein "Ritardando"
+    > anbringen. [^040_UD-Zupfnoter-Referenz.md_3].
 
     Im Zusatz kann eine Position mit angegeben angegeben werden. Damit
     bleibt die Position der Notenbeschriftung erhalten, auch wenn der
     Zeitbezug der Note geändert wird.
 
     > **Hinweis** Wenn man die Notenbeschriftung mit der Maus
-    > verschiebt, wirkt nur noch diese Verschiebung ud die Angabe im
+    > verschiebt, wirkt nur noch diese Verschiebung und die Angabe im
     > Zusatz wird ignoriert. Diese Verschiebung wird in der
     > Konfiguration gespeichert und ist an die die Startzeit der Note
     > gebunden, solange keine Verschiebemarke \index{Verschiebemarke} in
@@ -1516,7 +1516,7 @@ Für die Bedienung der Masken ist noch wichtig
     \[lyrics.x\], \index{Seitenbeschriftung}Seitenbeschriftung
     \[notes.x\])
 -   Schaltfläche `Schnelleinst.`: Diese Taste (Schnelleinstellungen)
-    öffnet ein Menü, aus dem du für die aktuelle Maske eine
+    öffnet ein Menü, aus dem du für die aktuelle Maske eine e
     Voreinstellung auswählen kannst. Eine solche Voreinstellung ist eine
     sinnvolle Kombination von Parametern für einen bestimmten Fall (z.B.
     für ein "kompaktes Layout"). Diese Schaltfläche ist nur für solche
@@ -1524,6 +1524,19 @@ Für die Bedienung der Masken ist noch wichtig
 -   Feldeingabe mit der "TAB"-Taste bestätigen
 -   `Rendern` nicht vergessen (**In der Maske drücke erst TAB, dann geht
     auch das "Rendern" ab**)
+
+### Dekorationen
+
+Zupfnoter verarbeitet eine Reihe von Dekorationen (Fermate, ritardando
+usw.). Diese werden im ABC-Text vor die Noten eingefügt, und sind dort
+in Ausrufezeichen eingefasst. Dafür gibt es im Editor ein eigenes Menü.
+
+Allerdings wird im Unterlegnotenblatt für dieses optimiert und weicht
+daher von der Standard-Notendarstellung ab.
+
+> **Hinweis**: Für Ritardando und Abdämpfung gibt es im ABC leider keine
+> standardisiert dekoratiion. Daher wird diese als notenbezogene
+> Anmerkung eingefügt, erscheinen im ABC text also in Anführungszeichen.
 
 ### Masken für Zupfnoter-spezifische Zusätze {#masken-fuer-zusaetze}
 

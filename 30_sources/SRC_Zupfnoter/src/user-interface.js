@@ -757,6 +757,15 @@ function init_w2ui(uicontroller) {
       },
       {
         type: 'menu',
+        text: "Insert Decoration",
+        id: 'add_decoration',
+        items: uicontroller.$get_decoration_menu_entries().$to_n(),   // note that these items are a
+
+        icon: 'fa fa-thumbs-up',
+        tooltip: "Insert decoration at cursor position",
+      },
+      {
+        type: 'menu',
         text: "Insert Addon",
         id: 'add_snippet',
         items: [
@@ -833,6 +842,15 @@ function init_w2ui(uicontroller) {
         if (config_event4[1]) {
           w2ui.layout_left_tabs.click('abcEditor');
           uicontroller.$handle_command("addsnippet " + config_event4[1])
+        }
+      }
+
+      // handle add_snippet from edit toolbar
+      config_event4 = event.target.split(":")
+      if (['add_decoration'].includes(config_event4[0])) {
+        if (config_event4[1]) {
+          w2ui.layout_left_tabs.click('abcEditor');
+          uicontroller.$handle_command("adddecoration " + config_event4[1])
         }
       }
     }
@@ -1360,12 +1378,14 @@ function update_editor_status_w2ui(editorstatus) {
   // todo: implement a proper inhibit manager
   if (editorstatus.token.type.startsWith("zupfnoter.editable.before") && (editorstatus.selections.length == 1)) {
     w2ui['editortoolbar'].enable('add_snippet');
+    w2ui['editortoolbar'].enable('add_decoration');
     w2ui['editortoolbar'].enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
 
     w2ui['editortoolbar'].disable('edit_snippet');
   }
   else {
     w2ui['editortoolbar'].disable('add_snippet')
+    w2ui['editortoolbar'].disable('add_decoration')
   }
 
   if (editorstatus.token.type.startsWith("zupfnoter.editable.beforeBar")) {

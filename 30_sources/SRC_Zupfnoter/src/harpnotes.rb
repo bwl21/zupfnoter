@@ -1078,12 +1078,12 @@ module Harpnotes
       # @param [Object] conf_value - the value for configuration (used for dragging annotation)
       def initialize(center, text, style = :regular, origin = nil, conf_key = nil, conf_value = {})
         super()
-        _text_t       = text.gsub(/[„“‚’—–]/, {'„' => '"', '“' => '"', '‚' => "'", '’' => "'", '—' => '-', "–" => "-"})
-        _text       = _text_t.gsub(/./){|c| c[0].ord > 255 ? '¿' : c }
+        _text_t = text.gsub(/[„“‚’—–]/, {'„' => '"', '“' => '"', '‚' => "'", '’' => "'", '—' => '-', "–" => "-"})
+        _text   = _text_t.gsub(/./) { |c| c[0].ord > 255 ? '¿' : c }
 
-        unless _text ==_text_t
+        unless _text == _text_t
           startchar = origin[:startChar] if origin
-          $log.error("replaced unsupported characters with '¿' #{conf_key}", [1,1] )
+          $log.error("replaced unsupported characters with '¿' #{conf_key}", [1, 1])
         end
 
         @center     = center
@@ -1404,17 +1404,17 @@ module Harpnotes
         # Spacing between two BeatTable increments
         # 1.0 = dureation of a whole note
         #
-        @beat_spacing         = $conf.get('layout.Y_SCALE') * 1.0 / $conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
-        @slur_index           = {}
-        @y_offset             = 5
-        @conf_beat_resolution = $conf.get('layout.BEAT_RESOLUTION')
-        @layout_minc          = {} # this is the lookup table for minc; it is populated in Default.layout
-        @color_default        = $conf.get('layout.color.color_default')
-        @color_variant1       = $conf.get('layout.color.color_variant1')
-        @color_variant2       = $conf.get('layout.color.color_variant2')
-        @draw_instrument      = nil
-        @draw_instrument_shape     = nil
-        @placeholders         = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholder=
+        @beat_spacing          = $conf.get('layout.Y_SCALE') * 1.0 / $conf.get('layout.BEAT_RESOLUTION') # initial value for beat_spacing (also the optimum spacing)
+        @slur_index            = {}
+        @y_offset              = 5
+        @conf_beat_resolution  = $conf.get('layout.BEAT_RESOLUTION')
+        @layout_minc           = {} # this is the lookup table for minc; it is populated in Default.layout
+        @color_default         = $conf.get('layout.color.color_default')
+        @color_variant1        = $conf.get('layout.color.color_variant1')
+        @color_variant2        = $conf.get('layout.color.color_variant2')
+        @draw_instrument       = nil
+        @draw_instrument_shape = nil
+        @placeholders          = {} unless @placeholders # inhibit reinitialization of @placeholders as it might have been set via placeholder=
       end
 
       def set_instrument_handlers(print_variant_nr)
@@ -1671,14 +1671,14 @@ module Harpnotes
 
         ### draw the subflowlines
         # note that invisible rests make no sense and therefore do not interrupt subflowlines
-        res_sub_flow   = _layout_voice_subflowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr)
+        res_sub_flow     = _layout_voice_subflowlines(default_tuplet_options, do_flowconf, print_variant_nr, show_options, voice, voice_nr)
 
         ### cleanup the flowlines / subflowlines if they shall not be shown
         # todo: refactor this such that we do not call the methods at all
-        res_sub_flow   = [] unless show_options[:subflowline]
-        res_flow       = [] unless show_options[:flowline]
-        res_countnotes = [] unless show_options[:countnotes]
-        res_barnumbers = [] unless show_options[:barnumbers]
+        res_sub_flow     = [] unless show_options[:subflowline]
+        res_flow         = [] unless show_options[:flowline]
+        res_countnotes   = [] unless show_options[:countnotes]
+        res_barnumbers   = [] unless show_options[:barnumbers]
         res_chordsymbols = show_options[:chords] ? _layout_voice_chordsymbols(print_variant_nr, show_options, voice) : []
 
         ### layout tuplets
@@ -1700,6 +1700,7 @@ module Harpnotes
         ### draw note bound annotations
         res_annotations = _layout_voice_notebound_annotations(print_variant_nr, show_options, voice)
 
+        res_decoration_backgrounds = res_decorations.select { |i| i.is_a? Annotation }.map { |i| create_annotation_background_rect(i, 0.2) }
         res_barnumber_backgrounds  = res_barnumbers.map { |i| create_annotation_background_rect(i, 0.2) }
         res_countnote_backgrounds  = res_countnotes.map { |i| create_annotation_background_rect(i, -0.05) }
         res_annotation_backgrounds = (res_annotations + res_repeatmarks + res_chordsymbols).compact.map { |i| create_annotation_background_rect(i, 0.5) }
@@ -1708,8 +1709,11 @@ module Harpnotes
         (res_flow + res_sub_flow + res_slurs + res_tuplets + res_playables +
             res_countnote_backgrounds + res_countnotes +
             res_barnumber_backgrounds + res_barnumbers +
-            res_decorations + res_gotos +
-            res_annotation_backgrounds + res_annotations + res_chordsymbols + res_repeatmarks).compact
+            res_decoration_backgrounds + res_decorations +
+            res_gotos +
+            res_annotation_backgrounds + res_annotations +
+            res_chordsymbols +
+            res_repeatmarks).compact
       end
 
       # this layouts the decoration of a playable.
@@ -1721,6 +1725,9 @@ module Harpnotes
       # @param [Numeric] print_variant_nr
       # @param [Hash] show_options
       def make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr)
+
+        annotating_decorations = $conf["layout.DECORATIIONS_AS_ANNOTATIONS"]
+
         decorations = nil
         decorations = playable.decorations
         unless decorations.empty?
@@ -1730,16 +1737,30 @@ module Harpnotes
 
           decoration_result = []
           decorations.each_with_index do |decoration, index|
-            notebound_pos_key = "notebound.decoration.v_#{voice_nr}.t_#{playable.znid}.#{index}.pos"
-            conf_key          = "extract.#{print_variant_nr}.#{notebound_pos_key}"
 
-            annotationoffset = show_options[:print_options_raw][notebound_pos_key] rescue nil
-            annotationoffset = [0, (-decoration_root.size.last / decoration_scale - decoration_distance).round()] unless annotationoffset
+            decoration_base_key  = "notebound.decoration.v_#{voice_nr}.t_#{playable.znid}.#{index}"
+            decoration_key = "extract.#{print_variant_nr}.#{decoration_base_key}"
+            conf_key       = "#{decoration_key}.pos"
 
-            decoration_center = [decoration_root.center.first + annotationoffset.first, decoration_root.center.last + annotationoffset.last]
-            r                 = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, annotationoffset)
+            decoration_offset = show_options[:print_options_raw]["#{decoration_base_key}.pos"] rescue nil
+            decoration_offset = [0, (-decoration_root.size.last / decoration_scale - decoration_distance).round()] unless decoration_offset
+
+            decoration_center = [decoration_root.center.first + decoration_offset.first, decoration_root.center.last + decoration_offset.last]
+
+            show_decoration = $conf["#{decoration_key}.show"]
+
+            annotation = annotating_decorations[decoration]
+            if annotation
+              decoration_center = (Vector2d(annotation[:pos]) + decoration_center).to_a  # text based annotation yields a specific default position
+              style             = $conf["#{decoration_key}.style"] || annotation[:style]
+              r                 = Harpnotes::Drawing::Annotation.new(decoration_center, annotation[:text], style, playable.origin, conf_key, decoration_offset)
+              r.align           = annotation[:align] || :left
+            else
+              r = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, decoration_offset)
+            end
+
             r.tap { |s| s.draginfo = {handler: :annotation} }
-            decoration_result.push [r]
+            decoration_result.push [r] if show_decoration.nil? || show_decoration
           end
         end
         decoration_result
@@ -1796,13 +1817,13 @@ module Harpnotes
       private
 
       def _mkflaps_pitches(stringnames)
-        pitchtable = _mk_pitches_table
+        pitchtable      = _mk_pitches_table
         string_by_pitch = {}
-        flap_by_pitch = {}
+        flap_by_pitch   = {}
         stringnames.split(" ").each_with_index.each do |k, i|
-          pitch = pitchtable[k]
+          pitch                  = pitchtable[k]
           string_by_pitch[pitch] = i
-          flap_by_pitch[pitch] = i if k.start_with?('*')
+          flap_by_pitch[pitch]   = i if k.start_with?('*')
         end
 
         [string_by_pitch, flap_by_pitch.keys]
@@ -1839,7 +1860,7 @@ module Harpnotes
 
       def _instrument_akkordzither(pitchoffset, xoffset, xspacing, print_variant_nr)
         string_by_pitch, flaps_by_pitch = _mkflaps_pitches($conf["extract.#{print_variant_nr}.stringnames.text"])
-        @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+        @pitch_to_xpos                  = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
 
         @draw_instrument = lambda {
           result = []
@@ -1883,7 +1904,7 @@ module Harpnotes
           flaps   = "      59 61       66       71 73       78       83"
         end
 
-        string_by_pitch={}
+        string_by_pitch = {}
 
         if 'open' == $conf["extract.#{print_variant_nr}.layout.tuning"]
           string_by_pitch, flaps_by_pitch = _mkflaps_pitches($conf["extract.#{print_variant_nr}.stringnames.text"])
@@ -1891,7 +1912,7 @@ module Harpnotes
           string_by_pitch = Hash[pitches.split(" ").each_with_index.map { |i, k| [i.to_i, k] }]
           flaps_by_pitch  = flaps.split(" ").map { |i| i.to_i }
         end
-        @pitch_to_xpos                 = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+        @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
 
         flaps_y = {59 => 7, 61 => 7, 66 => 7, 71 => 7, 73 => 20, 78 => 65, 83 => 110}
 
@@ -1971,7 +1992,7 @@ module Harpnotes
 
       def _layout_voice_chordsymbols(print_variant_nr, show_options, voice)
         res_annotations = voice.select { |c| c.is_a? Chordsymbol }.map do |annotation|
-          chord_options = show_options[:chords]
+          chord_options     = show_options[:chords]
           notebound_pos_key = annotation.conf_key + ".pos"
           show_from_config  = show_options[:print_options_raw].get(annotation.conf_key + ".show")
           show              = show_from_config.nil? ? true : show_from_config
@@ -2859,9 +2880,15 @@ module Harpnotes
 
         bgsize_padded = [bgsize.first + padding, bgsize.last + padding]
 
-        background_x = (annotation.align == :left) ? bgsize.first : -bgsize.first
+        background_x = case annotation.align
+                       when :left
+                         bgsize.first
+                       when :right
+                         -bgsize.first
+                       when :center
+                         0
+                       end
         background_y = bgsize.last
-
 
         # todo: properly handle hanging annotations
         # adjust size and position
