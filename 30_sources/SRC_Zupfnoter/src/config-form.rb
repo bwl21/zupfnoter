@@ -836,6 +836,11 @@ class ConfstackEditor
                                style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>
                               }
                          },
+
+                         presetmenu,
+                         {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), icon: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
+                         {id: 'refresh', type: 'button', caption: '', icon: 'fa fa-refresh'},
+                         {type:'break'},
                          {
                              type:    'menu',
                              text:    "Edit Config",
@@ -844,10 +849,6 @@ class ConfstackEditor
                              tooltip: "Edit configuration with forms",
                              items:   self.class.get_config_form_menu_entries
                          },
-
-                         presetmenu,
-                         {id: 'new_entry', type: 'button', text: I18n.t('New Entry'), icon: 'fa fa-plus-square-o', disabled: @newentry_handler.nil?},
-                         {id: 'refresh', type: 'button', caption: '', icon: 'fa fa-refresh'},
                      ],
             onClick: lambda do |event|
               the_target = Native(event).target

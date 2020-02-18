@@ -88,15 +88,16 @@
 <li><a href="#wenn-takte-nicht-synchron-sind"><span class="toc-section-number">4.8.5</span> Wenn Takte nicht synchron sind</a></li>
 <li><a href="#änderung-der-takte-im-stück"><span class="toc-section-number">4.8.6</span> Änderung der Takte im Stück</a></li>
 <li><a href="#mehrere-Stimmen-in-abc"><span class="toc-section-number">4.8.7</span> Mehrere Stimmen in ABC-Notation</a></li>
-<li><a href="#bearbeiten-von-takten-in-allen-stimmen"><span class="toc-section-number">4.8.8</span> Bearbeiten von Takten in allen Stimmen</a></li>
-<li><a href="#wenn-die-vertikale-anordnung-optimiert-werden-soll"><span class="toc-section-number">4.8.9</span> Wenn die vertikale Anordnung optimiert werden soll</a></li>
-<li><a href="#barnumberautopos"><span class="toc-section-number">4.8.10</span> Positionierung von Taktnummern und Zählmarken optimieren</a></li>
-<li><a href="#warnung-beschriftung-zu-dicht-beieinander"><span class="toc-section-number">4.8.11</span> Warnung: “Beschriftung zu dicht beieinander”</a></li>
-<li><a href="#feste-leerzeichen-in-texten"><span class="toc-section-number">4.8.12</span> feste Leerzeichen in Texten</a></li>
-<li><a href="#extra-einstellungen-für-die-notenvorschau"><span class="toc-section-number">4.8.13</span> Extra Einstellungen für die Notenvorschau</a></li>
-<li><a href="#filetemplates"><span class="toc-section-number">4.8.14</span> Arbeiten mit Dateivorlagen (Templates)</a></li>
-<li><a href="#auflösen-von-akkorden"><span class="toc-section-number">4.8.15</span> Auflösen von Akkorden</a></li>
-<li><a href="#parameter-in-der-zupfnoter-url"><span class="toc-section-number">4.8.16</span> Parameter in der Zupfnoter-URL</a></li>
+<li><a href="#harmonieassistent"><span class="toc-section-number">4.8.8</span> Harmonieassistent</a></li>
+<li><a href="#bearbeiten-von-takten-in-allen-stimmen"><span class="toc-section-number">4.8.9</span> Bearbeiten von Takten in allen Stimmen</a></li>
+<li><a href="#wenn-die-vertikale-anordnung-optimiert-werden-soll"><span class="toc-section-number">4.8.10</span> Wenn die vertikale Anordnung optimiert werden soll</a></li>
+<li><a href="#barnumberautopos"><span class="toc-section-number">4.8.11</span> Positionierung von Taktnummern und Zählmarken optimieren</a></li>
+<li><a href="#warnung-beschriftung-zu-dicht-beieinander"><span class="toc-section-number">4.8.12</span> Warnung: “Beschriftung zu dicht beieinander”</a></li>
+<li><a href="#feste-leerzeichen-in-texten"><span class="toc-section-number">4.8.13</span> feste Leerzeichen in Texten</a></li>
+<li><a href="#extra-einstellungen-für-die-notenvorschau"><span class="toc-section-number">4.8.14</span> Extra Einstellungen für die Notenvorschau</a></li>
+<li><a href="#filetemplates"><span class="toc-section-number">4.8.15</span> Arbeiten mit Dateivorlagen (Templates)</a></li>
+<li><a href="#auflösen-von-akkorden"><span class="toc-section-number">4.8.16</span> Auflösen von Akkorden</a></li>
+<li><a href="#parameter-in-der-zupfnoter-url"><span class="toc-section-number">4.8.17</span> Parameter in der Zupfnoter-URL</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#zupfnoter-für-experten"><span class="toc-section-number">5</span> Zupfnoter für Experten</a><ul>
@@ -1655,7 +1656,7 @@ GAB</code></pre>
 <p><strong>Hinweis</strong>: Die manuelle Erzeugung der notenbezogenen Anmerkung zum Taktwechsel ist flexibler als eine eventuelle Automatik. Daher bietet Zupfnoter diese Automatik nicht an.</p>
 </blockquote>
 <h3 id="mehrere-Stimmen-in-abc"><span class="header-section-number">4.8.7</span> Mehrere Stimmen in ABC-Notation</h3>
-<p>Da das im Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt es hier weitere Informationen.</p>
+<p>Da das Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt es hier weitere Informationen.</p>
 <p>Die Kopfzeile <code>V:</code> The V: erlaubt die Erfassung mehrstimmiger Stücke. Dabei wird das Stück in Stimmen aufgeteilt. Jede Stimme beginnt mit einer <code>V:</code> - Kopfzeile. Alle Noten die dieser Zeile folgen bis zur nächsten <code>V:</code> - Kopfzeile oder dem Ende des Stückes gehören zu dieser Stimme.</p>
 <p>Die <code>V:</code> Zeile definiert auch die Eigenschaften der Stimme mit folgendem Aufbau</p>
 <blockquote>
@@ -1686,7 +1687,22 @@ GAB</code></pre>
 <blockquote>
 <p><strong>Hinweis</strong>: Die ABC-Notation erlaubt mehrere <code>%%score</code> - Anweisungen. Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das Verhalten noch nicht ausgetestet ist.</p>
 </blockquote>
-<h3 id="bearbeiten-von-takten-in-allen-stimmen"><span class="header-section-number">4.8.8</span> Bearbeiten von Takten in allen Stimmen</h3>
+<h3 id="harmonieassistent"><span class="header-section-number">4.8.8</span> Harmonieassistent</h3>
+<p>Zupfnoter enthält einen rudimentären Assistent zum Umgang mit Harmonien. Dieser befindet sich am oberen Rand der Notenvorschau und bietet folgende Funktionen:</p>
+<ol type="1">
+<li><p>Anzeige der Töne in der aktuellen Selektion</p>
+<p>Wenn man in der Notenvorschau oder in der Harfenvorschau eine oder mehrere Noten auswählt, dann erscheinen alle Noten dieser Auswahl rechts oben im der Notenvorschau. Damit kann man - Kenntnisse der Harmonielehre - vorausgestzt, passende Begleittöne finden.</p></li>
+<li><p>Anzeige passender Akkorde</p>
+<p>Wenn du auf die Anzeige der aktuellen Noten klickst, werden diese in die Akkordsuche (mittleres Eingabefeld) übernommen. Du kannst natürlich auch auch einzelne Töne eingeben. Die passenden Akkorde werden laufend angezeigt.</p>
+<p>Wenn du auf einen der angezeigten Akkorde klickst, wird er in das Eingabefeld der Akkordauflösung eingefügt und du kannst die Töne sehen, die zu dem Akkord gehören.</p></li>
+<li><p>Anzeige von Tönen in einem Akkord</p>
+<p>Wenn du ein Stück mit Akkordsymbolen erfasst, kannst du die Auflösung der Akkorde in Einzeltöne ermitteln. Bitte gib dazu das Akkordsymbol im linken Eingabefeld ein. Die Töne dieses Akkordes werden dann abgespielt und angezeigt.</p></li>
+</ol>
+<blockquote>
+<p>Hinweis: in allen Feldern werden die Töne als Buchtabe mit ggf. angehängtem Versetzungszeichen eingegeben bzw. dargestellt z.B. <code>C C# Ab Bb</code>.</p>
+<p>Hinweis: man kann die Töne noch einmal abspielen, wenn man eine beliebige Taste (z.b. die Großschreibtaste) drückt, solange das entsprechnede Eingabefeld aktiv ist.</p>
+</blockquote>
+<h3 id="bearbeiten-von-takten-in-allen-stimmen"><span class="header-section-number">4.8.9</span> Bearbeiten von Takten in allen Stimmen</h3>
 <p>Wenn man im das gesamte Musiktück Takte einfügen bzw. löschen will, ist es notwendig, an mehreren Stellen im ABC-Code zu editieren.</p>
 <p>Das ist eigentlich der Moment in dem man das Stück in ein Notensatzprogramm z.B. Musescore übernimmt, bearbeitet und dann in den Zupfnoter zurückbringt.</p>
 <p>Zupfnoter kann diesen Anwendungfall auch abdecken:</p>
@@ -1710,7 +1726,7 @@ GAB</code></pre>
 <li>Das Verfahren erfordert, dass die Harfennoten aktuell sind (d.h. seit dem letzten Rendern keine Bearbeitung mehr gemacht wurde),</li>
 </ol>
 </blockquote>
-<h3 id="wenn-die-vertikale-anordnung-optimiert-werden-soll"><span class="header-section-number">4.8.9</span> Wenn die vertikale Anordnung optimiert werden soll</h3>
+<h3 id="wenn-die-vertikale-anordnung-optimiert-werden-soll"><span class="header-section-number">4.8.10</span> Wenn die vertikale Anordnung optimiert werden soll</h3>
 <p>Zupfnoter errechnet die vertikale Anordnung der Noten selbständig und erreicht auch gute Ergebnisse. In Grenzsituationen (z.B. bei langen Stücken) ist eine manuelle Korrektur sinnvoll. Diese Optimierungen sollten in folgender Reihenfolge ausgeführt werden.</p>
 <ol type="1">
 <li><p>in <code>extract.0.layoutlines</code> über die Grundeinstellungen eine <code>0</code> eintragen. Diese führt dazu, dass nur noch die Stimmen, die auf dem Blatt dargestellt werden, auch für die Berechnung vertikalen Anordnung berücksichtigt werden. Damit entstehen keine scheinbar unmotivierten Vorschübe.</p></li>
@@ -1721,7 +1737,7 @@ GAB</code></pre>
 <li><p>Die Flußlinie gestalten (siehe Kapitel  <a href="#flowconf">Flußlinien gestalten</a>)</p></li>
 <li><p>Positionierung von Taktnummern und Zählmarken optimieren</p></li>
 </ol>
-<h3 id="barnumberautopos"><span class="header-section-number">4.8.10</span> Positionierung von Taktnummern und Zählmarken optimieren</h3>
+<h3 id="barnumberautopos"><span class="header-section-number">4.8.11</span> Positionierung von Taktnummern und Zählmarken optimieren</h3>
 <blockquote>
 <p><strong>Hinweis:</strong> die feste, d.h. nicht automatisierte Positionierung kann man zwar in der Konfiguration noch einstellen. Diese Möglichkeit führt jedoch in der Praxis nicht zu befriedigenden Ergebnissen und wird also bald entfernt.</p>
 </blockquote>
@@ -1746,7 +1762,7 @@ GAB</code></pre>
 <blockquote>
 <p><strong>Hinweis</strong>: Auch beim manuellen Verschieben wird die Anodnung der Nummer (links/rechts der Note) berücksichtigt und die Ausrichtung (linksbündig/rechtsbündig) entsprechend errechnet. Damit können die Nummern auch bei unterschiedlicher Länge sehr präzise positioniert werden.</p>
 </blockquote>
-<h3 id="warnung-beschriftung-zu-dicht-beieinander"><span class="header-section-number">4.8.11</span> Warnung: “Beschriftung zu dicht beieinander”</h3>
+<h3 id="warnung-beschriftung-zu-dicht-beieinander"><span class="header-section-number">4.8.12</span> Warnung: “Beschriftung zu dicht beieinander”</h3>
 <p>Diese Warnungen sind experimentell. Sie kommen nur wenn <code>loglevel warning</code> eingestellt ist.</p>
 <blockquote>
 <p><strong>Hinweis</strong> Noch werden nicht alle Kollisionen sicher erkannt. Es kann auch sein dass Kollisionen gemeldet werden, die gerade noch gehen würden. Das liegt daran dass Zupfnoter die Größe der Texte nicht genau abschätzen kann.</p>
@@ -1760,7 +1776,7 @@ GAB</code></pre>
 <blockquote>
 <p><strong>Hinweis:</strong> Man kann zunächst versuchen die Basis für die Positionierung von Taktnummern / Zählmarken zu verändern. Manchmal lässt sich dadurch die Anzahl der Warnungen zu reduzieren (siehe Kapitel  <a href="#barnumberautopos">Positionierung von Taktnummern und Zählmarken optimieren</a>)</p>
 </blockquote>
-<h3 id="feste-leerzeichen-in-texten"><span class="header-section-number">4.8.12</span> feste Leerzeichen in Texten</h3>
+<h3 id="feste-leerzeichen-in-texten"><span class="header-section-number">4.8.13</span> feste Leerzeichen in Texten</h3>
 <p>Zupfnoter wandelt eine Tilde (‘~’) in Texten in feste Leerzeichen um. Anwendungsfälle hierfür sind:</p>
 <ul>
 <li>Einrückungen in Liedtexten, so dass Noten ggf. in den Text ragen können</li>
@@ -1769,7 +1785,7 @@ GAB</code></pre>
 <blockquote>
 <p><strong>Hinweis</strong>: Sollte je doch eine Tilde benötigt werden kann diese mit maskiert werden, z.B. ‘<code>das\~ist</code>’ ergibt ‘<code>das~ist</code>’.</p>
 </blockquote>
-<h3 id="extra-einstellungen-für-die-notenvorschau"><span class="header-section-number">4.8.13</span> Extra Einstellungen für die Notenvorschau</h3>
+<h3 id="extra-einstellungen-für-die-notenvorschau"><span class="header-section-number">4.8.14</span> Extra Einstellungen für die Notenvorschau</h3>
 <p>Die Notenvorschau kann durch I: oder “%%” - Zeilen beeinflusst werden. Einhelheiten siehe <a href="http://moinejf.free.fr/abcm2ps-doc/index.html" class="uri">http://moinejf.free.fr/abcm2ps-doc/index.html</a></p>
 <p>Häufige Einstellungen bei Zupfnoter sind:</p>
 <ul>
@@ -1784,7 +1800,7 @@ I:measurenb 1
 I:contbarnb 1
 I:linewarn 0
 I:staffnonote 2</code></pre>
-<h3 id="filetemplates"><span class="header-section-number">4.8.14</span> Arbeiten mit Dateivorlagen (Templates)</h3>
+<h3 id="filetemplates"><span class="header-section-number">4.8.15</span> Arbeiten mit Dateivorlagen (Templates)</h3>
 <p>Erstellt man über das Menü “Neu” ein neues Stück, fügt Zupfnoter eine Vorlage ein. Standardmäßig ist das die Vorlage für ein vierstimmiges Stück. Dieses legt auch die Konfiguration an welche in Kapitel <a href="#bestPracticeExtract">Praktisches Vorgehen bei der Erstellung von Auszügen</a> beschrieben ist.</p>
 <p>Wenn man z.B. für eine Notenmappe mehrere Stücke mit ähnlichen Einstellungen schreiben will, ist es sinnvoll, die eingebaute Vorlage durch eine projektspezifische Vorlage zu ersetzen, in der schon einige Parameter (z.B. Blattbeschriftungen) vorausgefüllt sind.</p>
 <p>Eine Dateivorlage ist eine normale ABC-Datei in der einige Platzhalter eingefügt sind, welche beim erstellen eines neuen Stückes anhand der Benutzereingaben aufgelöst bzw. ausgefüllt werden. Folgende Platzhalter sind verfügbar:</p>
@@ -1829,7 +1845,7 @@ I:staffnonote 2</code></pre>
 <blockquote>
 <p><strong>Hinweis</strong>: Die Konfigurationsparameter <code>template.filebase</code> werden auch in die neuen Stücke kopiert, haben dort aber keine Wirkung mehr weil die <code>F:</code> - zeile nun keinen Platzhalter mehr enthält. Sie sind jedoch als Dokumentation hilfreich, welche Vorlage bei der Erstellung des Stückes verwendet wurde.</p>
 </blockquote>
-<h3 id="auflösen-von-akkorden"><span class="header-section-number">4.8.15</span> Auflösen von Akkorden</h3>
+<h3 id="auflösen-von-akkorden"><span class="header-section-number">4.8.16</span> Auflösen von Akkorden</h3>
 <p>Manchmal bekommt man XML-Dateien bei denen Mehrklänge nicht auf einzelne Stimmen aufgeteilt sind, ondern in Mehrklängen dargestellt werden. Für Tischharfen kann es vorteilhaft sein, diese Mehrklänge aufzulösen. Hierfür ist folgendes Vorgehen sinnvoll:</p>
 <ol type="1">
 <li><p>Die Stimme mit den Mehrklängen kopieren, neu Einfügen und eine neue Stimmnummer vergeben.</p></li>
@@ -1841,7 +1857,7 @@ I:staffnonote 2</code></pre>
 <li><p>Alle Noten der Stimme selektieren</p></li>
 <li><p>Im Menü <code>Bearbeiten / Noten</code> in Mehrklang tauschen` aufrufen.</p></li>
 </ol>
-<h3 id="parameter-in-der-zupfnoter-url"><span class="header-section-number">4.8.16</span> Parameter in der Zupfnoter-URL</h3>
+<h3 id="parameter-in-der-zupfnoter-url"><span class="header-section-number">4.8.17</span> Parameter in der Zupfnoter-URL</h3>
 <p>In der Adressleiste des Browsers können Parameter übergeben wreden. Das ist für den Benutzer meist nicht erforderlich. Die Parameter werden hier zur Vollständigkeit aufgeführt.</p>
 <ul>
 <li><code>?mode={demo | work}</code></li>

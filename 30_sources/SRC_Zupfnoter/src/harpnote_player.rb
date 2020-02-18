@@ -275,7 +275,7 @@ module Harpnotes
         [
             note[:origin][:startChar], # [0]: index of the note in the ABC source
             (note[:delay] - start_delay) / @speed, #[1]: time in seconds
-            25, #[2]: MIDI instrument 25: guitar steel
+            note[:midi] || 25, #[2]: MIDI instrument 25: guitar steel
             note[:pitch], # [3]: MIDI note pitch (with cents)
             note[:duration] / @speed, # [4]: duration
             ((note[:velocity] > 0.2) ? 1 : 0) # [5] volume
@@ -299,6 +299,22 @@ module Harpnotes
             index:    index
         }
       end
+
+      def play_pitches(pitches)
+        play_notes(
+            pitches.each_with_index.map do |pitch, index|
+              {   index: 0,   # index
+                  delay: index/4,   # delay
+                  pitch: pitch,
+                  midi: 0,
+                  duration: pitches.count - index,   # duration
+                  velocity: 1,   # velocity
+                  origin: {startChar:0}
+              }
+            end
+        )
+      end
+
     end
 
   end

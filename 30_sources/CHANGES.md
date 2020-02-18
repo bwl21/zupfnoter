@@ -3,6 +3,7 @@
 ## enhancement
 
 * support decorations #30
+* Harmonieassistent #298
 
 # 1.4 Feburar 2020
 

@@ -203,7 +203,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.14-3-g34056b75
+Version V\_1.14-9-g0f1fbd73
 
 \begin{verbatim}
 © 2020 https://www.zupfnoter.de
@@ -3858,8 +3858,8 @@ bietet Zupfnoter diese Automatik nicht an.
 \subsubsection{Mehrere Stimmen in
 ABC-Notation}\label{mehrere-Stimmen-in-abc}}
 
-Da das im Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt
-es hier weitere Informationen.
+Da das Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt es
+hier weitere Informationen.
 
 Die Kopfzeile \texttt{V:} The V: erlaubt die Erfassung mehrstimmiger
 St\"{u}cke. Dabei wird das St\"{u}ck in Stimmen aufgeteilt. Jede Stimme
@@ -3938,6 +3938,52 @@ Zeile.
 \textbf{Hinweis}: Die ABC-Notation erlaubt mehrere \texttt{\%\%score} -
 Anweisungen. Bitte vermeide das, weil Zupfnoter daf\"{u}r nicht
 ausgelegt ist und das Verhalten noch nicht ausgetestet ist.
+\end{quote}
+
+\hypertarget{harmonieassistent}{%
+\subsubsection{Harmonieassistent}\label{harmonieassistent}}
+
+Zupfnoter enth\"{a}lt einen rudiment\"{a}ren Assistent zum Umgang mit
+Harmonien. Dieser befindet sich am oberen Rand der Notenvorschau und
+bietet folgende Funktionen:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Anzeige der T\"{o}ne in der aktuellen Selektion
+
+  Wenn man in der Notenvorschau oder in der Harfenvorschau eine oder
+  mehrere Noten ausw\"{a}hlt, dann erscheinen alle Noten dieser Auswahl
+  rechts oben im der Notenvorschau. Damit kann man - Kenntnisse der
+  Harmonielehre - vorausgestzt, passende Begleitt\"{o}ne finden.
+\item
+  Anzeige passender Akkorde
+
+  Wenn du auf die Anzeige der aktuellen Noten klickst, werden diese in
+  die Akkordsuche (mittleres Eingabefeld) \"{u}bernommen. Du kannst
+  nat\"{u}rlich auch auch einzelne T\"{o}ne eingeben. Die passenden
+  Akkorde werden laufend angezeigt.
+
+  Wenn du auf einen der angezeigten Akkorde klickst, wird er in das
+  Eingabefeld der Akkordaufl\"{o}sung eingef\"{u}gt und du kannst die
+  T\"{o}ne sehen, die zu dem Akkord geh\"{o}ren.
+\item
+  Anzeige von T\"{o}nen in einem Akkord
+
+  Wenn du ein St\"{u}ck mit Akkordsymbolen erfasst, kannst du die
+  Aufl\"{o}sung der Akkorde in Einzelt\"{o}ne ermitteln. Bitte gib dazu
+  das Akkordsymbol im linken Eingabefeld ein. Die T\"{o}ne dieses
+  Akkordes werden dann abgespielt und angezeigt.
+\end{enumerate}
+
+\begin{quote}
+Hinweis: in allen Feldern werden die T\"{o}ne als Buchtabe mit ggf.
+angeh\"{a}ngtem Versetzungszeichen eingegeben bzw. dargestellt z.B.
+\texttt{C\ C\#\ Ab\ Bb}.
+
+Hinweis: man kann die T\"{o}ne noch einmal abspielen, wenn man eine
+beliebige Taste (z.b. die Gro\ss schreibtaste) dr\"{u}ckt, solange das
+entsprechnede Eingabefeld aktiv ist.
 \end{quote}
 
 \hypertarget{bearbeiten-von-takten-in-allen-stimmen}{%

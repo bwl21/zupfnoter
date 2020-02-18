@@ -269,7 +269,7 @@ class Controller
   end
 
 # this method invokes the system conumers
-  def call_consumers(clazz)
+  def   call_consumers(clazz)
     @systemstatus_consumers = {systemstatus:      [
                                                       lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
                                                   ],
@@ -285,7 +285,7 @@ class Controller
                                enable_save:       [lambda { `enable_save();` }],
                                before_open:       [lambda { `before_open()` }],
                                document_title:    [lambda { `document.title = #{@document_title}` }],
-                               current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(", ")});` }],
+                               current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(" ")});` }],
                                settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
                                extracts: [lambda {
                                  items = @extracts.map { |id, entry| {id: id, text: "#{id}: #{entry}"} }
@@ -296,7 +296,6 @@ class Controller
                                render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }],
                                show_config_tab:    [lambda { %x{show_config_tab()} }],
                                update_pdf_preview: [lambda {%x{update_pdf_preview(#{self})}  }]
-
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -434,6 +433,43 @@ class Controller
 
     %x{localStorage.setItem('zupfnoterVersion', #{VERSION})}
     nil
+  end
+
+
+  def get_chordnotes(chordname)
+    chordserver = Chordengine.new("C")
+    chordserver.chordnotes(chordname)
+  end
+
+  def get_chords_for(notes)
+    the_notes = notes
+    chordserver = Chordengine.new("C")
+    chordserver.chordfor(the_notes)
+  end
+
+  def get_chords_for_string(notesstring)
+    the_notes = scan_notesstring(notesstring)
+    result = get_chords_for(the_notes)
+    result
+  end
+
+  def scan_notesstring(notesstring)
+    notesstring.scan(/([a-gA-G])([#b])?/).map{|i| "#{i.first.upcase}#{i.last}"}
+  end
+
+  def play_chord(chordname)
+    call_consumers(:play_start)
+    chordserver = Chordengine.new("C")
+    pitches = chordserver.tomidi(chordserver.chordnotes(chordname, "#")).map{|i| i + 60}
+    @harpnote_player.play_pitches(pitches)
+  end
+
+  def play_chordnotes(notesstring)
+    call_consumers(:play_start)
+    the_notes = scan_notesstring(notesstring)
+    chordserver = Chordengine.new("C")
+    pitches = chordserver.tomidi(the_notes).compact.map{|i| i + 60}
+    @harpnote_player.play_pitches(pitches)
   end
 
 # this loads a demo song

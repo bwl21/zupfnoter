@@ -1,5 +1,3 @@
-
-
 function init_w2ui(uicontroller) {
 
   w2popup.defaults.speed = 0;
@@ -123,7 +121,8 @@ function init_w2ui(uicontroller) {
   }
 
 
-// UI-Methods
+// UI-Function
+
   function zoomHarpPreview(size) {
     uicontroller.$set_harppreview_size(size);
   };
@@ -171,7 +170,7 @@ function init_w2ui(uicontroller) {
     a.document.close();
   }
 
-  previews = {
+  var previews = {
     'tbPreview:tbPrintA3': function () {
       url = uicontroller.$render_a3().$output('datauristring')
       open_data_uri_window(url)
@@ -191,7 +190,7 @@ function init_w2ui(uicontroller) {
     }
   }
 
-  perspectives = {
+  var perspectives = {
     'tb_perspective:Alle': function () {
       w2ui['layout'].show('left', true);
       w2ui['layout'].hide('bottom', true);
@@ -237,7 +236,7 @@ function init_w2ui(uicontroller) {
   var init_zoomlevel = [2200, 1400]
   var zoomlevel = init_zoomlevel;
   var savedSVG = ""
-  scalehandlers = {
+  var scalehandlers = {
     'tb_scale:groß': function () {
       zoomlevel = init_zoomlevel;
       zoomHarpPreview(zoomlevel);
@@ -276,7 +275,7 @@ function init_w2ui(uicontroller) {
   // this approach does not splash the menu definition
   // but is harder to maintain.
   // to be honest, today
-  toolbarhandlers = {
+  var toolbarhandlers = {
     'tb_file:tb_create': createNewSheet,
     'tb_file:tb_import': function () {
       $('#file_input').click()
@@ -399,8 +398,7 @@ function init_w2ui(uicontroller) {
       perspectives[current_perspective]();
       isFullScreen = false;
       uicontroller.editor.$set_focus();
-    }
-    else {
+    } else {
       perspectives['tb_perspective:Harfe']();
       isFullScreen = true;
     }
@@ -416,7 +414,7 @@ function init_w2ui(uicontroller) {
     style: tbstyle,
     items: [
       {type: 'button', id: 'tb_home', icon: 'fa fa-info-circle', text: ''},
-     // {type: 'html', html: '<div style="width:25px"/>'},
+      // {type: 'html', html: '<div style="width:25px"/>'},
       {
         type: 'menu',
         id: 'tb_file',
@@ -664,8 +662,8 @@ function init_w2ui(uicontroller) {
 
       // handle view
       config_event = event.target.split(":")
-      if (config_event[0] == "tb_view"){
-        if (config_event[1]){
+      if (config_event[0] == "tb_view") {
+        if (config_event[1]) {
           uicontroller.$handle_command("view " + config_event[1])
         }
       }
@@ -686,6 +684,63 @@ function init_w2ui(uicontroller) {
         event.subItem.onClick();
       }
     }
+  }
+
+
+  var chordassistant = {
+    id: 'chord_toolbar',
+    name: 'chordtoolbar',
+    style: tbstyle,
+    items: [
+
+      {
+        type: 'html', id: 'chordbar_input',
+        html: function (item) {
+          var html =
+            '<div style="padding: 3px 10px;">' +
+            '    <input size="20" class="chordbar_input" placeholder="enter chord" onkeyup="chordassistant_update_notes_for_chord(this.value, event);" />' +
+            '</div>';
+          return html;
+        },
+      },
+      {
+        type: 'button',
+        id:
+          'chordbar_result',
+        text:
+          '<div style="padding: 0px !important;"><span class="chordassistant_result"></span></div>'
+      },
+      {id:"null"},
+      {
+        type: 'html', id: 'chordsearch_input',
+        html: function (item) {
+          var html =
+            '<div style="padding: 3px 10px;">' +
+            '    <input id="chordsearch_input" size="30" placeholder="enter notes " onkeyup="update_chords_for_notes(this.value);" />' +
+            '</div>';
+          return html;
+        },
+      },
+      {
+        type: 'spacer',
+        id: 'xxx'
+      },
+      {
+        type: 'button',
+        id:
+          'sb_current-notes',
+        size:
+          '50px',
+        text:
+          '<div style="padding: 0px !important;"><span class="current-notes"></span></div>',
+        onClick: function (event) {
+          a = $('#chordsearch_input')[0]
+          notes = $('.current-notes').text()
+          a.value = notes
+          a.onkeyup()
+        }
+      },
+    ]
   }
 
   var editor_toolbar = {
@@ -749,14 +804,6 @@ function init_w2ui(uicontroller) {
       {type: 'spacer'},
       {
         type: 'menu',
-        text: "Edit Config",
-        id: 'edit_config',
-        icon: 'fa fa-pencil',
-        tooltip: "Edit configuration with forms",
-        items: uicontroller.$get_config_form_menu_entries().$to_n()   // note that these items are a
-      },
-      {
-        type: 'menu',
         text: "Insert Decoration",
         id: 'add_decoration',
         items: uicontroller.$get_decoration_menu_entries().$to_n(),   // note that these items are a
@@ -789,7 +836,16 @@ function init_w2ui(uicontroller) {
         id: 'edit_snippet',
         icon: 'fa fa-pencil',
         tooltip: "Edit addon on cursor position"
-      }
+      },
+      {type:'break'},
+      {
+        type: 'menu',
+        text: "Edit Config",
+        id: 'edit_config',
+        icon: 'fa fa-pencil',
+        tooltip: "Edit configuration with forms",
+        items: uicontroller.$get_config_form_menu_entries().$to_n()   // note that these items are a
+      },
     ],
 
     onClick: function (event) {
@@ -811,9 +867,8 @@ function init_w2ui(uicontroller) {
       if (['edit_actions'].includes(config_event[0])) {
         if (config_event[1]) {
           if (config_event[2]) {
-            uicontroller.$handle_command(config_event[1] + " " + config_event[2]) ; // this is for command with arguments such as editunison
-          }
-          else {
+            uicontroller.$handle_command(config_event[1] + " " + config_event[2]); // this is for command with arguments such as editunison
+          } else {
             uicontroller.$handle_command(config_event[1])
           }
         }
@@ -1039,7 +1094,7 @@ function init_w2ui(uicontroller) {
         type: 'menu',
         id: 'sb_templatemenu',
         text: "template",
-        items:[
+        items: [
           {
             text: 'stdextract', icon: 'fa fa-clipboard',
             tooltip: "apply settings from template",
@@ -1057,13 +1112,16 @@ function init_w2ui(uicontroller) {
           {
             text: 'resettemplate', icon: 'fa fa-support',
             tooltip: "reset template to Zupfnoter defalts",
-            onClick: function () {uicontroller.$handle_command('resettemplate')
+            onClick: function () {
+              uicontroller.$handle_command('resettemplate')
             }
           },
           {
             text: "load template from dropbox", icon: 'fa fa-dropbox',
             tooltip: "load and apply template from dropbox",
-            onClick: function (event) {uicontroller.$handle_command('dchoose template');}
+            onClick: function (event) {
+              uicontroller.$handle_command('dchoose template');
+            }
           }
         ]
       },
@@ -1075,15 +1133,6 @@ function init_w2ui(uicontroller) {
         text:
           '<div style="padding: 0px !important;"><span class="mouseover-conf-key"></span></div>'
       },
-      {
-        type: 'button',
-        id:
-          'sb_current-notes',
-        size:
-          '50px',
-        text:
-          '<div style="padding: 0px !important;"><span class="current-notes"></span></div>'
-      },
     ]
   }
 
@@ -1092,7 +1141,9 @@ function init_w2ui(uicontroller) {
 
     + '<div id="abceditortab" class="tab" style="height:100%;">'
     + '<div id="abceditortoolbar"></div>'
+   // + '<div id="chordassistant"></div>'
     + '<div id="abcEditor" style="height:100%;"></div>'
+
     + '</div>' +
 
     '<div id="lyricseditortab" class="tab" style="height:100%;"><div id="abcLyrics" style="height:100%;"></div></div>' +
@@ -1143,7 +1194,7 @@ function init_w2ui(uicontroller) {
       },
       {text: 'small', id: 'klein', icon: 'fa fa-compress', tooltip: "small view\nto get an overview"},
       {text: 'fit', id: 'fit', icon: 'fa fa-arrows-alt', tooltip: "fit to viewport"},
-      {text: 'pdf', id: 'pdf', icon: 'fa fa-arrows-alt', tooltip: "Display pdfs" }
+      {text: 'pdf', id: 'pdf', icon: 'fa fa-arrows-alt', tooltip: "Display pdfs"}
 
       // {id: 'groß', text: w2utils.lang('large'), icon: ''},
       // {id: 'mittel', text: w2utils.lang('medium')},
@@ -1194,7 +1245,7 @@ function init_w2ui(uicontroller) {
         type: 'main',
         style: pstyle,
         overflow: 'hidden',
-        content: '<div id="tunePreview"  style="height:100%;" ></div>'
+        content: '<div id="chordassistant"></div><div id="tunePreview"  style="height:calc(100% - 30px)" ></div>'
       },
       {
         type: 'preview',
@@ -1203,7 +1254,7 @@ function init_w2ui(uicontroller) {
         hidden: false,
         style: pstyle,
         tabs: zoomtabsconfig,
-        content: '<div id="harpPreview" style="height:100%"></div><div id="harpPreviewPdf" style="height:100%"></div>'
+        content: '<div id="harpPreview" style="height:100%"></div><div id="harpPreviewPdf" style="height:90%"></div>'
       },
       {
         type: 'right',
@@ -1226,6 +1277,7 @@ function init_w2ui(uicontroller) {
   });
 
   w2ui['layout'].refresh()
+  $('#chordassistant').w2toolbar(chordassistant)
   $('#abceditortoolbar').w2toolbar(editor_toolbar)
   $('#configtoolbar').w2toolbar(config_toolbar)  // we need this even if the config-toolbar is replaced in config-form.rb
   $('#editortabspanel .tab').hide();
@@ -1272,6 +1324,7 @@ function set_tbitem_caption(item, caption) {
 function set_sbitem_caption(item, caption) {
   w2ui.layout_statusbar_main_toolbar.set(item, {text: caption});
 }
+
 function update_pdf_preview(uicontroller) {
   var pdfDiv = document.getElementById("harpPreviewPdf");
   pdfDiv.innerHTML = "<p>computing pdf<p>";
@@ -1282,6 +1335,7 @@ function update_pdf_preview(uicontroller) {
 
   }, 0)
 }
+
 function update_settings_menu(settings) {
   settings_menu_items = w2ui.layout_top_toolbar.get('tbExtras').items.filter(function (item) {
     return item.setting
@@ -1289,8 +1343,7 @@ function update_settings_menu(settings) {
   settings_menu_items.forEach(function (item) {
     if (settings[item.setting] == 'true') {
       item.icon = 'fa fa-check-square-o'
-    }
-    else {
+    } else {
       item.icon = 'a fa-square-o'
     }
   });
@@ -1322,8 +1375,7 @@ function update_systemstatus_w2ui(systemstatus) {
     w2ui.layout_top_toolbar.disable('tb_save')
     w2ui.layout_top_toolbar.disable('tbDropbox')
     w2ui.layout_top_toolbar.disable('tb_login')
-  }
-  else {
+  } else {
     w2ui.layout_top_toolbar.enable('tb_file')
     w2ui.layout_top_toolbar.enable('tb_create')
     w2ui.layout_top_toolbar.enable('tb_open')
@@ -1370,8 +1422,7 @@ function update_editor_status_w2ui(editorstatus) {
   //$(".editor-status-tokeninfo").html(editorstatus.tokeninfo);
   if (editorstatus.token.type.startsWith("zupfnoter.editable") && (editorstatus.selections.length == 1)) {
     w2ui['editortoolbar'].enable('edit_snippet')
-  }
-  else {
+  } else {
     w2ui['editortoolbar'].disable('edit_snippet')
   }
 
@@ -1382,8 +1433,7 @@ function update_editor_status_w2ui(editorstatus) {
     w2ui['editortoolbar'].enable('add_snippet:annotation', 'add_snippet:annotationref', 'add_snippet:jumptarget', 'add_snippet:draggable', 'add_snippet:shifter');
 
     w2ui['editortoolbar'].disable('edit_snippet');
-  }
-  else {
+  } else {
     w2ui['editortoolbar'].disable('add_snippet')
     w2ui['editortoolbar'].disable('add_decoration')
   }
@@ -1400,16 +1450,50 @@ function update_mouseover_status_w2ui(element_info) {
   $(".mouseover-conf-key").html(element_info);
 }
 
+
+// this updates the chord notes in chord assistant
+function chordassistant_update_notes_for_chord(chordname) {
+  var notes = zupfnoter.$get_chordnotes(chordname)
+  zupfnoter.$play_chordnotes(notes.join(" "));
+  $(".chordassistant_result").html(notes.join(" "));
+}
+
+// this shows the chords matching to the chord notes
+function update_chords_for_notes(notes) {
+  var toolbar ='chordtoolbar'
+  zupfnoter.$play_chordnotes(notes);
+  var chords = zupfnoter.$get_chords_for_string(notes)
+  var btn_count = 100
+  var chordbtns = w2ui[toolbar].items.map(item => item.id).filter(itemid => itemid.includes('xbtn_chord_'))
+  chordbtns.forEach(chordbtn => {
+    w2ui[toolbar].remove(chordbtn)
+  })
+
+  chords.forEach(chord => {
+    w2ui[toolbar].insert('xxx', {
+      type: 'button', id: "xbtn_chord_" + btn_count++, text: chord, onClick: function () {
+        chordassistant_set_chord(chord)
+      }
+    })
+  })
+}
+
+// this sets the chord to be analyzed
+function chordassistant_set_chord(chordname) {
+  var chordbar_input = $('.chordbar_input')[0]
+  chordbar_input.value = chordname
+  chordbar_input.onkeyup()
+}
+
+
 function update_play_w2ui(status) {
   if (status == "start") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Stop", icon: "fa fa-stop"})
-  }
-  else if (status == "stopping") {
+  } else if (status == "stopping") {
     w2ui.layout_top_toolbar.set('tbPlay', {text: "...", icon: "fa fa-stop-circle-o"})
 
     w2ui.layout_top_toolbar.disable('tbPlay')
-  }
-  else {
+  } else {
     w2ui.layout_top_toolbar.enable('tbPlay')
     w2ui.layout_top_toolbar.set('tbPlay', {text: "Play", icon: "fa fa-play"})
   }
@@ -1427,7 +1511,7 @@ function before_open() {
   w2ui.layout_left_tabs.click('abceditortab')
 };
 
-function set_extract_menu(items){
+function set_extract_menu(items) {
   w2ui.layout_top_toolbar.set('tb_view', {items: items})
 }
 
@@ -1478,6 +1562,9 @@ function openPopup(theForm) {
     }
   });
 }
+
+
+// this is a polyfill
 
 if (String.prototype.repeat == undefined) {
   String.prototype.repeat = function (n) {
