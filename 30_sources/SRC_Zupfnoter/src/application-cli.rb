@@ -136,7 +136,6 @@ sourcefiles.each do |sourcefile|
     %x{
        var encoding = require ("encoding")
        var buffer = encoding.convert(#{content}, 'Latin-1')
-       var buffer = #{content};
        fs.writeFileSync(#{outputname}, buffer)
     }
     nil
