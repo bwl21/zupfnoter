@@ -17,7 +17,7 @@ class Webworker
   end
 
   def post_message(object)
-    %x{#{@worker}.postMessage(#{object.to_json});}
+    %x{#{@worker}.postMessage(#{object.to_json})}
   end
 
   def on_message(&block)
@@ -32,7 +32,7 @@ class Webworker
       nil
       # end
     end
-    %x{ #{@worker}.addEventListener('message', #{listener}, false);}
+    %x{ #{@worker}.addEventListener('message', #{listener}, false)}
   end
 
 end

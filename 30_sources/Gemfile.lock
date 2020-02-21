@@ -20,16 +20,16 @@ GEM
     neatjson (0.8.4)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
-    opal (1.0.0)
+    opal (1.0.3)
       ast (>= 2.3.0)
-      parser (= 2.5.3.0)
+      parser (~> 2.6)
     opal-jquery (0.4.4)
       opal (>= 0.10.0, < 1.1)
     opal-sprockets (0.4.5.1.0.3.7)
       opal (~> 1.0.0)
       sprockets (~> 3.7)
       tilt (>= 1.4)
-    parser (2.5.3.0)
+    parser (2.7.0.2)
       ast (~> 2.4.0)
     polyglot (0.3.5)
     process-group (1.1.0)
@@ -95,4 +95,4 @@ RUBY VERSION
    ruby 2.6.3p62
 
 BUNDLED WITH
-   2.0.1
+   2.1.2

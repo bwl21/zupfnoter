@@ -234,7 +234,7 @@ module Harpnotes
 
     def edit_unisons(mode)
       selectionrange = %x{#{@editor}.selection.getRange()};
-      oldvalue = `#{@editor}.getSession().doc.getTextRange(#{editor}.selection.getRange());`
+      oldvalue = `#{@editor}.getSession().doc.getTextRange(#{editor}.selection.getRange())`
       if oldvalue.empty?
         raise I18n.t("Selection is empty")
       else
@@ -341,7 +341,7 @@ module Harpnotes
     end
 
     def set_focus
-      `#{@editor}.focus();`
+      `#{@editor}.focus()`
     end
 
     #
@@ -664,7 +664,7 @@ module Harpnotes
 
         oldtext = lyrics_raw.first.first # this depends on the the pattern in get_lyrics_raw
         # first match, first group
-        newtext = %x{#{@lyrics_editor}.getSession().getValue();}
+        newtext = %x{#{@lyrics_editor}.getSession().getValue()}
         newtext = " " if newtext.empty?
         newtext = newtext.split("\n").map { |l| "W:#{l}" }.join("\n")
         newtext = %Q{\n#{newtext}\n}

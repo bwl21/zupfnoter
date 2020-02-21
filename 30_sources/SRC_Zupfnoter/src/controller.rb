@@ -136,7 +136,7 @@ class Controller
     $conf.strict = false
     $conf.push(_init_conf)
 
-    @zupfnoter_ui = `new init_w2ui(#{self});`
+    @zupfnoter_ui = `new init_w2ui(#{self})`
 
     @console = JqConsole::JqConsole.new('commandconsole', 'zupfnoter> ')
     @console.load_from_loacalstorage
@@ -281,11 +281,11 @@ class Controller
                                play_start:        [lambda { `update_play_w2ui('start')` }],
                                play_stop:         [lambda { `update_play_w2ui('stop')` }],
                                play_stopping:     [lambda { `update_play_w2ui('stopping')` }],
-                               disable_save:      [lambda { `disable_save();` }],
-                               enable_save:       [lambda { `enable_save();` }],
+                               disable_save:      [lambda { `disable_save()` }],
+                               enable_save:       [lambda { `enable_save()` }],
                                before_open:       [lambda { `before_open()` }],
                                document_title:    [lambda { `document.title = #{@document_title}` }],
-                               current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(" ")});` }],
+                               current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(" ")})` }],
                                settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
                                extracts: [lambda {
                                  items = @extracts.map { |id, entry| {id: id, text: "#{id}: #{entry}"} }
@@ -1592,8 +1592,8 @@ class Controller
   end
 
   def send_remote_command(command)
-    `localStorage.setItem('command', '');`
-    `localStorage.setItem('command', #{command});`
+    `localStorage.setItem('command', '')`
+    `localStorage.setItem('command', #{command})`
   end
 
   def set_active(ui_element)
