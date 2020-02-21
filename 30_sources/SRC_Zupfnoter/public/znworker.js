@@ -38358,7 +38358,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
       (function($base, $super, $parent_nesting) {
         var self = $klass($base, $super, 'HarpnotePlayer');
 
-        var $nesting = [self].concat($parent_nesting), $HarpnotePlayer_initialize$1, $HarpnotePlayer_is_playing$ques$2, $HarpnotePlayer_is_stopped$ques$3, $HarpnotePlayer_call_on_note$4, $HarpnotePlayer_call_on_songoff$5, $HarpnotePlayer_on_noteon$6, $HarpnotePlayer_on_noteoff$7, $HarpnotePlayer_on_songoff$8, $HarpnotePlayer_play_auto$10, $HarpnotePlayer_play_from_selection$12, $HarpnotePlayer_play_selection$15, $HarpnotePlayer_play_song$16, $HarpnotePlayer_play_from_abc$17, $HarpnotePlayer_play_notes$18, $HarpnotePlayer_set_speed$21, $HarpnotePlayer_stop$22, $HarpnotePlayer_unhighlight_all$23, $HarpnotePlayer_range_highlight$24, $HarpnotePlayer_pitch_to_note$27, $HarpnotePlayer_get_notes$28, $HarpnotePlayer_load_song$33, $HarpnotePlayer_get_worker_model$35, $HarpnotePlayer_set_worker_model$36, $HarpnotePlayer__load_voice_elements_from_voices$38, $HarpnotePlayer_mk_to_play_for_abc2svgplay$44, $HarpnotePlayer_mk_to_play$45;
+        var $nesting = [self].concat($parent_nesting), $HarpnotePlayer_initialize$1, $HarpnotePlayer_is_playing$ques$2, $HarpnotePlayer_is_stopped$ques$3, $HarpnotePlayer_call_on_note$4, $HarpnotePlayer_call_on_songoff$5, $HarpnotePlayer_on_noteon$6, $HarpnotePlayer_on_noteoff$7, $HarpnotePlayer_on_songoff$8, $HarpnotePlayer_play_auto$10, $HarpnotePlayer_play_from_selection$12, $HarpnotePlayer_play_selection$15, $HarpnotePlayer_play_song$16, $HarpnotePlayer_play_from_abc$17, $HarpnotePlayer_play_notes$18, $HarpnotePlayer_set_speed$21, $HarpnotePlayer_stop$22, $HarpnotePlayer_unhighlight_all$23, $HarpnotePlayer_range_highlight$24, $HarpnotePlayer_pitch_to_note$27, $HarpnotePlayer_get_notes$28, $HarpnotePlayer_load_song$34, $HarpnotePlayer_get_worker_model$36, $HarpnotePlayer_set_worker_model$37, $HarpnotePlayer__load_voice_elements_from_voices$39, $HarpnotePlayer_mk_to_play_for_abc2svgplay$45, $HarpnotePlayer_mk_to_play$46, $HarpnotePlayer_play_pitches$47;
 
         self.$$prototype.abcplay = self.$$prototype.controller = self.$$prototype.status = self.$$prototype.noteon_callback = self.$$prototype.noteoff_callback = self.$$prototype.songoff_callback = self.$$prototype.selection = self.$$prototype.voice_elements = self.$$prototype.player_model_abc = self.$$prototype.song_off_timer = self.$$prototype.duration_timefactor = self.$$prototype.speed = self.$$prototype.active_voices = self.$$prototype.beat_timefactor = nil;
         
@@ -38643,10 +38643,10 @@ Opal.modules["harpnote_player"] = function(Opal) {
         }, $HarpnotePlayer_pitch_to_note$27.$$arity = 1);
         
         Opal.def(self, '$get_notes', $HarpnotePlayer_get_notes$28 = function $$get_notes() {
-          var $$29, $$31, $$32, self = this, pitches = nil;
+          var $$29, $$32, $$33, self = this, pitches = nil;
 
           
-          pitches = $send(self.selection, 'map', [], ($$29 = function(i){var self = $$29.$$s || this, $$30;
+          pitches = $send(self.selection, 'map', [], ($$29 = function(i){var self = $$29.$$s || this, $$30, $$31;
             if (self.voice_elements_by_time == null) self.voice_elements_by_time = nil;
 
           
@@ -38654,33 +38654,40 @@ Opal.modules["harpnote_player"] = function(Opal) {
             if (i == null) {
               i = nil;
             };
-            return $send(self.voice_elements_by_time['$[]'](i['$[]']("delay")), 'map', [], ($$30 = function(i){var self = $$30.$$s || this;
+            return $send($send(self.voice_elements_by_time['$[]'](i['$[]']("delay")), 'select', [], ($$30 = function(i){var self = $$30.$$s || this;
 
             
               
               if (i == null) {
                 i = nil;
               };
-              return i['$[]']("pitch");}, $$30.$$s = self, $$30.$$arity = 1, $$30));}, $$29.$$s = self, $$29.$$arity = 1, $$29)).$flatten().$uniq().$compact();
-          return $send($send(pitches, 'map', [], ($$31 = function(i){var self = $$31.$$s || this;
+              return $rb_gt(i['$[]']("velocity"), 0.01);}, $$30.$$s = self, $$30.$$arity = 1, $$30)), 'map', [], ($$31 = function(i){var self = $$31.$$s || this;
+
+            
+              
+              if (i == null) {
+                i = nil;
+              };
+              return i['$[]']("pitch");}, $$31.$$s = self, $$31.$$arity = 1, $$31));}, $$29.$$s = self, $$29.$$arity = 1, $$29)).$flatten().$uniq().$compact();
+          return $send($send(pitches, 'map', [], ($$32 = function(i){var self = $$32.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return i['$%'](12);}, $$31.$$s = self, $$31.$$arity = 1, $$31)).$uniq().$sort(), 'map', [], ($$32 = function(i){var self = $$32.$$s || this;
+            return i['$%'](12);}, $$32.$$s = self, $$32.$$arity = 1, $$32)).$uniq().$sort(), 'map', [], ($$33 = function(i){var self = $$33.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return self.$pitch_to_note(i);}, $$32.$$s = self, $$32.$$arity = 1, $$32));
+            return self.$pitch_to_note(i);}, $$33.$$s = self, $$33.$$arity = 1, $$33));
         }, $HarpnotePlayer_get_notes$28.$$arity = 0);
         
-        Opal.def(self, '$load_song', $HarpnotePlayer_load_song$33 = function $$load_song(music, active_voices) {
-          var $$34, self = this, specduration = nil, specbpm = nil, spectf = nil, tf = nil;
+        Opal.def(self, '$load_song', $HarpnotePlayer_load_song$34 = function $$load_song(music, active_voices) {
+          var $$35, self = this, specduration = nil, specbpm = nil, spectf = nil, tf = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -38694,46 +38701,46 @@ Opal.modules["harpnote_player"] = function(Opal) {
           self.beat_timefactor = $rb_divide(1, $rb_times(tf, $gvars.conf.$get("layout.BEAT_PER_DURATION")));
           $gvars.log.$debug("" + "playing with tempo: " + (tf) + " ticks per quarter " + ("./harpnote_player.rb".$force_encoding("US-ASCII")) + " " + (205));
           self.$_load_voice_elements_from_voices(music);
-          self.voice_elements_by_time = $send(self.voice_elements, 'group_by', [], ($$34 = function(element){var self = $$34.$$s || this;
+          self.voice_elements_by_time = $send(self.voice_elements, 'group_by', [], ($$35 = function(element){var self = $$35.$$s || this;
 
           
             
             if (element == null) {
               element = nil;
             };
-            return element['$[]']("delay");}, $$34.$$s = self, $$34.$$arity = 1, $$34));
+            return element['$[]']("delay");}, $$35.$$s = self, $$35.$$arity = 1, $$35));
           return self;
-        }, $HarpnotePlayer_load_song$33.$$arity = 2);
+        }, $HarpnotePlayer_load_song$34.$$arity = 2);
         
-        Opal.def(self, '$get_worker_model', $HarpnotePlayer_get_worker_model$35 = function $$get_worker_model() {
+        Opal.def(self, '$get_worker_model', $HarpnotePlayer_get_worker_model$36 = function $$get_worker_model() {
           var self = this;
 
           return $hash2(["voice_elements", "active_voices", "duration_timefactor", "beat_timefactor"], {"voice_elements": self.voice_elements, "active_voices": self.active_voices, "duration_timefactor": self.duration_timefactor, "beat_timefactor": self.beat_timefactor})
-        }, $HarpnotePlayer_get_worker_model$35.$$arity = 0);
+        }, $HarpnotePlayer_get_worker_model$36.$$arity = 0);
         
-        Opal.def(self, '$set_worker_model', $HarpnotePlayer_set_worker_model$36 = function $$set_worker_model(worker_model) {
-          var $$37, self = this;
+        Opal.def(self, '$set_worker_model', $HarpnotePlayer_set_worker_model$37 = function $$set_worker_model(worker_model) {
+          var $$38, self = this;
 
           
           self.duration_timefactor = worker_model['$[]']("duration_timefactor");
           self.beat_timefactor = worker_model['$[]']("beat_timefactor");
           self.voice_elements = worker_model['$[]']("voice_elements");
           self.active_voices = worker_model['$[]']("active_voices");
-          self.voice_elements_by_time = $send(self.voice_elements, 'group_by', [], ($$37 = function(element){var self = $$37.$$s || this;
+          self.voice_elements_by_time = $send(self.voice_elements, 'group_by', [], ($$38 = function(element){var self = $$38.$$s || this;
 
           
             
             if (element == null) {
               element = nil;
             };
-            return element['$[]']("delay");}, $$37.$$s = self, $$37.$$arity = 1, $$37));
+            return element['$[]']("delay");}, $$38.$$s = self, $$38.$$arity = 1, $$38));
           return nil;
-        }, $HarpnotePlayer_set_worker_model$36.$$arity = 1);
+        }, $HarpnotePlayer_set_worker_model$37.$$arity = 1);
         
-        Opal.def(self, '$_load_voice_elements_from_voices', $HarpnotePlayer__load_voice_elements_from_voices$38 = function $$_load_voice_elements_from_voices(music) {
-          var $$39, self = this;
+        Opal.def(self, '$_load_voice_elements_from_voices', $HarpnotePlayer__load_voice_elements_from_voices$39 = function $$_load_voice_elements_from_voices(music) {
+          var $$40, self = this;
 
-          return (self.voice_elements = $send(music.$voices().$each_with_index(), 'map', [], ($$39 = function(voice, index){var self = $$39.$$s || this, $$40, $$41, tie_start = nil;
+          return (self.voice_elements = $send(music.$voices().$each_with_index(), 'map', [], ($$40 = function(voice, index){var self = $$40.$$s || this, $$41, $$42, tie_start = nil;
 
           
             
@@ -38747,14 +38754,14 @@ Opal.modules["harpnote_player"] = function(Opal) {
             if (index['$=='](0)) {
               return nil;};
             tie_start = $hash2([], {});
-            return $send($send(voice, 'select', [], ($$40 = function(c){var self = $$40.$$s || this;
+            return $send($send(voice, 'select', [], ($$41 = function(c){var self = $$41.$$s || this;
 
             
               
               if (c == null) {
                 c = nil;
               };
-              return c['$is_a?']($$($nesting, 'Playable'));}, $$40.$$s = self, $$40.$$arity = 1, $$40)), 'map', [], ($$41 = function(root){var self = $$41.$$s || this, $$42, $$43, velocity = nil, to_play = nil, more_to_play = nil, $writer = nil, reault = nil, result = nil;
+              return c['$is_a?']($$($nesting, 'Playable'));}, $$41.$$s = self, $$41.$$arity = 1, $$41)), 'map', [], ($$42 = function(root){var self = $$42.$$s || this, $$43, $$44, velocity = nil, to_play = nil, more_to_play = nil, $writer = nil, reault = nil, result = nil;
 
             
               
@@ -38767,7 +38774,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
               to_play = self.$mk_to_play(root, velocity, index);
               more_to_play = [];
               if ($truthy(root['$is_a?']($$($nesting, 'SynchPoint')))) {
-                more_to_play = $send(root.$notes().$each(), 'map', [], ($$42 = function(note){var self = $$42.$$s || this;
+                more_to_play = $send(root.$notes().$each(), 'map', [], ($$43 = function(note){var self = $$43.$$s || this;
 
                 
                   
@@ -38778,7 +38785,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
                     return nil
                   } else {
                     return self.$mk_to_play(note, velocity, index)
-                  };}, $$42.$$s = self, $$42.$$arity = 1, $$42)).$compact()};
+                  };}, $$43.$$s = self, $$43.$$arity = 1, $$43)).$compact()};
               if ($truthy(root['$tie_end?']())) {
                 if (tie_start['$[]']("pitch")['$=='](to_play['$[]']("pitch"))) {
                   
@@ -38794,7 +38801,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
                   $writer = ["delay", tie_start['$[]']("delay")];
                   $send(to_play, '[]=', Opal.to_a($writer));
                   $writer[$rb_minus($writer["length"], 1)];;
-                  $send(more_to_play, 'each', [], ($$43 = function(p){var self = $$43.$$s || this;
+                  $send(more_to_play, 'each', [], ($$44 = function(p){var self = $$44.$$s || this;
 
                   
                     
@@ -38808,7 +38815,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
                     
                     $writer = ["delay", tie_start['$[]']("delay")];
                     $send(p, '[]=', Opal.to_a($writer));
-                    return $writer[$rb_minus($writer["length"], 1)];;}, $$43.$$s = self, $$43.$$arity = 1, $$43));}};
+                    return $writer[$rb_minus($writer["length"], 1)];;}, $$44.$$s = self, $$44.$$arity = 1, $$44));}};
               if ($truthy(root['$tie_start?']())) {
                 
                 tie_start = to_play;
@@ -38816,28 +38823,45 @@ Opal.modules["harpnote_player"] = function(Opal) {
               } else {
                 result = $rb_plus([to_play], [more_to_play])
               };
-              return result;}, $$41.$$s = self, $$41.$$arity = 1, $$41));}, $$39.$$s = self, $$39.$$arity = 2, $$39)).$flatten().$compact())
-        }, $HarpnotePlayer__load_voice_elements_from_voices$38.$$arity = 1);
+              return result;}, $$42.$$s = self, $$42.$$arity = 1, $$42));}, $$40.$$s = self, $$40.$$arity = 2, $$40)).$flatten().$compact())
+        }, $HarpnotePlayer__load_voice_elements_from_voices$39.$$arity = 1);
         
-        Opal.def(self, '$mk_to_play_for_abc2svgplay', $HarpnotePlayer_mk_to_play_for_abc2svgplay$44 = function $$mk_to_play_for_abc2svgplay(note, start_delay) {
-          var self = this;
+        Opal.def(self, '$mk_to_play_for_abc2svgplay', $HarpnotePlayer_mk_to_play_for_abc2svgplay$45 = function $$mk_to_play_for_abc2svgplay(note, start_delay) {
+          var $a, self = this;
 
           
           
           if (start_delay == null) {
             start_delay = 0;
           };
-          return [note['$[]']("origin")['$[]']("startChar"), $rb_divide($rb_minus(note['$[]']("delay"), start_delay), self.speed), 25, note['$[]']("pitch"), $rb_divide(note['$[]']("duration"), self.speed), (function() {if ($truthy($rb_gt(note['$[]']("velocity"), 0.2))) {
+          return [note['$[]']("origin")['$[]']("startChar"), $rb_divide($rb_minus(note['$[]']("delay"), start_delay), self.speed), ($truthy($a = note['$[]']("midi")) ? $a : 25), note['$[]']("pitch"), $rb_divide(note['$[]']("duration"), self.speed), (function() {if ($truthy($rb_gt(note['$[]']("velocity"), 0.2))) {
             return 1
           } else {
             return 0
           }; return nil; })()];
-        }, $HarpnotePlayer_mk_to_play_for_abc2svgplay$44.$$arity = -2);
-        return (Opal.def(self, '$mk_to_play', $HarpnotePlayer_mk_to_play$45 = function $$mk_to_play(note, velocity, index) {
+        }, $HarpnotePlayer_mk_to_play_for_abc2svgplay$45.$$arity = -2);
+        
+        Opal.def(self, '$mk_to_play', $HarpnotePlayer_mk_to_play$46 = function $$mk_to_play(note, velocity, index) {
           var self = this;
 
           return $hash2(["delay", "pitch", "duration", "velocity", "origin", "index"], {"delay": $rb_times(note.$beat(), self.beat_timefactor), "pitch": note.$pitch(), "duration": $rb_times($rb_times(1, note.$duration()), self.duration_timefactor), "velocity": velocity, "origin": note.$origin(), "index": index})
-        }, $HarpnotePlayer_mk_to_play$45.$$arity = 3), nil) && 'mk_to_play';
+        }, $HarpnotePlayer_mk_to_play$46.$$arity = 3);
+        return (Opal.def(self, '$play_pitches', $HarpnotePlayer_play_pitches$47 = function $$play_pitches(pitches) {
+          var $$48, self = this;
+
+          return self.$play_notes($send(pitches.$each_with_index(), 'map', [], ($$48 = function(pitch, index){var self = $$48.$$s || this;
+
+          
+            
+            if (pitch == null) {
+              pitch = nil;
+            };
+            
+            if (index == null) {
+              index = nil;
+            };
+            return $hash2(["index", "delay", "pitch", "midi", "duration", "velocity", "origin"], {"index": 0, "delay": $rb_divide(index, 4), "pitch": pitch, "midi": 0, "duration": $rb_minus(pitches.$count(), index), "velocity": 1, "origin": $hash2(["startChar"], {"startChar": 0})});}, $$48.$$s = self, $$48.$$arity = 2, $$48)))
+        }, $HarpnotePlayer_play_pitches$47.$$arity = 1), nil) && 'play_pitches';
       })($nesting[0], null, $nesting)
     })($nesting[0], $nesting)
   })($nesting[0], $nesting)
@@ -40305,7 +40329,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.14-4-gbc7cfa3e");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.14-5-g26d934e6");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

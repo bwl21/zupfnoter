@@ -41,6 +41,7 @@ require 'abc2svg_polyfill.js'
 require 'xml2abc.js'
 require 'bowser.js'
 require 'opal-webworker'
+require 'chordengine'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"

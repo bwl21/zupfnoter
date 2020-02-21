@@ -2054,8 +2054,8 @@ herangezogen
 
 ### Mehrere Stimmen in ABC-Notation {#mehrere-Stimmen-in-abc}
 
-Da das im Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt
-es hier weitere Informationen.
+Da das Zupfnoter-tutorial dieses Thema eher knapp behandelt ist gibt es
+hier weitere Informationen.
 
 Die Kopfzeile `V:` The V: erlaubt die Erfassung mehrstimmiger Stücke.
 Dabei wird das Stück in Stimmen aufgeteilt. Jede Stimme beginnt mit
@@ -2105,6 +2105,45 @@ relevante Beispiele
 > **Hinweis**: Die ABC-Notation erlaubt mehrere `%%score` - Anweisungen.
 > Bitte vermeide das, weil Zupfnoter dafür nicht ausgelegt ist und das
 > Verhalten noch nicht ausgetestet ist.
+
+### Harmonieassistent
+
+Zupfnoter enthält einen rudimentären Assistent zum Umgang mit Harmonien.
+Dieser befindet sich am oberen Rand der Notenvorschau und bietet
+folgende Funktionen:
+
+1.  Anzeige der Töne in der aktuellen Selektion
+
+    Wenn man in der Notenvorschau oder in der Harfenvorschau eine oder
+    mehrere Noten auswählt, dann erscheinen alle Noten dieser Auswahl
+    rechts oben im der Notenvorschau. Damit kann man - Kenntnisse der
+    Harmonielehre - vorausgestzt, passende Begleittöne finden.
+
+2.  Anzeige passender Akkorde
+
+    Wenn du auf die Anzeige der aktuellen Noten klickst, werden diese in
+    die Akkordsuche (mittleres Eingabefeld) übernommen. Du kannst
+    natürlich auch auch einzelne Töne eingeben. Die passenden Akkorde
+    werden laufend angezeigt.
+
+    Wenn du auf einen der angezeigten Akkorde klickst, wird er in das
+    Eingabefeld der Akkordauflösung eingefügt und du kannst die Töne
+    sehen, die zu dem Akkord gehören.
+
+3.  Anzeige von Tönen in einem Akkord
+
+    Wenn du ein Stück mit Akkordsymbolen erfasst, kannst du die
+    Auflösung der Akkorde in Einzeltöne ermitteln. Bitte gib dazu das
+    Akkordsymbol im linken Eingabefeld ein. Die Töne dieses Akkordes
+    werden dann abgespielt und angezeigt.
+
+> Hinweis: in allen Feldern werden die Töne als Buchtabe mit ggf.
+> angehängtem Versetzungszeichen eingegeben bzw. dargestellt z.B.
+> `C C# Ab Bb`.
+>
+> Hinweis: man kann die Töne noch einmal abspielen, wenn man eine
+> beliebige Taste (z.b. die Großschreibtaste) drückt, solange das
+> entsprechnede Eingabefeld aktiv ist.
 
 ### Bearbeiten von Takten in allen Stimmen
 

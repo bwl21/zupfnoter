@@ -181,9 +181,9 @@ module Harpnotes
         %W{C C# D D# E F F# G G# A A# B}[pitch % 12]
       end
 
-      # this is experimental and puts the notes in the curren time to the logwindow
+      # this is experimental and returns the notes in the current time
       def get_notes
-        pitches = @selection.map { |i| @voice_elements_by_time[i[:delay]].map { |i| i[:pitch] } }.flatten.uniq.compact
+        pitches = @selection.map { |i| @voice_elements_by_time[i[:delay]].select{|i|i[:velocity] > 0.01}.map { |i| i[:pitch] } }.flatten.uniq.compact
         pitches.map { |i| i % 12 }.uniq.sort.map { |i| pitch_to_note(i) }
       end
 
@@ -275,7 +275,7 @@ module Harpnotes
         [
             note[:origin][:startChar], # [0]: index of the note in the ABC source
             (note[:delay] - start_delay) / @speed, #[1]: time in seconds
-            25, #[2]: MIDI instrument 25: guitar steel
+            note[:midi] || 25, #[2]: MIDI instrument 25: guitar steel
             note[:pitch], # [3]: MIDI note pitch (with cents)
             note[:duration] / @speed, # [4]: duration
             ((note[:velocity] > 0.2) ? 1 : 0) # [5] volume
@@ -299,6 +299,22 @@ module Harpnotes
             index:    index
         }
       end
+
+      def play_pitches(pitches)
+        play_notes(
+            pitches.each_with_index.map do |pitch, index|
+              {   index: 0,   # index
+                  delay: index/4,   # delay
+                  pitch: pitch,
+                  midi: 0,
+                  duration: pitches.count - index,   # duration
+                  velocity: 1,   # velocity
+                  origin: {startChar:0}
+              }
+            end
+        )
+      end
+
     end
 
   end
