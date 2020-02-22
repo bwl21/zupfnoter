@@ -53297,7 +53297,7 @@ Opal.modules["controller-cli"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars, $send = Opal.send, $truthy = Opal.truthy, $module = Opal.module, $range = Opal.range;
 
-  Opal.add_stubs(['$new', '$loglevel=', '$-', '$info', '$strict=', '$push', '$_init_conf', '$set_text', '$patch_config_part', '$get_config_from_editor', '$reset_to', '$get', '$create_engine', '$transform', '$get_abc_part', '$get_checksum', '$checksum=', '$layout_harpnotes', '$include?', '$[]', '$meta_data', '$dig', '$harpnote_options', '$raise', '$each', '$output', '$render_a3', '$[]=', '$t', '$jspdfversion', '$last', '$split', '$get_candidate_keys', '$map', '$join', '$to_s', '$first', '$compact', '$gsub', '$length', '$+', '$reverse', '$lambda', '$_split_parts', '$_clean_models', '$each_with_index', '$==', '$start_with?', '$_set_config_json', '$_set_resources_json', '$error']);
+  Opal.add_stubs(['$attr_reader', '$new', '$loglevel=', '$-', '$info', '$strict=', '$push', '$_init_conf', '$set_text', '$patch_config_part', '$get_config_from_editor', '$reset_to', '$get', '$create_engine', '$transform', '$get_abc_part', '$abc_model', '$get_checksum', '$checksum=', '$layout_harpnotes', '$include?', '$[]', '$meta_data', '$dig', '$harpnote_options', '$raise', '$each', '$output', '$render_a3', '$[]=', '$t', '$jspdfversion', '$last', '$split', '$get_candidate_keys', '$map', '$join', '$to_s', '$first', '$compact', '$gsub', '$length', '$+', '$reverse', '$lambda', '$_split_parts', '$_clean_models', '$each_with_index', '$==', '$start_with?', '$_set_config_json', '$_set_resources_json', '$error']);
   
   (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'Controller');
@@ -53317,6 +53317,7 @@ Opal.modules["controller-cli"] = function(Opal) {
 
     self.$$prototype.editor = self.$$prototype.music_model = nil;
     
+    self.$attr_reader("abc_model");
     
     Opal.def(self, '$initialize', $CliController_initialize$2 = function $$initialize() {
       var self = this, $writer = nil;
@@ -53374,6 +53375,7 @@ Opal.modules["controller-cli"] = function(Opal) {
       abc_parser = $gvars.conf.$get("abc_parser");
       harpnote_engine = $$$($$$($$($nesting, 'Harpnotes'), 'Input'), 'ABCToHarpnotesFactory').$create_engine(abc_parser);
       $b = harpnote_engine.$transform(self.editor.$get_abc_part()), $a = Opal.to_ary($b), (self.music_model = ($a[0] == null ? nil : $a[0])), (self.player_model_abc = ($a[1] == null ? nil : $a[1])), $b;
+      self.abc_model = harpnote_engine.$abc_model();
       
       $writer = [self.editor.$get_checksum()];
       $send(self.music_model, 'checksum=', Opal.to_a($writer));
@@ -81175,7 +81177,7 @@ Opal.loaded(["./abc2svg-1.js"]);
   }
   var $a, $$1, self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $truthy = Opal.truthy, $send = Opal.send, $gvars = Opal.gvars, sourcepattern = nil, targetfolder = nil, configfile = nil, controller = nil, sourcefiles = nil;
 
-  Opal.add_stubs(['$require', '$[]', '$>=', '$length', '$puts', '$about_zupfnoter', '$new', '$exit', '$mkdir_p', '$first', '$sort', '$each', '$clear_errors', '$read', '$message', '$set_abc_input', '$exist?', '$parse', '$apply_config', '$load_music_model', '$produce_pdfs', '$write', '$basename', '$join', '$get_errors']);
+  Opal.add_stubs(['$require', '$[]', '$>=', '$length', '$puts', '$about_zupfnoter', '$new', '$exit', '$mkdir_p', '$first', '$sort', '$each', '$clear_errors', '$read', '$message', '$set_abc_input', '$exist?', '$parse', '$apply_config', '$load_music_model', '$write', '$to_json', '$abc_model', '$produce_pdfs', '$basename', '$join', '$get_errors']);
   
   
   // see https://stackoverflow.com/questions/30694428/jspdf-server-side-node-js-usage-using-node-jspdf
@@ -81259,6 +81261,7 @@ Opal.loaded(["./abc2svg-1.js"]);
       config = $$($nesting, 'JSON').$parse($$($nesting, 'File').$read(configfile));
       controller.$apply_config(config);};
     controller.$load_music_model();
+    $$($nesting, 'File').$write("x.json", controller.$abc_model().$to_json());
     pdfs = controller.$produce_pdfs(".");
     $send(pdfs, 'each', [], ($$2 = function(filename, content){var self = $$2.$$s || this, outputname = nil;
 

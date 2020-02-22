@@ -126,6 +126,7 @@ sourcefiles.each do |sourcefile|
 
   controller.load_music_model
 
+  File.write("x.json", controller.abc_model.to_json)
   pdfs = controller.produce_pdfs(".")
 
 
