@@ -946,7 +946,7 @@ module Harpnotes
       def _extract_chord_lines(voice_element)
         chords = voice_element[:a_gch]
         if chords
-          result = chords.select { |e| e[:type] == '^'; true }.map { |e| e[:text] }
+          result = chords.compact.select { |e| e[:type] == '^'; true }.map { |e| e[:text] }
         else
           result = []
         end
