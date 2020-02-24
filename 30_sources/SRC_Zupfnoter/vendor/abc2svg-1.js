@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2020-02-24 11:50:27 +0100
+// compiled for Zupfnoter 2020-02-25 19:00:31 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -6688,24 +6688,21 @@ function param_set_font(xxxfont, p) {
 
 // get a length with a unit - return the number of pixels
 function get_unit(param) {
-	var v = parseFloat(param)
+    var	v = param.toLowerCase().match(/([\d.]+)(.*)/)
 
-	switch (param.slice(-2)) {
-	case "CM":
+	v[1] = Number(v[1])
+	switch (v[2]) {
 	case "cm":
-		v *= CM
-		break
-	case "IN":
+		return v[1] * CM
 	case "in":
-		v *= IN
-		break
-	case "PT":		// paper point in 1/72 inch
-	case "pt":
-		v *= .75
-		break
-//	default:  // ('px')	// screen pixel in 1/96 inch
+		return v[1] * IN
+	case "pt":		// paper point in 1/72 inch
+		return v[1] * .75
+	case "px":		// screen pixel in 1/96 inch
+	case "":
+		return v[1]
 	}
-	return v
+	return NaN
 }
 
 // set the infoname
@@ -16744,7 +16741,6 @@ function write_heading() {
 
 var	output = "",		// output buffer
 	style = '\
-\ntext, tspan{fill:currentColor}\
 \n.stroke{stroke:currentColor;fill:none}\
 \n.bW{stroke:currentColor;fill:none;stroke-width:1}\
 \n.bthW{stroke:currentColor;fill:none;stroke-width:3}\
@@ -17883,7 +17879,10 @@ function svg_flush() {
 	}
 
 	if (style || font_style)
-		head += '<style type="text/css">' + style + font_style +
+		head += '<style type="text/css">\n.' +
+				font_class(font) +	// for fill color
+					' text,tspan{fill:currentColor}' +
+			font_style + style +
 			'\n</style>\n'
 
 	defs += fulldefs
@@ -21451,14 +21450,15 @@ abc2svg.modules = {
 		return this.nreq == nreq_i
 	}
 } // modules
-abc2svg.version="1.20.8-e0524b8c93";abc2svg.vdate="2020-02-23"
+abc2svg.version="1.20.8-";abc2svg.vdate=""
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
 //#javascript
 // Generate a JSON representation of ABC
 //
-// Copyright (C) 2016 Jean-Francois Moine
+// Copyright (C) 2016-2020 Jean-Francois Moine
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
@@ -21504,16 +21504,21 @@ function AbcJSON(nindent) {			// indentation level
 		}
 	// generate an attribute
 	function attr_gen(ind, attr, val) {
-		var	i, e,
+		var	i, e, l,
 			indn = ind + inb	// next indentation
 
 		if (links[attr]) {
-			if (attr == "extra") {
+			switch (attr) {
+			case "extra":
 				json += h + ind + '"extra": [';
 				h = '\n'
 				for (e = val ; e; e = e.next)
 					attr_gen(indn, null, e);
 				json += '\n' + ind + ']'
+				break
+			case "tie_s":
+				json += h + ind + '"ti1": true'
+				break
 			}
 			return
 		}
@@ -25119,6 +25124,8 @@ abc2svg.page = {
 				blkcpy(page)	// output the beginning of the tune
 				page.h = nh
 			}
+			if (h > page.hmax)
+				break		// error
 		}
 
 		// if no overflow yet, keep the block
@@ -25147,7 +25154,7 @@ abc2svg.page = {
 	if (cmd == "pageheight") {
 		v = this.get_unit(parm)
 		if (isNaN(v)) {
-			this.syntax(1, errs.bad_val, '%%' + cmd)
+			this.syntax(1, this.errs.bad_val, '%%' + cmd)
 			return
 		}
 		cfmt.pageheight = v
@@ -25216,7 +25223,7 @@ abc2svg.page = {
 				break
 			v = Number(parm)
 			if (isNaN(v)) {
-				this.syntax(1, errs.bad_val, '%%' + cmd)
+				this.syntax(1, this.errs.bad_val, '%%' + cmd)
 				return
 			}
 			page.pn = v - 1
@@ -25226,7 +25233,7 @@ abc2svg.page = {
 		case "topmargin":
 			v = this.get_unit(parm)
 			if (isNaN(v)) {
-				this.syntax(1, errs.bad_val, '%%' + cmd)
+				this.syntax(1, this.errs.bad_val, '%%' + cmd)
 				return
 			}
 			page[cmd] = v
@@ -29515,3 +29522,4 @@ abc2svg.modules.hooks.push(abc2svg.diag.set_hooks);
 
 // the module is loaded
 abc2svg.modules.diagram.loaded = true
+abc2svg.version = abc2svg.version + " Git: v1.20.8-16-g733a79b"

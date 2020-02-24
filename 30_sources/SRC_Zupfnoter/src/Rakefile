@@ -45,6 +45,7 @@ end
 
 desc "Update abc2svg from fossil clone"
 task :updateAbc2svg do
+  gitversion = ""
   abc2svg_fossil = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_git    = "#{abc2svg_fossil}/../abc2svg_git"
   abc2svg_file   = "abc2svg-1.js"
@@ -66,6 +67,7 @@ task :updateAbc2svg do
   cd abc2svg_git do
     puts "checkout git"
     sh 'git checkout'
+    gitversion = `git describe --tags`.strip
     sources.each { |f| sh " rm #{f} ; NOMIN=1 #{NINJAEXEC} #{f}" }
   end
 
@@ -85,6 +87,7 @@ task :updateAbc2svg do
       puts "copying #{s}"
       f.puts File.read("#{abc2svg_git}/#{s}")
     end
+    f.puts %Q{abc2svg.version = abc2svg.version + " Git: #{gitversion}"}
   end
 
 

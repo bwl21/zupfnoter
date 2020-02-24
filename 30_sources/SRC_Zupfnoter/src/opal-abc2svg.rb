@@ -261,11 +261,12 @@ I:stretchlast 1
           #{@player_model} = to_audio.clear()
       }
 
+      if $log.loglevel == "debug"
+        $log.debug(json_model)
+      end
       @abc_model = JSON.parse(json_model)
 
-      if $log.loglevel == "debug"
-        $log.debug(@abc_model.to_json)
-      end
+
       @abc_model
     end
 
