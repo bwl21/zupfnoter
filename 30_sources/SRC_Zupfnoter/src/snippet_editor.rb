@@ -165,8 +165,8 @@ class SnippetEditor
       ]
 
       @validate = lambda do |event|
-        `#{event}.errors.push({ field: this.get('second'), error: #{I18n.t('Please provide also value for out-line')} });` if `this.record['second'] === ''` and not `this.record['third'] === ''`
-        `#{event}.errors.push({ field: this.get('third'), error: #{I18n.t('Please provide also followup-line')} });` if `this.record['third'] === ''` and not `this.record['second'] === ''`
+        `#{event}.errors.push({ field: this.get('second'), error: #{I18n.t('Please provide also value for out-line')} })` if `this.record['second'] === ''` and not `this.record['third'] === ''`
+        `#{event}.errors.push({ field: this.get('third'), error: #{I18n.t('Please provide also followup-line')} })` if `this.record['third'] === ''` and not `this.record['second'] === ''`
       end
 
       if level[3]
@@ -264,8 +264,8 @@ class SnippetEditor
       ]
 
       @validate = lambda do |event|
-        `#{event}.errors.push({ field: this.get('X'), error: #{I18n.t('Please provide also X')} });` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
-        `#{event}.errors.push({ field: this.get('Y'), error: #{I18n.t('Please provide also Y')} });` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
+        `#{event}.errors.push({ field: this.get('X'), error: #{I18n.t('Please provide also X')} })` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
+        `#{event}.errors.push({ field: this.get('Y'), error: #{I18n.t('Please provide also Y')} })` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
       end
 
       @record = {text: text, X: pos_x, Y: pos_y}
@@ -301,8 +301,8 @@ class SnippetEditor
       end
 
       @validate = lambda do |event|
-        `#{event}.errors.push({ field: this.get('X'), error: #{I18n.t('Please provide also X')} });` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
-        `#{event}.errors.push({ field: this.get('Y'), error: #{I18n.t('Please provide also Y')} });` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
+        `#{event}.errors.push({ field: this.get('X'), error: #{I18n.t('Please provide also X')} })` if `this.record['X'] === ''` and not `this.record['Y'] === ''`
+        `#{event}.errors.push({ field: this.get('Y'), error: #{I18n.t('Please provide also Y')} })` if `this.record['Y'] === ''` and not `this.record['X'] === ''`
       end
 
       @fields = [

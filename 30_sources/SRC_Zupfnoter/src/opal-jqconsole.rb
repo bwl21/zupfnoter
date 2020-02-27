@@ -34,7 +34,7 @@ module JqConsole
     # Save session to local store
     def save_to_localstorage
       history = Native(@jqconsole.GetHistory).last(15).to_json
-      `localStorage.setItem('console_history', history);`
+      `localStorage.setItem('console_history', history)`
     end
 
     # load session from localstore
