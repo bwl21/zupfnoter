@@ -96,7 +96,7 @@ task :build_worker do
 end
 
 desc "Build zupfnoter to #{ZUPFNOTER_JS}"
-task :build => [:buildConfigDoc, :updateLocales, :build_worker] do
+task :build => [:buildConfigDoc, :updateLocales, :build_worker, :build_cli] do
   git_describe
   #env = Sprockets::Environment.new
   Opal.append_path "."
@@ -256,6 +256,7 @@ task :build_cli do #=> [:build] do
   # uglify-js
   # ajv
 
+  git_describe
 
   sh 'npm install'
 
