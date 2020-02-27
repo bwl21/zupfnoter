@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2020-02-25 19:00:31 +0100
+// compiled for Zupfnoter 2020-02-26 19:32:05 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -29522,4 +29522,4 @@ abc2svg.modules.hooks.push(abc2svg.diag.set_hooks);
 
 // the module is loaded
 abc2svg.modules.diagram.loaded = true
-abc2svg.version = abc2svg.version + " Git: v1.20.8-16-g733a79b"
+abc2svg.version = abc2svg.version + " Git: v1.20.8-20-g5c4a69a"

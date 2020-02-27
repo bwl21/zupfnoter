@@ -240,12 +240,17 @@ module Harpnotes
         if (result.count == 0)
           num_voice_index = voice_index.gsub("v_", '').to_i
 
-          unless @score_statements.last && @score_statements.last[:sy][:voices][num_voice_index - 1][:range] == -1
-            $log.error("#{I18n.t("Empty voice")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}")
-            # charpos_to_line_column(@score_statements.last[:istart] -1 ),
-            # charpos_to_line_column(@score_statements.last[:iend] -1 )
-            # )
+          unless @score_statements.last && @score_statements.last[:sy][:voices][num_voice_index - 1]
+            $log.warning("#{I18n.t("Voice not in %%score")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}",
+                         charpos_to_line_column(@score_statements.last[:istart])
+            )
+          else
+            $log.warning("#{I18n.t("Empty voice in %%score")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}",
+                         charpos_to_line_column(@score_statements.last[:istart])
+            )
           end
+
+          #
           #result = nil
         end
         result
@@ -380,7 +385,7 @@ module Harpnotes
 
         # transform the individual notes
         duration = _convert_duration(voice_element[:notes].first[:dur])
-        notes = voice_element[:notes].map do |the_note|
+        notes    = voice_element[:notes].map do |the_note|
           #duration = _convert_duration(the_note[:dur])
 
           result               = Harpnotes::Music::Note.new(the_note[:midi], duration)
@@ -398,6 +403,9 @@ module Harpnotes
           result.tuplet_start = tuplet_start
           result.tuplet_end   = tuplet_end
           result.variant      = @variant_no
+
+          result.visible      = false if voice_element[:invis]
+          #  result.invisible    = voice_element[:invis]
           result
         end
 
@@ -528,9 +536,9 @@ module Harpnotes
             # replace too fine grained count ticks
             count_range  = count_range.gsub(replace_char.last, "") if replace_char
             # add separators
-            count_range  = count_range.scan(/<\d+>|[eu]/).join("-")
+            count_range = count_range.scan(/<\d+>|[eu]/).join("-")
             # repmove number token isolators
-            count_range  = count_range.gsub(/[<>]/, '')
+            count_range = count_range.gsub(/[<>]/, '')
           else # in a tuplet
             count_range = count_start % 1 == 0 ? 'tra' : 'la'
           end
@@ -981,7 +989,7 @@ module Harpnotes
         result = a_dd.map do |dd|
           result = dd[:name].to_sym
         end
-        result.flatten .select { |i| @supported_decorations.include? i }
+        result.flatten.select { |i| @supported_decorations.include? i }
         #[:fermata]
       end
 

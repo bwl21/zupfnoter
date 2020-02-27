@@ -60,6 +60,7 @@ task :updateAbc2svg do
   cd abc2svg_fossil do
     puts "updating fossil and mirror to git"
     cmd = "fossil up"
+    sh cmd
     cmd = "fossil git export"
     sh cmd
   end

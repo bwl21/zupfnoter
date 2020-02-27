@@ -1738,9 +1738,9 @@ module Harpnotes
           decoration_result = []
           decorations.each_with_index do |decoration, index|
 
-            decoration_base_key  = "notebound.decoration.v_#{voice_nr}.t_#{playable.znid}.#{index}"
-            decoration_key = "extract.#{print_variant_nr}.#{decoration_base_key}"
-            conf_key       = "#{decoration_key}.pos"
+            decoration_base_key = "notebound.decoration.v_#{voice_nr}.t_#{playable.znid}.#{index}"
+            decoration_key      = "extract.#{print_variant_nr}.#{decoration_base_key}"
+            conf_key            = "#{decoration_key}.pos"
 
             decoration_offset = show_options[:print_options_raw]["#{decoration_base_key}.pos"] rescue nil
             decoration_offset = [0, (-decoration_root.size.last / decoration_scale - decoration_distance).round()] unless decoration_offset
@@ -1751,7 +1751,7 @@ module Harpnotes
 
             annotation = annotating_decorations[decoration]
             if annotation
-              decoration_center = (Vector2d(annotation[:pos]) + decoration_center).to_a  # text based annotation yields a specific default position
+              decoration_center = (Vector2d(annotation[:pos]) + decoration_center).to_a # text based annotation yields a specific default position
               style             = $conf["#{decoration_key}.style"] || annotation[:style]
               r                 = Harpnotes::Drawing::Annotation.new(decoration_center, annotation[:text], style, playable.origin, conf_key, decoration_offset)
               r.align           = annotation[:align] || :left
@@ -3304,7 +3304,9 @@ module Harpnotes
         shift = layout_note_shift(root, size, x_offset, dotted, note_conf_base)
         color = compute_color_by_variant_no(root.variant)
 
-        res                 = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
+        res         = Ellipse.new([x_offset + shift, y_offset], size, fill, dotted, root)
+        res.visible = false unless root.visible?
+
         res.conf_key        = note_conf_base + ".***" # we need to add .*** for context menu which goes one level up
         root.sheet_drawable = res # backannotate
         res.color           = color
@@ -3323,7 +3325,9 @@ module Harpnotes
 
           reducer = flag && !$conf.get('layout.bottomup') ? $conf.get('layout.LINE_THICK') : 0 # reduce width of barover if we have a flag
 
-          res            = Ellipse.new([x_offset + shift - reducer, y_offset - barover_y], [size.first - reducer, $conf.get('layout.LINE_THICK') / 2], :filled, false, nil, true)
+          res         = Ellipse.new([x_offset + shift - reducer, y_offset - barover_y], [size.first - reducer, $conf.get('layout.LINE_THICK') / 2], :filled, false, nil, true)
+          res.visible = false unless root.visible?
+
           res.color      = color
           res.line_width = $conf.get('layout.LINE_THIN')
           result.push res
