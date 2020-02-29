@@ -2,7 +2,7 @@
 require 'json'
 load("config.mft.rb")
 
-sourcefiles = Dir["#{$conf[:testsourcefolder]}/*.abc"]
+sourcefiles = Dir["#{$conf[:testsourcefolder]}/*.abc"].sort
 #sourcefiles = $conf[:sourcefiles]
 
 class String
@@ -15,22 +15,9 @@ class String
   end
 end
 
-describe "generate pdfs" do
+describe "inspect generated pdfs" do
 
-  json_temp = "xconfig.json"
   filenamepart = "-test"
-
-  File.open(json_temp, "w") do |f|
-    conf = {
-        produce: [0],
-        extract: {
-            "0" => {
-                filenamepart: filenamepart
-            }
-        }
-    }
-    f.puts(conf.to_json)
-  end
 
   sourcefiles.each do |sourcefilename|
 
@@ -39,7 +26,6 @@ describe "generate pdfs" do
       outfilename = File.basename(sourcefilename, '.abc')
 
       outfilebase     = "#{$conf[:testoutputfolder]}/#{outfilename}"
-      outfilebasename = File.basename(outfilebase)
       reffilebase     = "#{$conf[:testreferencefolder]}/#{outfilename}"
       difffilebase    = "#{$conf[:testdifffolder]}/#{outfilename}"
 
@@ -48,16 +34,6 @@ describe "generate pdfs" do
         FileUtils.rm "#{outfilebase}}*.#{ext}" rescue nil
       end
 
-      cmd = %Q{node #{$conf[:zupfnoter_src]}/zupfnoter-cli.js "#{sourcefilename}" "#{$conf[:testoutputfolder]}" "#{json_temp}"}
-      puts cmd
-      %x{#{cmd}}
-
-      # produce png
-
-      cmd = %Q{convert -density 300 +antialias  -flatten "#{outfilebase}_#{filenamepart}_a3.pdf" "#{outfilebase}_#{filenamepart}_a3.png"}
-
-      #cmd = %Q{sips -Z 1200 -s format png  "#{outfilebase}_#{filenamepart}_a3.pdf" --out "#{outfilebase}_#{filenamepart}_a3.png"}
-      %x{#{cmd}}
 
       unless false # testreference == testoutput
         if File.exist?("#{reffilebase}_#{filenamepart}_a3.png")

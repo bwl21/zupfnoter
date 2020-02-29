@@ -7,6 +7,7 @@
 require 'diff/lcs'
 require 'diff/lcs/ldiff'
 require 'yaml'
+require 'json'
 
 ruruku = "../200_Zupfnoter/30_sources/ZSUPP_Tools/macOs/ruruku"
 
@@ -138,7 +139,7 @@ task :buildrurukutestlib do
 end
 
 desc "copy testresults to reference"
-task :buildreference, [:example] do |t, args|
+task :copyreference, [:example] do |t, args|
   pattern = "*#{args[:example]}*"
   File.open("#{$conf[:testreferencefolder]}/0000_zupfnoter_version.txt", "w") do |f|
     f.puts %Q{#{PRODUCED_WITH}#{zupfnoterversion} }
@@ -150,11 +151,71 @@ end
 #--------------------------------------------
 
 
+def createFiletasks
+  pdffiles     = []
+  outputfolder = "#{$conf[:testoutputfolder]}"
+  mkdir_p outputfolder
+  $conf[:testsourcefiles].each do |sourcefilename|
+    json_temp    = "xconfig.json"
+    filenamepart = "-test"
+
+    File.open(json_temp, "w") do |f|
+      conf = {
+          produce: [0],
+          extract: {
+              "0" => {
+                  filenamepart: filenamepart
+              }
+          }
+      }
+      f.puts(conf.to_json)
+    end
+
+    outfilename = File.basename(sourcefilename, '.abc')
+    outfilebase = "#{outputfolder}/#{outfilename}"
+
+    pdffile = "#{outfilebase}_#{filenamepart}_a3.pdf"
+    pdffiles.push(pdffile)
+
+    file pdffile do |t, args|
+      # cleanup output folder
+      ["err", "html", "pdf"].each do |ext|
+        FileUtils.rm "#{outfilebase}}*.#{ext}" rescue nil
+      end
+
+      cmd = %Q{node #{$conf[:zupfnoter_src]}/zupfnoter-cli.js "#{sourcefilename}" "#{outputfolder}" "#{json_temp}"}
+      puts cmd
+      %x{#{cmd}}
+
+      # produce png
+
+      cmd = %Q{convert -density 300 +antialias  -flatten "#{outfilebase}_#{filenamepart}_a3.pdf" "#{outfilebase}_#{filenamepart}_a3.png"}
+
+      #cmd = %Q{sips -Z 1200 -s format png  "#{outfilebase}_#{filenamepart}_a3.pdf" --out "#{outfilebase}_#{filenamepart}_a3.png"}
+      %x{#{cmd}}
+    end
+  end
+  pdffiles
+end
+
+pdffiles = createFiletasks
+
+desc "generate new outputfiles (parallel)"
+multitask :buildcurrentoutput => pdffiles
+
+desc "cleeanup putputfiles"
+task :cleancurrentoutput
+# cleanup output folder
+["err", "html", "pdf"].each do |ext|
+  FileUtils.rm "#{outfilebase}}*.#{ext}" rescue nil
+end
+
 desc "execute rspec with given examples"
 task :rspec, [:example] do |t, args|
 
   example, example_doc = process_example_argument(args)
 
+  # clean diff folder - only if not specific example is to be evaluated
   Dir["test-diff/*"].each { |f| rm f } if example.nil?
 
   resultfile = "#{$conf[:testresultfolder]}/#{testname}#{example_doc}.html" # note that example_doc brings the "_" separator
@@ -210,8 +271,8 @@ task :showpng, [:example] do |t, args|
   end
 end
 
-desc "collect sources"
-task :buildsources do
+desc "collect sources to #{$conf[:testsourcefolder]}"
+task :collectsources do
   $conf[:sourcefiles].each do |source|
     cp source, $conf[:testsourcefolder]
   end
