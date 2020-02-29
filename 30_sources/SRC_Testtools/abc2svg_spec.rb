@@ -29,19 +29,13 @@ describe "inspect generated pdfs" do
       reffilebase     = "#{$conf[:testreferencefolder]}/#{outfilename}"
       difffilebase    = "#{$conf[:testdifffolder]}/#{outfilename}"
 
-      # cleanup output folder
-      ["err", "html", "pdf"].each do |ext|
-        FileUtils.rm "#{outfilebase}}*.#{ext}" rescue nil
-      end
-
-
       unless false # testreference == testoutput
         if File.exist?("#{reffilebase}_#{filenamepart}_a3.png")
           cmd            = %Q{npx pixelmatch "#{outfilebase}_#{filenamepart}_a3.png" "#{reffilebase}_#{filenamepart}_a3.png" "#{difffilebase}.diff.png" 0.1}
+          changed_pixels = "10"
           changed_pixels = %x{#{cmd}}
-          #require 'pry';binding.pry
           changed_pixels = changed_pixels.match(/.*pixels:\s*(\d+).*/)[1].to_i
-          FileUtils.rm "#{difffilebase}.diff.png" if changed_pixels == 0
+          # FileUtils.rm "#{difffilebase}.diff.png" if changed_pixels == 0
           verdict[:changed_pixels] = changed_pixels unless changed_pixels < 100
         end
       else

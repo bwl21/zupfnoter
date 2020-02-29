@@ -151,13 +151,38 @@ end
 #--------------------------------------------
 
 
-def createFiletasks
+def createDifftasks
+  difffiles    = []
+  filenamepart = $conf[:filenamepart]
+
+  pngfiles = Dir["#{$conf[:testoutputfolder]}/*.png"]
+  pngfiles.each do |pngfile|
+    outfilename = File.basename(pngfile, "_#{filenamepart}_a3.png")
+
+    outfilebase  = "#{$conf[:testoutputfolder]}/#{outfilename}"
+    reffilebase  = "#{$conf[:testreferencefolder]}/#{outfilename}"
+    difffilebase = "#{$conf[:testdifffolder]}/#{outfilename}"
+
+    difffile = "#{difffilebase}.diff.png"
+    difffiles.push difffile
+
+    file difffile do #=> ["#{outfilebase}_#{filenamepart}_a3.png", "#{reffilebase}_#{filenamepart}_a3.png"] do
+      cmd    = %Q{npx pixelmatch "#{outfilebase}_#{filenamepart}_a3.png" "#{reffilebase}_#{filenamepart}_a3.png" "#{difffilebase}.diff.png" 0.1}
+      result = %x{#{cmd}}
+      puts result
+    end
+  end
+  return difffiles
+end
+
+
+def createPdfPngFiletasks
   pdffiles     = []
   outputfolder = "#{$conf[:testoutputfolder]}"
-  mkdir_p outputfolder
+  mkdir_p outputfolder unless File.directory? outputfolder
   $conf[:testsourcefiles].each do |sourcefilename|
     json_temp    = "xconfig.json"
-    filenamepart = "-test"
+    filenamepart = $conf[:filenamepart]
 
     File.open(json_temp, "w") do |f|
       conf = {
@@ -178,36 +203,37 @@ def createFiletasks
     pdffiles.push(pdffile)
 
     file pdffile do |t, args|
-      # cleanup output folder
-      ["err", "html", "pdf"].each do |ext|
-        FileUtils.rm "#{outfilebase}}*.#{ext}" rescue nil
-      end
-
       cmd = %Q{node #{$conf[:zupfnoter_src]}/zupfnoter-cli.js "#{sourcefilename}" "#{outputfolder}" "#{json_temp}"}
       puts cmd
-      %x{#{cmd}}
-
+      result = %x{#{cmd}}
+      File.open("#{outfilebase}.abc.stdout.log", "a") { |f| f.puts result }
       # produce png
 
       cmd = %Q{convert -density 300 +antialias  -flatten "#{outfilebase}_#{filenamepart}_a3.pdf" "#{outfilebase}_#{filenamepart}_a3.png"}
 
       #cmd = %Q{sips -Z 1200 -s format png  "#{outfilebase}_#{filenamepart}_a3.pdf" --out "#{outfilebase}_#{filenamepart}_a3.png"}
-      %x{#{cmd}}
+      result = %x{#{cmd}}
     end
   end
   pdffiles
 end
 
-pdffiles = createFiletasks
-
+pdffiles = createPdfPngFiletasks.sort
 desc "generate new outputfiles (parallel)"
-multitask :buildcurrentoutput => pdffiles
+multitask :buildoutput => pdffiles
 
-desc "cleeanup putputfiles"
-task :cleancurrentoutput
+difffiles = createDifftasks.sort
+desc "generate difffiles (parallel)"
+multitask :builddiffs => difffiles
+
+desc "cleanup oputputfolder"
+task :cleanoutput do |t, args|
 # cleanup output folder
-["err", "html", "pdf"].each do |ext|
-  FileUtils.rm "#{outfilebase}}*.#{ext}" rescue nil
+  ["err", "html", "pdf", "png", "log"].each do |ext|
+    Dir["#{$conf[:testoutputfolder]}/*.#{ext}"].each do |file|
+      FileUtils.rm file rescue nil
+    end
+  end
 end
 
 desc "execute rspec with given examples"
@@ -345,6 +371,7 @@ task :showdiff, [:example] do |t, args|
 
   files_to_show = Dir["#{$conf[:testdifffolder]}/*.diff.png"].map { |f| File.basename(f) }
   showfile      = "#{$conf[:testresultfolder]}/#{testname}.diff.html" # note that example_doc brings the "_" separator
+  testident     =
 
   File.open(showfile, "w") do |f|
 
@@ -373,6 +400,7 @@ task :showdiff, [:example] do |t, args|
           </script>
         </head>
         <body>
+         <h1>changes #{testname}</h1>
          #{files_to_show.map { |f| mk_row(f) }.join("\n")}
         </body>
       </html>
