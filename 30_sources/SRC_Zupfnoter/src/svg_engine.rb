@@ -200,7 +200,7 @@ module Harpnotes
     def get_elements_by_range(from, to)
       result = []
       range  = [from, to].sort()
-
+      return [] if @interactive_elements.nil?
       @interactive_elements.each do |k, value|
         origin = value.dig(:music_model_elemment_origin, :origin)
         unless origin.nil?
