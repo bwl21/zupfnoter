@@ -49,7 +49,7 @@ task :updateAbc2svg do
   abc2svg_fossil = "../../../../200_zupfnoter_external_components/abc2svg"
   abc2svg_git    = "#{abc2svg_fossil}/../abc2svg_git"
   abc2svg_file   = "abc2svg-1.js"
-  sources        = [abc2svg_file, "json-1.js", "setmidi-1.js", "play-1.js"]
+  sources        = [abc2svg_file, "json-1.js", "setmidi-1.js", "snd-1.js"]
   # ignore some modules (not working, not relevant for zupfnoter audience)
   # permap does not work in zupfnoter
   # ps-interpreter will not be used by zupfnoter audience
@@ -68,8 +68,9 @@ task :updateAbc2svg do
   cd abc2svg_git do
     puts "checkout git"
     sh 'git checkout'
+    sh "NOMIN=1 #{NINJAEXEC}"
     gitversion = `git describe --tags`.strip
-    sources.each { |f| sh " rm #{f} ; NOMIN=1 #{NINJAEXEC} #{f}" }
+      # sources.each { |f| sh " rm #{f} ; NOMIN=1 #{NINJAEXEC} #{f}" }
   end
 
 
