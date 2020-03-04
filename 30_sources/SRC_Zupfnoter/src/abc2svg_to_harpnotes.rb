@@ -19,6 +19,7 @@ module Harpnotes
         @score_statements  = [] # need this to capture score statments in the header
         @part_table        = {}
         @abc_model         = {}
+        @tempo_statements  = [] # here we collect multiple Q: statements; only to raise warnings if there is more than one
 
         @supported_decorations = $conf["layout.DECORATIIONS_AS_ANNOTATIONS"].keys + [:fermata, :emphasis]
 
@@ -646,11 +647,12 @@ module Harpnotes
 
         # note that abc2svd yields Tune based Tempo in voice_propoeties.sym as well as in symbols
         # therefore we need to filter the Tune based tempo ...
-        unless voice_element[:istart] == @meta_data[:tempo][:sym][:istart]
+        unless @tempo_statements.empty?
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
           $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
         end
+        @tempo_statements.push(voice_element)
       end
 
       def _transform_yspace(voice_element, index)
