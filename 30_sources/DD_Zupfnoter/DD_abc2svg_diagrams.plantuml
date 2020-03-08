@@ -1,0 +1,237 @@
+@@ -0,0 +1,125 @@
+@startuml
+class foo
+package bar {
+    class foobar
+    class josef
+    foo <-> josef
+    }
+@enduml
+
+@startuml zupnfoter_integration
+    box Zupfnoter
+        participant controller
+        participant harpnotePlayer
+    end box
+
+    box snd-1
+        participant Abc
+        participant AbcPlay
+        participant Audio5
+    end box
+
+    controller -> Abc:tosvg
+    Abc -> controller:callback get_abcmodel
+
+    controller -> AbcPlay:play(istart,iend, 0)
+    AbcPlay -> Audio5
+@enduml
+
+
+@startuml abcplayer
+
+    box zupfnoter
+        participant HarpnotePlayer as hp
+    end box
+
+    box sndaud
+        participant Audio5
+    end box
+
+    box sndmid
+        participant Midi5
+    end box
+
+    box sndmem
+        participant Mem
+    end box
+
+    box toaudio5.js
+        participant Audio5
+    end box
+@enduml
+
+
+@startuml "bigpicture-of-playing in abc2svg"
+    skinparam BoxPadding 10
+
+    box "zupfnoter"
+    participant App
+    end box
+
+    box "abc2svg.js"
+    participant Abc
+    end box
+
+    box "play.js" #ffaaaa
+    participant EventSndgen
+    end box
+
+    box "toaudio5.js" #ffaaaa
+    participant Audio5 as ToAudio5
+    end box
+
+    box "sndgen.js"
+    participant Sndgen
+    end box
+
+    box "sndaud.js"
+    participant Audio5
+    end box
+
+    box "sndmem.js"
+    participant Sndmem
+    end box
+
+
+
+    == parsing abc to a model ==
+
+    App -> Abc:to_svg(abctext)
+    Abc -> App:get_abcmodel(abcmodel)
+
+    == playing the model ==
+
+    App -> Audio5 : play(first_symbol, last_symbol, repeat_level)
+
+    Audio5 -> Audio5 : 'get the play resources\n(instruments)\n initialize po
+
+    ...
+        note over Audio5 #red: **all resourses loaded** #red
+
+    Audio5 -> Sndgen:play_next(po)
+
+    group loop over play_next \nwhile (not po.stop )
+       Sndgen -> Audio5 : po.note_run(po, ...)
+       Audio5 -> : Audio out
+       note right : sound
+    end
+
+    == getting play events ==
+
+    App -> Sndmem : play(first_symbol, last_symbol, repeat_level)
+    Sndmem -> Sndgen : play_next(po)
+
+    group loop over Sndgen.play_next \nwhile (not po.stop )
+         Sndgen -> Sndmem : po.note_run(po, ...)
+         Sndmem -> Sndmem : p_e += ...
+         note right : store play events
+    end
+
+    App <-- Sndmem : return p_e
+
+    note over Sndgen, Sndmem #lightblue
+    This last step just builds the audio array in the same format as in the previous version.
+    To play any sequence, do:
+    end note
+    == playing arbitrary events ==
+
+    App -> ToAudio5 : play_events(p_e, ...)
+
+    ToAudio5 -> ToAudio5 : 'get the play resources\n(instruments)\n initialize epo
+
+    ...
+        note over ToAudio5 #red: **all resourses loaded** #red
+
+    ToAudio5 -> EventSndgen : play_next(epo)
+
+    loop over play_next(epo)
+       EventSndgen -> ToAudio5 : po.note_run(epo, ...)
+       ToAudio5 -> : Audio out
+       note right : sound
+    end
+
+    @enduml
+
+    @startuml Controller-abc2svg
+
+    participant controller
+    participant "Abc2svgToHarpnotes::\nharpnote_engine" as harpnote_engine
+    participant "Abc2svg::\nabcparser" as abc_parser
+    participant abc2svg as abc2svg
+    participant "Abc2svg::\n@tune_preview_printer" as tune_preview_printer
+    participant "Abc2svgToHarpnotes::\n@abc_transformer" as abc_transformer
+    participant "tunePreview" as tunePreview
+
+    group init
+       controller -> abc_transformer ++ :new(Abc2svgToHarpnotes mode:svg)
+       note right: **todo** we don't need this\ncreate on demand
+
+       controller -> tune_preview_printer ++ : Abc2svg.new($('#tunePreview'))
+       note right: **todo** we don't need this\ncreate on demand
+
+    end
+
+    group load_music_model
+        controller -> harpnote_engine++:harpnote_engine=new(Abc2svgToHarpnotes mode:model)
+        controller ->harpnote_engine:transform(abc_code)
+          group player_model_abc=getplayer_model(abc_code)
+            harpnote_engine -> abc_parser ++ :abc_parser = new(Abc2svg)
+              abc_parser -> abc2svg ++   : new abc2svg.Abc(\n{user:get_abcmodel})
+                harpnote_engine -> abc_parser : get_abcmodel(abc_code)
+                abc_parser -> abc2svg:to_svg
+              return _callback_get_abcmodel\n@player_model\n@abc_model
+            return [@abc_model, @player_model_abc]
+          end
+
+          harpnote_engine -> harpnote_engine : music_model = _transform_voices
+
+        harpnote_engine --> controller:return [music_model, player_model_abc]
+        deactivate harpnote_engine
+    end
+
+    group render_tunepreview_in_uithread
+       controller -> tune_preview_printer ++ : Abc2svg.new($('#tunePreview'))
+          tune_preview_printer -> abc2svg ++ : new abc2svg.Abc(\nuser:img_out ...}
+            controller -> tune_preview_printer : svg_and_positions = compute_tune_preview(abc_text, @editor.get_checksum)
+            tune_preview_printer -> abc2svg : to_svg
+               abc2svg -> tune_preview_printer: callback img_out
+            tune_preview_printer <-- abc2svg : to_svg is finished\ncan collect svg_buffer
+            controller <-- tune_preview_printer : return svg_and_positions
+            controller -> tune_preview_printer : set_svg(svg_and_positions)
+            tune_preview_printer -> tunePreview : place svg_and_positions
+          abc2svg --
+       return
+    end
+    @enduml
+=end
+
+@startuml "bigpicture-of-playing"
+
+skinparam BoxPadding 10
+
+box "zupfnoter"
+participant
+App end box
+
+box "play.js" participant Play end box
+
+box "abc2svg.js" participant Abc end box
+
+box "sndaud.js" participant Audio5 end box
+
+box "sndmid.js" participant Midi5 end box
+
+box "sndmem.js" participant Sndmem end box
+
+box "sndgen.js" participant Sndgen end box
+
+== parsing abc to a model ==
+
+App -> Abc:tosvg(abctext) Abc -> App:getabcmodel(abcmodel)
+
+== playing the model ==
+
+App -> Audio5:play(abcmodel) Audio5 -> Sndgen:playstart(abcmodel) loop over notes Sndgen -> Audio5:cllback_tone(event) note right : "Audio5 plays the event" Audio5 -> Sndgen:playnext end
+
+== getting play events ==
+
+App -> Sndmem:play(abcmodel) loop (overnotes) Sndmem -> Sndgen:playstart(abcmodel) Sndgen -> Sndmem:calback_tone(event) note right : "Sndgen save the event" end Sndgen -> Sndmem:callback(endOfStream) Sndmem -> App: return(arrayOfPlayevents)
+
+== playing arbitrary events ==
+
+App -> Play:playstream(arrayOfPlayevents)
+
+loop over arrayOfPlayevents Play -> Audio5:callback_tone(event) end
+
+@enduml
