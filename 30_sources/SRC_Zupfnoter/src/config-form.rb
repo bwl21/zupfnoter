@@ -438,7 +438,7 @@ class ConfstackEditor
           MultiLineString => ['text', 'instrument_shape'],
           NoteAlign       => ['align'],
           NoteAnchor      => ['apanchor'],
-          Boolean         => ['autopos', 'limit_a3', 'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid"],
+          Boolean         => ['autopos', 'limit_a3', 'bottomup', 'beams', 'show_border', 'nonflowrest', "show", "fill", "grid", "SHOW_SLUR"],
           Float           => ['LINE_THIN', 'LINE_MEDIUM', 'LINE_THICK', 'pack_max_spreadfactor', 'pack_min_increment', 'nshift', 'minc_f', "scale", "X_SPACING", "X_OFFSET", "height"],
           TupletShape     => ['shape'],
           TextStyle       => ['style', 'tstyle'],

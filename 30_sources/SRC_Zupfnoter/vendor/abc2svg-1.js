@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2020-03-03 12:23:46 +0100
+// compiled for Zupfnoter 2020-03-10 11:47:20 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -8269,6 +8269,14 @@ function unlksym(s) {
 			s.ts_next.shrink = s.shrink;
 			s.ts_next.space = s.space
 		    }
+		} else {
+			if (s.ts_next.seqst
+			 && s.ts_prev && s.ts_prev.seqst
+			 && !w_tb[s.ts_prev.type]) {
+				s.ts_next.seqst = false
+				s.shrink = s.ts_next.shrink
+				s.space = s.ts_next.space
+			}
 		}
 		s.ts_next.ts_prev = s.ts_prev
 	}
@@ -12845,7 +12853,6 @@ Abc.prototype.output_music = function() {
 	gen_init()
 	if (!tsfirst)
 		return
-	tunes.push([tsfirst, voice_tb])	// keep tune data for playing
 	set_global()
 	if (voice_tb.length > 1)	/* if many voices */
 		self.set_stem_dir()	// set the stems direction in 'multi'
@@ -18303,7 +18310,8 @@ function voice_adj(sys_chg) {
 		s.time = t
 	} // end set_feathered_beam()
 
-	/* if Q: from tune header, put it at start of the music */
+	// if Q: from tune header, put it at start of the music
+	// (after the staff system)
 	s = glovar.tempo
 	if (s && staves_found <= 0) {	// && !s.del) {		- play problem
 		v = par_sy.top_voice;
@@ -18314,10 +18322,15 @@ function voice_adj(sys_chg) {
 			s.p_v = p_voice;
 			s.st = p_voice.st;
 			s.time = 0;
-			s.next = p_voice.sym
-			if (s.next)
-				s.next.prev = s;
-			p_voice.sym = s
+			if (p_voice.sym) {
+				s.prev = p_voice.sym
+				s.next = p_voice.sym.next
+				if (s.next)
+					s.next.prev = s
+				p_voice.sym.next = s
+			} else {
+				p_voice.sym = s
+			}
 		}
 	}
 
@@ -19382,6 +19395,8 @@ function generate(in_mc) {
 
 	if (user.img_out)		// if SVG generation
 		self.output_music()
+
+	tunes.push([tsfirst, voice_tb])	// keep tune data for playing
 
 	// if inside multicol, reset the parser
 	if (!in_mc)
@@ -21471,7 +21486,7 @@ abc2svg.modules = {
 		return this.nreq == nreq_i
 	}
 } // modules
-abc2svg.version="1.20.8-";abc2svg.vdate=""
+abc2svg.version="1.20.8";abc2svg.vdate=""
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -24082,6 +24097,576 @@ if (0) {
 	} // stop()
     }
 } // end Midi5
+// sndgen.js - sound generation
+//
+// Copyright (C) 2019-2020 Jean-Francois Moine
+//
+// This file is part of abc2svg-core.
+//
+// abc2svg-core is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// abc2svg-core is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
+
+// This script generates the play data which are stored in the music symbols:
+// - in all symbols
+//	s.ptim = play time
+// - in BAR
+//	rep_p = on a right repeat bar, pointer to the left repeat symbol
+//	rep_s = on the first repeat variant, array of pointers to the next symbols,
+//						indexed by the repeat number
+// - in NOTE and REST
+//	s.pdur = play duration
+//	s.instr = bank + instrument
+// - in the notes[] of NOTE
+//	s.notes[i].midi
+
+function ToAudio() {
+ return {
+
+   // generate the play data of a tune
+   add: function(s,		// starting symbol
+		voice_tb) {	// voice table
+    var	C = abc2svg.C,
+	p_time = 0,		// last playing time
+	abc_time = 0,		// last ABC time
+	play_fac = C.BLEN / 4 * 120 / 60, // play time factor - default: Q:1/4=120
+	i, n, dt, d, v,
+	rst = s,		// left repeat (repeat restart)
+	rst_fac,		// play factor on repeat restart
+	rsk,			// repeat variant (repeat skip)
+	instr = []		// [voice] bank + instrument
+
+	// handle a block symbol
+	function do_block(s) {
+	    var	v = s.v
+
+		switch (s.subtype) {
+		case "midictl":
+			switch (s.ctrl) {
+			case 0:			// MSB bank
+				instr[v] = (instr[v] & 0x3fff) |
+					(s.val << 14)
+				break
+			case 32:		// LSB bank
+				instr[v] = (instr[v] & 0x1fc07f) |
+					(s.val << 7)
+				break
+//			case 121:		// reset all controllers
+//				instr = []
+//				break
+			}
+			break
+		case "midiprog":
+			instr[v] = (instr[v] & ~0x7f) | s.instr
+			break
+		}
+	} // do_block()
+
+	// generate the grace notes
+	function gen_grace(s) {
+	    var	g, i, n, t, d, s2,
+		next = s.next
+
+		// before beat
+		if (s.sappo) {
+			d = C.BLEN / 16
+		} else if ((!next || next.type != C.NOTE)
+			&& s.prev && s.prev.type == C.NOTE) {
+			d = s.prev.dur / 2
+
+		// on beat
+		} else {
+			d = next.dur / 12
+			if (!(d & (d - 1)))
+				d = next.dur / 2	// no dot
+			else
+				d = next.dur / 3
+			next.time += d
+			next.dur -= d
+		}
+//fixme: assume the grace notes have the same duration
+		n = 0
+		for (g = s.extra; g; g = g.next)
+			n++
+		d /= n * play_fac
+		t = p_time
+		for (g = s.extra; g; g = g.next) {
+			g.ptim = t
+			g.pdur = d
+			g.instr = instr[s.v]
+			t += d
+		}
+	} // gen_grace()
+
+	// change the tempo
+	function set_tempo(s) {
+	    var	i,
+		d = 0,
+		n = s.tempo_notes.length
+
+		for (i = 0; i < n; i++)
+			d += s.tempo_notes[i]
+		return d * s.tempo / 60
+	} // set_tempo()
+
+	function set_variant(rsk, n, s) {
+	    var	d
+		n = n.match(/[1-8]-[2-9]|[1-9,.]|[^\s]+$/g)
+		while (1) {
+			d = n.shift()
+			if (!d)
+				break
+			if (d[1] == '-')
+				for (i = d[0]; i <= d[2]; i++)
+					rsk.rep_s[i] = s
+			else if (d >= '1' && d <= '9')
+				rsk.rep_s[Number(d)] = s
+			else if (d != ',')
+				rsk.rep_s.push(s)	// last
+		}
+	} // set_variant()
+
+	// add() main
+
+	// set the MIDI pitches
+	AbcMIDI().add(s, voice_tb)
+
+	// loop on the symbols
+	rst = s
+	rst_fac = play_fac
+	while (s) {
+		if (s.noplay) {			// in display macro sequence
+			s = s.ts_next
+			continue
+		}
+
+		dt = s.time - abc_time
+		if (dt > 0) {
+			p_time += dt / play_fac
+			abc_time = s.time
+		}
+		s.ptim = p_time
+		v = s.v
+
+		if (instr[v] == undefined)
+			instr[v] = voice_tb[v].instr || 0
+
+		switch (s.type) {
+		case C.BAR:
+
+			// right repeat
+			if (s.bar_type[0] == ':') {
+				s.rep_p = rst		// :| to |:
+				n = s.text		// variants
+				while (s.ts_next && !s.ts_next.dur) {
+					s = s.ts_next
+					s.ptim = p_time
+					if (!n && s.text)
+						n = s.text
+				}
+				if (rsk) {		// if in a variant
+					if (!n)
+						n = "a"		// last time
+					set_variant(rsk, n, s)
+					play_fac = rst_fac
+					break
+				}
+			}
+
+			// left repeat
+			if (s.bar_type.slice(-1) == ':') {
+				rst = s
+				rst_fac = play_fac
+				rsk = null
+
+			// 1st time repeat
+			} else if (s.text && s.text[0] == '1'
+				&& !rsk) {		// error if |1 already
+				rsk = s
+				s.rep_s = [null]	// repeat skip
+				set_variant(rsk, s.text, s)
+			}
+			while (s.ts_next && !s.ts_next.dur) {
+				s = s.ts_next
+				if (s.type == C.BLOCK)
+					do_block(s)
+				else if (s.tempo)
+					play_fac = set_tempo(s)
+				s.ptim = p_time
+			}
+			break
+		case C.BLOCK:
+			do_block(s)
+			break
+		case C.GRACE:
+			if (s.time == 0		// if before beat at start time
+			 && abc_time == 0) {
+				dt = 0
+				if (s.sappo)
+					dt = C.BLEN / 16
+				else if (!s.next || s.next.type != C.NOTE)
+					dt = d / 2
+				abc_time -= dt
+			}
+			gen_grace(s)
+			break
+		case C.REST:
+		case C.NOTE:
+			d = s.dur
+			if (s.next && s.next.type == C.GRACE) {
+				dt = 0
+				if (s.next.sappo)
+					dt = C.BLEN / 16
+				else if (!s.next.next || s.next.next.type != C.NOTE)
+					dt = d / 2
+				s.next.time -= dt
+				d -= dt
+			}
+			d /= play_fac
+			s.pdur = d
+			s.instr = instr[v]
+			break
+		case C.TEMPO:
+			if (s.tempo)
+				play_fac = set_tempo(s)
+			break
+		}
+		s = s.ts_next
+	} // loop
+   }, // add()
+ } // return
+} // ToAudio()
+
+// play some next symbols
+//
+// This function is called by the upper function to start playing.
+// It is called by itself after delay and continue sound generation
+// up to the stop symbol or explicit stop by the user.
+//
+// The po object (Play Object) contains the following items:
+// - variables
+//  - stime: start time
+//		must be set by the calling function at startup time
+//  - stop: stop flag
+//		set by the user to stop playing
+//  - s_cur: current symbol (next to play)
+//		must be set to the first symbol to be played at startup time
+//  - s_end: stop playing on this symbol
+//		this symbol is not played. It may be null.
+//  - conf
+//    - speed: current speed factor
+//		must be set to 1 at startup time
+//    - new_conf: new speed factor
+//		set by the user
+// - internal variables
+//  - repn: don't repeat
+//  - repv: variant number
+//  - timouts: array of the current timeouts
+//		this array may be used by the upper function in case of hard stop
+// - methods
+//  - onend: (optional)
+//  - onnote: (optional)
+//  - note_run: start playing a note
+//  - get_time: return the time of the underlaying sound system
+abc2svg.play_next = function(po) {
+    var	d, i, st, m, note, g, s2, t, maxt,
+	C = abc2svg.C,
+	s = po.s_cur
+
+	// handle a tie
+	function do_tie(s, midi, d) {
+	    var	i, note,
+		v = s.v,
+		end_time = s.time + s.dur
+
+		// search the end of the tie
+		while (1) {
+			s = s.ts_next
+			if (!s)
+				return d
+			switch (s.type) {
+			case C.BAR:
+				if (s.rep_p) {
+					if (!po.repn) {
+						s = s.rep_p
+						end_time = s.time
+					}
+				}
+				if (s.rep_s) {
+					if (!s.rep_s[po.repv + 1])
+						return d
+					s = s.rep_s[po.repv + 1]
+					end_time = s.time
+				}
+				while (s.ts_next && !s.ts_next.dur)
+					s = s.ts_next
+			}
+			if (s.time > end_time)
+				return d
+			if (s.type == C.NOTE && s.v == v)
+				break
+		}
+		i = s.notes.length
+		while (--i >= 0) {
+			note = s.notes[i]
+			if (note.midi == midi) {
+				note.ti2 = true		// the sound is generated
+				d += s.pdur / po.conf.speed
+				return note.tie_ty ? do_tie(s, midi, d) : d
+			}
+		}
+
+		return d
+	} // do_tie()
+
+	if (po.stop) {
+		if (po.onend)
+			po.onend(po.repv)
+		return
+	}
+
+	while (s.noplay) {
+		s = s.ts_next
+		if (!s || s == po.s_end) {
+			if (po.onend)
+				po.onend(po.repv)
+			return
+		}
+	}
+	t = po.stime + s.ptim / po.conf.speed	// start time
+
+	// if speed change, shift the start time
+	if (po.conf.new_speed) {
+		d = po.get_time(po)
+		po.stime = d - (d - po.stime) *
+					po.conf.speed / po.conf.new_speed
+		po.conf.speed = po.conf.new_speed
+		po.conf.new_speed = 0
+		t = po.stime + s.ptim / po.conf.speed
+	}
+
+	maxt = t + po.tgen		// max time = now + 'tgen' seconds
+	po.timouts = []
+	while (1) {
+		switch (s.type) {
+		case C.BAR:
+			if (s.bar_type.slice(-1) == ':') // left repeat
+				po.repv = 0
+			if (s.rep_p) {			// right repeat
+				if (!po.repn) {
+					po.stime += (s.ptim - s.rep_p.ptim) /
+							po.conf.speed
+					s = s.rep_p	// left repeat
+					while (s.ts_next && !s.ts_next.dur)
+						s = s.ts_next
+					t = po.stime + s.ptim / po.conf.speed
+					po.repn = true
+					break
+				}
+				po.repn = false
+			}
+			if (s.rep_s) {			// first variant
+				s2 = s.rep_s[++po.repv]	// next variant
+				if (s2) {
+					po.stime += (s.ptim - s2.ptim) /
+							po.conf.speed
+					s = s2
+					t = po.stime + s.ptim / po.conf.speed
+					po.repn = false
+				} else {		// end of tune
+					s = po.s_end
+					break
+				}
+			}
+			while (s.ts_next && !s.ts_next.dur) {
+				s = s.ts_next
+				if (s.subtype == "midictl")
+					midi_ctrl(po, s, t)
+			}
+			break
+		case C.BLOCK:
+			if (s.subtype == "midictl")
+				midi_ctrl(po, s, t)
+			break
+		case C.GRACE:
+			for (g = s.extra; g; g = g.next) {
+				d = g.pdur / po.conf.speed
+				for (m = 0; m <= g.nhd; m++) {
+					note = g.notes[m]
+					po.note_run(po, g,
+						note.midi,
+						t + g.ptim - s.ptim,
+//fixme: there may be a tie...
+						d)
+				}
+			}
+			break
+		case C.NOTE:
+			d = s.pdur / po.conf.speed
+			for (m = 0; m <= s.nhd; m++) {
+				note = s.notes[m]
+				if (note.ti2)
+					continue
+				po.note_run(po, s,
+					note.midi,
+					t,
+					note.tie_ty ?
+						do_tie(s, note.midi, d) : d)
+			}
+			// fall thru
+		case C.REST:
+			d = s.pdur / po.conf.speed
+
+			// follow the notes/rests while playing
+			if (po.onnote) {
+				i = s.istart
+				st = (t - po.get_time(po)) * 1000
+				po.timouts.push(setTimeout(po.onnote, st, i, true))
+				setTimeout(po.onnote, st + d * 1000, i, false)
+			}
+			break
+		}
+		while (1) {
+			if (s == po.s_end || !s.ts_next) {
+				if (po.onend)
+					setTimeout(po.onend,
+						(t - po.get_time(po) + d) * 1000,
+						po.repv)
+				po.s_cur = s
+				return
+			}
+			s = s.ts_next
+			if (!s.noplay)
+				break
+		}
+		t = po.stime + s.ptim / po.conf.speed // next time
+		if (t > maxt)
+			break
+	}
+	po.s_cur = s
+
+	// delay before next sound generation
+	po.timouts.push(setTimeout(abc2svg.play_next,
+				(t - po.get_time(po)) * 1000
+					- 300,	// wake before end of playing
+				po))
+} // play_next()
+
+// nodejs
+if (typeof module == 'object' && typeof exports == 'object')
+	exports.ToAudio = ToAudio
+// sndmem.js - generate play events for use with toaudio5 or tomidi5
+//
+// Copyright (C) 2020 Jean-Francois Moine
+//
+// This file is part of abc2svg.
+//
+// abc2svg is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// abc2svg is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with abc2svg.  If not, see <http://www.gnu.org/licenses/>.
+
+// The function abc2svg.sndmem() must be called after the abc2svg generation
+// and after the play data have been defined (by the function audio.add
+// in util/sndgen.js).
+//
+// It returns an array of Float32Array:
+//	[0]: index of the note in the ABC source
+//	[1]: time in seconds
+//	[2]: if >= 0: MIDI instrument (MIDI GM number - 1)
+//		else: MIDI control message
+//	[3]: MIDI note pitch (with cents) / controller
+//	[4]: duration			  / controller value
+//	[5]: volume (0..1)
+//	[6]: voice number
+
+abc2svg.sndmem = function(abc) {
+    var	po, i, tune
+
+	// create a note
+	// @po = play object
+	// @s = symbol
+	// @k = MIDI key + detune
+	// @t = audio start time (ms)
+	// @d = duration adjusted for speed (ms)
+	function note_run(po, s, k, t, d) {
+		po.a_e.push(new Float32Array([
+				s.istart,
+				t,
+				s.instr,
+				k,
+				d,
+				1,
+				s.v]))
+	} // note_run()
+
+	// return the play real time in seconds
+	function get_time(po) {
+		return 0
+	} // get_time()
+
+	// MIDI control
+	function midi_ctrl(po, s, t) {
+		po.a_e.push(new Float32Array([
+				s.istart,
+				0,	// (time - unused)
+				-1,	// MIDI control
+				s.ctrl,
+				s.val,
+				1,
+				s.v]))
+	} // midi_ctrl()
+
+	// define the play object
+	po = {
+		conf: {		// configuration
+			speed: 1
+		},
+		stime: 0,	// start time
+		tgen: 3600, 	// generate by (for) 1 hour
+		get_time: get_time,
+		midi_ctrl: midi_ctrl,
+		note_run: note_run,
+
+		// sndmem specific
+		a_e: []
+	}
+
+	// loop on the tunes
+	while (1) {
+
+		// get the [first symbol, voice table] of the next tune
+		tune = abc.tunes.shift()
+		if (!tune)
+			break
+
+		po.stop = false
+		po.s_end = null
+		po.s_cur = tune[0]	// first music symbol
+		po.repn = false
+		po.repv = 0
+
+		abc2svg.play_next(po)
+	}
+	return po.a_e
+} //sndmem()
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -24779,579 +25364,6 @@ abc2svg.modules.hooks.push(abc2svg.grid2.set_hooks);
 
 // the module is loaded
 abc2svg.modules.grid2.loaded = true
-// abc2svg - ABC to SVG translator
-// @source: https://chiselapp.com/user/moinejf/repository/abc2svg
-// Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
-// page.js - module to generate one SVG image per page
-//
-// Copyright (C) 2018-2020 Jean-Francois Moine - GPL3+
-//
-// This module is loaded when "%%pageheight" appears in a ABC source.
-//
-// Parameters
-//	%%pageheight <unit>
-
-abc2svg.page = {
-
-    // output a new block
-    img_out: function(page, p) {
-    var	cur_img_out = user.img_out;
-
-	page.user_out(p)
-	
-	// user.img_out may have been changed ..
-	if (user.img_out != cur_img_out) {
-		page.user_out = user.img_out;
-		if (cur_img_out == page.img_out_sav) {	// .. by the backend
-			user.img_out = abc2svg.page.img_in.bind(page.abc);
-			page.img_out_sav = user.img_out	// keep our reference
-		} else {
-			user.img_out = cur_img_out	// .. by an other extension
-		}
-	}
-    },
-
-    // function called at end of generation
-    abc_end: function(of) {
-    var page = this.page
-	if (page && page.in_page) {
-		abc2svg.page.close_page(page)
-		if (user.img_out == page.img_out_sav)
-			user.img_out = page.user_out
-	}
-	of()
-    }, // abc_end()
-
-    // generate a header or a footer in page.hf and return its height
-    gen_hf: function(page, up, font, str) {
-    var	a, i, j, k, x, y, y0, s,
-	cfmt = page.abc.cfmt(),
-	fh = font.size * 1.1,
-	pos = [ '">',
-		'" text-anchor="middle">',
-		'" text-anchor="end">' ]
-
-	// create the text of a header or a footer
-	function header_footer(o_font, str) {
-	    var	c, i, k, t, n_font,
-		c_font = o_font,
-		nl = 1,
-		j = 0,
-		r = ["", "", ""]
-
-		if (str[0] == '"')
-			str = str.slice(1, -1)
-		if (str.indexOf('\t') < 0)		// if no TAB
-			str = '\t' + str		// center
-
-		for (i = 0; i < str.length; i++) {
-			c = str[i]
-			switch (c) {
-			case '>':
-				r[j] += "&gt;"
-				continue
-			case '<':
-				r[j] += "&lt;"
-				continue
-			case '&':
-				for (k = i + 1; k < i + 8; k++) {
-					if (!str[k] || str[k] == '&'
-					 || str[k] == ';')
-						break
-				}
-				r[j] += str[k] == ';' ? "&" : "&amp;"
-				continue
-			case '\t':
-				if (j < 2)
-					j++		// next column
-				continue
-			case '\\':			// hope '\n'
-				if (c_font != o_font) {
-					r[j] += "</tspan>"
-//					c_font = o_font
-				}
-				for (j = 0; j < 3; j++)
-					r[j] += '\n';
-				nl++;
-				j = 0;
-				i++
-				continue
-			default:
-				r[j] += c
-				continue
-			case '$':
-				break
-			}
-			c = str[++i]
-			switch (c) {
-			case 'd':
-				if (!abc2svg.get_mtime)
-					break // cannot know the change time of the file
-				r[j] += strftime(cfmt.dateformat,
-						abc2svg.get_mtime(page.abc.parse.fname))
-				break
-			case 'D':
-				r[j] += strftime(cfmt.dateformat)
-				break
-			case 'F':
-				r[j] += page.abc.parse.fname
-				break
-			case 'I':
-				c = str[++i]
-			case 'T':
-				t = abc.info()[c]
-				if (t)
-					r[j] += t.split('\n', 1)[0]
-				break
-			case 'P':
-			case 'Q':
-				t = c == 'P' ? page.pn : page.pna
-				switch (str[i + 1]) {
-				case '0':
-					i++
-					if (!(t & 1))
-						r[j] += t
-					break
-				case '1':
-					i++
-					if (t & 1)
-						r[j] += t
-					break
-				default:
-					r[j] += t
-					break
-				}
-				break
-			case 'V':
-				r[j] += "abc2svg-" + abc2svg.version
-				break
-			default:
-				if (c == '0')
-					n_font = o_font
-				else if (c >= '1' && c < '9')
-					n_font = page.abc.get_font("u" + c)
-				else
-					break
-
-				// handle the font changes
-				if (n_font == c_font)
-					break
-				if (c_font != o_font)
-					r[j] += "</tspan>";
-				c_font = n_font
-				if (c_font == o_font)
-					break
-				r[j] += '<tspan class="' +
-						font_class(n_font) + '">'
-				break
-			}
-		}
-		if (c_font != o_font)
-			r[j] += "</tspan>";
-
-		r[4] = nl		// number of lines
-		return r
-	} // header_footer()
-
-	function font_class(font) {
-		if (font.class)
-			return 'f' + font.fid + cfmt.fullsvg + ' ' + font.class
-		return 'f' + font.fid + cfmt.fullsvg
-	}
-
-	// gen_hf
-
-	if (str[0] == '-') {		// not on 1st page
-		if (page.pn == 1)
-			return 0
-		str = str.slice(1)
-	}
-
-	a = header_footer(font, str)
-	y0 = font.size * .8
-	for (i = 0; i < 3; i++) {
-		str = a[i]
-		if (!str)
-			continue
-		if (i == 0)
-			x = cfmt.leftmargin
-		else if (i == 1)
-			x = cfmt.pagewidth / 2
-		else
-			x = cfmt.pagewidth - cfmt.rightmargin
-		y = y0
-		k = 0
-		while (1) {
-			j = str.indexOf('\n', k)
-			if (j >= 0)
-				s = str.slice(k, j)
-			else
-				s = str.slice(k)
-			if (s)
-				page.hf += '<text class="' +
-						font_class(font) +
-						'" x="' + x.toFixed(1) +
-						'" y="' + y.toFixed(1) +
-						pos[i] +
-						s + '</text>\n'
-			if (j < 0)
-				break
-			k = j + 1
-			y += fh
-		}
-	}
-	return fh * a[4]
-    }, // gen_hf()
-
-    // start a new page
-    open_page: function(page,
-			ht) {	// spacing under the header
-    var	h, l,
-//	font_style,
-	abc = page.abc,
-	cfmt = abc.cfmt(),
-	sty = ""
-
-	page.pn++
-	page.pna++
-
-	// start a new page
-	if (page.first)
-		page.first = false
-	else
-		sty = "page-break-before:always"
-	if (page.gutter)
-		sty += (sty ? ";" : "") + "margin-left:" +
-			((page.pn & 1) ? page.gutter : -page.gutter).toFixed(1) + "px"
-	abc2svg.page.img_out(page, sty ?
-			'<div style="' + sty + '">' :
-			'<div>')
-	page.in_page = true
-
-	ht += page.topmargin
-	page.hmax = cfmt.pageheight - page.botmargin - ht
-
-	// define the header/footer
-	page.hf = ''
-	if (page.header) {
-		l = abc.get_font_style().length
-		h = abc2svg.page.gen_hf(page, true,
-					abc.get_font("header"), page.header)
-		sty = abc.get_font_style().slice(l)		// new style(s)
-		if (cfmt.fullsvg || sty != page.hsty) {
-			page.hsty = sty
-			sty = '<style type="text/css">' + sty + '\n</style>\n'
-		} else {
-			sty = ''
-		}
-		abc2svg.page.img_out(page,
-			'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	width="' + cfmt.pagewidth.toFixed(0) +
-			'px" height="' + (ht + h).toFixed(0) +
-			'px">\n' + sty +
-			'<g transform="translate(0,' +
-				page.topmargin.toFixed(1) + ')">' +
-				page.hf + '</g>\n</svg>')
-		page.hmax -= h;
-		page.hf = ''
-	} else {
-		abc2svg.page.img_out(page,
-			'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	width="' + cfmt.pagewidth.toFixed(0) +
-			'px" height="' + ht.toFixed(0) +
-			'px">\n</svg>')
-	}
-	if (page.footer) {
-		l = abc.get_font_style().length
-		page.fh = abc2svg.page.gen_hf(page, false,
-					abc.get_font("footer"), page.footer)
-		sty = abc.get_font_style().slice(l)		// new style(s)
-		if (cfmt.fullsvg || sty != page.fsty) {
-			page.fsty = sty
-			page.ffsty = '<style type="text/css">' + sty + '\n</style>\n'
-		} else {
-			page.ffsty = ''
-		}
-		page.hmax -= page.fh
-	}
-
-	page.h = 0
-    }, // open_page()
-
-    close_page: function(page) {
-    var	h,
-	cfmt = page.abc.cfmt()
-
-	page.in_page = false
-	if (page.footer) {
-		h = page.hmax + page.fh - page.h
-		abc2svg.page.img_out(page,
-			'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	width="' + cfmt.pagewidth.toFixed(0) +
-			'px" height="' + h.toFixed(0) +
-			'px">\n' + page.ffsty +
-			'<g transform="translate(0,' +
-				(h - page.fh).toFixed(1) + ')">' +
-			page.hf + '</g>\n</svg>')
-	}
-	abc2svg.page.img_out(page, '</div>')
-	page.h = 0
-    }, // close_page()
-
-    // handle the output flow of the abc2svg generator
-    img_in: function(p) {
-    var h, ht, nh,
-	page = this.page
-
-	// copy a block
-	function blkcpy(page) {
-		while (page.blk.length)
-			abc2svg.page.img_out(page, page.blk.shift())
-		page.blk = null			// direct output
-	} // blkcpy()
-
-	// img_in()
-	switch (p.slice(0, 4)) {
-	case "<div":				// block of new tune
-		if (p.indexOf('newpage') > 0
-		 || (page.oneperpage && this.info().X)
-		 || !page.h) {			// empty page
-			if (page.in_page)
-				abc2svg.page.close_page(page)
-			abc2svg.page.open_page(page, 0)
-		}
-		page.blk = []			// in block
-		page.hb = page.h		// keep the offset of the start of tune
-		break
-	case "<svg":				// SVG image
-		h = Number(p.match(/height="(\d+)px"/)[1])
-		while (h + page.h >= page.hmax) { // if (still) page overflow
-			ht = page.blk ? 0 :
-				this.cfmt().topspace // tune continuation
-
-			if (page.blk) {
-				if (!page.hb) {	// overflow on the first page
-					blkcpy(page)
-					nh = 0
-				} else {
-					nh = page.h - page.hb
-					page.h = page.hb
-				}
-			}
-			abc2svg.page.close_page(page)
-			abc2svg.page.open_page(page, ht)
-
-			if (page.blk) {		// if inside a block
-				blkcpy(page)	// output the beginning of the tune
-				page.h = nh
-			}
-			if (h > page.hmax)
-				break		// error
-		}
-
-		// if no overflow yet, keep the block
-		if (page.blk)
-			page.blk.push(p)
-		else
-			abc2svg.page.img_out(page, p)
-		page.h += h
-		break
-	case "</di":				// end of block
-		if (page.blk)
-			blkcpy(page)
-		break
-//	default:
-////fixme: %%beginml cannot be treated (no information about its height)
-//		break
-	}
-    }, // img_in()
-
-    // handle the page related parameters
-    set_fmt: function(of, cmd, parm) {
-    var	v,
-	cfmt = this.cfmt(),
-	page = this.page
-
-	if (cmd == "pageheight") {
-		v = this.get_unit(parm)
-		if (isNaN(v)) {
-			this.syntax(1, this.errs.bad_val, '%%' + cmd)
-			return
-		}
-		cfmt.pageheight = v
-
-		// if first definition, install the hook
-		if (!page && user.img_out && abc2svg.abc_end) {
-			this.page = page = {
-				abc: this,
-				topmargin: 38,	// 1cm
-				botmargin: 38,	// 1cm
-//				gutter: 0,
-				h: 0,		// current page height
-				pn: 0,		// page number
-				pna: 0,		// absolute page number
-				first: true,	// no skip to next page
-				user_out: user.img_out
-			}
-
-			// don't let the backend handle the header/footer
-			if (cfmt.header) {
-				page.header = cfmt.header;
-				cfmt.header = null
-			}
-			if (cfmt.footer) {
-				page.footer = cfmt.footer;
-				cfmt.footer = null
-			}
-
-			// get the previously defined page parameters
-			if (cfmt.botmargin) {
-				v = this.get_unit(cfmt.botmargin)
-				if (!isNaN(v))
-					page.botmargin = v
-			}
-			if (cfmt.topmargin) {
-				v = this.get_unit(cfmt.topmargin)
-				if (!isNaN(v))
-					page.topmargin = v
-			}
-			if (cfmt.gutter) {
-				v = this.get_unit(cfmt.gutter)
-				if (!isNaN(v))
-					page.gutter = v
-			}
-			if (cfmt.oneperpage)
-				page.oneperpage = this.get_bool(cfmt.oneperpage)
-			if (!cfmt.dateformat)
-				cfmt.dateformat = "%b %e, %Y %H:%M"
-
-			// set the hooks
-			user.img_out = abc2svg.page.img_in.bind(this);
-			page.img_out_sav = user.img_out;
-			abc2svg.abc_end = abc2svg.page.abc_end.bind(this,
-								abc2svg.abc_end)
-		}
-		return
-	}
-	if (page) {
-		switch (cmd) {
-		case "header":
-		case "footer":
-			page[cmd] = parm
-			return
-		case "newpage":
-			if (!parm)
-				break
-			v = Number(parm)
-			if (isNaN(v)) {
-				this.syntax(1, this.errs.bad_val, '%%' + cmd)
-				return
-			}
-			page.pn = v - 1
-			return
-		case "gutter":
-		case "botmargin":
-		case "topmargin":
-			v = this.get_unit(parm)
-			if (isNaN(v)) {
-				this.syntax(1, this.errs.bad_val, '%%' + cmd)
-				return
-			}
-			page[cmd] = v
-			return
-		case "oneperpage":
-			page[cmd] = this.get_bool(parm)
-			return
-		}
-	}
-	of(cmd, parm)
-    }, // set_fmt()
-
-    set_hooks: function(abc) {
-	abc.set_format = abc2svg.page.set_fmt.bind(abc, abc.set_format)
-    }
-} // page
-
-abc2svg.modules.hooks.push(abc2svg.page.set_hooks);
-
-// the module is loaded
-abc2svg.modules.pageheight.loaded = true
-/* Port of strftime() by T. H. Doan (https://thdoan.github.io/strftime/)
- *
- * Day of year (%j) code based on Joe Orost's answer:
- * http://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
- *
- * Week number (%V) code based on Taco van den Broek's prototype:
- * http://techblog.procurios.nl/k/news/view/33796/14863/calculate-iso-8601-week-and-year-in-javascript.html
- */
-function strftime(sFormat, date) {
-  if (!(date instanceof Date)) date = new Date();
-  var nDay = date.getDay(),
-    nDate = date.getDate(),
-    nMonth = date.getMonth(),
-    nYear = date.getFullYear(),
-    nHour = date.getHours(),
-    aDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    aMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    aDayCount = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334],
-    isLeapYear = function() {
-      return (nYear%4===0 && nYear%100!==0) || nYear%400===0;
-    },
-    getThursday = function() {
-      var target = new Date(date);
-      target.setDate(nDate - ((nDay+6)%7) + 3);
-      return target;
-    },
-    zeroPad = function(nNum, nPad) {
-      return ((Math.pow(10, nPad) + nNum) + '').slice(1);
-    };
-  return sFormat.replace(/%[a-z]/gi, function(sMatch) {
-    return (({
-      '%a': aDays[nDay].slice(0,3),
-      '%A': aDays[nDay],
-      '%b': aMonths[nMonth].slice(0,3),
-      '%B': aMonths[nMonth],
-      '%c': date.toUTCString(),
-      '%C': Math.floor(nYear/100),
-      '%d': zeroPad(nDate, 2),
-      '%e': nDate,
-      '%F': date.toISOString().slice(0,10),
-      '%G': getThursday().getFullYear(),
-      '%g': (getThursday().getFullYear() + '').slice(2),
-      '%H': zeroPad(nHour, 2),
-      '%I': zeroPad((nHour+11)%12 + 1, 2),
-      '%j': zeroPad(aDayCount[nMonth] + nDate + ((nMonth>1 && isLeapYear()) ? 1 : 0), 3),
-      '%k': nHour,
-      '%l': (nHour+11)%12 + 1,
-      '%m': zeroPad(nMonth + 1, 2),
-      '%n': nMonth + 1,
-      '%M': zeroPad(date.getMinutes(), 2),
-      '%p': (nHour<12) ? 'AM' : 'PM',
-      '%P': (nHour<12) ? 'am' : 'pm',
-      '%s': Math.round(date.getTime()/1000),
-      '%S': zeroPad(date.getSeconds(), 2),
-      '%u': nDay || 7,
-      '%V': (function() {
-              var target = getThursday(),
-                n1stThu = target.valueOf();
-              target.setMonth(0, 1);
-              var nJan1 = target.getDay();
-              if (nJan1!==4) target.setMonth(0, 1 + ((4-nJan1)+7)%7);
-              return zeroPad(1 + Math.ceil((n1stThu-target)/604800000), 2);
-            })(),
-      '%w': nDay,
-      '%x': date.toLocaleDateString(),
-      '%X': date.toLocaleTimeString(),
-      '%y': (nYear + '').slice(2),
-      '%Y': nYear,
-      '%z': date.toTimeString().replace(/.+GMT([+-]\d+).+/, '$1'),
-      '%Z': date.toTimeString().replace(/.+\((.+?)\)$/, '$1')
-    }[sMatch] || '') + '') || sMatch;
-  });
-}
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -29159,4 +29171,4 @@ abc2svg.modules.hooks.push(abc2svg.diag.set_hooks);
 
 // the module is loaded
 abc2svg.modules.diagram.loaded = true
-abc2svg.version = abc2svg.version + " Git: v1.20.8-34-g65e9913"
+abc2svg.version = abc2svg.version + " Git: v1.20.8-50-g559d7c8"

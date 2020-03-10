@@ -1,0 +1,67 @@
+:;# shell script to generate play events from ABC source
+
+# create the driver
+cat > /tmp/tmp.js << EOF
+//javascript
+
+// don't load toxhtml.js
+abc2svg.abc_init = function(args) {
+}
+
+// generate the MIDI stream after the whole generation
+abc2svg.abc_end = function() {
+	if (user.errtxt) {
+		abc2svg.print("Errors:\n" + user.errtxt)
+		return
+	}
+
+    var	a_e, e,
+	conf = {
+		speed: 1
+	},
+	audio = ToAudio(),		// ( in sndgen.js)
+	tunes = abc.tunes.slice(0)	// get a copy of the generated tunes
+
+	function fto4c(v) {
+	   var	a = v.toFixed(0),
+		l = a.length
+
+		if (l > 3)
+			l = 3
+		return '    '.slice(0, 4 - l) + a
+	}
+
+	abc2svg.print('% MIDI flow (time and duration in 1/100s)\n\
+ src  time instr pit  dur  vol voice')
+
+	// loop on the tunes and
+	// set the MIDI pitches and sequence pointers in the music symbols
+	while (1) {
+		e = tunes.shift()
+		if (!e)
+			break
+		audio.add(e[0], e[1])
+	}
+
+	// generate the play events
+	a_e = sndmem(abc)
+
+	// dump the events
+	while (1) {
+		e = a_e.shift()
+		if (!e)
+			break
+		abc2svg.print(fto4c(e[0]) + ' ' + fto4c(e[1] * 100) +
+			' ' + fto4c(e[2]) + ' ' + fto4c(e[3]) +
+			' ' + fto4c(e[4] * 100) + ' ' + fto4c(e[5]) +
+			' ' + fto4c(e[6]))
+	}
+	abc2svg.print('% MIDI end')
+}
+EOF
+
+# add the sound functions
+cat util/sndgen.js util/midi.js util/sndmem.js >> /tmp/tmp.js
+
+# run the driver!
+exec ./abcqjs /tmp/tmp.js "$@"

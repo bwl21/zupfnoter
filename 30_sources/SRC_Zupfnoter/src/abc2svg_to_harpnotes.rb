@@ -98,7 +98,8 @@ module Harpnotes
         o_key_display = ""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
-        tempo_note = @abc_model[:voices].first[:voice_properties][:sym] rescue nil
+         tempo_note = @abc_model[:voices].first[:symbols]
+                         .select{|i|i[:type] == @abc_model[:music_type_ids][:tempo]}.first rescue nil
 
         if tempo_note && tempo_note[:tempo_notes]
           duration      = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
@@ -454,7 +455,7 @@ module Harpnotes
 
         # handle slurs
         # note that rests do not have slurs in practise
-        result.first.slur_starts = _parse_slur(voice_element[:slur_start]).map { |i| _push_slur() }
+        result.first.slur_starts = _parse_slur(voice_element[:slur_sls]).map { |i| _push_slur() }
         amount_of_slur_ends      = (voice_element[:slur_end] or 0)
         result.first.slur_ends   = (1 .. amount_of_slur_ends).map { _pop_slur } # pop_slur delivers an id.
 

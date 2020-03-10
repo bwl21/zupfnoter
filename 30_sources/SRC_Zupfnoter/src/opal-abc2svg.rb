@@ -186,9 +186,24 @@ I:stretchlast 1
       stripped_abc_code = strip_js(abc_code)
       %x{abc2svg.modules.load(#{stripped_abc_code},
                               function(){console.log("modules loaded")},
-                              function(msg){#{$log.error(`msg`)} } )     };
-      %x{#{@root}.tosvg("abc", #{stripped_abc_code})};
+                              function(msg){#{$log.error(`msg`)} } );
+
+     	var audio = ToAudio()		// ( in sndgen.js)
+
+      #{@root}.tosvg("abc", #{stripped_abc_code});
+      tunes = #{@root}.tunes.slice(0)	// get a copy of the generated tunes
+      while (1) {
+        e = tunes.shift()
+        if (!e)
+          break
+          audio.add(e[0], e[1])
+      }
+
+      #{@player_model} = abc2svg.sndmem(#{@root})
+      }
+
       [@abc_model, @player_model]
+
     end
 
     # todo: mke private or even remove?
@@ -256,9 +271,9 @@ I:stretchlast 1
           var to_json = new AbcJSON();
           #{json_model} =  to_json.gen_json(#{tsfirst}, #{voice_tb}, #{music_types}, #{info});
 
-          var to_audio = new ToAudio()
-          to_audio.add(#{tsfirst}, #{voice_tb})
-          #{@player_model} = to_audio.clear()
+          // var to_audio = new ToAudio()
+          // to_audio.add(#{tsfirst}, #{voice_tb})
+          // #{@player_model} = to_audio.clear()
       }
 
       if $log.loglevel == "debug"

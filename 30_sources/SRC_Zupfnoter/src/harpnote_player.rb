@@ -10,6 +10,14 @@ module Harpnotes
       attr_accessor :player_model_abc, :controller # This is to inject the player events created by abc2svg
 
       def initialize()
+        @status           = :stopped
+        @selection        = []
+        @voices_to_play   = [1, 2, 3, 4, 5, 6, 7, 8]
+        @voice_elements   = []
+        @player_model_abc = []
+        @controller       = nil
+        @speed            = 1
+
         %x{#{@abcplay} = new AbcPlay({
              onend: function(){#{call_on_songoff}}, // todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
              onnote: function(index, on,  custom){#{call_on_note(`index`, `on`, `custom`)}},
@@ -18,14 +26,9 @@ module Harpnotes
            #{@abcplay}.set_sfu("public/soundfont/zupfnoter")  // Scct1t2
            #{@abcplay}.set_sft('js')
            #{@abcplay}.set_vol(1.0)
+           #{@abcplay}.set_speed(#{@speed})
         } # the player engine
-        @status           = :stopped
-        @selection        = []
-        @voices_to_play   = [1, 2, 3, 4, 5, 6, 7, 8]
-        @voice_elements   = []
-        @player_model_abc = []
-        @controller       = nil
-        @speed            = 1
+
       end
 
       def is_playing?
@@ -112,6 +115,7 @@ module Harpnotes
       def play_notes(the_notes)
         self.stop()
 
+
         unless the_notes.empty?
           #note schedule in secc, SetTimout in msec; finsh after last measure
           `clearTimeout(#{@song_off_timer})` if @song_off_timer
@@ -131,6 +135,7 @@ module Harpnotes
           pe = the_notes.map { |i| mk_to_play_for_abc2svgplay(i, start_offset) }
 
           %x{
+          #{@abcplay}.set_speed(#{@speed})
           #{@abcplay}.play(0, 1000000, #{pe})
           }
           ## todo add the player logic here

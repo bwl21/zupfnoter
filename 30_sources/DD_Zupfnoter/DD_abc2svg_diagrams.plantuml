@@ -56,7 +56,7 @@ package bar {
     skinparam BoxPadding 10
 
     box "zupfnoter"
-    participant App
+    participant Zupfnoter as App
     end box
 
     box "abc2svg.js"
@@ -194,44 +194,94 @@ package bar {
        return
     end
     @enduml
-=end
 
-@startuml "bigpicture-of-playing"
+    @startuml "proposal for playing infrastructure"
 
-skinparam BoxPadding 10
+    package {
+    class AbstractGen <<abstract>>{
+      PlayObject playobject
+      void play(void playdata, AbstractSoundevice: **sounddevice**)
+      void play_next(void **playobject**)
+      AbstractSounddevice: sounddevice
+    }
 
-box "zupfnoter"
-participant
-App end box
 
-box "play.js" participant Play end box
+    class AbstractSounddevice  <<abstract>> {
+      void new()
+      void note_run(**soundobject**)
+    }
+    }
 
-box "abc2svg.js" participant Abc end box
+    AbstractGen --> AbstractSounddevice
 
-box "sndaud.js" participant Audio5 end box
+    AbstractSounddevice <|-- Sndmid
+    AbstractSounddevice <|-- Sndmem
+    AbstractSounddevice <|-- Sndaud
 
-box "sndmid.js" participant Midi5 end box
+    AbstractGen <|-- SndgenAbc
+    AbstractGen <|-- SndgenEvent
 
-box "sndmem.js" participant Sndmem end box
+    @enduml
 
-box "sndgen.js" participant Sndgen end box
+    @startuml "application of playing infrastructure"
 
-== parsing abc to a model ==
+    participant "Abc\nZupfnoter" as App
+    participant SndgenAbc
+    participant SndgenEvent
 
-App -> Abc:tosvg(abctext) Abc -> App:getabcmodel(abcmodel)
+        == playing the model ==
 
-== playing the model ==
+        App -> Sndaud++ : sounddevice = new Sndaud
 
-App -> Audio5:play(abcmodel) Audio5 -> Sndgen:playstart(abcmodel) loop over notes Sndgen -> Audio5:cllback_tone(event) note right : "Audio5 plays the event" Audio5 -> Sndgen:playnext end
+        App -> SndgenAbc : void = play(first_symbol, last_symbol, repeat_level, Sndaud)
 
-== getting play events ==
+        Sndaud -> Sndaud : 'get the play resources\n(instruments)\n initialize po
 
-App -> Sndmem:play(abcmodel) loop (overnotes) Sndmem -> Sndgen:playstart(abcmodel) Sndgen -> Sndmem:calback_tone(event) note right : "Sndgen save the event" end Sndgen -> Sndmem:callback(endOfStream) Sndmem -> App: return(arrayOfPlayevents)
+        ...
+        note over Sndaud #red: **all resourses loaded** #red
 
-== playing arbitrary events ==
+        group loop over play_next \nwhile (not po.stop )
+           SndgenAbc -> Sndaud : note_run(soudobject, ...)
+           Sndaud -> : Audio out
+           note right : sound
+        end
 
-App -> Play:playstream(arrayOfPlayevents)
+        return
 
-loop over arrayOfPlayevents Play -> Audio5:callback_tone(event) end
+        == Getting events ==
 
-@enduml
+         App -> Sndmem++ : sounddevice = new Sndmem
+         App -> SndgenAbc : p_e = play(first_symbol, last_symbol, repeat_level, Sndmem)
+
+            group loop over SndgenAbc.play_next \nwhile (not po.stop )
+                 SndgenAbc -> Sndmem : note_run(soundobject, ...)
+                 Sndmem -> Sndmem : p_e += ...
+                 note right : store play events
+             end
+         return
+
+         App <-- Sndmem : return p_e
+
+        == Playing events ==
+
+        App -> Sndaud++ : sounddevice = new Sndaud
+        App -> SndgenEvent : play(p_e, sounddevice)
+
+        Sndaud -> Sndaud : 'get the play resources\n(instruments)\n initialize po
+
+        ...
+        note over Sndaud #red: **all resourses loaded** #red
+
+        group loop over play_next \nwhile (not po.stop )
+           SndgenEvent -> Sndaud : note_run(soundobject, ...)
+           Sndaud -> : Audio out
+           note right  : sound
+        end
+
+        return
+
+
+    @enduml
+
+
+
