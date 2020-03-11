@@ -33324,7 +33324,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $send = Opal.send, $hash2 = Opal.hash2, $gvars = Opal.gvars, $truthy = Opal.truthy, $hash = Opal.hash, $range = Opal.range;
 
-  Opal.add_stubs(['$require', '$attr_reader', '$+', '$keys', '$[]', '$get', '$_reset_state', '$get_metadata', '$new', '$abcplay=', '$-', '$get_abcmodel', '$nil?', '$raise', '$t', '$_make_metadata', '$_transform_voices', '$meta_data=', '$_make_harpnote_options', '$harpnote_options=', '$meta_data', '$empty?', '$error', '$[]=', '$compact', '$map', '$gsub', '$strip', '$_get_key_by_accidentals', '$first', '$==', '$/', '$to_i', '$join', '$>=', '$private', '$match', '$charpos_to_line_column', '$flatten', '$to_a', '$each_with_index', '$_transform_voice', '$_make_variant_ending_jumps', '$unshift', '$to_s', '$_investigate_first_bar', '$each', '$send', '$inject', '$<<', '$_make_jumplines', '$_make_notebound_annotations', '$_transform_chordsymbol', '$count', '$last', '$warning', '$select', '$!', '$=~', '$_extract_goto_info_from_bar', '$!=', '$length', '$push', '$_bar_is_repetition_end?', '$>', '$pop', '$_transform_bar_repeat_end', '$include?', '$_parse_origin', '$_parse_tuplet_info', '$_parse_decorations', '$_transform_measure_start', '$_convert_duration', '$decorations=', '$measure_count=', '$_transform_count_note', '$count_note=', '$_transform_lyrics', '$lyrics=', '$time=', '$_mkznid', '$znid=', '$origin=', '$start_pos=', '$end_pos=', '$tuplet=', '$tuplet_start=', '$tuplet_end=', '$variant=', '$visible=', '$time', '$duration', '$duration=', '$origin', '$start_pos', '$end_pos', '$tuplet', '$tuplet_start', '$tuplet_end', '$tie_end=', '$tie_start=', '$_parse_slur', '$_push_slur', '$slur_starts=', '$_pop_slur', '$slur_ends=', '$measure_start=', '$_make_repeats_jumps_annotations', '$is_a?', '$_extract_chord_lines', '$znid', '$*', '$%', '$scan', '$min', '$round', '$floor', '$invisible=', '$prev_pitch', '$pitch=', '$start_pos_to_s', '$===', '$shift=', '$notes', '$to_f', '$pitch', '$next_pitch=', '$next_playable=', '$next_first_in_part=', '$prev_pitch=', '$prev_playable=', '$first_in_part=', '$<', '$start_with?', '$to_sym', '$&', '$>>']);
+  Opal.add_stubs(['$require', '$attr_reader', '$+', '$keys', '$[]', '$get', '$_reset_state', '$get_metadata', '$new', '$abcplay=', '$-', '$get_abcmodel', '$nil?', '$raise', '$t', '$_make_metadata', '$_transform_voices', '$meta_data=', '$_make_harpnote_options', '$harpnote_options=', '$meta_data', '$empty?', '$error', '$[]=', '$compact', '$map', '$gsub', '$strip', '$_get_key_by_accidentals', '$first', '$==', '$select', '$/', '$to_i', '$join', '$>=', '$private', '$match', '$charpos_to_line_column', '$flatten', '$to_a', '$each_with_index', '$_transform_voice', '$_make_variant_ending_jumps', '$unshift', '$to_s', '$_investigate_first_bar', '$each', '$send', '$inject', '$<<', '$_make_jumplines', '$_make_notebound_annotations', '$_transform_chordsymbol', '$count', '$last', '$warning', '$!', '$=~', '$_extract_goto_info_from_bar', '$!=', '$length', '$push', '$_bar_is_repetition_end?', '$>', '$pop', '$_transform_bar_repeat_end', '$include?', '$_parse_origin', '$_parse_tuplet_info', '$_parse_decorations', '$_transform_measure_start', '$_convert_duration', '$decorations=', '$measure_count=', '$_transform_count_note', '$count_note=', '$_transform_lyrics', '$lyrics=', '$time=', '$_mkznid', '$znid=', '$origin=', '$start_pos=', '$end_pos=', '$tuplet=', '$tuplet_start=', '$tuplet_end=', '$variant=', '$visible=', '$time', '$duration', '$duration=', '$origin', '$start_pos', '$end_pos', '$tuplet', '$tuplet_start', '$tuplet_end', '$tie_end=', '$tie_start=', '$_parse_slur', '$_push_slur', '$slur_starts=', '$_pop_slur', '$slur_ends=', '$measure_start=', '$_make_repeats_jumps_annotations', '$is_a?', '$_extract_chord_lines', '$znid', '$*', '$%', '$scan', '$min', '$round', '$floor', '$invisible=', '$prev_pitch', '$pitch=', '$start_pos_to_s', '$===', '$shift=', '$notes', '$to_f', '$pitch', '$next_pitch=', '$next_playable=', '$next_first_in_part=', '$prev_pitch=', '$prev_playable=', '$first_in_part=', '$<', '$start_with?', '$to_sym', '$&', '$>>']);
   
   self.$require("native");
   return (function($base, $parent_nesting) {
@@ -33340,9 +33340,9 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
       (function($base, $super, $parent_nesting) {
         var self = $klass($base, $super, 'Abc2svgToHarpnotes');
 
-        var $nesting = [self].concat($parent_nesting), $Abc2svgToHarpnotes_initialize$1, $Abc2svgToHarpnotes_transform$2, $Abc2svgToHarpnotes__make_harpnote_options$3, $Abc2svgToHarpnotes__get_key_by_accidentals$5, $Abc2svgToHarpnotes__make_metadata$6, $Abc2svgToHarpnotes__mkznid$8, $Abc2svgToHarpnotes__reset_state$9, $Abc2svgToHarpnotes__transform_voices$11, $Abc2svgToHarpnotes__transform_voice$13, $Abc2svgToHarpnotes__investigate_first_bar$20, $Abc2svgToHarpnotes__bar_is_repetition_end$ques$22, $Abc2svgToHarpnotes__transform_bar$23, $Abc2svgToHarpnotes__transform_part$24, $Abc2svgToHarpnotes__transform_remark$25, $Abc2svgToHarpnotes__transform_note$26, $Abc2svgToHarpnotes__transform_measure_start$31, $Abc2svgToHarpnotes__transform_chordsymbol$32, $Abc2svgToHarpnotes__transform_count_note$34, $Abc2svgToHarpnotes__convert_duration$37, $Abc2svgToHarpnotes__transform_staves$38, $Abc2svgToHarpnotes__transform_rest$39, $Abc2svgToHarpnotes__transform_tempo$41, $Abc2svgToHarpnotes__transform_yspace$42, $Abc2svgToHarpnotes__transform_bar_repeat_end$43, $Abc2svgToHarpnotes__transform_grace$44, $Abc2svgToHarpnotes__transform_format$45, $Abc2svgToHarpnotes__transform_key$46, $Abc2svgToHarpnotes__transform_lyrics$47, $Abc2svgToHarpnotes__transform_meter$48, $Abc2svgToHarpnotes__transform_block$49, $Abc2svgToHarpnotes__transform_clef$50, $Abc2svgToHarpnotes__make_variant_ending_jumps$51, $Abc2svgToHarpnotes__make_jumplines$55, $Abc2svgToHarpnotes__make_notebound_annotations$57, $Abc2svgToHarpnotes__make_repeats_jumps_annotations$62, $Abc2svgToHarpnotes__get_extra$66, $Abc2svgToHarpnotes__push_slur$68, $Abc2svgToHarpnotes__pop_slur$69, $Abc2svgToHarpnotes__extract_chord_lines$70, $Abc2svgToHarpnotes__extract_goto_info_from_bar$73, $Abc2svgToHarpnotes__parse_decorations$76, $Abc2svgToHarpnotes__parse_origin$79, $Abc2svgToHarpnotes__parse_slur$80, $Abc2svgToHarpnotes__parse_tuplet_info$81;
+        var $nesting = [self].concat($parent_nesting), $Abc2svgToHarpnotes_initialize$1, $Abc2svgToHarpnotes_transform$2, $Abc2svgToHarpnotes__make_harpnote_options$3, $Abc2svgToHarpnotes__get_key_by_accidentals$5, $Abc2svgToHarpnotes__make_metadata$6, $Abc2svgToHarpnotes__mkznid$9, $Abc2svgToHarpnotes__reset_state$10, $Abc2svgToHarpnotes__transform_voices$12, $Abc2svgToHarpnotes__transform_voice$14, $Abc2svgToHarpnotes__investigate_first_bar$21, $Abc2svgToHarpnotes__bar_is_repetition_end$ques$23, $Abc2svgToHarpnotes__transform_bar$24, $Abc2svgToHarpnotes__transform_part$25, $Abc2svgToHarpnotes__transform_remark$26, $Abc2svgToHarpnotes__transform_note$27, $Abc2svgToHarpnotes__transform_measure_start$32, $Abc2svgToHarpnotes__transform_chordsymbol$33, $Abc2svgToHarpnotes__transform_count_note$35, $Abc2svgToHarpnotes__convert_duration$38, $Abc2svgToHarpnotes__transform_staves$39, $Abc2svgToHarpnotes__transform_rest$40, $Abc2svgToHarpnotes__transform_tempo$42, $Abc2svgToHarpnotes__transform_yspace$43, $Abc2svgToHarpnotes__transform_bar_repeat_end$44, $Abc2svgToHarpnotes__transform_grace$45, $Abc2svgToHarpnotes__transform_format$46, $Abc2svgToHarpnotes__transform_key$47, $Abc2svgToHarpnotes__transform_lyrics$48, $Abc2svgToHarpnotes__transform_meter$49, $Abc2svgToHarpnotes__transform_block$50, $Abc2svgToHarpnotes__transform_clef$51, $Abc2svgToHarpnotes__make_variant_ending_jumps$52, $Abc2svgToHarpnotes__make_jumplines$56, $Abc2svgToHarpnotes__make_notebound_annotations$58, $Abc2svgToHarpnotes__make_repeats_jumps_annotations$63, $Abc2svgToHarpnotes__get_extra$67, $Abc2svgToHarpnotes__push_slur$69, $Abc2svgToHarpnotes__pop_slur$70, $Abc2svgToHarpnotes__extract_chord_lines$71, $Abc2svgToHarpnotes__extract_goto_info_from_bar$74, $Abc2svgToHarpnotes__parse_decorations$77, $Abc2svgToHarpnotes__parse_origin$80, $Abc2svgToHarpnotes__parse_slur$81, $Abc2svgToHarpnotes__parse_tuplet_info$82;
 
-        self.$$prototype.abc_code = self.$$prototype.abcplay = self.$$prototype.abc_model = self.$$prototype.meta_data = self.$$prototype.info_fields = self.$$prototype.remark_table = self.$$prototype.score_statements = self.$$prototype.wmeasure = self.$$prototype.measure_start_time = self.$$prototype.next_note_marks = self.$$prototype.variant_no = self.$$prototype.variant_endings = self.$$prototype.previous_note = self.$$prototype.repetition_stack = self.$$prototype.pushed_variant_ending_repeat = self.$$prototype.part_table = self.$$prototype.measure_count = self.$$prototype.tie_started = self.$$prototype.countby = self.$$prototype._shortest_note = self.$$prototype.pitch_providers = self.$$prototype.slurstack = self.$$prototype.tuplet_p = nil;
+        self.$$prototype.abc_code = self.$$prototype.abcplay = self.$$prototype.abc_model = self.$$prototype.meta_data = self.$$prototype.info_fields = self.$$prototype.remark_table = self.$$prototype.score_statements = self.$$prototype.wmeasure = self.$$prototype.measure_start_time = self.$$prototype.next_note_marks = self.$$prototype.variant_no = self.$$prototype.variant_endings = self.$$prototype.previous_note = self.$$prototype.repetition_stack = self.$$prototype.pushed_variant_ending_repeat = self.$$prototype.part_table = self.$$prototype.measure_count = self.$$prototype.tie_started = self.$$prototype.countby = self.$$prototype._shortest_note = self.$$prototype.pitch_providers = self.$$prototype.tempo_statements = self.$$prototype.slurstack = self.$$prototype.tuplet_p = nil;
         
         Opal.const_set($nesting[0], 'ABC2SVG_DURATION_FACTOR', 1536);
         self.$attr_reader("abc_model");
@@ -33364,6 +33364,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           self.score_statements = [];
           self.part_table = $hash2([], {});
           self.abc_model = $hash2([], {});
+          self.tempo_statements = [];
           self.supported_decorations = $rb_plus($gvars.conf['$[]']("layout.DECORATIIONS_AS_ANNOTATIONS").$keys(), ["fermata", "emphasis"]);
           self._shortest_note = $gvars.conf.$get("layout.SHORTEST_NOTE");
           return self.$_reset_state();
@@ -33445,7 +33446,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
         }, $Abc2svgToHarpnotes__get_key_by_accidentals$5.$$arity = 1);
         
         Opal.def(self, '$_make_metadata', $Abc2svgToHarpnotes__make_metadata$6 = function $$_make_metadata() {
-          var $a, $$7, self = this, key = nil, o_key = nil, o_key_display = nil, tempo_note = nil, duration = nil, bpm = nil, tempo_display = nil;
+          var $$7, $a, $$8, self = this, key = nil, o_key = nil, o_key_display = nil, tempo_note = nil, duration = nil, bpm = nil, tempo_display = nil;
 
           
           key = self.$_get_key_by_accidentals(self.abc_model['$[]']("voices").$first()['$[]']("voice_properties")['$[]']("key"));
@@ -33456,7 +33457,15 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             o_key_display = "" + "(Original in " + (o_key) + ")"
           };
           tempo_note = (function() { try {
-            return self.abc_model['$[]']("voices").$first()['$[]']("voice_properties")['$[]']("sym")
+            return $send(self.abc_model['$[]']("voices").$first()['$[]']("symbols"), 'select', [], ($$7 = function(i){var self = $$7.$$s || this;
+              if (self.abc_model == null) self.abc_model = nil;
+
+            
+              
+              if (i == null) {
+                i = nil;
+              };
+              return i['$[]']("type")['$=='](self.abc_model['$[]']("music_type_ids")['$[]']("tempo"));}, $$7.$$s = self, $$7.$$arity = 1, $$7)).$first()
           } catch ($err) {
             if (Opal.rescue($err, [$$($nesting, 'StandardError')])) {
               try {
@@ -33466,14 +33475,14 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           }})();
           if ($truthy(($truthy($a = tempo_note) ? tempo_note['$[]']("tempo_notes") : $a))) {
             
-            duration = $send(tempo_note['$[]']("tempo_notes"), 'map', [], ($$7 = function(i){var self = $$7.$$s || this;
+            duration = $send(tempo_note['$[]']("tempo_notes"), 'map', [], ($$8 = function(i){var self = $$8.$$s || this;
 
             
               
               if (i == null) {
                 i = nil;
               };
-              return $rb_divide(i, $$($nesting, 'ABC2SVG_DURATION_FACTOR'));}, $$7.$$s = self, $$7.$$arity = 1, $$7));
+              return $rb_divide(i, $$($nesting, 'ABC2SVG_DURATION_FACTOR'));}, $$8.$$s = self, $$8.$$arity = 1, $$8));
             bpm = tempo_note['$[]']("tempo").$to_i();
             tempo_display = self.info_fields['$[]']("Q").$join(" ");
           } else {
@@ -33490,7 +33499,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
         }, $Abc2svgToHarpnotes__make_metadata$6.$$arity = 0);
         self.$private();
         
-        Opal.def(self, '$_mkznid', $Abc2svgToHarpnotes__mkznid$8 = function $$_mkznid(voice_element) {
+        Opal.def(self, '$_mkznid', $Abc2svgToHarpnotes__mkznid$9 = function $$_mkznid(voice_element) {
           var self = this, result = nil, start_pos = nil, end_pos = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -33510,20 +33519,20 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             result = "" + (voice_element['$[]']("time"))
           };
           return result;
-        }, $Abc2svgToHarpnotes__mkznid$8.$$arity = 1);
+        }, $Abc2svgToHarpnotes__mkznid$9.$$arity = 1);
         
-        Opal.def(self, '$_reset_state', $Abc2svgToHarpnotes__reset_state$9 = function $$_reset_state() {
-          var $$10, self = this;
+        Opal.def(self, '$_reset_state', $Abc2svgToHarpnotes__reset_state$10 = function $$_reset_state() {
+          var $$11, self = this;
 
           
-          self.countnames = $send($range(1, 32, false).$to_a(), 'map', [], ($$10 = function(i){var self = $$10.$$s || this;
+          self.countnames = $send($range(1, 32, false).$to_a(), 'map', [], ($$11 = function(i){var self = $$11.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return [i, "e", "u", "e"];}, $$10.$$s = self, $$10.$$arity = 1, $$10)).$flatten();
+            return [i, "e", "u", "e"];}, $$11.$$s = self, $$11.$$arity = 1, $$11)).$flatten();
           self.jumptargets = $hash2([], {});
           self.is_first_measure = true;
           self.measure_start_time = 0;
@@ -33541,13 +33550,13 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           self.tuplet_down_count = 1;
           self.countby = nil;
           return (self.wmeasure = 0);
-        }, $Abc2svgToHarpnotes__reset_state$9.$$arity = 0);
+        }, $Abc2svgToHarpnotes__reset_state$10.$$arity = 0);
         
-        Opal.def(self, '$_transform_voices', $Abc2svgToHarpnotes__transform_voices$11 = function $$_transform_voices() {
-          var $$12, self = this, hn_voices = nil;
+        Opal.def(self, '$_transform_voices', $Abc2svgToHarpnotes__transform_voices$12 = function $$_transform_voices() {
+          var $$13, self = this, hn_voices = nil;
 
           
-          hn_voices = $send(self.abc_model['$[]']("voices").$each_with_index(), 'map', [], ($$12 = function(voice_model, voice_index){var self = $$12.$$s || this, voice_id = nil, result = nil;
+          hn_voices = $send(self.abc_model['$[]']("voices").$each_with_index(), 'map', [], ($$13 = function(voice_model, voice_index){var self = $$13.$$s || this, voice_id = nil, result = nil;
 
           
             
@@ -33564,13 +33573,13 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             } else {
               result = $rb_plus(result, self.$_make_variant_ending_jumps(voice_id))
             };
-            return result;}, $$12.$$s = self, $$12.$$arity = 2, $$12)).$compact();
+            return result;}, $$13.$$s = self, $$13.$$arity = 2, $$13)).$compact();
           hn_voices.$unshift(hn_voices.$first());
           return $$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Song').$new(hn_voices);
-        }, $Abc2svgToHarpnotes__transform_voices$11.$$arity = 0);
+        }, $Abc2svgToHarpnotes__transform_voices$12.$$arity = 0);
         
-        Opal.def(self, '$_transform_voice', $Abc2svgToHarpnotes__transform_voice$13 = function $$_transform_voice(voice_model, voice_index) {
-          var $$14, $$15, $$16, $$17, $$18, $$19, $a, self = this, note_id = nil, result = nil, jumplines = nil, notebound_annotations = nil, chordsymbols = nil, num_voice_index = nil;
+        Opal.def(self, '$_transform_voice', $Abc2svgToHarpnotes__transform_voice$14 = function $$_transform_voice(voice_model, voice_index) {
+          var $$15, $$16, $$17, $$18, $$19, $$20, $a, self = this, note_id = nil, result = nil, jumplines = nil, notebound_annotations = nil, chordsymbols = nil, num_voice_index = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
           
@@ -33587,7 +33596,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             } else { throw $err; }
           }})();
           self.$_investigate_first_bar(voice_model);
-          $send(voice_model['$[]']("symbols"), 'each', [], ($$14 = function(voice_model_element){var self = $$14.$$s || this, $writer = nil;
+          $send(voice_model['$[]']("symbols"), 'each', [], ($$15 = function(voice_model_element){var self = $$15.$$s || this, $writer = nil;
 
           
             
@@ -33601,8 +33610,8 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             
             $writer = ["end_pos", self.$charpos_to_line_column(voice_model_element['$[]']("iend"))];
             $send(voice_model_element, '[]=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];;}, $$14.$$s = self, $$14.$$arity = 1, $$14));
-          self.pitch_providers = $send(voice_model['$[]']("symbols"), 'map', [], ($$15 = function(voice_model_element){var self = $$15.$$s || this;
+            return $writer[$rb_minus($writer["length"], 1)];;}, $$15.$$s = self, $$15.$$arity = 1, $$15));
+          self.pitch_providers = $send(voice_model['$[]']("symbols"), 'map', [], ($$16 = function(voice_model_element){var self = $$16.$$s || this;
 
           
             
@@ -33613,8 +33622,8 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               return voice_model_element
             } else {
               return nil
-            };}, $$15.$$s = self, $$15.$$arity = 1, $$15));
-          result = $send(voice_model['$[]']("symbols").$each_with_index(), 'map', [], ($$16 = function(voice_model_element, index){var self = $$16.$$s || this, type = nil, e = nil;
+            };}, $$16.$$s = self, $$16.$$arity = 1, $$16));
+          result = $send(voice_model['$[]']("symbols").$each_with_index(), 'map', [], ($$17 = function(voice_model_element, index){var self = $$17.$$s || this, type = nil, e = nil;
             if (self.abc_model == null) self.abc_model = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
@@ -33640,9 +33649,9 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 } finally { Opal.pop_exception() }
               } else { throw $err; }
             };;
-            return result;}, $$16.$$s = self, $$16.$$arity = 2, $$16));
+            return result;}, $$17.$$s = self, $$17.$$arity = 2, $$17));
           result = result.$flatten();
-          jumplines = $send(result, 'inject', [[]], ($$17 = function(jumplines, element){var self = $$17.$$s || this;
+          jumplines = $send(result, 'inject', [[]], ($$18 = function(jumplines, element){var self = $$18.$$s || this;
 
           
             
@@ -33654,8 +33663,8 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               element = nil;
             };
             jumplines['$<<'](self.$_make_jumplines(element, voice_index));
-            return jumplines;}, $$17.$$s = self, $$17.$$arity = 2, $$17));
-          notebound_annotations = $send(result, 'inject', [[]], ($$18 = function(notebound_annotations, element){var self = $$18.$$s || this;
+            return jumplines;}, $$18.$$s = self, $$18.$$arity = 2, $$18));
+          notebound_annotations = $send(result, 'inject', [[]], ($$19 = function(notebound_annotations, element){var self = $$19.$$s || this;
 
           
             
@@ -33666,8 +33675,8 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             if (element == null) {
               element = nil;
             };
-            return notebound_annotations['$<<'](self.$_make_notebound_annotations(element, voice_index));}, $$18.$$s = self, $$18.$$arity = 2, $$18));
-          chordsymbols = $send(result, 'inject', [[]], ($$19 = function(chordsymbols, element){var self = $$19.$$s || this;
+            return notebound_annotations['$<<'](self.$_make_notebound_annotations(element, voice_index));}, $$19.$$s = self, $$19.$$arity = 2, $$19));
+          chordsymbols = $send(result, 'inject', [[]], ($$20 = function(chordsymbols, element){var self = $$20.$$s || this;
 
           
             
@@ -33678,7 +33687,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             if (element == null) {
               element = nil;
             };
-            return chordsymbols['$<<'](self.$_transform_chordsymbol(element, voice_index));}, $$19.$$s = self, $$19.$$arity = 2, $$19));
+            return chordsymbols['$<<'](self.$_transform_chordsymbol(element, voice_index));}, $$20.$$s = self, $$20.$$arity = 2, $$20));
           result = $rb_plus(result, $rb_plus($rb_plus(jumplines, notebound_annotations), chordsymbols));
           result = result.$flatten().$compact();
           if ($truthy(result.$count()['$=='](0))) {
@@ -33690,21 +33699,21 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               $gvars.log.$warning("" + ($$($nesting, 'I18n').$t("Voice not in %%score")) + " " + (num_voice_index) + ":  V:" + (voice_model['$[]']("voice_properties")['$[]']("id")), self.$charpos_to_line_column(self.score_statements.$last()['$[]']("istart")))
             };};
           return result;
-        }, $Abc2svgToHarpnotes__transform_voice$13.$$arity = 2);
+        }, $Abc2svgToHarpnotes__transform_voice$14.$$arity = 2);
         
-        Opal.def(self, '$_investigate_first_bar', $Abc2svgToHarpnotes__investigate_first_bar$20 = function $$_investigate_first_bar(voice_model) {
-          var $$21, $a, self = this, symbol_bar_typeid = nil, bars = nil, $writer = nil;
+        Opal.def(self, '$_investigate_first_bar', $Abc2svgToHarpnotes__investigate_first_bar$21 = function $$_investigate_first_bar(voice_model) {
+          var $$22, $a, self = this, symbol_bar_typeid = nil, bars = nil, $writer = nil;
 
           
           symbol_bar_typeid = self.abc_model['$[]']("music_type_ids")['$[]']("bar").$to_s();
-          bars = $send(voice_model['$[]']("symbols"), 'select', [], ($$21 = function(voice_model_element){var self = $$21.$$s || this, $a;
+          bars = $send(voice_model['$[]']("symbols"), 'select', [], ($$22 = function(voice_model_element){var self = $$22.$$s || this, $a;
 
           
             
             if (voice_model_element == null) {
               voice_model_element = nil;
             };
-            return (($a = voice_model_element['$[]']("type").$to_s()['$=='](symbol_bar_typeid)) ? voice_model_element['$[]']("invisible")['$!']() : voice_model_element['$[]']("type").$to_s()['$=='](symbol_bar_typeid));}, $$21.$$s = self, $$21.$$arity = 1, $$21)).$compact();
+            return (($a = voice_model_element['$[]']("type").$to_s()['$=='](symbol_bar_typeid)) ? voice_model_element['$[]']("invisible")['$!']() : voice_model_element['$[]']("type").$to_s()['$=='](symbol_bar_typeid));}, $$22.$$s = self, $$22.$$arity = 1, $$22)).$compact();
           self.measure_start_time = 0;
           if ($truthy(bars.$first())) {
             
@@ -33720,15 +33729,15 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           } else {
             return nil
           };
-        }, $Abc2svgToHarpnotes__investigate_first_bar$20.$$arity = 1);
+        }, $Abc2svgToHarpnotes__investigate_first_bar$21.$$arity = 1);
         
-        Opal.def(self, '$_bar_is_repetition_end?', $Abc2svgToHarpnotes__bar_is_repetition_end$ques$22 = function(type) {
+        Opal.def(self, '$_bar_is_repetition_end?', $Abc2svgToHarpnotes__bar_is_repetition_end$ques$23 = function(type) {
           var self = this;
 
           return type['$=~'](/^:.*$/)
-        }, $Abc2svgToHarpnotes__bar_is_repetition_end$ques$22.$$arity = 1);
+        }, $Abc2svgToHarpnotes__bar_is_repetition_end$ques$23.$$arity = 1);
         
-        Opal.def(self, '$_transform_bar', $Abc2svgToHarpnotes__transform_bar$23 = function $$_transform_bar(voice_element, index, voice_index) {
+        Opal.def(self, '$_transform_bar', $Abc2svgToHarpnotes__transform_bar$24 = function $$_transform_bar(voice_element, index, voice_index) {
           var $a, $b, self = this, result = nil, type = nil, variant_label = nil, distance = nil, $writer = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -33811,9 +33820,9 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               }}};
           self.is_first_measure = false;
           return result;
-        }, $Abc2svgToHarpnotes__transform_bar$23.$$arity = 3);
+        }, $Abc2svgToHarpnotes__transform_bar$24.$$arity = 3);
         
-        Opal.def(self, '$_transform_part', $Abc2svgToHarpnotes__transform_part$24 = function $$_transform_part(voice_element, index, voice_index) {
+        Opal.def(self, '$_transform_part', $Abc2svgToHarpnotes__transform_part$25 = function $$_transform_part(voice_element, index, voice_index) {
           var self = this, start_pos = nil, end_pos = nil, $writer = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -33828,9 +33837,9 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           $send(self.part_table, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           return nil;
-        }, $Abc2svgToHarpnotes__transform_part$24.$$arity = 3);
+        }, $Abc2svgToHarpnotes__transform_part$25.$$arity = 3);
         
-        Opal.def(self, '$_transform_remark', $Abc2svgToHarpnotes__transform_remark$25 = function $$_transform_remark(voice_element, index, voice_index) {
+        Opal.def(self, '$_transform_remark', $Abc2svgToHarpnotes__transform_remark$26 = function $$_transform_remark(voice_element, index, voice_index) {
           var self = this, start_pos = nil, end_pos = nil, $writer = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -33845,10 +33854,10 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           $send(self.remark_table, '[]=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           return nil;
-        }, $Abc2svgToHarpnotes__transform_remark$25.$$arity = 3);
+        }, $Abc2svgToHarpnotes__transform_remark$26.$$arity = 3);
         
-        Opal.def(self, '$_transform_note', $Abc2svgToHarpnotes__transform_note$26 = function $$_transform_note(voice_element, index, voice_index) {
-          var $a, $b, $$27, $$28, $$29, $$30, self = this, origin = nil, start_pos = nil, end_pos = nil, tuplet = nil, tuplet_end = nil, tuplet_start = nil, decorations = nil, duration = nil, notes = nil, result = nil, synchpoint = nil, first_note = nil, $writer = nil, amount_of_slur_ends = nil;
+        Opal.def(self, '$_transform_note', $Abc2svgToHarpnotes__transform_note$27 = function $$_transform_note(voice_element, index, voice_index) {
+          var $a, $b, $$28, $$29, $$30, $$31, self = this, origin = nil, start_pos = nil, end_pos = nil, tuplet = nil, tuplet_end = nil, tuplet_start = nil, decorations = nil, duration = nil, notes = nil, result = nil, synchpoint = nil, first_note = nil, $writer = nil, amount_of_slur_ends = nil;
 
           
           origin = self.$_parse_origin(voice_element);
@@ -33857,7 +33866,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           decorations = self.$_parse_decorations(voice_element);
           self.$_transform_measure_start(voice_element);
           duration = self.$_convert_duration(voice_element['$[]']("notes").$first()['$[]']("dur"));
-          notes = $send(voice_element['$[]']("notes"), 'map', [], ($$27 = function(the_note){var self = $$27.$$s || this, result = nil, $writer = nil;
+          notes = $send(voice_element['$[]']("notes"), 'map', [], ($$28 = function(the_note){var self = $$28.$$s || this, result = nil, $writer = nil;
             if (self.measure_count == null) self.measure_count = nil;
             if (self.variant_no == null) self.variant_no = nil;
 
@@ -33924,7 +33933,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               $writer = [false];
               $send(result, 'visible=', Opal.to_a($writer));
               $writer[$rb_minus($writer["length"], 1)];};
-            return result;}, $$27.$$s = self, $$27.$$arity = 1, $$27));
+            return result;}, $$28.$$s = self, $$28.$$arity = 1, $$28));
           result = [];
           if (notes.$count()['$=='](1)) {
             result['$<<'](notes.$first())
@@ -33998,26 +34007,26 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           $send(result.$first(), 'tie_start=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           
-          $writer = [$send(self.$_parse_slur(voice_element['$[]']("slur_start")), 'map', [], ($$28 = function(i){var self = $$28.$$s || this;
+          $writer = [$send(self.$_parse_slur(voice_element['$[]']("slur_sls")), 'map', [], ($$29 = function(i){var self = $$29.$$s || this;
 
           
             
             if (i == null) {
               i = nil;
             };
-            return self.$_push_slur();}, $$28.$$s = self, $$28.$$arity = 1, $$28))];
+            return self.$_push_slur();}, $$29.$$s = self, $$29.$$arity = 1, $$29))];
           $send(result.$first(), 'slur_starts=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           amount_of_slur_ends = ($truthy($a = voice_element['$[]']("slur_end")) ? $a : 0);
           
-          $writer = [$send(Opal.Range.$new(1, amount_of_slur_ends, false), 'map', [], ($$29 = function(){var self = $$29.$$s || this;
+          $writer = [$send(Opal.Range.$new(1, amount_of_slur_ends, false), 'map', [], ($$30 = function(){var self = $$30.$$s || this;
 
-          return self.$_pop_slur()}, $$29.$$s = self, $$29.$$arity = 0, $$29))];
+          return self.$_pop_slur()}, $$30.$$s = self, $$30.$$arity = 0, $$30))];
           $send(result.$first(), 'slur_ends=', Opal.to_a($writer));
           $writer[$rb_minus($writer["length"], 1)];;
           if ($truthy(self.next_note_marks['$[]']("measure"))) {
             
-            $send(notes, 'each', [], ($$30 = function(note){var self = $$30.$$s || this;
+            $send(notes, 'each', [], ($$31 = function(note){var self = $$31.$$s || this;
 
             
               
@@ -34026,16 +34035,16 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               };
               $writer = [true];
               $send(note, 'measure_start=', Opal.to_a($writer));
-              return $writer[$rb_minus($writer["length"], 1)];}, $$30.$$s = self, $$30.$$arity = 1, $$30));
+              return $writer[$rb_minus($writer["length"], 1)];}, $$31.$$s = self, $$31.$$arity = 1, $$31));
             
             $writer = ["measure", false];
             $send(self.next_note_marks, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;};
           self.$_make_repeats_jumps_annotations(result, voice_element, voice_index);
           return result;
-        }, $Abc2svgToHarpnotes__transform_note$26.$$arity = 3);
+        }, $Abc2svgToHarpnotes__transform_note$27.$$arity = 3);
         
-        Opal.def(self, '$_transform_measure_start', $Abc2svgToHarpnotes__transform_measure_start$31 = function $$_transform_measure_start(voice_element) {
+        Opal.def(self, '$_transform_measure_start', $Abc2svgToHarpnotes__transform_measure_start$32 = function $$_transform_measure_start(voice_element) {
           var self = this;
 
           if ($truthy(self.next_note_marks['$[]']("measure"))) {
@@ -34045,17 +34054,17 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           } else {
             return nil
           }
-        }, $Abc2svgToHarpnotes__transform_measure_start$31.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_measure_start$32.$$arity = 1);
         
-        Opal.def(self, '$_transform_chordsymbol', $Abc2svgToHarpnotes__transform_chordsymbol$32 = function $$_transform_chordsymbol(entity, voice_id) {
-          var $$33, self = this, result = nil, chords = nil;
+        Opal.def(self, '$_transform_chordsymbol', $Abc2svgToHarpnotes__transform_chordsymbol$33 = function $$_transform_chordsymbol(entity, voice_id) {
+          var $$34, self = this, result = nil, chords = nil;
 
           
           result = [];
           if ($truthy(entity['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable')))) {
             
             chords = self.$_extract_chord_lines(entity.$origin()['$[]']("raw_voice_element"));
-            $send(chords, 'each_with_index', [], ($$33 = function(name, index){var self = $$33.$$s || this, match = nil, text = nil, position = nil, conf_key = nil;
+            $send(chords, 'each_with_index', [], ($$34 = function(name, index){var self = $$34.$$s || this, match = nil, text = nil, position = nil, conf_key = nil;
               if ($gvars.conf == null) $gvars.conf = nil;
 
             
@@ -34077,12 +34086,12 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Chordsymbol').$new(entity, $hash2(["style", "pos", "text"], {"style": "large", "pos": position, "text": text}), conf_key));
               } else {
                 return nil
-              };}, $$33.$$s = self, $$33.$$arity = 2, $$33));};
+              };}, $$34.$$s = self, $$34.$$arity = 2, $$34));};
           return result;
-        }, $Abc2svgToHarpnotes__transform_chordsymbol$32.$$arity = 2);
+        }, $Abc2svgToHarpnotes__transform_chordsymbol$33.$$arity = 2);
         
-        Opal.def(self, '$_transform_count_note', $Abc2svgToHarpnotes__transform_count_note$34 = function $$_transform_count_note(voice_element) {
-          var $a, $$35, $$36, self = this, count_base = nil, count_start = nil, count_end = nil, replacemap = nil, count_range = nil, replace_char = nil;
+        Opal.def(self, '$_transform_count_note', $Abc2svgToHarpnotes__transform_count_note$35 = function $$_transform_count_note(voice_element) {
+          var $a, $$36, $$37, self = this, count_base = nil, count_start = nil, count_end = nil, replacemap = nil, count_range = nil, replace_char = nil;
 
           
           if ($truthy(self.countby)) {
@@ -34093,7 +34102,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             replacemap = [[/^<\d+>.*eue$/, "eue"], [/^<\d+>.*e$/, "e"], [/^u.*$/, "e"]];
             if ($truthy(($truthy($a = count_start['$%'](1)['$=='](0)) ? count_end['$%'](1)['$=='](0) : $a))) {
               
-              count_range = $send(Opal.Range.$new(count_start,count_end, true).$to_a(), 'map', [], ($$35 = function(i){var self = $$35.$$s || this;
+              count_range = $send(Opal.Range.$new(count_start,count_end, true).$to_a(), 'map', [], ($$36 = function(i){var self = $$36.$$s || this;
                 if (self.countnames == null) self.countnames = nil;
 
               
@@ -34101,16 +34110,16 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 if (i == null) {
                   i = nil;
                 };
-                return self.countnames['$[]'](i);}, $$35.$$s = self, $$35.$$arity = 1, $$35)).$join();
+                return self.countnames['$[]'](i);}, $$36.$$s = self, $$36.$$arity = 1, $$36)).$join();
               count_range = count_range.$gsub(/(\d+)/, "<\\1>");
-              replace_char = $send(replacemap, 'select', [], ($$36 = function(u){var self = $$36.$$s || this;
+              replace_char = $send(replacemap, 'select', [], ($$37 = function(u){var self = $$37.$$s || this;
 
               
                 
                 if (u == null) {
                   u = nil;
                 };
-                return count_range.$match(u.$first());}, $$36.$$s = self, $$36.$$arity = 1, $$36)).$first();
+                return count_range.$match(u.$first());}, $$37.$$s = self, $$37.$$arity = 1, $$37)).$first();
               if ($truthy(replace_char)) {
                 count_range = count_range.$gsub(replace_char.$last(), "")};
               count_range = count_range.$scan(/<\d+>|[eu]/).$join("-");
@@ -34123,17 +34132,17 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               }; return nil; })()
             };};
           return count_range;
-        }, $Abc2svgToHarpnotes__transform_count_note$34.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_count_note$35.$$arity = 1);
         
-        Opal.def(self, '$_convert_duration', $Abc2svgToHarpnotes__convert_duration$37 = function $$_convert_duration(raw_duration) {
+        Opal.def(self, '$_convert_duration', $Abc2svgToHarpnotes__convert_duration$38 = function $$_convert_duration(raw_duration) {
           var self = this, duration = nil;
 
           
           duration = [128, $rb_times($rb_divide(raw_duration, $$($nesting, 'ABC2SVG_DURATION_FACTOR')), self._shortest_note).$round()].$min();
           return duration;
-        }, $Abc2svgToHarpnotes__convert_duration$37.$$arity = 1);
+        }, $Abc2svgToHarpnotes__convert_duration$38.$$arity = 1);
         
-        Opal.def(self, '$_transform_staves', $Abc2svgToHarpnotes__transform_staves$38 = function $$_transform_staves(voice_element, index, voice_index) {
+        Opal.def(self, '$_transform_staves', $Abc2svgToHarpnotes__transform_staves$39 = function $$_transform_staves(voice_element, index, voice_index) {
           var self = this, start_pos = nil, end_pos = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -34151,10 +34160,10 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           } else {
             return nil
           };
-        }, $Abc2svgToHarpnotes__transform_staves$38.$$arity = 3);
+        }, $Abc2svgToHarpnotes__transform_staves$39.$$arity = 3);
         
-        Opal.def(self, '$_transform_rest', $Abc2svgToHarpnotes__transform_rest$39 = function $$_transform_rest(voice_element, index, voice_index) {
-          var $a, $$40, $b, self = this, origin = nil, start_pos = nil, end_pos = nil, pitch_notes = nil, decorations = nil, pitch = nil, average_pitch = nil, duration = nil, tuplet = nil, tuplet_end = nil, tuplet_start = nil, result = nil, $writer = nil;
+        Opal.def(self, '$_transform_rest', $Abc2svgToHarpnotes__transform_rest$40 = function $$_transform_rest(voice_element, index, voice_index) {
+          var $a, $$41, $b, self = this, origin = nil, start_pos = nil, end_pos = nil, pitch_notes = nil, decorations = nil, pitch = nil, average_pitch = nil, duration = nil, tuplet = nil, tuplet_end = nil, tuplet_start = nil, result = nil, $writer = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -34171,14 +34180,14 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             pitch = 60
           } else {
             
-            pitch_notes = $send(pitch_notes, 'map', [], ($$40 = function(pitch_note){var self = $$40.$$s || this;
+            pitch_notes = $send(pitch_notes, 'map', [], ($$41 = function(pitch_note){var self = $$41.$$s || this;
 
             
               
               if (pitch_note == null) {
                 pitch_note = nil;
               };
-              return pitch_note['$[]']("notes").$last()['$[]']("midi");}, $$40.$$s = self, $$40.$$arity = 1, $$40));
+              return pitch_note['$[]']("notes").$last()['$[]']("midi");}, $$41.$$s = self, $$41.$$arity = 1, $$41));
             pitch = (average_pitch = $rb_divide(pitch_notes.$inject("+"), pitch_notes.$length())).$floor().$to_i();
           };
           if ($truthy(pitch['$nil?']())) {
@@ -34271,29 +34280,30 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             $writer[$rb_minus($writer["length"], 1)];;};
           self.$_make_repeats_jumps_annotations(result, voice_element, voice_index);
           return result;
-        }, $Abc2svgToHarpnotes__transform_rest$39.$$arity = 3);
+        }, $Abc2svgToHarpnotes__transform_rest$40.$$arity = 3);
         
-        Opal.def(self, '$_transform_tempo', $Abc2svgToHarpnotes__transform_tempo$41 = function $$_transform_tempo(voice_element, index, voice_id) {
+        Opal.def(self, '$_transform_tempo', $Abc2svgToHarpnotes__transform_tempo$42 = function $$_transform_tempo(voice_element, index, voice_id) {
           var self = this, start_pos = nil, end_pos = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
-          if (voice_element['$[]']("istart")['$=='](self.meta_data['$[]']("tempo")['$[]']("sym")['$[]']("istart"))) {
-            return nil
+          
+          if ($truthy(self.tempo_statements['$empty?']())) {
           } else {
             
             start_pos = self.$charpos_to_line_column(voice_element['$[]']("istart"));
             end_pos = self.$charpos_to_line_column(voice_element['$[]']("iend"));
-            return $gvars.log.$error($rb_plus("" + "abc:" + (start_pos.$first()) + ":" + (start_pos.$last()) + " Error: ", $$($nesting, 'I18n').$t("tempo change not suported by zupfnoter")), start_pos, end_pos);
-          }
-        }, $Abc2svgToHarpnotes__transform_tempo$41.$$arity = 3);
+            $gvars.log.$error($rb_plus("" + "abc:" + (start_pos.$first()) + ":" + (start_pos.$last()) + " Error: ", $$($nesting, 'I18n').$t("tempo change not suported by zupfnoter")), start_pos, end_pos);
+          };
+          return self.tempo_statements.$push(voice_element);
+        }, $Abc2svgToHarpnotes__transform_tempo$42.$$arity = 3);
         
-        Opal.def(self, '$_transform_yspace', $Abc2svgToHarpnotes__transform_yspace$42 = function $$_transform_yspace(voice_element, index) {
+        Opal.def(self, '$_transform_yspace', $Abc2svgToHarpnotes__transform_yspace$43 = function $$_transform_yspace(voice_element, index) {
           var self = this;
 
           return nil
-        }, $Abc2svgToHarpnotes__transform_yspace$42.$$arity = 2);
+        }, $Abc2svgToHarpnotes__transform_yspace$43.$$arity = 2);
         
-        Opal.def(self, '$_transform_bar_repeat_end', $Abc2svgToHarpnotes__transform_bar_repeat_end$43 = function $$_transform_bar_repeat_end(voice_element, index, voice_id) {
+        Opal.def(self, '$_transform_bar_repeat_end', $Abc2svgToHarpnotes__transform_bar_repeat_end$44 = function $$_transform_bar_repeat_end(voice_element, index, voice_id) {
           var self = this, level = nil, start = nil, goto_info = nil, distance = nil, $writer = nil, entity = nil, conf_key = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -34330,27 +34340,27 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           entity = self.previous_note;
           conf_key = "" + "notebound.c_jumplines." + (voice_id) + "." + (entity.$znid()) + ".p_repeat";
           return [$$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Goto').$new(self.previous_note, start, $hash2(["distance", "is_repeat", "level", "conf_key"], {"distance": distance, "is_repeat": true, "level": level, "conf_key": conf_key}))];
-        }, $Abc2svgToHarpnotes__transform_bar_repeat_end$43.$$arity = 3);
+        }, $Abc2svgToHarpnotes__transform_bar_repeat_end$44.$$arity = 3);
         
-        Opal.def(self, '$_transform_grace', $Abc2svgToHarpnotes__transform_grace$44 = function $$_transform_grace() {
+        Opal.def(self, '$_transform_grace', $Abc2svgToHarpnotes__transform_grace$45 = function $$_transform_grace() {
           var self = this;
 
           return nil
-        }, $Abc2svgToHarpnotes__transform_grace$44.$$arity = 0);
+        }, $Abc2svgToHarpnotes__transform_grace$45.$$arity = 0);
         
-        Opal.def(self, '$_transform_format', $Abc2svgToHarpnotes__transform_format$45 = function $$_transform_format(voice_element) {
+        Opal.def(self, '$_transform_format', $Abc2svgToHarpnotes__transform_format$46 = function $$_transform_format(voice_element) {
           var self = this;
 
           return nil
-        }, $Abc2svgToHarpnotes__transform_format$45.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_format$46.$$arity = 1);
         
-        Opal.def(self, '$_transform_key', $Abc2svgToHarpnotes__transform_key$46 = function $$_transform_key(voice_element) {
+        Opal.def(self, '$_transform_key', $Abc2svgToHarpnotes__transform_key$47 = function $$_transform_key(voice_element) {
           var self = this;
 
           return nil
-        }, $Abc2svgToHarpnotes__transform_key$46.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_key$47.$$arity = 1);
         
-        Opal.def(self, '$_transform_lyrics', $Abc2svgToHarpnotes__transform_lyrics$47 = function $$_transform_lyrics(voice_element) {
+        Opal.def(self, '$_transform_lyrics', $Abc2svgToHarpnotes__transform_lyrics$48 = function $$_transform_lyrics(voice_element) {
           var $a, $b, self = this, result = nil;
 
           
@@ -34363,9 +34373,9 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             result = ""
           };
           return ($truthy($b = result) ? $b : "");
-        }, $Abc2svgToHarpnotes__transform_lyrics$47.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_lyrics$48.$$arity = 1);
         
-        Opal.def(self, '$_transform_meter', $Abc2svgToHarpnotes__transform_meter$48 = function $$_transform_meter(voice_element) {
+        Opal.def(self, '$_transform_meter', $Abc2svgToHarpnotes__transform_meter$49 = function $$_transform_meter(voice_element) {
           var self = this, start_pos = nil, end_pos = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -34389,22 +34399,22 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             } else { throw $err; }
           }})();
           return nil;
-        }, $Abc2svgToHarpnotes__transform_meter$48.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_meter$49.$$arity = 1);
         
-        Opal.def(self, '$_transform_block', $Abc2svgToHarpnotes__transform_block$49 = function $$_transform_block(voice_element) {
+        Opal.def(self, '$_transform_block', $Abc2svgToHarpnotes__transform_block$50 = function $$_transform_block(voice_element) {
           var self = this;
 
           return nil
-        }, $Abc2svgToHarpnotes__transform_block$49.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_block$50.$$arity = 1);
         
-        Opal.def(self, '$_transform_clef', $Abc2svgToHarpnotes__transform_clef$50 = function $$_transform_clef(voice_element) {
+        Opal.def(self, '$_transform_clef', $Abc2svgToHarpnotes__transform_clef$51 = function $$_transform_clef(voice_element) {
           var self = this;
 
           return nil
-        }, $Abc2svgToHarpnotes__transform_clef$50.$$arity = 1);
+        }, $Abc2svgToHarpnotes__transform_clef$51.$$arity = 1);
         
-        Opal.def(self, '$_make_variant_ending_jumps', $Abc2svgToHarpnotes__make_variant_ending_jumps$51 = function $$_make_variant_ending_jumps(voice_id) {
-          var $$52, self = this, result = nil, lastvariantgroup = nil;
+        Opal.def(self, '$_make_variant_ending_jumps', $Abc2svgToHarpnotes__make_variant_ending_jumps$52 = function $$_make_variant_ending_jumps(voice_id) {
+          var $$53, self = this, result = nil, lastvariantgroup = nil;
 
           
           result = [];
@@ -34413,7 +34423,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           } else {
             return -1
           }; return nil; })();
-          $send(self.variant_endings['$[]'](Opal.Range.$new(0, lastvariantgroup, false)), 'each', [], ($$52 = function(variant_ending_group){var self = $$52.$$s || this, $$53, $$54, distance = nil, entity = nil, conf_base = nil, lastvariant = nil, conf_key = nil;
+          $send(self.variant_endings['$[]'](Opal.Range.$new(0, lastvariantgroup, false)), 'each', [], ($$53 = function(variant_ending_group){var self = $$53.$$s || this, $$54, $$55, distance = nil, entity = nil, conf_base = nil, lastvariant = nil, conf_key = nil;
 
           
             
@@ -34428,7 +34438,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             } else {
               lastvariant = -1
             };
-            $send(variant_ending_group['$[]'](Opal.Range.$new(1, lastvariant, false)), 'each_with_index', [], ($$53 = function(variant_ending, index){var self = $$53.$$s || this, conf_key = nil;
+            $send(variant_ending_group['$[]'](Opal.Range.$new(1, lastvariant, false)), 'each_with_index', [], ($$54 = function(variant_ending, index){var self = $$54.$$s || this, conf_key = nil;
 
             
               
@@ -34440,8 +34450,8 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 index = nil;
               };
               conf_key = "" + (conf_base) + "." + (index) + ".p_begin";
-              return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Goto').$new(variant_ending_group['$[]'](0)['$[]']("rbstop"), variant_ending['$[]']("rbstart"), $hash2(["conf_key", "distance", "from_anchor", "to_anchor"], {"conf_key": conf_key, "distance": distance['$[]'](0), "from_anchor": "after", "to_anchor": "before"})));}, $$53.$$s = self, $$53.$$arity = 2, $$53));
-            $send(variant_ending_group['$[]']($range(1, -3, false)), 'each_with_index', [], ($$54 = function(variant_ending, index){var self = $$54.$$s || this, conf_key = nil;
+              return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Goto').$new(variant_ending_group['$[]'](0)['$[]']("rbstop"), variant_ending['$[]']("rbstart"), $hash2(["conf_key", "distance", "from_anchor", "to_anchor"], {"conf_key": conf_key, "distance": distance['$[]'](0), "from_anchor": "after", "to_anchor": "before"})));}, $$54.$$s = self, $$54.$$arity = 2, $$54));
+            $send(variant_ending_group['$[]']($range(1, -3, false)), 'each_with_index', [], ($$55 = function(variant_ending, index){var self = $$55.$$s || this, conf_key = nil;
 
             
               
@@ -34458,24 +34468,24 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 
                 conf_key = "" + (conf_base) + ".p_end";
                 return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Goto').$new(variant_ending['$[]']("rbstop"), variant_ending_group['$[]'](-1)['$[]']("rbstart"), $hash2(["conf_key", "distance", "from_anchor", "to_anchor", "vertical_anchor"], {"conf_key": conf_key, "distance": distance['$[]'](1), "from_anchor": "after", "to_anchor": "before", "vertical_anchor": "to"})));
-              };}, $$54.$$s = self, $$54.$$arity = 2, $$54));
+              };}, $$55.$$s = self, $$55.$$arity = 2, $$55));
             if ($truthy(variant_ending_group['$[]'](-1)['$[]']("is_followup"))) {
               
               conf_key = "" + (conf_base) + ".p_follow";
               return result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Goto').$new(variant_ending_group['$[]'](-2)['$[]']("rbstop"), variant_ending_group['$[]'](-1)['$[]']("rbstart"), $hash2(["conf_key", "distance", "from_anchor", "to_anchor", "vertical_anchor"], {"conf_key": conf_key, "distance": distance['$[]'](2), "from_anchor": "after", "to_anchor": "before", "vertical_anchor": "to"})));
             } else {
               return nil
-            };}, $$52.$$s = self, $$52.$$arity = 1, $$52));
+            };}, $$53.$$s = self, $$53.$$arity = 1, $$53));
           return result;
-        }, $Abc2svgToHarpnotes__make_variant_ending_jumps$51.$$arity = 1);
+        }, $Abc2svgToHarpnotes__make_variant_ending_jumps$52.$$arity = 1);
         
-        Opal.def(self, '$_make_jumplines', $Abc2svgToHarpnotes__make_jumplines$55 = function $$_make_jumplines(element, voice_id) {
-          var $$56, self = this, goto_infos = nil;
+        Opal.def(self, '$_make_jumplines', $Abc2svgToHarpnotes__make_jumplines$56 = function $$_make_jumplines(element, voice_id) {
+          var $$57, self = this, goto_infos = nil;
 
           if ($truthy(element['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable')))) {
             
             goto_infos = self.$_extract_goto_info_from_bar(element.$origin()['$[]']("raw_voice_element"));
-            return $send(goto_infos, 'inject', [[]], ($$56 = function(result, goto_info){var self = $$56.$$s || this, $a, targetname = nil, target = nil, conf_key = nil, argument = nil;
+            return $send(goto_infos, 'inject', [[]], ($$57 = function(result, goto_info){var self = $$57.$$s || this, $a, targetname = nil, target = nil, conf_key = nil, argument = nil;
               if (self.jumptargets == null) self.jumptargets = nil;
               if ($gvars.log == null) $gvars.log = nil;
 
@@ -34497,21 +34507,21 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               } else {
                 result['$<<']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Goto').$new(element, target, $hash2(["conf_key", "distance"], {"conf_key": conf_key, "distance": argument})))
               };
-              return result;}, $$56.$$s = self, $$56.$$arity = 2, $$56));
+              return result;}, $$57.$$s = self, $$57.$$arity = 2, $$57));
           } else {
             return nil
           }
-        }, $Abc2svgToHarpnotes__make_jumplines$55.$$arity = 2);
+        }, $Abc2svgToHarpnotes__make_jumplines$56.$$arity = 2);
         
-        Opal.def(self, '$_make_notebound_annotations', $Abc2svgToHarpnotes__make_notebound_annotations$57 = function $$_make_notebound_annotations(entity, voice_id) {
-          var $$58, self = this, result = nil, chords = nil;
+        Opal.def(self, '$_make_notebound_annotations', $Abc2svgToHarpnotes__make_notebound_annotations$58 = function $$_make_notebound_annotations(entity, voice_id) {
+          var $$59, self = this, result = nil, chords = nil;
 
           
           result = [];
           if ($truthy(entity['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable')))) {
             
             chords = self.$_extract_chord_lines(entity.$origin()['$[]']("raw_voice_element"));
-            $send(chords, 'each_with_index', [], ($$58 = function(name, index){var self = $$58.$$s || this, $$59, $$60, $$61, $a, $b, match = nil, semantic = nil, text = nil, pos_x = nil, pos_y = nil, $case = nil, annotation = nil, $writer = nil, notepos = nil, position = nil, conf_key = nil;
+            $send(chords, 'each_with_index', [], ($$59 = function(name, index){var self = $$59.$$s || this, $$60, $$61, $$62, $a, $b, match = nil, semantic = nil, text = nil, pos_x = nil, pos_y = nil, $case = nil, annotation = nil, $writer = nil, notepos = nil, position = nil, conf_key = nil;
               if (self.annotations == null) self.annotations = nil;
               if ($gvars.log == null) $gvars.log = nil;
               if ($gvars.conf == null) $gvars.conf = nil;
@@ -34548,7 +34558,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 $send(entity, 'shift=', Opal.to_a($writer));
                 $writer[$rb_minus($writer["length"], 1)];;
                 if ($truthy(entity['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint')))) {
-                  $send(entity.$notes(), 'each', [], ($$59 = function(note){var self = $$59.$$s || this;
+                  $send(entity.$notes(), 'each', [], ($$60 = function(note){var self = $$60.$$s || this;
 
                   
                     
@@ -34557,14 +34567,14 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                     };
                     $writer = [$hash2(["dir", "size", "style"], {"dir": -1, "size": text, "style": "regular"})];
                     $send(note, 'shift=', Opal.to_a($writer));
-                    return $writer[$rb_minus($writer["length"], 1)];}, $$59.$$s = self, $$59.$$arity = 1, $$59))};}
+                    return $writer[$rb_minus($writer["length"], 1)];}, $$60.$$s = self, $$60.$$arity = 1, $$60))};}
                 else if (">"['$===']($case)) {
                 
                 $writer = [$hash2(["dir", "size", "style"], {"dir": 1, "size": text, "style": "regular"})];
                 $send(entity, 'shift=', Opal.to_a($writer));
                 $writer[$rb_minus($writer["length"], 1)];;
                 if ($truthy(entity['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'SynchPoint')))) {
-                  $send(entity.$notes(), 'each', [], ($$60 = function(note){var self = $$60.$$s || this;
+                  $send(entity.$notes(), 'each', [], ($$61 = function(note){var self = $$61.$$s || this;
 
                   
                     
@@ -34573,19 +34583,19 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                     };
                     $writer = [$hash2(["dir", "size", "style"], {"dir": 1, "size": text, "style": "regular"})];
                     $send(note, 'shift=', Opal.to_a($writer));
-                    return $writer[$rb_minus($writer["length"], 1)];}, $$60.$$s = self, $$60.$$arity = 1, $$60))};}
+                    return $writer[$rb_minus($writer["length"], 1)];}, $$61.$$s = self, $$61.$$arity = 1, $$61))};}
                 else {annotation = nil};
                 if ($truthy(annotation)) {
                   
                   if ($truthy(pos_x)) {
-                    notepos = $send([pos_x, pos_y], 'map', [], ($$61 = function(p){var self = $$61.$$s || this;
+                    notepos = $send([pos_x, pos_y], 'map', [], ($$62 = function(p){var self = $$62.$$s || this;
 
                     
                       
                       if (p == null) {
                         p = nil;
                       };
-                      return p.$to_f();}, $$61.$$s = self, $$61.$$arity = 1, $$61))};
+                      return p.$to_f();}, $$62.$$s = self, $$62.$$arity = 1, $$62))};
                   position = ($truthy($a = ($truthy($b = notepos) ? $b : annotation['$[]']("pos"))) ? $a : $gvars.conf['$[]']("defaults.notebound.annotation.pos"));
                   if ($truthy(entity.$znid())) {
                     conf_key = "" + "notebound.annotation." + (voice_id) + "." + (entity.$znid())};
@@ -34597,12 +34607,12 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 };
               } else {
                 return nil
-              };}, $$58.$$s = self, $$58.$$arity = 2, $$58));};
+              };}, $$59.$$s = self, $$59.$$arity = 2, $$59));};
           return result;
-        }, $Abc2svgToHarpnotes__make_notebound_annotations$57.$$arity = 2);
+        }, $Abc2svgToHarpnotes__make_notebound_annotations$58.$$arity = 2);
         
-        Opal.def(self, '$_make_repeats_jumps_annotations', $Abc2svgToHarpnotes__make_repeats_jumps_annotations$62 = function $$_make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id) {
-          var $a, $$63, $$64, self = this, the_note = nil, part_label = nil, $writer = nil, znid = nil, conf_key = nil, position = nil, text = nil, chords = nil;
+        Opal.def(self, '$_make_repeats_jumps_annotations', $Abc2svgToHarpnotes__make_repeats_jumps_annotations$63 = function $$_make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id) {
+          var $a, $$64, $$65, self = this, the_note = nil, part_label = nil, $writer = nil, znid = nil, conf_key = nil, position = nil, text = nil, chords = nil;
           if ($gvars.conf == null) $gvars.conf = nil;
 
           
@@ -34696,14 +34706,14 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             $send(self.next_note_marks, '[]=', Opal.to_a($writer));
             $writer[$rb_minus($writer["length"], 1)];;};
           chords = self.$_extract_chord_lines(voice_element);
-          return $send($send(chords, 'select', [], ($$63 = function(chord){var self = $$63.$$s || this;
+          return $send($send(chords, 'select', [], ($$64 = function(chord){var self = $$64.$$s || this;
 
           
             
             if (chord == null) {
               chord = nil;
             };
-            return chord['$[]'](0)['$=='](":");}, $$63.$$s = self, $$63.$$arity = 1, $$63)), 'each', [], ($$64 = function(name){var self = $$64.$$s || this, $$65;
+            return chord['$[]'](0)['$=='](":");}, $$64.$$s = self, $$64.$$arity = 1, $$64)), 'each', [], ($$65 = function(name){var self = $$65.$$s || this, $$66;
             if (self.jumptargets == null) self.jumptargets = nil;
 
           
@@ -34711,32 +34721,32 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             if (name == null) {
               name = nil;
             };
-            $writer = [name['$[]']($range(1, -1, false)), $send(harpnote_elements, 'select', [], ($$65 = function(n){var self = $$65.$$s || this;
+            $writer = [name['$[]']($range(1, -1, false)), $send(harpnote_elements, 'select', [], ($$66 = function(n){var self = $$66.$$s || this;
 
             
               
               if (n == null) {
                 n = nil;
               };
-              return n['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$65.$$s = self, $$65.$$arity = 1, $$65)).$last()];
+              return n['$is_a?']($$$($$$($$($nesting, 'Harpnotes'), 'Music'), 'Playable'));}, $$66.$$s = self, $$66.$$arity = 1, $$66)).$last()];
             $send(self.jumptargets, '[]=', Opal.to_a($writer));
-            return $writer[$rb_minus($writer["length"], 1)];}, $$64.$$s = self, $$64.$$arity = 1, $$64));
-        }, $Abc2svgToHarpnotes__make_repeats_jumps_annotations$62.$$arity = 3);
+            return $writer[$rb_minus($writer["length"], 1)];}, $$65.$$s = self, $$65.$$arity = 1, $$65));
+        }, $Abc2svgToHarpnotes__make_repeats_jumps_annotations$63.$$arity = 3);
         
-        Opal.def(self, '$_get_extra', $Abc2svgToHarpnotes__get_extra$66 = function $$_get_extra(voice_element, id) {
-          var $a, $$67, self = this, r = nil;
+        Opal.def(self, '$_get_extra', $Abc2svgToHarpnotes__get_extra$67 = function $$_get_extra(voice_element, id) {
+          var $a, $$68, self = this, r = nil;
 
           
           r = (function() { try {
             
-            return ($truthy($a = voice_element['$[]']("extra")) ? $send(voice_element['$[]']("extra"), 'select', [], ($$67 = function(e){var self = $$67.$$s || this;
+            return ($truthy($a = voice_element['$[]']("extra")) ? $send(voice_element['$[]']("extra"), 'select', [], ($$68 = function(e){var self = $$68.$$s || this;
 
             
               
               if (e == null) {
                 e = nil;
               };
-              return e['$[]']("type").$to_s()['$=='](id.$to_s());}, $$67.$$s = self, $$67.$$arity = 1, $$67)).$first() : $a);
+              return e['$[]']("type").$to_s()['$=='](id.$to_s());}, $$68.$$s = self, $$68.$$arity = 1, $$68)).$first() : $a);
           } catch ($err) {
             if (Opal.rescue($err, [$$($nesting, 'StandardError')])) {
               try {
@@ -34745,15 +34755,15 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             } else { throw $err; }
           }})();
           return r;
-        }, $Abc2svgToHarpnotes__get_extra$66.$$arity = 2);
+        }, $Abc2svgToHarpnotes__get_extra$67.$$arity = 2);
         
-        Opal.def(self, '$_push_slur', $Abc2svgToHarpnotes__push_slur$68 = function $$_push_slur() {
+        Opal.def(self, '$_push_slur', $Abc2svgToHarpnotes__push_slur$69 = function $$_push_slur() {
           var self = this;
 
           return (self.slurstack = $rb_plus(self.slurstack, 1))
-        }, $Abc2svgToHarpnotes__push_slur$68.$$arity = 0);
+        }, $Abc2svgToHarpnotes__push_slur$69.$$arity = 0);
         
-        Opal.def(self, '$_pop_slur', $Abc2svgToHarpnotes__pop_slur$69 = function $$_pop_slur() {
+        Opal.def(self, '$_pop_slur', $Abc2svgToHarpnotes__pop_slur$70 = function $$_pop_slur() {
           var self = this, result = nil;
 
           
@@ -34762,15 +34772,15 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
           if ($truthy($rb_lt(self.slurstack, 0))) {
             self.slurstack = 0};
           return result;
-        }, $Abc2svgToHarpnotes__pop_slur$69.$$arity = 0);
+        }, $Abc2svgToHarpnotes__pop_slur$70.$$arity = 0);
         
-        Opal.def(self, '$_extract_chord_lines', $Abc2svgToHarpnotes__extract_chord_lines$70 = function $$_extract_chord_lines(voice_element) {
-          var $$71, $$72, self = this, chords = nil, result = nil;
+        Opal.def(self, '$_extract_chord_lines', $Abc2svgToHarpnotes__extract_chord_lines$71 = function $$_extract_chord_lines(voice_element) {
+          var $$72, $$73, self = this, chords = nil, result = nil;
 
           
           chords = voice_element['$[]']("a_gch");
           if ($truthy(chords)) {
-            result = $send($send(chords, 'select', [], ($$71 = function(e){var self = $$71.$$s || this;
+            result = $send($send(chords, 'select', [], ($$72 = function(e){var self = $$72.$$s || this;
 
             
               
@@ -34778,26 +34788,26 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 e = nil;
               };
               e['$[]']("type")['$==']("^");
-              return true;}, $$71.$$s = self, $$71.$$arity = 1, $$71)), 'map', [], ($$72 = function(e){var self = $$72.$$s || this;
+              return true;}, $$72.$$s = self, $$72.$$arity = 1, $$72)), 'map', [], ($$73 = function(e){var self = $$73.$$s || this;
 
             
               
               if (e == null) {
                 e = nil;
               };
-              return e['$[]']("text");}, $$72.$$s = self, $$72.$$arity = 1, $$72))
+              return e['$[]']("text");}, $$73.$$s = self, $$73.$$arity = 1, $$73))
           } else {
             result = []
           };
           return result;
-        }, $Abc2svgToHarpnotes__extract_chord_lines$70.$$arity = 1);
+        }, $Abc2svgToHarpnotes__extract_chord_lines$71.$$arity = 1);
         
-        Opal.def(self, '$_extract_goto_info_from_bar', $Abc2svgToHarpnotes__extract_goto_info_from_bar$73 = function $$_extract_goto_info_from_bar(bar) {
-          var $$74, self = this, chordlines = nil, result = nil;
+        Opal.def(self, '$_extract_goto_info_from_bar', $Abc2svgToHarpnotes__extract_goto_info_from_bar$74 = function $$_extract_goto_info_from_bar(bar) {
+          var $$75, self = this, chordlines = nil, result = nil;
 
           
           chordlines = self.$_extract_chord_lines(bar);
-          result = $send(chordlines, 'inject', [[]], ($$74 = function(result, line){var self = $$74.$$s || this, $$75, level = nil, target = nil, distance = nil, start_pos = nil, end_pos = nil;
+          result = $send(chordlines, 'inject', [[]], ($$75 = function(result, line){var self = $$75.$$s || this, $$76, level = nil, target = nil, distance = nil, start_pos = nil, end_pos = nil;
             if ($gvars.log == null) $gvars.log = nil;
 
           
@@ -34815,7 +34825,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
               if ($truthy(level)) {
                 
                 target = level['$[]'](1);
-                distance = $send([2, 4, 5], 'map', [], ($$75 = function(i){var self = $$75.$$s || this;
+                distance = $send([2, 4, 5], 'map', [], ($$76 = function(i){var self = $$76.$$s || this;
 
                 
                   
@@ -34826,7 +34836,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                     return level['$[]'](i).$to_i()
                   } else {
                     return nil
-                  };}, $$75.$$s = self, $$75.$$arity = 1, $$75)).$compact();
+                  };}, $$76.$$s = self, $$76.$$arity = 1, $$76)).$compact();
                 result.$push($hash2(["target", "distance"], {"target": target, "distance": distance}));
               } else {
                 
@@ -34834,24 +34844,24 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
                 end_pos = self.$charpos_to_line_column(bar['$[]']("iend"));
                 $gvars.log.$error("Syntax-Error in Jump anotation", start_pos, end_pos);
               };};
-            return result;}, $$74.$$s = self, $$74.$$arity = 2, $$74));
+            return result;}, $$75.$$s = self, $$75.$$arity = 2, $$75));
           return result;
-        }, $Abc2svgToHarpnotes__extract_goto_info_from_bar$73.$$arity = 1);
+        }, $Abc2svgToHarpnotes__extract_goto_info_from_bar$74.$$arity = 1);
         
-        Opal.def(self, '$_parse_decorations', $Abc2svgToHarpnotes__parse_decorations$76 = function $$_parse_decorations(voice_element) {
-          var $a, $$77, $$78, self = this, a_dd = nil, result = nil;
+        Opal.def(self, '$_parse_decorations', $Abc2svgToHarpnotes__parse_decorations$77 = function $$_parse_decorations(voice_element) {
+          var $a, $$78, $$79, self = this, a_dd = nil, result = nil;
 
           
           a_dd = ($truthy($a = voice_element['$[]']("a_dd")) ? $a : []);
-          result = $send(a_dd, 'map', [], ($$77 = function(dd){var self = $$77.$$s || this;
+          result = $send(a_dd, 'map', [], ($$78 = function(dd){var self = $$78.$$s || this;
 
           
             
             if (dd == null) {
               dd = nil;
             };
-            return (result = dd['$[]']("name").$to_sym());}, $$77.$$s = self, $$77.$$arity = 1, $$77));
-          return $send(result.$flatten(), 'select', [], ($$78 = function(i){var self = $$78.$$s || this;
+            return (result = dd['$[]']("name").$to_sym());}, $$78.$$s = self, $$78.$$arity = 1, $$78));
+          return $send(result.$flatten(), 'select', [], ($$79 = function(i){var self = $$79.$$s || this;
             if (self.supported_decorations == null) self.supported_decorations = nil;
 
           
@@ -34859,16 +34869,16 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             if (i == null) {
               i = nil;
             };
-            return self.supported_decorations['$include?'](i);}, $$78.$$s = self, $$78.$$arity = 1, $$78));
-        }, $Abc2svgToHarpnotes__parse_decorations$76.$$arity = 1);
+            return self.supported_decorations['$include?'](i);}, $$79.$$s = self, $$79.$$arity = 1, $$79));
+        }, $Abc2svgToHarpnotes__parse_decorations$77.$$arity = 1);
         
-        Opal.def(self, '$_parse_origin', $Abc2svgToHarpnotes__parse_origin$79 = function $$_parse_origin(voice_element) {
+        Opal.def(self, '$_parse_origin', $Abc2svgToHarpnotes__parse_origin$80 = function $$_parse_origin(voice_element) {
           var self = this;
 
           return $hash2(["startChar", "endChar", "start_pos", "end_pos", "raw_voice_element"], {"startChar": voice_element['$[]']("istart"), "endChar": voice_element['$[]']("iend"), "start_pos": voice_element['$[]']("start_pos"), "end_pos": voice_element['$[]']("end_pos"), "raw_voice_element": voice_element})
-        }, $Abc2svgToHarpnotes__parse_origin$79.$$arity = 1);
+        }, $Abc2svgToHarpnotes__parse_origin$80.$$arity = 1);
         
-        Opal.def(self, '$_parse_slur', $Abc2svgToHarpnotes__parse_slur$80 = function $$_parse_slur(slurstart) {
+        Opal.def(self, '$_parse_slur', $Abc2svgToHarpnotes__parse_slur$81 = function $$_parse_slur(slurstart) {
           var $a, self = this, startvalue = nil, result = nil;
 
           
@@ -34880,8 +34890,8 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             startvalue = startvalue['$>>'](4);
           };
           return result;
-        }, $Abc2svgToHarpnotes__parse_slur$80.$$arity = 1);
-        return (Opal.def(self, '$_parse_tuplet_info', $Abc2svgToHarpnotes__parse_tuplet_info$81 = function $$_parse_tuplet_info(voice_element) {
+        }, $Abc2svgToHarpnotes__parse_slur$81.$$arity = 1);
+        return (Opal.def(self, '$_parse_tuplet_info', $Abc2svgToHarpnotes__parse_tuplet_info$82 = function $$_parse_tuplet_info(voice_element) {
           var self = this, start_pos = nil, end_pos = nil, tuplet_start = nil, tuplet = nil, tuplet_end = nil;
           if ($gvars.log == null) $gvars.log = nil;
 
@@ -34913,7 +34923,7 @@ Opal.modules["abc2svg_to_harpnotes"] = function(Opal) {
             tuplet_end = nil;
           };
           return [tuplet, tuplet_end, tuplet_start];
-        }, $Abc2svgToHarpnotes__parse_tuplet_info$81.$$arity = 1), nil) && '_parse_tuplet_info';
+        }, $Abc2svgToHarpnotes__parse_tuplet_info$82.$$arity = 1), nil) && '_parse_tuplet_info';
       })($nesting[0], $$($nesting, 'AbstractAbcToHarpnotes'), $nesting)
     })($nesting[0], $nesting)
   })($nesting[0], $nesting);
@@ -36163,6 +36173,8 @@ Opal.modules["svg_engine"] = function(Opal) {
         
         result = [];
         range = [from, to].$sort();
+        if ($truthy(self.interactive_elements['$nil?']())) {
+          return []};
         $send(self.interactive_elements, 'each', [], ($$32 = function(k, value){var self = $$32.$$s || this, $$33, origin = nil, noterange = nil;
 
         
@@ -37273,7 +37285,7 @@ Opal.modules["init_conf"] = function(Opal) {
 
       return $$($nesting, 'I18n').$t("provided by\n")}, $$33.$$s = self, $$33.$$arity = 0, $$33)), "style": "small"})}), "T05_printed_extracts": $hash2(["value"], {"value": $hash2(["pos", "text", "style", "align"], {"pos": [410, 22], "text": "{{printed_extracts}}", "style": "smaller", "align": "l"})}), "T06_legend": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [360, 30], "text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}", "style": "small"})}), "T99_do_not_copy": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [380, 284], "text": $send(self, 'lambda', [], ($$34 = function(){var self = $$34.$$s || this;
 
-      return $$($nesting, 'I18n').$t("Please do not copy")}, $$34.$$s = self, $$34.$$arity = 0, $$34)), "style": "small_bold"})}), "T01_T99": $hash2(["value"], {"value": $hash2([], {})})}), "printer": $hash2(["printer_left", "printer_centric", "printer_right"], {"printer_left": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [-10, 0], "a4_offset": [-5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})}), "printer_centric": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [0, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": true})}), "printer_right": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [10, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})})})}), "annotations": $hash2(["vl", "vt", "vb", "vr", "rit"], {"vl": $hash2(["text", "pos"], {"text": "v", "pos": [-5, -5]}), "vt": $hash2(["text", "pos"], {"text": "v", "pos": [-1, -5]}), "vb": $hash2(["text", "pos"], {"text": "v", "pos": [-1, 2]}), "vr": $hash2(["text", "pos"], {"text": "v", "pos": [2, -5]}), "rit": $hash2(["text", "pos", "style"], {"text": "rit", "pos": [2, -5], "style": "italic"})}), "extract": $hash2(["0", "1", "2", "3", "4", "5"], {"0": $hash2(["title", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "images", "layout", "sortmark", "nonflowrest", "notes", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "printer"], {"title": "alle Stimmen", "startpos": 15, "voices": [1, 2, 3, 4], "synchlines": [[1, 2], [3, 4]], "flowlines": [1, 3], "subflowlines": [2, 4], "jumplines": [1, 3], "repeatsigns": $hash2(["voices", "left", "right"], {"voices": [], "left": $hash2(["pos", "text", "style"], {"pos": [-7, -2], "text": "|:", "style": "bold"}), "right": $hash2(["pos", "text", "style"], {"pos": [5, -2], "text": ":|", "style": "bold"})}), "layoutlines": [1, 2, 3, 4], "legend": $hash2(["spos", "pos", "tstyle", "align", "style"], {"spos": [320, 27], "pos": [320, 7], "tstyle": "large", "align": "r", "style": "regular"}), "lyrics": $hash2([], {}), "images": $hash2([], {}), "layout": $hash2(["limit_a3", "bottomup", "beams", "jumpline_anchor", "color", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "tuning", "packer"], {"limit_a3": true, "bottomup": false, "beams": false, "jumpline_anchor": [3, 1], "color": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": "black", "color_variant1": "grey", "color_variant2": "dimgrey"}), "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "PITCH_OFFSET": -43, "X_SPACING": 11.5, "X_OFFSET": 2.8, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "DRAWING_AREA_SIZE": [400, 282], "instrument": "37-strings-g-g", "tuning": "fixed", "packer": $hash2(["pack_method", "pack_max_spreadfactor", "pack_min_increment"], {"pack_method": 0, "pack_max_spreadfactor": 2, "pack_min_increment": 0.2})}), "sortmark": $hash2(["size", "fill", "show"], {"size": [2, 4], "fill": true, "show": false}), "nonflowrest": false, "notes": $hash2([], {}), "tuplets": $hash2(["text"], {"text": "{{tuplet}}"}), "barnumbers": $hash2(["voices", "pos", "autopos", "apanchor", "apbase", "style", "prefix"], {"voices": [], "pos": [6, -4], "autopos": true, "apanchor": "box", "apbase": [1, 1], "style": "small_bold", "prefix": ""}), "countnotes": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "smaller"}), "chords": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "large"}), "stringnames": $hash2(["text", "vpos", "style", "marks"], {"text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G", "vpos": [], "style": "small", "marks": $hash2(["vpos", "hpos"], {"vpos": [11], "hpos": [43, 55, 79]})}), "printer": $hash2(["a3_offset", "a4_offset", "a4_pages", "show_border"], {"a3_offset": [0, 0], "a4_offset": [-5, 0], "a4_pages": [0, 1, 2], "show_border": false})}), "1": $hash2(["title", "voices"], {"title": "Sopran, Alt", "voices": [1, 2]}), "2": $hash2(["title", "voices"], {"title": "Tenor, Bass", "voices": [3, 4]}), "3": $hash2(["title", "voices"], {"title": "Melodie", "voices": [1]}), "4": $hash2(["title", "voices"], {"title": "Extract 4", "voices": [1]}), "5": $hash2(["title", "voices"], {"title": "Extract 5", "voices": [1]})}), "layout": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "DURATION_TO_BEAMS", "REST_TO_GLYPH", "DECORATIIONS_AS_ANNOTATIONS"], {"grid": false, "limit_a3": true, "SHOW_SLUR": false, "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "X_SPACING": 11.5, "X_OFFSET": 2.8, "Y_SCALE": 4, "DRAWING_AREA_SIZE": [400, 282], "BEAT_RESOLUTION": 192, "SHORTEST_NOTE": 64, "BEAT_PER_DURATION": 3, "PITCH_OFFSET": -43, "FONT_STYLE_DEF": $hash2(["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], {"bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "bold"}), "italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "italic"}), "large": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 20, "font_style": "bold"}), "regular": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "normal"}), "small_bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "bold"}), "small_italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "italic"}), "small": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "normal"}), "smaller": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 6, "font_style": "normal"})}), "MM_PER_POINT": 0.3, "DURATION_TO_STYLE": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [2, "filled", false], "d64": [1, "empty", false], "d48": [0.75, "empty", true], "d32": [0.75, "empty", false], "d24": [0.75, "filled", true], "d16": [0.75, "filled", false], "d12": [0.5, "filled", true], "d8": [0.5, "filled", false], "d6": [0.3, "filled", true], "d4": [0.3, "filled", false], "d3": [0.1, "filled", true], "d2": [0.1, "filled", false], "d1": [0.05, "filled", false]}), "DURATION_TO_BEAMS": $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [1, "empty", false], "d48": [1, "empty", true, 0], "d32": [1, "empty", false, 0], "d24": [1, "filled", true, 0], "d16": [1, "filled", false, 0], "d12": [1, "filled", true, 1], "d8": [1, "filled", false, 1], "d6": [1, "filled", true, 2], "d4": [1, "filled", false, 2], "d3": [1, "filled", true, 3], "d2": [1, "filled", false, 3], "d1": [1, "filled", false, 4]}), "REST_TO_GLYPH": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [[2, 2], "rest_1", false], "d64": [[1, 0.8], "rest_1", false], "d48": [[0.5, 0.4], "rest_1", true], "d32": [[0.5, 0.4], "rest_1", false], "d24": [[0.4, 0.75], "rest_4", true], "d16": [[0.4, 0.75], "rest_4", false], "d12": [[0.4, 0.5], "rest_8", true], "d8": [[0.4, 0.5], "rest_8", false], "d6": [[0.4, 0.3], "rest_16", true], "d4": [[0.3, 0.3], "rest_16", false], "d3": [[0.3, 0.5], "rest_32", true], "d2": [[0.3, 0.5], "rest_32", false], "d1": [[0.3, 0.5], "rest_64", false]}), "DECORATIIONS_AS_ANNOTATIONS": $hash2(["<(", "<)", ">(", ">)", "arpeggio", "coda", "crescendo(", "crescendo)", "D.C.", "D.C.alfine", "D.S.", "dacapo", "dacoda", "dasegno", "diminuendo(", "diminuendo)", "f", "ff", "fff", "ffff", "fine", "p", "pp", "ppp", "pppp", "segno"], {"<(": $hash2(["text", "pos", "style"], {"text": "decresc >>", "pos": [5, 0], "style": "small_italic"}), "<)": $hash2(["text", "pos", "style"], {"text": "> decresc", "pos": [5, 0], "style": "small_italic"}), ">(": $hash2(["text", "pos", "style"], {"text": "cresc <<", "pos": [5, 0], "style": "small_italic"}), ">)": $hash2(["text", "pos", "style"], {"text": "< cresc", "pos": [5, 0], "style": "small_italic"}), "arpeggio": $hash2(["text", "pos", "style"], {"text": "arpeggio ", "pos": [-20, 0], "style": "small_italic"}), "coda": $hash2(["text", "pos", "style", "align"], {"text": "Coda", "pos": [0, -5], "style": "bold", "align": "center"}), "crescendo(": $hash2(["text", "pos", "style"], {"text": "cresc <<", "pos": [5, 0], "style": "small_italic"}), "crescendo)": $hash2(["text", "pos", "style"], {"text": "< cresc ", "pos": [5, 0], "style": "small_italic"}), "D.C.": $hash2(["text", "pos", "style"], {"text": "D.C.", "pos": [5, -3], "style": "bold"}), "D.C.alfine": $hash2(["text", "pos", "style"], {"text": "D.C. al fine", "pos": [5, -5], "style": "bold"}), "D.S.": $hash2(["text", "pos", "style"], {"text": "D.S.", "pos": [5, -3], "style": "bold"}), "dacapo": $hash2(["text", "pos", "style"], {"text": "da Capo", "pos": [5, -3], "style": "bold"}), "dacoda": $hash2(["text", "pos", "style"], {"text": "da Coda", "pos": [5, -3], "style": "bold"}), "dasegno": $hash2(["text", "pos", "style"], {"text": "da Segno", "pos": [5, -3], "style": "bold"}), "diminuendo(": $hash2(["text", "pos", "style"], {"text": "decresc >>", "pos": [5, 0], "style": "small_italic"}), "diminuendo)": $hash2(["text", "pos", "style"], {"text": "> decresc", "pos": [5, 0], "style": "small_italic"}), "f": $hash2(["text", "pos", "style"], {"text": "f", "pos": [3, 0], "style": "small_italic"}), "ff": $hash2(["text", "pos", "style"], {"text": "ff", "pos": [3, 0], "style": "small_italic"}), "fff": $hash2(["text", "pos", "style"], {"text": "fff", "pos": [3, 0], "style": "small_italic"}), "ffff": $hash2(["text", "pos", "style"], {"text": "ffff", "pos": [3, 0], "style": "small_italic"}), "fine": $hash2(["text", "pos", "style", "align"], {"text": "Fine", "pos": [0, -5], "style": "bold", "align": "center"}), "p": $hash2(["text", "pos", "style"], {"text": "p", "pos": [3, 0], "style": "small_italic"}), "pp": $hash2(["text", "pos", "style"], {"text": "pp", "pos": [3, 0], "style": "small_italic"}), "ppp": $hash2(["text", "pos", "style"], {"text": "ppp", "pos": [3, 0], "style": "small_italic"}), "pppp": $hash2(["text", "pos", "style"], {"text": "pppp", "pos": [3, 0], "style": "small_italic"}), "segno": $hash2(["text", "pos", "style", "align"], {"text": "Segno", "pos": [0, -5], "style": "bold", "align": "center"})})}), "neatjson": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "short", "afterComma", "afterColon1", "afterColonN", "beforeColonN", "decimals", "explicit_sort"], {"wrap": 60, "aligned": true, "after_comma": 1, "after_colon_1": 1, "after_colon_n": 1, "before_colon_n": 1, "short": false, "afterComma": 1, "afterColon1": 1, "afterColonN": 1, "beforeColonN": 1, "decimals": 2, "explicit_sort": $$($nesting, 'Hash')['$[]']($send(explicit_sort.$each_with_index().$to_a(), 'map', [], ($$35 = function(i){var self = $$35.$$s || this;
+      return $$($nesting, 'I18n').$t("Please do not copy")}, $$34.$$s = self, $$34.$$arity = 0, $$34)), "style": "small_bold"})}), "T01_T99": $hash2(["value"], {"value": $hash2([], {})})}), "printer": $hash2(["printer_left", "printer_centric", "printer_right"], {"printer_left": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [-10, 0], "a4_offset": [-5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})}), "printer_centric": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [0, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": true})}), "printer_right": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [10, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})})})}), "annotations": $hash2(["vl", "vt", "vb", "vr", "rit"], {"vl": $hash2(["text", "pos"], {"text": "v", "pos": [-5, -5]}), "vt": $hash2(["text", "pos"], {"text": "v", "pos": [-1, -5]}), "vb": $hash2(["text", "pos"], {"text": "v", "pos": [-1, 2]}), "vr": $hash2(["text", "pos"], {"text": "v", "pos": [2, -5]}), "rit": $hash2(["text", "pos", "style"], {"text": "rit", "pos": [2, -5], "style": "italic"})}), "extract": $hash2(["0", "1", "2", "3", "4", "5"], {"0": $hash2(["title", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "images", "layout", "sortmark", "nonflowrest", "notes", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "printer"], {"title": "alle Stimmen", "startpos": 15, "voices": [1, 2, 3, 4], "synchlines": [[1, 2], [3, 4]], "flowlines": [1, 3], "subflowlines": [2, 4], "jumplines": [1, 3], "repeatsigns": $hash2(["voices", "left", "right"], {"voices": [], "left": $hash2(["pos", "text", "style"], {"pos": [-7, -2], "text": "|:", "style": "bold"}), "right": $hash2(["pos", "text", "style"], {"pos": [5, -2], "text": ":|", "style": "bold"})}), "layoutlines": [1, 2, 3, 4], "legend": $hash2(["spos", "pos", "tstyle", "align", "style"], {"spos": [320, 27], "pos": [320, 7], "tstyle": "large", "align": "r", "style": "regular"}), "lyrics": $hash2([], {}), "images": $hash2([], {}), "layout": $hash2(["limit_a3", "bottomup", "beams", "jumpline_anchor", "color", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "tuning", "packer"], {"limit_a3": true, "bottomup": false, "beams": false, "jumpline_anchor": [3, 1], "color": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": "black", "color_variant1": "grey", "color_variant2": "dimgrey"}), "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "PITCH_OFFSET": -43, "X_SPACING": 11.5, "X_OFFSET": 2.8, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "DRAWING_AREA_SIZE": [400, 282], "instrument": "37-strings-g-g", "tuning": "fixed", "packer": $hash2(["pack_method", "pack_max_spreadfactor", "pack_min_increment"], {"pack_method": 0, "pack_max_spreadfactor": 2, "pack_min_increment": 0.2})}), "sortmark": $hash2(["size", "fill", "show"], {"size": [2, 4], "fill": true, "show": false}), "nonflowrest": false, "notes": $hash2([], {}), "tuplets": $hash2(["text"], {"text": "{{tuplet}}"}), "barnumbers": $hash2(["voices", "pos", "autopos", "apanchor", "apbase", "style", "prefix"], {"voices": [], "pos": [6, -4], "autopos": true, "apanchor": "box", "apbase": [1, 1], "style": "small_bold", "prefix": ""}), "countnotes": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "smaller"}), "chords": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "large"}), "stringnames": $hash2(["text", "vpos", "style", "marks"], {"text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G", "vpos": [], "style": "small", "marks": $hash2(["vpos", "hpos"], {"vpos": [11], "hpos": [43, 55, 79]})}), "printer": $hash2(["a3_offset", "a4_offset", "a4_pages", "show_border"], {"a3_offset": [0, 0], "a4_offset": [-5, 0], "a4_pages": [0, 1, 2], "show_border": false})}), "1": $hash2(["title", "voices"], {"title": "Sopran, Alt", "voices": [1, 2]}), "2": $hash2(["title", "voices"], {"title": "Tenor, Bass", "voices": [3, 4]}), "3": $hash2(["title", "voices"], {"title": "Melodie", "voices": [1]}), "4": $hash2(["title", "voices"], {"title": "Extract 4", "voices": [1]}), "5": $hash2(["title", "voices"], {"title": "Extract 5", "voices": [1]})}), "layout": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "DURATION_TO_BEAMS", "REST_TO_GLYPH", "DECORATIIONS_AS_ANNOTATIONS"], {"grid": false, "limit_a3": true, "SHOW_SLUR": false, "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "X_SPACING": 11.5, "X_OFFSET": 2.8, "Y_SCALE": 4, "DRAWING_AREA_SIZE": [400, 282], "BEAT_RESOLUTION": 192, "SHORTEST_NOTE": 64, "BEAT_PER_DURATION": 3, "PITCH_OFFSET": -43, "FONT_STYLE_DEF": $hash2(["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], {"bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "bold"}), "italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "italic"}), "large": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 20, "font_style": "bold"}), "regular": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "normal"}), "small_bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "bold"}), "small_italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "italic"}), "small": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "normal"}), "smaller": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 6, "font_style": "normal"})}), "MM_PER_POINT": 0.3, "DURATION_TO_STYLE": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [2, "filled", false], "d64": [1, "empty", false], "d48": [0.75, "empty", true], "d32": [0.75, "empty", false], "d24": [0.75, "filled", true], "d16": [0.75, "filled", false], "d12": [0.5, "filled", true], "d8": [0.5, "filled", false], "d6": [0.3, "filled", true], "d4": [0.3, "filled", false], "d3": [0.1, "filled", true], "d2": [0.1, "filled", false], "d1": [0.05, "filled", false]}), "DURATION_TO_BEAMS": $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [1, "empty", false], "d48": [1, "empty", true, 0], "d32": [1, "empty", false, 0], "d24": [1, "filled", true, 0], "d16": [1, "filled", false, 0], "d12": [1, "filled", true, 1], "d8": [1, "filled", false, 1], "d6": [1, "filled", true, 2], "d4": [1, "filled", false, 2], "d3": [1, "filled", true, 3], "d2": [1, "filled", false, 3], "d1": [1, "filled", false, 4]}), "REST_TO_GLYPH": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [[2, 2], "rest_1", false], "d64": [[1, 0.8], "rest_1", false], "d48": [[0.5, 0.4], "rest_1", true], "d32": [[0.5, 0.4], "rest_1", false], "d24": [[0.4, 0.75], "rest_4", true], "d16": [[0.4, 0.75], "rest_4", false], "d12": [[0.4, 0.5], "rest_8", true], "d8": [[0.4, 0.5], "rest_8", false], "d6": [[0.4, 0.3], "rest_16", true], "d4": [[0.3, 0.3], "rest_16", false], "d3": [[0.3, 0.5], "rest_32", true], "d2": [[0.3, 0.5], "rest_32", false], "d1": [[0.3, 0.5], "rest_64", false]}), "DECORATIIONS_AS_ANNOTATIONS": $hash2(["<(", "<)", ">(", ">)", "arpeggio", "coda", "crescendo(", "crescendo)", "D.C.", "D.C.alfine", "D.S.", "dacapo", "dacoda", "dasegno", "diminuendo(", "diminuendo)", "f", "ff", "fff", "ffff", "fine", "p", "pp", "ppp", "pppp", "segno"], {"<(": $hash2(["text", "pos", "style"], {"text": "lauter werden", "pos": [5, 0], "style": "small_italic"}), "<)": $hash2(["text", "pos", "style"], {"text": "<|", "pos": [5, 0], "style": "small_italic"}), ">(": $hash2(["text", "pos", "style"], {"text": "leiser werden", "pos": [5, 0], "style": "small_italic"}), ">)": $hash2(["text", "pos", "style"], {"text": ">|", "pos": [5, 0], "style": "small_italic"}), "arpeggio": $hash2(["text", "pos", "style"], {"text": "arpeggio ", "pos": [-20, 0], "style": "small_italic"}), "coda": $hash2(["text", "pos", "style", "align"], {"text": "Coda", "pos": [0, -5], "style": "bold", "align": "center"}), "crescendo(": $hash2(["text", "pos", "style"], {"text": "lauter werden", "pos": [5, 0], "style": "small_italic"}), "crescendo)": $hash2(["text", "pos", "style"], {"text": "<|", "pos": [5, 0], "style": "small_italic"}), "D.C.": $hash2(["text", "pos", "style"], {"text": "D.C.", "pos": [5, -3], "style": "bold"}), "D.C.alfine": $hash2(["text", "pos", "style"], {"text": "D.C. al fine", "pos": [5, -5], "style": "bold"}), "D.S.": $hash2(["text", "pos", "style"], {"text": "D.S.", "pos": [5, -3], "style": "bold"}), "dacapo": $hash2(["text", "pos", "style"], {"text": "da Capo", "pos": [5, -3], "style": "bold"}), "dacoda": $hash2(["text", "pos", "style"], {"text": "da Coda", "pos": [5, -3], "style": "bold"}), "dasegno": $hash2(["text", "pos", "style"], {"text": "da Segno", "pos": [5, -3], "style": "bold"}), "diminuendo(": $hash2(["text", "pos", "style"], {"text": "leiser werden", "pos": [5, 0], "style": "small_italic"}), "diminuendo)": $hash2(["text", "pos", "style"], {"text": ">|", "pos": [5, 0], "style": "small_italic"}), "f": $hash2(["text", "pos", "style"], {"text": "f", "pos": [3, 0], "style": "small_italic"}), "ff": $hash2(["text", "pos", "style"], {"text": "ff", "pos": [3, 0], "style": "small_italic"}), "fff": $hash2(["text", "pos", "style"], {"text": "fff", "pos": [3, 0], "style": "small_italic"}), "ffff": $hash2(["text", "pos", "style"], {"text": "ffff", "pos": [3, 0], "style": "small_italic"}), "fine": $hash2(["text", "pos", "style", "align"], {"text": "Fine", "pos": [0, -5], "style": "bold", "align": "center"}), "p": $hash2(["text", "pos", "style"], {"text": "p", "pos": [3, 0], "style": "small_italic"}), "pp": $hash2(["text", "pos", "style"], {"text": "pp", "pos": [3, 0], "style": "small_italic"}), "ppp": $hash2(["text", "pos", "style"], {"text": "ppp", "pos": [3, 0], "style": "small_italic"}), "pppp": $hash2(["text", "pos", "style"], {"text": "pppp", "pos": [3, 0], "style": "small_italic"}), "segno": $hash2(["text", "pos", "style", "align"], {"text": "Segno", "pos": [0, -5], "style": "bold", "align": "center"})})}), "neatjson": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "short", "afterComma", "afterColon1", "afterColonN", "beforeColonN", "decimals", "explicit_sort"], {"wrap": 60, "aligned": true, "after_comma": 1, "after_colon_1": 1, "after_colon_n": 1, "before_colon_n": 1, "short": false, "afterComma": 1, "afterColon1": 1, "afterColonN": 1, "beforeColonN": 1, "decimals": 2, "explicit_sort": $$($nesting, 'Hash')['$[]']($send(explicit_sort.$each_with_index().$to_a(), 'map', [], ($$35 = function(i){var self = $$35.$$s || this;
 
       
         
@@ -38380,7 +38392,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
 
         var $nesting = [self].concat($parent_nesting), $HarpnotePlayer_initialize$1, $HarpnotePlayer_is_playing$ques$2, $HarpnotePlayer_is_stopped$ques$3, $HarpnotePlayer_call_on_note$4, $HarpnotePlayer_call_on_songoff$5, $HarpnotePlayer_on_noteon$6, $HarpnotePlayer_on_noteoff$7, $HarpnotePlayer_on_songoff$8, $HarpnotePlayer_play_auto$10, $HarpnotePlayer_play_from_selection$12, $HarpnotePlayer_play_selection$15, $HarpnotePlayer_play_song$16, $HarpnotePlayer_play_from_abc$17, $HarpnotePlayer_play_notes$18, $HarpnotePlayer_set_speed$21, $HarpnotePlayer_stop$22, $HarpnotePlayer_unhighlight_all$23, $HarpnotePlayer_range_highlight$24, $HarpnotePlayer_pitch_to_note$27, $HarpnotePlayer_get_notes$28, $HarpnotePlayer_load_song$34, $HarpnotePlayer_get_worker_model$36, $HarpnotePlayer_set_worker_model$37, $HarpnotePlayer__load_voice_elements_from_voices$39, $HarpnotePlayer_mk_to_play_for_abc2svgplay$45, $HarpnotePlayer_mk_to_play$46, $HarpnotePlayer_play_pitches$47;
 
-        self.$$prototype.abcplay = self.$$prototype.controller = self.$$prototype.status = self.$$prototype.noteon_callback = self.$$prototype.noteoff_callback = self.$$prototype.songoff_callback = self.$$prototype.selection = self.$$prototype.voice_elements = self.$$prototype.player_model_abc = self.$$prototype.song_off_timer = self.$$prototype.duration_timefactor = self.$$prototype.speed = self.$$prototype.active_voices = self.$$prototype.beat_timefactor = nil;
+        self.$$prototype.abcplay = self.$$prototype.controller = self.$$prototype.speed = self.$$prototype.status = self.$$prototype.noteon_callback = self.$$prototype.noteoff_callback = self.$$prototype.songoff_callback = self.$$prototype.selection = self.$$prototype.voice_elements = self.$$prototype.player_model_abc = self.$$prototype.song_off_timer = self.$$prototype.duration_timefactor = self.$$prototype.active_voices = self.$$prototype.beat_timefactor = nil;
         
         self.$attr_accessor("player_model_abc", "controller");
         
@@ -38389,6 +38401,13 @@ Opal.modules["harpnote_player"] = function(Opal) {
           if ($gvars.log == null) $gvars.log = nil;
 
           
+          self.status = "stopped";
+          self.selection = [];
+          self.voices_to_play = [1, 2, 3, 4, 5, 6, 7, 8];
+          self.voice_elements = [];
+          self.player_model_abc = [];
+          self.controller = nil;
+          self.speed = 1;
           self.abcplay = new AbcPlay({
              onend: function(){self.$call_on_songoff()}, // todo: activate after fix https://github.com/moinejf/abc2svg/issues/43
              onnote: function(index, on,  custom){self.$call_on_note(index, on, custom)},
@@ -38397,14 +38416,8 @@ Opal.modules["harpnote_player"] = function(Opal) {
            self.abcplay.set_sfu("public/soundfont/zupfnoter")  // Scct1t2
            self.abcplay.set_sft('js')
            self.abcplay.set_vol(1.0)
+           self.abcplay.set_speed(self.speed)
         ;
-          self.status = "stopped";
-          self.selection = [];
-          self.voices_to_play = [1, 2, 3, 4, 5, 6, 7, 8];
-          self.voice_elements = [];
-          self.player_model_abc = [];
-          self.controller = nil;
-          return (self.speed = 1);
         }, $HarpnotePlayer_initialize$1.$$arity = 0);
         
         Opal.def(self, '$is_playing?', $HarpnotePlayer_is_playing$ques$2 = function() {
@@ -38500,7 +38513,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
           if ($gvars.log == null) $gvars.log = nil;
 
           
-          $gvars.log.$debug("" + (self.selection.$to_s()) + " (" + ("./harpnote_player.rb".$force_encoding("US-ASCII")) + " " + (81) + ")");
+          $gvars.log.$debug("" + (self.selection.$to_s()) + " (" + ("./harpnote_player.rb".$force_encoding("US-ASCII")) + " " + (84) + ")");
           if ($truthy(self.selection.$first())) {
             
             notes_to_play = $send(self.voice_elements, 'select', [], ($$13 = function(n){var self = $$13.$$s || this;
@@ -38584,6 +38597,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
               };
               return self.$mk_to_play_for_abc2svgplay(i, start_offset);}, $$20.$$s = self, $$20.$$arity = 1, $$20));
             
+          self.abcplay.set_speed(self.speed)
           self.abcplay.play(0, 1000000, pe)
           ;
             return (self.status = "playing");
@@ -38719,7 +38733,7 @@ Opal.modules["harpnote_player"] = function(Opal) {
           tf = $rb_times(spectf, $rb_divide(128, 120));
           self.duration_timefactor = $rb_divide(1, tf);
           self.beat_timefactor = $rb_divide(1, $rb_times(tf, $gvars.conf.$get("layout.BEAT_PER_DURATION")));
-          $gvars.log.$debug("" + "playing with tempo: " + (tf) + " ticks per quarter " + ("./harpnote_player.rb".$force_encoding("US-ASCII")) + " " + (205));
+          $gvars.log.$debug("" + "playing with tempo: " + (tf) + " ticks per quarter " + ("./harpnote_player.rb".$force_encoding("US-ASCII")) + " " + (210));
           self.$_load_voice_elements_from_voices(music);
           self.voice_elements_by_time = $send(self.voice_elements, 'group_by', [], ($$35 = function(element){var self = $$35.$$s || this;
 
@@ -39873,7 +39887,7 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $module = Opal.module, $klass = Opal.klass, $hash2 = Opal.hash2, $send = Opal.send, $truthy = Opal.truthy, $gvars = Opal.gvars;
 
-  Opal.add_stubs(['$attr_accessor', '$lambda', '$phrases', '$set_callback', '$error', '$+', '$[]', '$===', '$_anno_start', '$_anno_stop', '$push', '$_callback_get_abcmodel', '$to_n', '$unhighlight_all', '$range_highlight_more', '$nil?', '$each', '$get_elements_by_range', '$find', '$==', '$scroll_into_view', '$add_class', '$remove_class', '$id', '$gsub', '$t', '$strip_js', '$get_svg', '$compute_tune_preview', '$set_svg', '$html', '$join', '$[]=', '$-', '$sort', '$map', '$>', '$*', '$first', '$last', '$private', '$loglevel', '$debug', '$parse', '$split', '$inject', '$length', '$_mk_id', '$stopPropagation', '$Native', '$call']);
+  Opal.add_stubs(['$attr_accessor', '$lambda', '$phrases', '$set_callback', '$error', '$+', '$[]', '$===', '$_anno_start', '$_anno_stop', '$push', '$to_n', '$unhighlight_all', '$range_highlight_more', '$nil?', '$each', '$get_elements_by_range', '$find', '$==', '$scroll_into_view', '$add_class', '$remove_class', '$id', '$gsub', '$t', '$strip_js', '$get_svg', '$compute_tune_preview', '$set_svg', '$html', '$debug', '$parse', '$join', '$[]=', '$-', '$sort', '$map', '$>', '$*', '$first', '$last', '$private', '$loglevel', '$split', '$inject', '$length', '$_mk_id', '$stopPropagation', '$Native', '$call']);
   return (function($base, $parent_nesting) {
     var self = $module($base, 'ABC2SVG');
 
@@ -39882,14 +39896,14 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
     (function($base, $super, $parent_nesting) {
       var self = $klass($base, $super, 'Abc2Svg');
 
-      var $nesting = [self].concat($parent_nesting), $Abc2Svg_initialize$1, $Abc2Svg_range_highlight$9, $Abc2Svg_scroll_into_view$10, $Abc2Svg_range_highlight_more$11, $Abc2Svg_range_unhighlight_more$13, $Abc2Svg_unhighlight_all$15, $Abc2Svg_on_select$16, $Abc2Svg_strip_js$17, $Abc2Svg_compute_tune_preview$18, $Abc2Svg_draw$19, $Abc2Svg_set_svg$20, $Abc2Svg_get_abcmodel$21, $Abc2Svg_get_svg$22, $Abc2Svg_get_html$23, $Abc2Svg_set_callback$24, $Abc2Svg_get_elements_by_range$25, $Abc2Svg__callback_get_abcmodel$28, $Abc2Svg__get_charpos$29, $Abc2Svg__anno_start$31, $Abc2Svg__clickabcnote$32, $Abc2Svg__anno_stop$33, $Abc2Svg__mk_id$34;
+      var $nesting = [self].concat($parent_nesting), $Abc2Svg_initialize$1, $Abc2Svg_range_highlight$7, $Abc2Svg_scroll_into_view$8, $Abc2Svg_range_highlight_more$9, $Abc2Svg_range_unhighlight_more$11, $Abc2Svg_unhighlight_all$13, $Abc2Svg_on_select$14, $Abc2Svg_strip_js$15, $Abc2Svg_compute_tune_preview$16, $Abc2Svg_draw$17, $Abc2Svg_set_svg$18, $Abc2Svg_get_abcmodel$19, $Abc2Svg_get_svg$20, $Abc2Svg_get_html$21, $Abc2Svg_set_callback$22, $Abc2Svg_get_elements_by_range$23, $Abc2Svg__callback_get_abcmodel$26, $Abc2Svg__get_charpos$27, $Abc2Svg__anno_start$29, $Abc2Svg__clickabcnote$30, $Abc2Svg__anno_stop$31, $Abc2Svg__mk_id$32;
 
-      self.$$prototype.user = self.$$prototype.root = self.$$prototype.printer = self.$$prototype.abc_source = self.$$prototype.interactive_elements = self.$$prototype.abc_model = self.$$prototype.player_model = self.$$prototype.svgbuf = self.$$prototype.on_select = nil;
+      self.$$prototype.user = self.$$prototype.root = self.$$prototype.printer = self.$$prototype.abc_source = self.$$prototype.interactive_elements = self.$$prototype.player_model = self.$$prototype.abc_model = self.$$prototype.svgbuf = self.$$prototype.on_select = nil;
       
       self.$attr_accessor("abcplay");
       
       Opal.def(self, '$initialize', $Abc2Svg_initialize$1 = function $$initialize(div, options) {
-        var $$2, $$3, $$4, $$5, $$6, $$7, $$8, self = this, $case = nil, defaults = nil;
+        var $$2, $$3, $$4, $$5, $$6, self = this, $case = nil, defaults = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
         
@@ -40009,47 +40023,8 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
           if (svg == null) {
             svg = nil;
           };
-          return self.svgbuf.$push(svg);}, $$6.$$s = self, $$6.$$arity = 1, $$6));
-        $send(self, 'set_callback', ["get_abcmodel"], ($$7 = function(tsfirst, voice_tb, anno_type, info){var self = $$7.$$s || this;
-
-        
-          
-          if (tsfirst == null) {
-            tsfirst = nil;
-          };
-          
-          if (voice_tb == null) {
-            voice_tb = nil;
-          };
-          
-          if (anno_type == null) {
-            anno_type = nil;
-          };
-          
-          if (info == null) {
-            info = nil;
-          };
-          return nil;}, $$7.$$s = self, $$7.$$arity = 4, $$7));}
-        else if ("model"['$===']($case)) {$send(self, 'set_callback', ["get_abcmodel"], ($$8 = function(tsfirst, voice_tb, anno_type, info){var self = $$8.$$s || this;
-
-        
-          
-          if (tsfirst == null) {
-            tsfirst = nil;
-          };
-          
-          if (voice_tb == null) {
-            voice_tb = nil;
-          };
-          
-          if (anno_type == null) {
-            anno_type = nil;
-          };
-          
-          if (info == null) {
-            info = nil;
-          };
-          return self.$_callback_get_abcmodel(tsfirst, voice_tb, anno_type, info);}, $$8.$$s = self, $$8.$$arity = 4, $$8))}
+          return self.svgbuf.$push(svg);}, $$6.$$s = self, $$6.$$arity = 1, $$6));}
+        else if ("model"['$===']($case)) {nil}
         else {$gvars.log.$error("BUG: unsupported mode for abc2svg")};
         self.root = new abc2svg.Abc(self.user.$to_n());
         defaults = "" + "\n" + "I:titletrim 0\n" + "I:measurenb 1\n" + "I:contbarnb 1\n" + "I:linewarn 0\n" + "I:staffnonote 2\n" + "I:stretchlast 1\n" + "      ";
@@ -40057,16 +40032,16 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
         return self.root;
       }, $Abc2Svg_initialize$1.$$arity = -2);
       
-      Opal.def(self, '$range_highlight', $Abc2Svg_range_highlight$9 = function $$range_highlight(from, to) {
+      Opal.def(self, '$range_highlight', $Abc2Svg_range_highlight$7 = function $$range_highlight(from, to) {
         var self = this;
 
         
         self.$unhighlight_all();
         self.$range_highlight_more(from, to);
         return nil;
-      }, $Abc2Svg_range_highlight$9.$$arity = 2);
+      }, $Abc2Svg_range_highlight$7.$$arity = 2);
       
-      Opal.def(self, '$scroll_into_view', $Abc2Svg_scroll_into_view$10 = function $$scroll_into_view(element) {
+      Opal.def(self, '$scroll_into_view', $Abc2Svg_scroll_into_view$8 = function $$scroll_into_view(element) {
         var self = this;
 
         if ($truthy(element['$nil?']())) {
@@ -40076,13 +40051,13 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
           element.parents('.svg_block').get(0).scrollIntoView(true);
         
         }
-      }, $Abc2Svg_scroll_into_view$10.$$arity = 1);
+      }, $Abc2Svg_scroll_into_view$8.$$arity = 1);
       
-      Opal.def(self, '$range_highlight_more', $Abc2Svg_range_highlight_more$11 = function $$range_highlight_more(from, to) {
-        var $$12, self = this;
+      Opal.def(self, '$range_highlight_more', $Abc2Svg_range_highlight_more$9 = function $$range_highlight_more(from, to) {
+        var $$10, self = this;
 
         
-        $send(self.$get_elements_by_range(from, to), 'each', [], ($$12 = function(id){var self = $$12.$$s || this, element = nil;
+        $send(self.$get_elements_by_range(from, to), 'each', [], ($$10 = function(id){var self = $$10.$$s || this, element = nil;
           if ($gvars.settings == null) $gvars.settings = nil;
 
         
@@ -40095,14 +40070,14 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
           } else {
             self.$scroll_into_view(element)
           };
-          return element.$add_class("highlight");}, $$12.$$s = self, $$12.$$arity = 1, $$12));
+          return element.$add_class("highlight");}, $$10.$$s = self, $$10.$$arity = 1, $$10));
         return nil;
-      }, $Abc2Svg_range_highlight_more$11.$$arity = 2);
+      }, $Abc2Svg_range_highlight_more$9.$$arity = 2);
       
-      Opal.def(self, '$range_unhighlight_more', $Abc2Svg_range_unhighlight_more$13 = function $$range_unhighlight_more(from, to) {
-        var $$14, self = this;
+      Opal.def(self, '$range_unhighlight_more', $Abc2Svg_range_unhighlight_more$11 = function $$range_unhighlight_more(from, to) {
+        var $$12, self = this;
 
-        return $send(self.$get_elements_by_range(from, to), 'each', [], ($$14 = function(id){var self = $$14.$$s || this, foo = nil;
+        return $send(self.$get_elements_by_range(from, to), 'each', [], ($$12 = function(id){var self = $$12.$$s || this, foo = nil;
 
         
           
@@ -40110,26 +40085,26 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
             id = nil;
           };
           foo = $$($nesting, 'Element').$find("" + "#" + (id));
-          return foo.$remove_class("highlight");}, $$14.$$s = self, $$14.$$arity = 1, $$14))
-      }, $Abc2Svg_range_unhighlight_more$13.$$arity = 2);
+          return foo.$remove_class("highlight");}, $$12.$$s = self, $$12.$$arity = 1, $$12))
+      }, $Abc2Svg_range_unhighlight_more$11.$$arity = 2);
       
-      Opal.def(self, '$unhighlight_all', $Abc2Svg_unhighlight_all$15 = function $$unhighlight_all() {
+      Opal.def(self, '$unhighlight_all', $Abc2Svg_unhighlight_all$13 = function $$unhighlight_all() {
         var self = this;
 
         return $$($nesting, 'Element').$find("" + "#" + (self.printer.$id()) + " .highlight").$remove_class("highlight")
-      }, $Abc2Svg_unhighlight_all$15.$$arity = 0);
+      }, $Abc2Svg_unhighlight_all$13.$$arity = 0);
       
-      Opal.def(self, '$on_select', $Abc2Svg_on_select$16 = function $$on_select() {
-        var $iter = $Abc2Svg_on_select$16.$$p, block = $iter || nil, self = this;
+      Opal.def(self, '$on_select', $Abc2Svg_on_select$14 = function $$on_select() {
+        var $iter = $Abc2Svg_on_select$14.$$p, block = $iter || nil, self = this;
 
-        if ($iter) $Abc2Svg_on_select$16.$$p = null;
+        if ($iter) $Abc2Svg_on_select$14.$$p = null;
         
         
-        if ($iter) $Abc2Svg_on_select$16.$$p = null;;
+        if ($iter) $Abc2Svg_on_select$14.$$p = null;;
         return (self.on_select = block);
-      }, $Abc2Svg_on_select$16.$$arity = 0);
+      }, $Abc2Svg_on_select$14.$$arity = 0);
       
-      Opal.def(self, '$strip_js', $Abc2Svg_strip_js$17 = function $$strip_js(abc_code) {
+      Opal.def(self, '$strip_js', $Abc2Svg_strip_js$15 = function $$strip_js(abc_code) {
         var self = this, r = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
@@ -40140,9 +40115,9 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
           $gvars.log.$error($$($nesting, 'I18n').$t("CAUTION: your abc-code is vulnerable !!! removed beginjs / endjs"), [1, 1])
         };
         return r;
-      }, $Abc2Svg_strip_js$17.$$arity = 1);
+      }, $Abc2Svg_strip_js$15.$$arity = 1);
       
-      Opal.def(self, '$compute_tune_preview', $Abc2Svg_compute_tune_preview$18 = function $$compute_tune_preview(abc_code, checksum) {
+      Opal.def(self, '$compute_tune_preview', $Abc2Svg_compute_tune_preview$16 = function $$compute_tune_preview(abc_code, checksum) {
         var self = this, abc_text_insert = nil;
 
         
@@ -40158,9 +40133,9 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
       self.root.tosvg("abc", $rb_plus(self.abc_source, abc_text_insert));
       ;
         return $hash2(["svg", "interactive_elements"], {"svg": self.$get_svg(), "interactive_elements": self.interactive_elements});
-      }, $Abc2Svg_compute_tune_preview$18.$$arity = -2);
+      }, $Abc2Svg_compute_tune_preview$16.$$arity = -2);
       
-      Opal.def(self, '$draw', $Abc2Svg_draw$19 = function $$draw(abc_code, checksum) {
+      Opal.def(self, '$draw', $Abc2Svg_draw$17 = function $$draw(abc_code, checksum) {
         var self = this, svg_and_positions = nil;
 
         
@@ -40170,18 +40145,18 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
         };
         svg_and_positions = self.$compute_tune_preview(abc_code, (checksum = ""));
         return self.$set_svg(svg_and_positions);
-      }, $Abc2Svg_draw$19.$$arity = -2);
+      }, $Abc2Svg_draw$17.$$arity = -2);
       
-      Opal.def(self, '$set_svg', $Abc2Svg_set_svg$20 = function $$set_svg(svg_and_positions) {
+      Opal.def(self, '$set_svg', $Abc2Svg_set_svg$18 = function $$set_svg(svg_and_positions) {
         var self = this;
 
         
         self.interactive_elements = svg_and_positions['$[]']("interactive_elements");
         self.printer.$html(svg_and_positions['$[]']("svg"));
         return nil;
-      }, $Abc2Svg_set_svg$20.$$arity = 1);
+      }, $Abc2Svg_set_svg$18.$$arity = 1);
       
-      Opal.def(self, '$get_abcmodel', $Abc2Svg_get_abcmodel$21 = function $$get_abcmodel(abc_code) {
+      Opal.def(self, '$get_abcmodel', $Abc2Svg_get_abcmodel$19 = function $$get_abcmodel(abc_code) {
         var self = this, stripped_abc_code = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
@@ -40189,12 +40164,30 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
         stripped_abc_code = self.$strip_js(abc_code);
         abc2svg.modules.load(stripped_abc_code,
                               function(){console.log("modules loaded")},
-                              function(msg){$gvars.log.$error(msg) } )     ;
-        self.root.tosvg("abc", stripped_abc_code);
+                              function(msg){$gvars.log.$error(msg) } );
+
+
+      var audio = ToAudio()		// ( in sndgen.js)
+
+      self.root.tosvg("abc", stripped_abc_code);
+      tunes = self.root.tunes.slice(0)	// get a copy of the generated tunes
+      while (1) {
+        tune = tunes.shift()
+        if (!tune)
+          {break}
+        audio.add(tune[0], tune[1])
+        var abcjson = new AbcJSON()
+        var abc_json = abcjson.gen_json(tune[0], tune[1], self.root.anno_type, tune[2])
+      }
+
+      self.player_model = abc2svg.sndmem(self.root)
+      ;
+        $gvars.log.$debug(abc_json);
+        self.abc_model = $$($nesting, 'JSON').$parse(abc_json);
         return [self.abc_model, self.player_model];
-      }, $Abc2Svg_get_abcmodel$21.$$arity = 1);
+      }, $Abc2Svg_get_abcmodel$19.$$arity = 1);
       
-      Opal.def(self, '$get_svg', $Abc2Svg_get_svg$22 = function $$get_svg() {
+      Opal.def(self, '$get_svg', $Abc2Svg_get_svg$20 = function $$get_svg() {
         var self = this, result = nil;
 
         
@@ -40202,33 +40195,33 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
         result = result.$gsub("<svg ", "<div class=\"svg_block\"><svg ");
         result = result.$gsub("</svg>", "</svg></div>");
         return result;
-      }, $Abc2Svg_get_svg$22.$$arity = 0);
+      }, $Abc2Svg_get_svg$20.$$arity = 0);
       
-      Opal.def(self, '$get_html', $Abc2Svg_get_html$23 = function $$get_html() {
+      Opal.def(self, '$get_html', $Abc2Svg_get_html$21 = function $$get_html() {
         var self = this;
 
         return "" + "\n" + "      <html>\n" + "      <head>\n" + "        <meta charset=\"utf-8\"/>\n" + "        <style type=\"text/css\">\n" + "           rect.abcref {fill-opacity:0.0}\n" + "          .nobrk s\t{ white-space:nowrap; }\n" + "          svg {display:block}\n" + "        </style>\n" + "      </head>\n" + "      <body>\n" + "         " + (self.printer.$html()) + "\n" + "      </body>\n" + "      "
-      }, $Abc2Svg_get_html$23.$$arity = 0);
+      }, $Abc2Svg_get_html$21.$$arity = 0);
       
-      Opal.def(self, '$set_callback', $Abc2Svg_set_callback$24 = function $$set_callback(event) {
-        var $iter = $Abc2Svg_set_callback$24.$$p, block = $iter || nil, self = this, $writer = nil;
+      Opal.def(self, '$set_callback', $Abc2Svg_set_callback$22 = function $$set_callback(event) {
+        var $iter = $Abc2Svg_set_callback$22.$$p, block = $iter || nil, self = this, $writer = nil;
 
-        if ($iter) $Abc2Svg_set_callback$24.$$p = null;
+        if ($iter) $Abc2Svg_set_callback$22.$$p = null;
         
         
-        if ($iter) $Abc2Svg_set_callback$24.$$p = null;;
+        if ($iter) $Abc2Svg_set_callback$22.$$p = null;;
         $writer = [event, block];
         $send(self.user, '[]=', Opal.to_a($writer));
         return $writer[$rb_minus($writer["length"], 1)];
-      }, $Abc2Svg_set_callback$24.$$arity = 1);
+      }, $Abc2Svg_set_callback$22.$$arity = 1);
       
-      Opal.def(self, '$get_elements_by_range', $Abc2Svg_get_elements_by_range$25 = function $$get_elements_by_range(from, to) {
-        var $$26, self = this, range = nil, result = nil;
+      Opal.def(self, '$get_elements_by_range', $Abc2Svg_get_elements_by_range$23 = function $$get_elements_by_range(from, to) {
+        var $$24, self = this, range = nil, result = nil;
 
         
         range = [from, to].$sort();
         result = [];
-        $send(self.interactive_elements, 'each', [], ($$26 = function(k, value){var self = $$26.$$s || this, $$27, noterange = nil;
+        $send(self.interactive_elements, 'each', [], ($$24 = function(k, value){var self = $$24.$$s || this, $$25, noterange = nil;
 
         
           
@@ -40239,24 +40232,24 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
           if (value == null) {
             value = nil;
           };
-          noterange = $send(["startChar", "endChar"], 'map', [], ($$27 = function(c){var self = $$27.$$s || this;
+          noterange = $send(["startChar", "endChar"], 'map', [], ($$25 = function(c){var self = $$25.$$s || this;
 
           
             
             if (c == null) {
               c = nil;
             };
-            return value['$[]'](c);}, $$27.$$s = self, $$27.$$arity = 1, $$27)).$sort();
+            return value['$[]'](c);}, $$25.$$s = self, $$25.$$arity = 1, $$25)).$sort();
           if ($truthy($rb_gt($rb_times($rb_minus(range.$first(), noterange.$last()), $rb_minus(noterange.$first(), range.$last())), 0))) {
             return result.$push(k)
           } else {
             return nil
-          };}, $$26.$$s = self, $$26.$$arity = 2, $$26));
+          };}, $$24.$$s = self, $$24.$$arity = 2, $$24));
         return result;
-      }, $Abc2Svg_get_elements_by_range$25.$$arity = 2);
+      }, $Abc2Svg_get_elements_by_range$23.$$arity = 2);
       self.$private();
       
-      Opal.def(self, '$_callback_get_abcmodel', $Abc2Svg__callback_get_abcmodel$28 = function $$_callback_get_abcmodel(tsfirst, voice_tb, music_types, info) {
+      Opal.def(self, '$_callback_get_abcmodel', $Abc2Svg__callback_get_abcmodel$26 = function $$_callback_get_abcmodel(tsfirst, voice_tb, music_types, info) {
         var self = this, json_model = nil;
         if ($gvars.log == null) $gvars.log = nil;
 
@@ -40268,22 +40261,22 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
           var to_json = new AbcJSON();
           json_model =  to_json.gen_json(tsfirst, voice_tb, music_types, info);
 
-          var to_audio = new ToAudio()
-          to_audio.add(tsfirst, voice_tb)
-          self.player_model = to_audio.clear()
+          // var to_audio = new ToAudio()
+          // to_audio.add(tsfirst, voice_tb)
+          // self.player_model = to_audio.clear()
       ;
         if ($gvars.log.$loglevel()['$==']("debug")) {
           $gvars.log.$debug(json_model)};
         self.abc_model = $$($nesting, 'JSON').$parse(json_model);
         return self.abc_model;
-      }, $Abc2Svg__callback_get_abcmodel$28.$$arity = 4);
+      }, $Abc2Svg__callback_get_abcmodel$26.$$arity = 4);
       
-      Opal.def(self, '$_get_charpos', $Abc2Svg__get_charpos$29 = function $$_get_charpos(abc_source, line, column) {
-        var $$30, self = this, lines = nil, result = nil;
+      Opal.def(self, '$_get_charpos', $Abc2Svg__get_charpos$27 = function $$_get_charpos(abc_source, line, column) {
+        var $$28, self = this, lines = nil, result = nil;
 
         
         lines = self.abc_source.$split("\n");
-        result = $send(lines['$[]'](Opal.Range.$new(0, line, false)), 'inject', [0], ($$30 = function(r, v){var self = $$30.$$s || this;
+        result = $send(lines['$[]'](Opal.Range.$new(0, line, false)), 'inject', [0], ($$28 = function(r, v){var self = $$28.$$s || this;
 
         
           
@@ -40294,28 +40287,28 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
           if (v == null) {
             v = nil;
           };
-          return (r = $rb_plus(r, v.$length()));}, $$30.$$s = self, $$30.$$arity = 2, $$30));
+          return (r = $rb_plus(r, v.$length()));}, $$28.$$s = self, $$28.$$arity = 2, $$28));
         return $rb_plus(result, column);
-      }, $Abc2Svg__get_charpos$29.$$arity = 3);
+      }, $Abc2Svg__get_charpos$27.$$arity = 3);
       
-      Opal.def(self, '$_anno_start', $Abc2Svg__anno_start$31 = function $$_anno_start(music_type, start_offset, stop_offset, x, y, w, h) {
+      Opal.def(self, '$_anno_start', $Abc2Svg__anno_start$29 = function $$_anno_start(music_type, start_offset, stop_offset, x, y, w, h) {
         var self = this, id = nil;
 
         
         id = self.$_mk_id(music_type, start_offset, stop_offset);
         self.root.out_svg('<g class="' + id +'">\n');
         return nil;
-      }, $Abc2Svg__anno_start$31.$$arity = 7);
+      }, $Abc2Svg__anno_start$29.$$arity = 7);
       
-      Opal.def(self, '$_clickabcnote', $Abc2Svg__clickabcnote$32 = function $$_clickabcnote(evt, id) {
+      Opal.def(self, '$_clickabcnote', $Abc2Svg__clickabcnote$30 = function $$_clickabcnote(evt, id) {
         var self = this;
 
         
         self.$Native(evt).$stopPropagation();
         return self.on_select.$call(self.interactive_elements['$[]'](id));
-      }, $Abc2Svg__clickabcnote$32.$$arity = 2);
+      }, $Abc2Svg__clickabcnote$30.$$arity = 2);
       
-      Opal.def(self, '$_anno_stop', $Abc2Svg__anno_stop$33 = function $$_anno_stop(music_type, start_offset, stop_offset, x, y, w, h) {
+      Opal.def(self, '$_anno_stop', $Abc2Svg__anno_stop$31 = function $$_anno_stop(music_type, start_offset, stop_offset, x, y, w, h) {
         var self = this, id = nil, onclick = nil, $writer = nil;
 
         
@@ -40333,12 +40326,12 @@ Opal.modules["opal-abc2svg"] = function(Opal) {
         $writer = [id, $hash2(["startChar", "endChar"], {"startChar": start_offset, "endChar": stop_offset})];
         $send(self.interactive_elements, '[]=', Opal.to_a($writer));
         return $writer[$rb_minus($writer["length"], 1)];;
-      }, $Abc2Svg__anno_stop$33.$$arity = 7);
-      return (Opal.def(self, '$_mk_id', $Abc2Svg__mk_id$34 = function $$_mk_id(music_type, start_offset, end_offset) {
+      }, $Abc2Svg__anno_stop$31.$$arity = 7);
+      return (Opal.def(self, '$_mk_id', $Abc2Svg__mk_id$32 = function $$_mk_id(music_type, start_offset, end_offset) {
         var self = this;
 
         return "" + "_" + (music_type) + "_" + (start_offset) + "_" + (end_offset) + "_"
-      }, $Abc2Svg__mk_id$34.$$arity = 3), nil) && '_mk_id';
+      }, $Abc2Svg__mk_id$32.$$arity = 3), nil) && '_mk_id';
     })($nesting[0], null, $nesting)
   })($nesting[0], $nesting)
 };
@@ -40349,18 +40342,18 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.14-22-ga752497f");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.14-35-gd6d5216c");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
 
-// compiled for Zupfnoter 2020-02-26 19:32:05 +0100
+// compiled for Zupfnoter 2020-03-11 09:31:08 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
 // abc2svg - abc2svg.js
 //
-// Copyright (C) 2014-2019 Jean-Francois Moine
+// Copyright (C) 2014-2020 Jean-Francois Moine
 //
 // This file is part of abc2svg-core.
 //
@@ -40544,6 +40537,7 @@ var	OPEN_BRACE = 0x01,
 var errs = {
 	bad_char: "Bad character '$1'",
 	bad_grace: "Bad character in grace note sequence",
+	bad_transp: "Bad transpose value",
 	bad_val: "Bad value in $1",
 	bar_grace: "Cannot have a bar in grace notes",
 	ignored: "$1: inside tune - ignored",
@@ -40689,7 +40683,7 @@ function syntax(sev, msg, a1, a2, a3, a4) {
 // inject javascript code
 function js_inject(js) {
 	if (!/eval *\(|Function|setTimeout|setInterval/.test(js))
-		eval('"use strict"\n' + js)
+		eval('"use strict";\n' + js)
 	else
 		syntax(1, "Unsecure code")
 }
@@ -48624,6 +48618,14 @@ function unlksym(s) {
 			s.ts_next.shrink = s.shrink;
 			s.ts_next.space = s.space
 		    }
+		} else {
+			if (s.ts_next.seqst
+			 && s.ts_prev && s.ts_prev.seqst
+			 && !w_tb[s.ts_prev.type]) {
+				s.ts_next.seqst = false
+				s.shrink = s.ts_next.shrink
+				s.space = s.ts_next.space
+			}
 		}
 		s.ts_next.ts_prev = s.ts_prev
 	}
@@ -52746,7 +52748,9 @@ function block_gen(s) {
 		user.img_out(s.text)
 		break
 	case "newpage":
-		blk_flush();
+		svg_flush()
+		if (blkdiv < 0)		// split the tune
+			user.img_out('</div>')
 		blkdiv = 2		// start the next SVG in a new page
 		break
 	case "sep":
@@ -53198,7 +53202,6 @@ Abc.prototype.output_music = function() {
 	gen_init()
 	if (!tsfirst)
 		return
-	tunes.push([tsfirst, voice_tb])	// keep tune data for playing
 	set_global()
 	if (voice_tb.length > 1)	/* if many voices */
 		self.set_stem_dir()	// set the stems direction in 'multi'
@@ -53428,7 +53431,7 @@ function get_interval(param, score) {
 		note = tmp.buffer[tmp.index] ? parse_acc_pit(tmp) : null
 		if (!note) {
 			if (i != 1 || !score) {
-				syntax(1, "Bad transpose value")
+				syntax(1, errs.bad_transp)
 				return
 			}
 			pit[i] = 242			// 'c' (C5)
@@ -53665,13 +53668,12 @@ Abc.prototype.set_vp = function(a) {
 			item = a.shift()
 			if (cfmt.sound)
 				break
-			curvoice.transp = get_transp(item)
+			curvoice.transp = get_interval(item, true)
 			break
 		case "shift=":
 			curvoice.shift = curvoice.sndsh = get_interval(a.shift())
 			break
 		case "sound=":
-		case "transpose=":		// (abcMIDI compatibility)
 // concert-score display: apply sound=
 // sounding-score display: apply sound= only if M != c/C
 // sound: apply sound=
@@ -53708,6 +53710,16 @@ Abc.prototype.set_vp = function(a) {
 				syntax(1, "Bad %%staffscale value")
 			else
 				curvoice.staffscale = val
+			break
+		case "transpose=":		// (abcMIDI compatibility)
+			val = get_transp(a.shift())
+			if (val == undefined) {
+				syntax(1, errs.bad_transp)
+			} else {
+				curvoice.sndtran = val
+				if (cfmt.sound)
+					curvoice.transp = val
+			}
 			break
 		default:
 			switch (item.slice(0, 4)) {
@@ -54155,6 +54167,7 @@ function new_meter(p) {
 /* Q: tempo */
 function new_tempo(text) {
     var	i, c, d, nd,
+	txt = text,			// (for info.Q)
 	s = {
 		type: C.TEMPO,
 		dur: 0
@@ -54238,7 +54251,7 @@ function new_tempo(text) {
 
 	if (parse.state != 3) {
 		if (parse.state == 1) {			// tune header
-			info.Q = text;
+			info.Q = txt
 			glovar.tempo = s
 			return
 		}
@@ -57725,10 +57738,7 @@ function out_stem(x, y, h, grace,
 			}
 		} else {			// straight
 			output += '<path d="'
-//fixme: to do
 			if (!grace) {
-//fixme: check endpoints
-				y += 1
 				while (--nflags >= 0) {
 					out_XYAB('MX Yl7 3.2 0 3.2 -7 -3.2z\n',
 						x, y);
@@ -57763,8 +57773,6 @@ function out_stem(x, y, h, grace,
 		} else {			// straight
 			output += '<path d="'
 			if (!grace) {
-//fixme: check endpoints
-				y += 1
 				while (--nflags >= 0) {
 					out_XYAB('MX Yl7 -3.2 0 -3.2 -7 3.2z\n',
 						x, y);
@@ -58118,7 +58126,7 @@ function tempo_build(s) {
 			str.push('<tspan\nclass="' +
 					font_class(cfmt.musicfont) +
 				'" style="font-size:' +
-				(gene.curfont.size * 1.3).toFixed(1) + '"' +
+				(gene.curfont.size * 1.3).toFixed(1) + 'px"' +
 				dy + '>' +
 				p + '</tspan>')
 			j = p.length > 1 ? 2 : 1	// (note and optional dot)
@@ -58141,7 +58149,7 @@ function tempo_build(s) {
 					font_class(cfmt.musicfont) +
 				'" style="font-size:' +
 				(gene.curfont.size * 1.3).toFixed(1) +
-				'" dy="-.05em">' +
+				'px" dy="-.05em">' +
 				p + '</tspan>')
 			j = p.length > 1 ? 2 : 1
 			w += j * gene.curfont.swfac
@@ -58647,7 +58655,8 @@ function voice_adj(sys_chg) {
 		s.time = t
 	} // end set_feathered_beam()
 
-	/* if Q: from tune header, put it at start of the music */
+	// if Q: from tune header, put it at start of the music
+	// (after the staff system)
 	s = glovar.tempo
 	if (s && staves_found <= 0) {	// && !s.del) {		- play problem
 		v = par_sy.top_voice;
@@ -58658,10 +58667,15 @@ function voice_adj(sys_chg) {
 			s.p_v = p_voice;
 			s.st = p_voice.st;
 			s.time = 0;
-			s.next = p_voice.sym
-			if (s.next)
-				s.next.prev = s;
-			p_voice.sym = s
+			if (p_voice.sym) {
+				s.prev = p_voice.sym
+				s.next = p_voice.sym.next
+				if (s.next)
+					s.next.prev = s
+				p_voice.sym.next = s
+			} else {
+				p_voice.sym = s
+			}
 		}
 	}
 
@@ -59239,7 +59253,7 @@ function pit_adj() {
 	}
 } // pit_adj()
 
-// get a transposition value as a base-40 interval
+// get a abcm2ps/abcMIDI compatible transposition value as a base-40 interval
 // The value may be
 // - [+|-]<number of semitones>[s|f]
 // - <note1>[<note2>]  % <note2> default is 'c'
@@ -59250,7 +59264,7 @@ function get_transp(param) {
 	    var	val = parseInt(param)
 		if (isNaN(val) || val < -36 || val > 36) {
 //fixme: no source reference...
-			syntax(1, "Bad transpose value")
+			syntax(1, errs.bad_transp)
 			return
 		}
 		val += 36
@@ -59259,7 +59273,7 @@ function get_transp(param) {
 					abc2svg.ifb40 :
 					abc2svg.isb40)[val % 12]
 	}
-	return get_interval(param, true)
+	// return undefined
 } // get_transp()
 
 /* -- process a pseudo-comment (%% or I:) -- */
@@ -59542,16 +59556,25 @@ Abc.prototype.do_pscom = function(text) {
 	case "transpose":		// (abcm2ps compatibility)
 		if (cfmt.sound)
 			return
+		val = get_transp(param)
 		switch (parse.state) {
 		case 0:
 			cfmt.transp = 0
 			// fall thru
 		case 1:
 		case 2:
-			val = get_transp(param)
-			if (val)
+			if (val == undefined)
+				syntax(1, errs.bad_transp)
+			else
 				cfmt.transp = (cfmt.transp || 0) + val
 			return
+		}
+		if (val == undefined) {		// accept note interval
+			val = get_interval(param)
+			if (val == undefined) {
+				syntax(1, errs.bad_transp)
+				return
+			}
 		}
 		for (s = curvoice.last_sym; s; s = s.prev) {
 			switch (s.type) {
@@ -59567,7 +59590,7 @@ Abc.prototype.do_pscom = function(text) {
 			}
 			break
 		}
-		do_info('V', curvoice.id + ' score=' + param)
+		curvoice.transp = val
 		return
 	case "tune":
 //fixme: to do
@@ -59717,6 +59740,8 @@ function generate(in_mc) {
 
 	if (user.img_out)		// if SVG generation
 		self.output_music()
+
+	tunes.push([tsfirst, voice_tb, info])	// keep tune data for upper layers
 
 	// if inside multicol, reset the parser
 	if (!in_mc)
@@ -61657,6 +61682,8 @@ Abc.prototype.stv_g = function() { return stv_g };
 Abc.prototype.svg_flush = svg_flush;
 Abc.prototype.syntax = syntax;
 Abc.prototype.tunes = tunes
+Abc.prototype.anno_type = anno_type
+
 Abc.prototype.unlksym = unlksym;
 Abc.prototype.use_font = use_font;
 Abc.prototype.xy_str = xy_str;
@@ -61806,7 +61833,7 @@ abc2svg.modules = {
 		return this.nreq == nreq_i
 	}
 } // modules
-abc2svg.version="1.20.8-";abc2svg.vdate=""
+abc2svg.version="1.20.8";abc2svg.vdate=""
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -61839,129 +61866,154 @@ abc2svg.version="1.20.8-";abc2svg.vdate=""
 
 // AbcJSON creation
 function AbcJSON(nindent) {			// indentation level
-	var inb = Array((nindent || 2) + 1).join(' ') // indentation base
+  var inb = Array((nindent || 2) + 1).join(' ') // indentation base
 
-    AbcJSON.prototype.gen_json = function (tsfirst, voice_tb, anno_type, info) {
-	var	json, i, j, l, v, s, h,
-		ind2 = inb + inb,
-		ind3 = ind2 + inb,
-		ind4 = ind3 + inb,
-		links = {
-			next: true,
-			prev: true,
-			ts_next: true,
-			ts_prev: true,
-			extra: true,
-			p_v: true,
-			s: true,
-			sn: true,
-			tie_s: true,
-			dd_st: true
-		}
-	// generate an attribute
-	function attr_gen(ind, attr, val) {
-		var	i, e, l,
-			indn = ind + inb	// next indentation
+  AbcJSON.prototype.gen_json = function (tsfirst, voice_tb, anno_type, info) {
+    var objIdMap = new WeakMap;
+    objectcount = 0;
+    objectstack = []
 
-		if (links[attr]) {
-			switch (attr) {
-			case "extra":
-				json += h + ind + '"extra": [';
-				h = '\n'
-				for (e = val ; e; e = e.next)
-					attr_gen(indn, null, e);
-				json += '\n' + ind + ']'
-				break
-			case "tie_s":
-				json += h + ind + '"ti1": true'
-				break
-			}
-			return
-		}
-		json += h + ind
-		if (attr)
-			 json += '"' + attr.toString() + '": ';
-		switch (typeof(val)) {
-		case "undefined":
-			json += "null"
-			break
-		case "object":
-			if (!val) {
-				json += "null"
-				break
-			}
-			if (Array.isArray(val)) {
-				if (val.length == 0) {
-					json += "[]"
-					break
-				}
-				h = '[\n';
-				l = val.length
-				for (i = 0; i < l; i++)
-					attr_gen(indn, null, val[i]);
-				json += '\n' + ind + ']'
-			} else {
-				h = '{\n'
-				for (i in val)
-				    if (val.hasOwnProperty(i))
-					attr_gen(indn, i, val[i]);
-				json += '\n' + ind + '}'
-			}
-			break
-		default:
-			json += JSON.stringify(val)
-			break
-		}
-		h = ',\n'
-	} // attr_gen()
-
-	// music types
-	json = '';
-	h = '{\n';
-	attr_gen(inb, "music_types", anno_type);
-
-	h = ',\n' + inb + '"music_type_ids": {\n';
-	l = anno_type.length
-	for (i = 0; i < l; i++) {
-		if (anno_type[i]) {
-			json += h + ind2 + '"' + anno_type[i] + '": ' + i;
-			h = ',\n'
-		}
-	}
-
-	// info
-	h = '\n' + inb + '},\n';
-	attr_gen(inb, "info", info);
-
-	// voices
-	json += ',\n' + inb + '"voices": [';
-	v = 0;
-	h = '\n'
-	while (1) {
-		h += ind2 + '{\n' +
-			ind3 + '"voice_properties": {\n'
-		for (i in voice_tb[v])
-		    if (voice_tb[v].hasOwnProperty(i))
-			attr_gen(ind4, i, voice_tb[v][i]);
-
-		json += '\n' + ind3 + '},\n' +
-			ind3 + '"symbols": [';
-		s = voice_tb[v].sym
-		if (!s) {
-			json += ']\n' + ind3 + '}'
-		} else {
-			h = '\n'
-			for ( ; s; s = s.next)
-				attr_gen(ind4, null, s);
-			json += '\n' + ind3 + ']\n' +
-				ind2 + '}'
-		}
-		h = ',\n'
-		if (!voice_tb[++v])
-			break
-	}
-	return json + '\n' + inb + ']\n}\n'
+    function objectId(object) {
+      if (!objIdMap.has(object)) objIdMap.set(object, ++objectcount);
+      return objIdMap.get(object);
     }
+
+    var json, i, j, l, v, s, h,
+      ind2 = inb + inb,
+      ind3 = ind2 + inb,
+      ind4 = ind3 + inb,
+      links = {
+        next: true,
+        prev: true,
+        ts_next: true,
+        ts_prev: true,
+        extra: true,
+        note: true,
+        p_v: true,
+        s: true,
+        sn: true,
+        tie_s: true,
+        dd_st: true,
+        sym: true,
+        rep_s: true,
+      }
+
+    // generate an attribute
+    function attr_gen(ind, attr, val) {
+      var i, e, l,
+        indn = ind + inb	// next indentation
+
+      if (links[attr]) {
+        switch (attr) {
+          case "extra":
+            json += h + ind + '"extra": [';
+            h = '\n'
+            for (e = val; e; e = e.next)
+              attr_gen(indn, null, e);
+            json += '\n' + ind + ']'
+            break
+          case "tie_s":
+            json += h + ind + '"ti1": true'
+            break
+        }
+        return
+      }
+      json += h + ind
+      if (attr)
+        json += '"' + attr.toString() + '": ';
+      switch (typeof (val)) {
+        case "undefined":
+          json += "null"
+          break
+        case "object":
+          if (!val) {
+            json += "null"
+            break
+          }
+
+          // now we check if we are in an endless loop
+          // caused by cyclic nesting of objects
+          // such a message is a bug and needs to be fixed
+          var oid = objectId(val)
+          if (objectstack.includes(oid)) {
+            json += '{ "__ref": ' + oid + '}'
+            break
+          }
+          objectstack.push(oid)
+
+          if (Array.isArray(val)) {
+            if (val.length == 0) {
+              json += "[]"
+              break
+            }
+            h = '[\n';
+            l = val.length
+            for (i = 0; i < l; i++)
+              attr_gen(indn, null, val[i]);
+            json += '\n' + ind + ']'
+          } else {
+            h = '{\n' // + '"__oid": ' + oid + ",\n"
+            for (i in val)
+              if (val.hasOwnProperty(i))
+                attr_gen(indn, i, val[i]);
+            json += '\n' + ind + '}'
+          }
+          objectstack.pop()
+          break
+        default:
+          json += JSON.stringify(val)
+          break
+      }
+      h = ',\n'
+    } // attr_gen()
+
+    // music types
+    json = '';
+    h = '{\n';
+    attr_gen(inb, "music_types", anno_type);
+
+    h = ',\n' + inb + '"music_type_ids": {\n';
+    l = anno_type.length
+    for (i = 0; i < l; i++) {
+      if (anno_type[i]) {
+        json += h + ind2 + '"' + anno_type[i] + '": ' + i;
+        h = ',\n'
+      }
+    }
+
+    // info
+    h = '\n' + inb + '},\n';
+    attr_gen(inb, "info", info);
+
+    // voices
+    json += ',\n' + inb + '"voices": [';
+    v = 0;
+    h = '\n'
+    while (1) {
+      h += ind2 + '{\n' +
+        ind3 + '"voice_properties": {\n'
+      for (i in voice_tb[v])
+        if (voice_tb[v].hasOwnProperty(i))
+          attr_gen(ind4, i, voice_tb[v][i]);
+
+      json += '\n' + ind3 + '},\n' +
+        ind3 + '"symbols": [';
+      s = voice_tb[v].sym
+      if (!s) {
+        json += ']\n' + ind3 + '}'
+      } else {
+        h = '\n'
+        for (; s; s = s.next)
+          attr_gen(ind4, null, s);
+        json += '\n' + ind3 + ']\n' +
+          ind2 + '}'
+      }
+      h = ',\n'
+      if (!voice_tb[++v])
+        break
+    }
+    return json + '\n' + inb + ']\n}\n'
+  }
 }
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
@@ -62659,7 +62711,7 @@ function Audio5(i_conf) {
 	var	conf = i_conf,		// configuration
 		onend = function() {},
 		onnote = function() {},
-		errmsg = alert,
+		errmsg = (conf.errmsg ? conf.errmsg : alert),
 		ac,			// audio context
 		gain,			// global gain
 
@@ -64416,6 +64468,609 @@ if (0) {
 	} // stop()
     }
 } // end Midi5
+// sndgen.js - sound generation
+//
+// Copyright (C) 2019-2020 Jean-Francois Moine
+//
+// This file is part of abc2svg-core.
+//
+// abc2svg-core is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// abc2svg-core is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with abc2svg-core.  If not, see <http://www.gnu.org/licenses/>.
+
+// This script generates the play data which are stored in the music symbols:
+// - in all symbols
+//	s.ptim = play time
+// - in BAR
+//	rep_p = on a right repeat bar, pointer to the left repeat symbol
+//	rep_s = on the first repeat variant, array of pointers to the next symbols,
+//						indexed by the repeat number
+// - in NOTE and REST
+//	s.pdur = play duration
+//	s.instr = bank + instrument
+// - in the notes[] of NOTE
+//	s.notes[i].midi
+
+function ToAudio() {
+ return {
+
+   // generate the play data of a tune
+   add: function(s,		// starting symbol
+		voice_tb) {	// voice table
+    var	C = abc2svg.C,
+	p_time = 0,		// last playing time
+	abc_time = 0,		// last ABC time
+	play_fac = C.BLEN / 4 * 120 / 60, // play time factor - default: Q:1/4=120
+	i, n, dt, d, v,
+	rst = s,		// left repeat (repeat restart)
+	rst_fac,		// play factor on repeat restart
+	rsk,			// repeat variant (repeat skip)
+	instr = []		// [voice] bank + instrument
+
+	// handle a block symbol
+	function do_block(s) {
+	    var	v = s.v
+
+		switch (s.subtype) {
+		case "midictl":
+			switch (s.ctrl) {
+			case 0:			// MSB bank
+				instr[v] = (instr[v] & 0x3fff) |
+					(s.val << 14)
+				break
+			case 32:		// LSB bank
+				instr[v] = (instr[v] & 0x1fc07f) |
+					(s.val << 7)
+				break
+//			case 121:		// reset all controllers
+//				instr = []
+//				break
+			}
+			break
+		case "midiprog":
+			instr[v] = (instr[v] & ~0x7f) | s.instr
+			break
+		}
+	} // do_block()
+
+	// generate the grace notes
+	function gen_grace(s) {
+	    var	g, i, n, t, d, s2,
+		next = s.next
+
+		// before beat
+		if (s.sappo) {
+			d = C.BLEN / 16
+		} else if ((!next || next.type != C.NOTE)
+			&& s.prev && s.prev.type == C.NOTE) {
+			d = s.prev.dur / 2
+
+		// on beat
+		} else {
+			d = next.dur / 12
+			if (!(d & (d - 1)))
+				d = next.dur / 2	// no dot
+			else
+				d = next.dur / 3
+			next.time += d
+			next.dur -= d
+		}
+//fixme: assume the grace notes have the same duration
+		n = 0
+		for (g = s.extra; g; g = g.next)
+			n++
+		d /= n * play_fac
+		t = p_time
+		for (g = s.extra; g; g = g.next) {
+			g.ptim = t
+			g.pdur = d
+			g.instr = instr[s.v]
+			t += d
+		}
+	} // gen_grace()
+
+	// change the tempo
+	function set_tempo(s) {
+	    var	i,
+		d = 0,
+		n = s.tempo_notes.length
+
+		for (i = 0; i < n; i++)
+			d += s.tempo_notes[i]
+		return d * s.tempo / 60
+	} // set_tempo()
+
+	function set_variant(rsk, n, s) {
+	    var	d
+		n = n.match(/[1-8]-[2-9]|[1-9,.]|[^\s]+$/g)
+		while (1) {
+			d = n.shift()
+			if (!d)
+				break
+			if (d[1] == '-')
+				for (i = d[0]; i <= d[2]; i++)
+					rsk.rep_s[i] = s
+			else if (d >= '1' && d <= '9')
+				rsk.rep_s[Number(d)] = s
+			else if (d != ',')
+				rsk.rep_s.push(s)	// last
+		}
+	} // set_variant()
+
+	// add() main
+
+	// set the MIDI pitches
+	AbcMIDI().add(s, voice_tb)
+
+	// loop on the symbols
+	rst = s
+	rst_fac = play_fac
+	while (s) {
+		if (s.noplay) {			// in display macro sequence
+			s = s.ts_next
+			continue
+		}
+
+		dt = s.time - abc_time
+		if (dt > 0) {
+			p_time += dt / play_fac
+			abc_time = s.time
+		}
+		s.ptim = p_time
+		v = s.v
+
+		if (instr[v] == undefined)
+			instr[v] = voice_tb[v].instr || 0
+
+		switch (s.type) {
+		case C.BAR:
+
+			// right repeat
+			if (s.bar_type[0] == ':') {
+				s.rep_p = rst		// :| to |:
+				n = s.text		// variants
+				while (s.ts_next && !s.ts_next.dur) {
+					s = s.ts_next
+					s.ptim = p_time
+					if (!n && s.text)
+						n = s.text
+				}
+				if (rsk) {		// if in a variant
+					if (!n)
+						n = "a"		// last time
+					set_variant(rsk, n, s)
+					play_fac = rst_fac
+					break
+				}
+			}
+
+			// left repeat
+			if (s.bar_type.slice(-1) == ':') {
+				rst = s
+				rst_fac = play_fac
+				rsk = null
+
+			// 1st time repeat
+			} else if (s.text && s.text[0] == '1'
+				&& !rsk) {		// error if |1 already
+				rsk = s
+				s.rep_s = [null]	// repeat skip
+				set_variant(rsk, s.text, s)
+			}
+			while (s.ts_next && !s.ts_next.dur) {
+				s = s.ts_next
+				if (s.type == C.BLOCK)
+					do_block(s)
+				else if (s.tempo)
+					play_fac = set_tempo(s)
+				s.ptim = p_time
+			}
+			break
+		case C.BLOCK:
+			do_block(s)
+			break
+		case C.GRACE:
+			if (s.time == 0		// if before beat at start time
+			 && abc_time == 0) {
+				dt = 0
+				if (s.sappo)
+					dt = C.BLEN / 16
+				else if (!s.next || s.next.type != C.NOTE)
+					dt = d / 2
+				abc_time -= dt
+			}
+			gen_grace(s)
+			break
+		case C.REST:
+		case C.NOTE:
+			d = s.dur
+			if (s.next && s.next.type == C.GRACE) {
+				dt = 0
+				if (s.next.sappo)
+					dt = C.BLEN / 16
+				else if (!s.next.next || s.next.next.type != C.NOTE)
+					dt = d / 2
+				s.next.time -= dt
+				d -= dt
+			}
+			d /= play_fac
+			s.pdur = d
+			s.instr = instr[v]
+			break
+		case C.TEMPO:
+			if (s.tempo)
+				play_fac = set_tempo(s)
+			break
+		}
+		s = s.ts_next
+	} // loop
+   }, // add()
+ } // return
+} // ToAudio()
+
+// play some next symbols
+//
+// This function is called by the upper function to start playing.
+// It is called by itself after delay and continue sound generation
+// up to the stop symbol or explicit stop by the user.
+//
+// The po object (Play Object) contains the following items:
+// - variables
+//  - stime: start time
+//		must be set by the calling function at startup time
+//  - stop: stop flag
+//		set by the user to stop playing
+//  - s_cur: current symbol (next to play)
+//		must be set to the first symbol to be played at startup time
+//  - s_end: stop playing on this symbol
+//		this symbol is not played. It may be null.
+//  - conf
+//    - speed: current speed factor
+//		must be set to 1 at startup time
+//    - new_conf: new speed factor
+//		set by the user
+// - internal variables
+//  - repn: don't repeat
+//  - repv: variant number
+//  - timouts: array of the current timeouts
+//		this array may be used by the upper function in case of hard stop
+// - methods
+//  - onend: (optional)
+//  - onnote: (optional)
+//  - note_run: start playing a note
+//  - get_time: return the time of the underlaying sound system
+abc2svg.play_next = function(po) {
+
+	// handle a tie
+	function do_tie(s, midi, d) {
+	    var	i, note,
+		C = abc2svg.C,
+		v = s.v,
+		end_time = s.time + s.dur
+
+		// search the end of the tie
+		while (1) {
+			s = s.ts_next
+			if (!s)
+				return d
+			switch (s.type) {
+			case C.BAR:
+				if (s.rep_p) {
+					if (!po.repn) {
+						s = s.rep_p
+						end_time = s.time
+					}
+				}
+				if (s.rep_s) {
+					if (!s.rep_s[po.repv + 1])
+						return d
+					s = s.rep_s[po.repv + 1]
+					end_time = s.time
+				}
+				while (s.ts_next && !s.ts_next.dur)
+					s = s.ts_next
+			}
+			if (s.time > end_time)
+				return d
+			if (s.type == C.NOTE && s.v == v)
+				break
+		}
+		i = s.notes.length
+		while (--i >= 0) {
+			note = s.notes[i]
+			if (note.midi == midi) {
+				note.ti2 = true		// the sound is generated
+				d += s.pdur / po.conf.speed
+				return note.tie_ty ? do_tie(s, midi, d) : d
+			}
+		}
+
+		return d
+	} // do_tie()
+
+	// set the MIDI controls up to now
+	function set_ctrl(po, s2, t) {
+	    var	i,
+		s = {
+			subtype: "midictl",
+			p_v: s2.p_v
+		}
+
+		for (i in s2.p_v.midictl) {
+			s.ctrl = i
+			s.val = s2.p_v.midictl[i]
+			po.midi_ctrl(po, s, t)
+		}
+		for (s = s2.p_v.sym; s != s2; s = s.next) {
+			if (s.subtype == "midictl")
+				po.midi_ctrl(po, s, t)
+		}
+		po.p_v[s2.v] = true	// synchronization done
+	}
+
+    // start and continue to play
+    function play_cont(po) {
+    var	d, i, st, m, note, g, s2, t, maxt,
+	C = abc2svg.C,
+	s = po.s_cur
+
+	if (po.stop) {
+		if (po.onend)
+			po.onend(po.repv)
+		return
+	}
+
+	while (s.noplay) {
+		s = s.ts_next
+		if (!s || s == po.s_end) {
+			if (po.onend)
+				po.onend(po.repv)
+			return
+		}
+	}
+	t = po.stime + s.ptim / po.conf.speed	// start time
+
+	// if speed change, shift the start time
+	if (po.conf.new_speed) {
+		d = po.get_time(po)
+		po.stime = d - (d - po.stime) *
+					po.conf.speed / po.conf.new_speed
+		po.conf.speed = po.conf.new_speed
+		po.conf.new_speed = 0
+		t = po.stime + s.ptim / po.conf.speed
+	}
+
+	maxt = t + po.tgen		// max time = now + 'tgen' seconds
+	po.timouts = []
+	while (1) {
+		if (!po.p_v[s.v])		// if new voice
+			set_ctrl(po, s, t)	// set the MIDI controls
+		switch (s.type) {
+		case C.BAR:
+			if (s.bar_type.slice(-1) == ':') // left repeat
+				po.repv = 0
+			if (s.rep_p) {			// right repeat
+				if (!po.repn) {
+					po.stime += (s.ptim - s.rep_p.ptim) /
+							po.conf.speed
+					s = s.rep_p	// left repeat
+					while (s.ts_next && !s.ts_next.dur)
+						s = s.ts_next
+					t = po.stime + s.ptim / po.conf.speed
+					po.repn = true
+					break
+				}
+				po.repn = false
+			}
+			if (s.rep_s) {			// first variant
+				s2 = s.rep_s[++po.repv]	// next variant
+				if (s2) {
+					po.stime += (s.ptim - s2.ptim) /
+							po.conf.speed
+					s = s2
+					t = po.stime + s.ptim / po.conf.speed
+					po.repn = false
+				} else {		// end of tune
+					s = po.s_end
+					break
+				}
+			}
+			while (s.ts_next && !s.ts_next.dur) {
+				s = s.ts_next
+				if (s.subtype == "midictl")
+					po.midi_ctrl(po, s, t)
+			}
+			break
+		case C.BLOCK:
+			if (s.subtype == "midictl")
+				po.midi_ctrl(po, s, t)
+			break
+		case C.GRACE:
+			for (g = s.extra; g; g = g.next) {
+				d = g.pdur / po.conf.speed
+				for (m = 0; m <= g.nhd; m++) {
+					note = g.notes[m]
+					po.note_run(po, g,
+						note.midi,
+						t + g.ptim - s.ptim,
+//fixme: there may be a tie...
+						d)
+				}
+			}
+			break
+		case C.NOTE:
+			d = s.pdur / po.conf.speed
+			for (m = 0; m <= s.nhd; m++) {
+				note = s.notes[m]
+				if (note.ti2)
+					continue
+				po.note_run(po, s,
+					note.midi,
+					t,
+					note.tie_ty ?
+						do_tie(s, note.midi, d) : d)
+			}
+			// fall thru
+		case C.REST:
+			d = s.pdur / po.conf.speed
+
+			// follow the notes/rests while playing
+			if (po.onnote) {
+				i = s.istart
+				st = (t - po.get_time(po)) * 1000
+				po.timouts.push(setTimeout(po.onnote, st, i, true))
+				setTimeout(po.onnote, st + d * 1000, i, false)
+			}
+			break
+		}
+		while (1) {
+			if (s == po.s_end || !s.ts_next) {
+				if (po.onend)
+					setTimeout(po.onend,
+						(t - po.get_time(po) + d) * 1000,
+						po.repv)
+				po.s_cur = s
+				return
+			}
+			s = s.ts_next
+			if (!s.noplay)
+				break
+		}
+		t = po.stime + s.ptim / po.conf.speed // next time
+		if (t > maxt)
+			break
+	}
+	po.s_cur = s
+
+	// delay before next sound generation
+	po.timouts.push(setTimeout(play_cont,
+				(t - po.get_time(po)) * 1000
+					- 300,	// wake before end of playing
+				po))
+    } // play_cont()
+
+    // --- play_next ---
+	po.stime = po.get_time(po) + .3	// start time + 0.3s
+			- po.s_cur.ptim * po.conf.speed
+	po.p_v = []			// voice table for the MIDI controls
+
+	play_cont(po)			// start playing
+} // play_next()
+
+// nodejs
+if (typeof module == 'object' && typeof exports == 'object')
+	exports.ToAudio = ToAudio
+// sndmem.js - generate play events for use with toaudio5 or tomidi5
+//
+// Copyright (C) 2020 Jean-Francois Moine
+//
+// This file is part of abc2svg.
+//
+// abc2svg is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// abc2svg is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with abc2svg.  If not, see <http://www.gnu.org/licenses/>.
+
+// The function abc2svg.sndmem() must be called after the abc2svg generation
+// and after the play data have been defined (by the function audio.add
+// in util/sndgen.js).
+//
+// It returns an array of Float32Array:
+//	[0]: index of the note in the ABC source
+//	[1]: time in seconds
+//	[2]: if >= 0: MIDI instrument (MIDI GM number - 1)
+//		else: MIDI control message
+//	[3]: MIDI note pitch (with cents) / controller
+//	[4]: duration			  / controller value
+//	[5]: volume (0..1)
+//	[6]: voice number
+
+abc2svg.sndmem = function(abc) {
+    var	po, i, tune
+
+	// create a note
+	// @po = play object
+	// @s = symbol
+	// @k = MIDI key + detune
+	// @t = audio start time (ms)
+	// @d = duration adjusted for speed (ms)
+	function note_run(po, s, k, t, d) {
+		po.a_e.push(new Float32Array([
+				s.istart,
+				t,
+				s.instr,
+				k,
+				d,
+				1,
+				s.v]))
+	} // note_run()
+
+	// return the play real time in seconds
+	function get_time(po) {
+		return 0
+	} // get_time()
+
+	// MIDI control
+	function midi_ctrl(po, s, t) {
+		po.a_e.push(new Float32Array([
+				s.istart,
+				0,	// (time - unused)
+				-1,	// MIDI control
+				s.ctrl,
+				s.val,
+				1,
+				s.v]))
+	} // midi_ctrl()
+
+	// define the play object
+	po = {
+		conf: {		// configuration
+			speed: 1
+		},
+		tgen: 3600, 	// generate by (for) 1 hour
+		get_time: get_time,
+		midi_ctrl: midi_ctrl,
+		note_run: note_run,
+
+		// sndmem specific
+		a_e: []
+	}
+
+	// loop on the tunes
+	while (1) {
+
+		// get the [first symbol, voice table] of the next tune
+		tune = abc.tunes.shift()
+		if (!tune)
+			break
+
+		po.stop = false
+		po.s_end = null
+		po.s_cur = tune[0]	// first music symbol
+		po.repn = false
+		po.repv = 0
+
+		abc2svg.play_next(po)
+	}
+	return po.a_e
+} //sndmem()
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -64777,7 +65432,7 @@ abc2svg.grid3 = {
 	    var	i, k, l, line, bl, bar, w, hr, x0, x, y, yl, cl, cell,
 		lc = '',
 		path = '<path class="stroke" stroke-width="1" d="M',
-		sf = '" style="font-size:' + (font.size * .72).toFixed(1)
+		sf = '" style="font-size:' + (font.size * .72).toFixed(1) + 'px'
 						// small font
 
 		function build_ch(cl, x, y, n) {
@@ -64908,13 +65563,15 @@ abc2svg.grid3 = {
 						(x - 5).toFixed(1) +
 						'" y="' + y.toFixed(1) +
 						'" style="font-weight:bold;font-size:' +
-						(font.size * 1.6).toFixed(1) + '">:</text>\n'
+						(font.size * 1.6).toFixed(1) +
+						'px">:</text>\n'
 				if (bar.slice(-1) == ':')
 					line += '<text class="' + cls + '" x="' +
 						(x + 5).toFixed(1) +
 						'" y="' + y.toFixed(1) +
 						'" style="font-weight:bold;font-size:' +
-						(font.size * 1.6).toFixed(1) + '">:</text>\n'
+						(font.size * 1.6).toFixed(1) +
+						'px">:</text>\n'
 				x += wc
 			}
 		}
@@ -65111,579 +65768,6 @@ abc2svg.modules.hooks.push(abc2svg.grid2.set_hooks);
 
 // the module is loaded
 abc2svg.modules.grid2.loaded = true
-// abc2svg - ABC to SVG translator
-// @source: https://chiselapp.com/user/moinejf/repository/abc2svg
-// Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
-// page.js - module to generate one SVG image per page
-//
-// Copyright (C) 2018-2020 Jean-Francois Moine - GPL3+
-//
-// This module is loaded when "%%pageheight" appears in a ABC source.
-//
-// Parameters
-//	%%pageheight <unit>
-
-abc2svg.page = {
-
-    // output a new block
-    img_out: function(page, p) {
-    var	cur_img_out = user.img_out;
-
-	page.user_out(p)
-	
-	// user.img_out may have been changed ..
-	if (user.img_out != cur_img_out) {
-		page.user_out = user.img_out;
-		if (cur_img_out == page.img_out_sav) {	// .. by the backend
-			user.img_out = abc2svg.page.img_in.bind(page.abc);
-			page.img_out_sav = user.img_out	// keep our reference
-		} else {
-			user.img_out = cur_img_out	// .. by an other extension
-		}
-	}
-    },
-
-    // function called at end of generation
-    abc_end: function(of) {
-    var page = this.page
-	if (page && page.in_page) {
-		abc2svg.page.close_page(page)
-		if (user.img_out == page.img_out_sav)
-			user.img_out = page.user_out
-	}
-	of()
-    }, // abc_end()
-
-    // generate a header or a footer in page.hf and return its height
-    gen_hf: function(page, up, font, str) {
-    var	a, i, j, k, x, y, y0, s,
-	cfmt = page.abc.cfmt(),
-	fh = font.size * 1.1,
-	pos = [ '">',
-		'" text-anchor="middle">',
-		'" text-anchor="end">' ]
-
-	// create the text of a header or a footer
-	function header_footer(o_font, str) {
-	    var	c, i, k, t, n_font,
-		c_font = o_font,
-		nl = 1,
-		j = 0,
-		r = ["", "", ""]
-
-		if (str[0] == '"')
-			str = str.slice(1, -1)
-		if (str.indexOf('\t') < 0)		// if no TAB
-			str = '\t' + str		// center
-
-		for (i = 0; i < str.length; i++) {
-			c = str[i]
-			switch (c) {
-			case '>':
-				r[j] += "&gt;"
-				continue
-			case '<':
-				r[j] += "&lt;"
-				continue
-			case '&':
-				for (k = i + 1; k < i + 8; k++) {
-					if (!str[k] || str[k] == '&'
-					 || str[k] == ';')
-						break
-				}
-				r[j] += str[k] == ';' ? "&" : "&amp;"
-				continue
-			case '\t':
-				if (j < 2)
-					j++		// next column
-				continue
-			case '\\':			// hope '\n'
-				if (c_font != o_font) {
-					r[j] += "</tspan>"
-//					c_font = o_font
-				}
-				for (j = 0; j < 3; j++)
-					r[j] += '\n';
-				nl++;
-				j = 0;
-				i++
-				continue
-			default:
-				r[j] += c
-				continue
-			case '$':
-				break
-			}
-			c = str[++i]
-			switch (c) {
-			case 'd':
-				if (!abc2svg.get_mtime)
-					break // cannot know the change time of the file
-				r[j] += strftime(cfmt.dateformat,
-						abc2svg.get_mtime(page.abc.parse.fname))
-				break
-			case 'D':
-				r[j] += strftime(cfmt.dateformat)
-				break
-			case 'F':
-				r[j] += page.abc.parse.fname
-				break
-			case 'I':
-				c = str[++i]
-			case 'T':
-				t = abc.info()[c]
-				if (t)
-					r[j] += t.split('\n', 1)[0]
-				break
-			case 'P':
-			case 'Q':
-				t = c == 'P' ? page.pn : page.pna
-				switch (str[i + 1]) {
-				case '0':
-					i++
-					if (!(t & 1))
-						r[j] += t
-					break
-				case '1':
-					i++
-					if (t & 1)
-						r[j] += t
-					break
-				default:
-					r[j] += t
-					break
-				}
-				break
-			case 'V':
-				r[j] += "abc2svg-" + abc2svg.version
-				break
-			default:
-				if (c == '0')
-					n_font = o_font
-				else if (c >= '1' && c < '9')
-					n_font = page.abc.get_font("u" + c)
-				else
-					break
-
-				// handle the font changes
-				if (n_font == c_font)
-					break
-				if (c_font != o_font)
-					r[j] += "</tspan>";
-				c_font = n_font
-				if (c_font == o_font)
-					break
-				r[j] += '<tspan class="' +
-						font_class(n_font) + '">'
-				break
-			}
-		}
-		if (c_font != o_font)
-			r[j] += "</tspan>";
-
-		r[4] = nl		// number of lines
-		return r
-	} // header_footer()
-
-	function font_class(font) {
-		if (font.class)
-			return 'f' + font.fid + cfmt.fullsvg + ' ' + font.class
-		return 'f' + font.fid + cfmt.fullsvg
-	}
-
-	// gen_hf
-
-	if (str[0] == '-') {		// not on 1st page
-		if (page.pn == 1)
-			return 0
-		str = str.slice(1)
-	}
-
-	a = header_footer(font, str)
-	y0 = font.size * .8
-	for (i = 0; i < 3; i++) {
-		str = a[i]
-		if (!str)
-			continue
-		if (i == 0)
-			x = cfmt.leftmargin
-		else if (i == 1)
-			x = cfmt.pagewidth / 2
-		else
-			x = cfmt.pagewidth - cfmt.rightmargin
-		y = y0
-		k = 0
-		while (1) {
-			j = str.indexOf('\n', k)
-			if (j >= 0)
-				s = str.slice(k, j)
-			else
-				s = str.slice(k)
-			if (s)
-				page.hf += '<text class="' +
-						font_class(font) +
-						'" x="' + x.toFixed(1) +
-						'" y="' + y.toFixed(1) +
-						pos[i] +
-						s + '</text>\n'
-			if (j < 0)
-				break
-			k = j + 1
-			y += fh
-		}
-	}
-	return fh * a[4]
-    }, // gen_hf()
-
-    // start a new page
-    open_page: function(page,
-			ht) {	// spacing under the header
-    var	h, l,
-//	font_style,
-	abc = page.abc,
-	cfmt = abc.cfmt(),
-	sty = ""
-
-	page.pn++
-	page.pna++
-
-	// start a new page
-	if (page.first)
-		page.first = false
-	else
-		sty = "page-break-before:always"
-	if (page.gutter)
-		sty += (sty ? ";" : "") + "margin-left:" +
-			((page.pn & 1) ? page.gutter : -page.gutter).toFixed(1) + "px"
-	abc2svg.page.img_out(page, sty ?
-			'<div style="' + sty + '">' :
-			'<div>')
-	page.in_page = true
-
-	ht += page.topmargin
-	page.hmax = cfmt.pageheight - page.botmargin - ht
-
-	// define the header/footer
-	page.hf = ''
-	if (page.header) {
-		l = abc.get_font_style().length
-		h = abc2svg.page.gen_hf(page, true,
-					abc.get_font("header"), page.header)
-		sty = abc.get_font_style().slice(l)		// new style(s)
-		if (cfmt.fullsvg || sty != page.hsty) {
-			page.hsty = sty
-			sty = '<style type="text/css">' + sty + '\n</style>\n'
-		} else {
-			sty = ''
-		}
-		abc2svg.page.img_out(page,
-			'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	width="' + cfmt.pagewidth.toFixed(0) +
-			'px" height="' + (ht + h).toFixed(0) +
-			'px">\n' + sty +
-			'<g transform="translate(0,' +
-				page.topmargin.toFixed(1) + ')">' +
-				page.hf + '</g>\n</svg>')
-		page.hmax -= h;
-		page.hf = ''
-	} else {
-		abc2svg.page.img_out(page,
-			'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	width="' + cfmt.pagewidth.toFixed(0) +
-			'px" height="' + ht.toFixed(0) +
-			'px">\n</svg>')
-	}
-	if (page.footer) {
-		l = abc.get_font_style().length
-		page.fh = abc2svg.page.gen_hf(page, false,
-					abc.get_font("footer"), page.footer)
-		sty = abc.get_font_style().slice(l)		// new style(s)
-		if (cfmt.fullsvg || sty != page.fsty) {
-			page.fsty = sty
-			page.ffsty = '<style type="text/css">' + sty + '\n</style>\n'
-		} else {
-			page.ffsty = ''
-		}
-		page.hmax -= page.fh
-	}
-
-	page.h = 0
-    }, // open_page()
-
-    close_page: function(page) {
-    var	h,
-	cfmt = page.abc.cfmt()
-
-	page.in_page = false
-	if (page.footer) {
-		h = page.hmax + page.fh - page.h
-		abc2svg.page.img_out(page,
-			'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"\n\
-	xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-	width="' + cfmt.pagewidth.toFixed(0) +
-			'px" height="' + h.toFixed(0) +
-			'px">\n' + page.ffsty +
-			'<g transform="translate(0,' +
-				(h - page.fh).toFixed(1) + ')">' +
-			page.hf + '</g>\n</svg>')
-	}
-	abc2svg.page.img_out(page, '</div>')
-	page.h = 0
-    }, // close_page()
-
-    // handle the output flow of the abc2svg generator
-    img_in: function(p) {
-    var h, ht, nh,
-	page = this.page
-
-	// copy a block
-	function blkcpy(page) {
-		while (page.blk.length)
-			abc2svg.page.img_out(page, page.blk.shift())
-		page.blk = null			// direct output
-	} // blkcpy()
-
-	// img_in()
-	switch (p.slice(0, 4)) {
-	case "<div":				// block of new tune
-		if (p.indexOf('newpage') > 0
-		 || (page.oneperpage && this.info().X)
-		 || !page.h) {			// empty page
-			if (page.in_page)
-				abc2svg.page.close_page(page)
-			abc2svg.page.open_page(page, 0)
-		}
-		page.blk = []			// in block
-		page.hb = page.h		// keep the offset of the start of tune
-		break
-	case "<svg":				// SVG image
-		h = Number(p.match(/height="(\d+)px"/)[1])
-		while (h + page.h >= page.hmax) { // if (still) page overflow
-			ht = page.blk ? 0 :
-				this.cfmt().topspace // tune continuation
-
-			if (page.blk) {
-				if (!page.hb) {	// overflow on the first page
-					blkcpy(page)
-					nh = 0
-				} else {
-					nh = page.h - page.hb
-					page.h = page.hb
-				}
-			}
-			abc2svg.page.close_page(page)
-			abc2svg.page.open_page(page, ht)
-
-			if (page.blk) {		// if inside a block
-				blkcpy(page)	// output the beginning of the tune
-				page.h = nh
-			}
-			if (h > page.hmax)
-				break		// error
-		}
-
-		// if no overflow yet, keep the block
-		if (page.blk)
-			page.blk.push(p)
-		else
-			abc2svg.page.img_out(page, p)
-		page.h += h
-		break
-	case "</di":				// end of block
-		if (page.blk)
-			blkcpy(page)
-		break
-//	default:
-////fixme: %%beginml cannot be treated (no information about its height)
-//		break
-	}
-    }, // img_in()
-
-    // handle the page related parameters
-    set_fmt: function(of, cmd, parm) {
-    var	v,
-	cfmt = this.cfmt(),
-	page = this.page
-
-	if (cmd == "pageheight") {
-		v = this.get_unit(parm)
-		if (isNaN(v)) {
-			this.syntax(1, this.errs.bad_val, '%%' + cmd)
-			return
-		}
-		cfmt.pageheight = v
-
-		// if first definition, install the hook
-		if (!page && user.img_out && abc2svg.abc_end) {
-			this.page = page = {
-				abc: this,
-				topmargin: 38,	// 1cm
-				botmargin: 38,	// 1cm
-//				gutter: 0,
-				h: 0,		// current page height
-				pn: 0,		// page number
-				pna: 0,		// absolute page number
-				first: true,	// no skip to next page
-				user_out: user.img_out
-			}
-
-			// don't let the backend handle the header/footer
-			if (cfmt.header) {
-				page.header = cfmt.header;
-				cfmt.header = null
-			}
-			if (cfmt.footer) {
-				page.footer = cfmt.footer;
-				cfmt.footer = null
-			}
-
-			// get the previously defined page parameters
-			if (cfmt.botmargin) {
-				v = this.get_unit(cfmt.botmargin)
-				if (!isNaN(v))
-					page.botmargin = v
-			}
-			if (cfmt.topmargin) {
-				v = this.get_unit(cfmt.topmargin)
-				if (!isNaN(v))
-					page.topmargin = v
-			}
-			if (cfmt.gutter) {
-				v = this.get_unit(cfmt.gutter)
-				if (!isNaN(v))
-					page.gutter = v
-			}
-			if (cfmt.oneperpage)
-				page.oneperpage = this.get_bool(cfmt.oneperpage)
-			if (!cfmt.dateformat)
-				cfmt.dateformat = "%b %e, %Y %H:%M"
-
-			// set the hooks
-			user.img_out = abc2svg.page.img_in.bind(this);
-			page.img_out_sav = user.img_out;
-			abc2svg.abc_end = abc2svg.page.abc_end.bind(this,
-								abc2svg.abc_end)
-		}
-		return
-	}
-	if (page) {
-		switch (cmd) {
-		case "header":
-		case "footer":
-			page[cmd] = parm
-			return
-		case "newpage":
-			if (!parm)
-				break
-			v = Number(parm)
-			if (isNaN(v)) {
-				this.syntax(1, this.errs.bad_val, '%%' + cmd)
-				return
-			}
-			page.pn = v - 1
-			return
-		case "gutter":
-		case "botmargin":
-		case "topmargin":
-			v = this.get_unit(parm)
-			if (isNaN(v)) {
-				this.syntax(1, this.errs.bad_val, '%%' + cmd)
-				return
-			}
-			page[cmd] = v
-			return
-		case "oneperpage":
-			page[cmd] = this.get_bool(parm)
-			return
-		}
-	}
-	of(cmd, parm)
-    }, // set_fmt()
-
-    set_hooks: function(abc) {
-	abc.set_format = abc2svg.page.set_fmt.bind(abc, abc.set_format)
-    }
-} // page
-
-abc2svg.modules.hooks.push(abc2svg.page.set_hooks);
-
-// the module is loaded
-abc2svg.modules.pageheight.loaded = true
-/* Port of strftime() by T. H. Doan (https://thdoan.github.io/strftime/)
- *
- * Day of year (%j) code based on Joe Orost's answer:
- * http://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
- *
- * Week number (%V) code based on Taco van den Broek's prototype:
- * http://techblog.procurios.nl/k/news/view/33796/14863/calculate-iso-8601-week-and-year-in-javascript.html
- */
-function strftime(sFormat, date) {
-  if (!(date instanceof Date)) date = new Date();
-  var nDay = date.getDay(),
-    nDate = date.getDate(),
-    nMonth = date.getMonth(),
-    nYear = date.getFullYear(),
-    nHour = date.getHours(),
-    aDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    aMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    aDayCount = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334],
-    isLeapYear = function() {
-      return (nYear%4===0 && nYear%100!==0) || nYear%400===0;
-    },
-    getThursday = function() {
-      var target = new Date(date);
-      target.setDate(nDate - ((nDay+6)%7) + 3);
-      return target;
-    },
-    zeroPad = function(nNum, nPad) {
-      return ((Math.pow(10, nPad) + nNum) + '').slice(1);
-    };
-  return sFormat.replace(/%[a-z]/gi, function(sMatch) {
-    return (({
-      '%a': aDays[nDay].slice(0,3),
-      '%A': aDays[nDay],
-      '%b': aMonths[nMonth].slice(0,3),
-      '%B': aMonths[nMonth],
-      '%c': date.toUTCString(),
-      '%C': Math.floor(nYear/100),
-      '%d': zeroPad(nDate, 2),
-      '%e': nDate,
-      '%F': date.toISOString().slice(0,10),
-      '%G': getThursday().getFullYear(),
-      '%g': (getThursday().getFullYear() + '').slice(2),
-      '%H': zeroPad(nHour, 2),
-      '%I': zeroPad((nHour+11)%12 + 1, 2),
-      '%j': zeroPad(aDayCount[nMonth] + nDate + ((nMonth>1 && isLeapYear()) ? 1 : 0), 3),
-      '%k': nHour,
-      '%l': (nHour+11)%12 + 1,
-      '%m': zeroPad(nMonth + 1, 2),
-      '%n': nMonth + 1,
-      '%M': zeroPad(date.getMinutes(), 2),
-      '%p': (nHour<12) ? 'AM' : 'PM',
-      '%P': (nHour<12) ? 'am' : 'pm',
-      '%s': Math.round(date.getTime()/1000),
-      '%S': zeroPad(date.getSeconds(), 2),
-      '%u': nDay || 7,
-      '%V': (function() {
-              var target = getThursday(),
-                n1stThu = target.valueOf();
-              target.setMonth(0, 1);
-              var nJan1 = target.getDay();
-              if (nJan1!==4) target.setMonth(0, 1 + ((4-nJan1)+7)%7);
-              return zeroPad(1 + Math.ceil((n1stThu-target)/604800000), 2);
-            })(),
-      '%w': nDay,
-      '%x': date.toLocaleDateString(),
-      '%X': date.toLocaleTimeString(),
-      '%y': (nYear + '').slice(2),
-      '%Y': nYear,
-      '%z': date.toTimeString().replace(/.+GMT([+-]\d+).+/, '$1'),
-      '%Z': date.toTimeString().replace(/.+\((.+?)\)$/, '$1')
-    }[sMatch] || '') + '') || sMatch;
-  });
-}
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -66224,7 +66308,7 @@ function build_grid(chords, bars, font, wmx) {
 	lc = '',
 	cells = [],
 	nc = grid.n,
-	sf = '" style="font-size:' + (font.size * .72).toFixed(1)
+	sf = '" style="font-size:' + (font.size * .72).toFixed(1) + 'px'
 						// small font
 
 	// set some chord(s) in each cell
@@ -66426,7 +66510,7 @@ function build_grid(chords, bars, font, wmx) {
 				(x - 5).toFixed(1) +
 				'" y="' + y.toFixed(1) +
 				'" style="font-weight:bold;font-size:' +
-			(font.size + 2).toFixed(1) + '">:</text>\n'
+			(font.size + 2).toFixed(1) + 'px">:</text>\n'
 		if (i == 0
 		 || (grid.repbrk
 		  && (bars[i].slice(-1) == ':' || bars[i][0] == ':'))
@@ -66441,7 +66525,7 @@ function build_grid(chords, bars, font, wmx) {
 				(x + 5).toFixed(1) +
 				'" y="' + y.toFixed(1) +
 				'" style="font-weight:bold;font-size:' +
-			(font.size + 2).toFixed(1) + '">:</text>\n'
+			(font.size + 2).toFixed(1) + 'px">:</text>\n'
 		x += wmx
 	}
 
@@ -68399,393 +68483,6 @@ abc2svg.modules.beginps.loaded = true
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
-// jianpu.js - module to output jiănpŭ (简谱) music sheets
-//
-// Copyright (C) 2020 Jean-Francois Moine - GPL3+
-//
-// This module is loaded when "%%jianpu" appears in a ABC source.
-//
-// Parameters (none)
-//	%%jianpu 1
-
-abc2svg.jianpu = {
-
-  k_tb: [ "Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F",
-	  "C",
-	  "G", "D", "A", "E", "B", "F#", "C#" ],
-  cde2fcg: new Int8Array([0, 2, 4, -1, 1, 3, 5]),
-  cgd2cde: new Int8Array([0, -4, -1, -5, -2, -6, -3,
-			  0, -4, -1, -5, -2, -6, -3, 0]),
-  acc2: new Int8Array([-2, -1, 3, 1, 2]),
-  acc_tb: ["\ue264", "\ue260", , "\ue262", "\ue263", "\ue261"],
-
-// change %%staves and %%score
-  do_pscom: function(of, p) {
-	switch (p.match(/\w+/)[0]) {
-	case 'staves':
-	case 'score':
-		p = p.replace(/\(|\)/g, '')
-		break
-	}
-	of(p)
-  },
-
-// adjust some symbols before the generation
-  output_music: function(of) {
-    var	C = abc2svg.C,
-	abc = this,
-	cur_sy = abc.get_cur_sy(),
-	voice_tb = abc.get_voice_tb(),
-	sf = voice_tb[0].key.k_sf,
-	delta = abc2svg.jianpu.cgd2cde[sf + 7] - 2
-
-	if (!abc.cfmt().jianpu) {
-		of()
-		return
-	}
-
-	// output the key and time signatures
-	function set_head() {
-	    var	tsfirst = abc.get_tsfirst(),
-		mt = voice_tb[0].meter.a_meter[0],
-		sk = voice_tb[0].key,
-		s = {
-			type: C.BLOCK,
-			subtype: "text",
-			dur: 0,
-			v: 0,
-			p_v: voice_tb[0],
-			st: 0,
-			seqst: true,
-			text: (sk.k_mode + 1) + "=" +
-				(abc2svg.jianpu.k_tb[sf + 7 +
-					abc2svg.jianpu.cde2fcg[sk.k_mode]])
-		},
-		s2 = voice_tb[0].sym
-
-		if (mt)
-			s.text += ' ' + (mt.bot ? (mt.top + '/' + mt.bot) : mt.top)
-
-		s2.prev = s
-		s.next = s2
-		voice_tb[0].sym = s
-		tsfirst.ts_prev = s
-		s.ts_next = tsfirst
-		abc.set_tsfirst(s)
-	} // set head()
-
-	// expand a long note/rest
-	function slice(s) {
-	    var	n, s2, s3
-
-		if (s.dur >= C.BLEN)
-			n = 3 
-		else if (s.dur == C.BLEN / 2)
-			n = 1
-		else
-			n = 2
-		while (--n >= 0) {
-			s2 = {
-				type: C.REST,
-				v: s.v,
-				p_v: s.p_v,
-				st: s.st,
-				dur: C.BLEN / 4,
-				dur_orig: C.BLEN / 4,
-				stem: 0,
-				multi: 0,
-				nhd: 0,
-				notes: [{
-					pit: s.notes[0].pit,
-					jn: 8
-				}],
-				xmx: 0,
-				noplay: true,
-				time: s.time + C.BLEN / 4,
-				prev: s,
-				next: s.next
-			}
-			s.next = s2
-			if (s2.next)
-				s2.next.prev = s2
-
-			if (!s.ts_next) {
-				s.ts_next = s2
-				if (s.eoln)
-					s.eoln = false
-				s2.ts_prev = s
-				s2.seqst = true
-			} else {
-			    for (s3 = s.ts_next; s3; s3 = s3.ts_next) {
-				if (s3.time < s2.time)
-					continue
-				if (s3.time > s2.time) {
-					s2.seqst = true
-					s3 = s3.ts_prev
-				}
-				s2.ts_next = s3.ts_next
-				s2.ts_prev = s3
-				if (s2.ts_next)
-					s2.ts_next.ts_prev = s2
-				s3.ts_next = s2
-				break
-			    }
-			}
-
-			s = s2
-		}
-	} // slice()
-
-	function set_sym(p_v) {
-	    var s, s2, note, pit, nn, p, a, m
-
-//fixme: must shift
-		p_v.key.k_a_acc = []	// no accidental
-
-		// no (visible) clef
-		p_v.clef.invis = true
-
-		// scan the voice
-		for (s = p_v.sym; s; s = s.next) {
-			s.st = p_v.st
-			switch (s.type) {
-			case C.CLEF:
-				s.invis = true
-				continue
-			default:
-				continue
-			case C.REST:
-				if (s.notes[0].jn)
-					continue
-				s.notes[0].jn = 0
-				if (s.dur >= C.BLEN / 2)
-					slice(s)
-				continue
-			case C.NOTE:			// change the notes
-				break
-			}
-
-			s.stem = -1
-			s.stemless = true
-
-			for (m = 0; m <= s.nhd; m++) {
-				note = s.notes[m]
-
-				// note head
-				p = note.pit
-				pit = p + delta
-				note.jn = ((pit + 77) % 7) + 1	// note number
-
-				// set a fixed offset to the note for the decorations
-				note.pit = 25			// "e"
-
-				note.jo = (pit / 7) | 0	// octave number
-
-				// accidentals
-				a = note.acc
-				if (a) {
-					nn = abc2svg.jianpu.cde2fcg[(p + 5 + 16 * 7) % 7] - sf
-					if (a != 3)
-						nn += a * 7
-					nn = ((((nn + 1 + 21) / 7) | 0) + 2 - 3 + 32 * 5) % 5
-					note.acc = abc2svg.jianpu.acc2[nn]
-				}
-
-				// set the ties up
-				if (note.tie_ty)
-					note.tie_ty = C.SL_ABOVE
-
-				// change the long notes
-				if (s.dur >= C.BLEN / 2)
-					slice(s)
-			}
-		}
-	} // set_sym()
-
-	// -- output_music --
-
-	set_head()
-
-	for (v = 0; v < voice_tb.length; v++)
-		set_sym(voice_tb[v])
-
-	of()
-  }, // output_music()
-
-  draw_symbols: function(of, p_voice) {
-    var	i, m, nl, note, s, s2, x, y,
-	C = abc2svg.C,
-	dot = "\ue1e7",
-	staff_tb = this.get_staff_tb(),
-	out_svg = this.out_svg,
-	out_sxsy = this.out_sxsy,
-	xypath = this.xypath
-
-	if (!this.cfmt().jianpu) {
-		of(p_voice)
-		return
-	}
-
-	// draw the duration lines under the notes
-	function draw_dur(s1, y, s2, n, nl) {
-	    var s, s3
-
-		xypath(s1.x - 3, y + 5)
-		out_svg('h' + (s2.x - s1.x + 8).toFixed(1) + '"/>\n')	// "
-		y -= 2.5
-		while (++n <= nl) {
-			s = s1
-			while (1) {
-				if (s.nflags && s.nflags >= n) {
-					s3 = s
-					while (s != s2
-					    && (!s.nflags || s.nflags >= n)) {
-						if (s.beam_br1
-						 || (s.beam_br2 && n > 2))
-							break
-						s = s.next
-					}
-					draw_dur(s3, y, s, n, nl)
-					if (s == s2)
-						break
-				} else {
-					if (s == s2)
-						break
-					s = s.next
-				}
-			}
-		}
-	} // draw_dur()
-
-	function out_mus(x, y, p) {
-		out_svg('<text x="')
-		out_sxsy(x, '" y="', y)
-		out_svg('">' + p + '</text>\n')
-	} // out_txt()
-
-	function out_txt(x, y, p) {
-		out_svg('<text class="bn" x="')
-		out_sxsy(x, '" y="', y)
-		out_svg('">' + p + '</text>\n')
-	} // out_txt()
-
-	function draw_hd(s, x, y) {
-	    var	m, note, ym
-
-		for (m = 0; m <= s.nhd; m++) {
-			note = s.notes[m]
-			out_txt(x - 3.5, y + 8, "01234567-"[note.jn])
-			if (note.acc)
-				out_mus(x - 12, y + 12,
-					abc2svg.jianpu.acc_tb[note.acc + 2])
-			if (note.jo > 2) {
-				out_mus(x - 1, y + 22, dot)
-			} else if (note.jo < 2) {
-				ym = y + 4
-				if (m == 0 && s.nflags > 0)
-					ym -= 2.5 * s.nflags
-				out_mus(x - 1, ym, dot)
-			}
-			y += 20
-		}
-	} // draw_hd()
-
-	// -- draw_symbols --
-
-	for (s = p_voice.sym; s; s = s.next) {
-		if (s.invis)
-			continue
-		switch (s.type) {
-		case C.NOTE:
-		case C.REST:
-			x = s.x
-			y = staff_tb[s.st].y
-			draw_hd(s, x, y)
-
-			if (s.nflags >= 0 && s.dots)
-				out_mus(x + 8, y + 13, dot)
-			if (s.nflags > 0) {
-//fixme: ko with rests because no beam_st /_end
-				if (s.beam_st || s.type == C.REST) {
-					nl = s.nflags
-					s2 = s
-					while (1) {
-						if (s2.nflags && s2.nflags > nl)
-							nl = s2.nflags
-						if (s2.beam_end)
-							break
-						if (!s2.next
-						 || !s2.next.nflags
-						 || s2.next.nflags <= 0)
-							break
-						s2 = s2.next
-					}
-					draw_dur(s, y, s2, 1, nl)
-				}
-			}
-			break
-		}
-	}
-  }, // draw_symbols()
-
-// set some parameters
-    set_fmt: function(of, cmd, param) {
-	if (cmd == "jianpu") {
-	    var	cfmt = this.cfmt()
-
-		cfmt.jianpu = true
-		cfmt.staffsep = 20
-		cfmt.sysstaffsep = 14
-		this.set_v_param("stafflines", "...")
-		cfmt.tuplets = [0, 1, 0, 1]	// [auto, slur, number, above]
-		return
-	}
-	of(cmd, param)
-    }, // set_fmt()
-
-// set the width of some symbols
-    set_width: function(of, s) {
-	of(s)
-	if (!this.cfmt().jianpu)
-		return
-
-    var	w, m, note,
-	C = abc2svg.C
-
-	switch (s.type) {
-	case C.CLEF:
-	case C.KEY:
-	case C.METER:
-		s.wl = s.wr = 0
-		break
-	case C.NOTE:
-		for (m = 0; m <= s.nhd; m++) {
-			note = s.notes[m]
-			if (note.acc && s.wl < 14)	// room for the accidental
-				s.wl = 14
-		}
-		break
-	}
-    }, // set_width()
-
-    set_hooks: function(abc) {
-	abc.do_pscom = abc2svg.jianpu.do_pscom.bind(abc, abc.do_pscom)
-	abc.draw_symbols = abc2svg.jianpu.draw_symbols.bind(abc, abc.draw_symbols)
-	abc.output_music = abc2svg.jianpu.output_music.bind(abc, abc.output_music)
-	abc.set_format = abc2svg.jianpu.set_fmt.bind(abc, abc.set_format)
-	abc.set_width = abc2svg.jianpu.set_width.bind(abc, abc.set_width)
-
-	abc.add_style("\n.bn {font-family:sans-serif; font-size:15px}")
-    } // set_hooks()
-} // jianpu
-
-abc2svg.modules.hooks.push(abc2svg.jianpu.set_hooks)
-
-// the module is loaded
-abc2svg.modules.jianpu.loaded = true
-// abc2svg - ABC to SVG translator
-// @source: https://chiselapp.com/user/moinejf/repository/abc2svg
-// Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
 // break.js - module to handle the %%break command
 //
 // Copyright (C) 2018-2019 Jean-Francois Moine - GPL3+
@@ -69878,7 +69575,7 @@ abc2svg.modules.hooks.push(abc2svg.diag.set_hooks);
 
 // the module is loaded
 abc2svg.modules.diagram.loaded = true
-abc2svg.version = abc2svg.version + " Git: v1.20.8-20-g5c4a69a"
+abc2svg.version = abc2svg.version + " Git: v1.20.8-62-gf372f85"
 Opal.loaded(["./abc2svg-1.js"]);
 /* Generated by Opal 1.0.3 */
 Opal.modules["opal-webworker"] = function(Opal) {

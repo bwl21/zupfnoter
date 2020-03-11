@@ -64,14 +64,7 @@ module ABC2SVG
             @svgbuf.push svg
           end
 
-          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type, info|
-            # _get_abcmodel(tsfirst, voice_tb, anno_type)
-          end
-
-        when :model
-          set_callback(:get_abcmodel) do |tsfirst, voice_tb, anno_type, info|
-            _callback_get_abcmodel(tsfirst, voice_tb, anno_type, info)
-          end
+      when :model
 
         else
           $log.error("BUG: unsupported mode for abc2svg")
@@ -188,22 +181,27 @@ I:stretchlast 1
                               function(){console.log("modules loaded")},
                               function(msg){#{$log.error(`msg`)} } );
 
-     	var audio = ToAudio()		// ( in sndgen.js)
+
+      var audio = ToAudio()		// ( in sndgen.js)
 
       #{@root}.tosvg("abc", #{stripped_abc_code});
       tunes = #{@root}.tunes.slice(0)	// get a copy of the generated tunes
       while (1) {
-        e = tunes.shift()
-        if (!e)
-          break
-          audio.add(e[0], e[1])
+        tune = tunes.shift()
+        if (!tune)
+          {break}
+        audio.add(tune[0], tune[1])
+        var abcjson = new AbcJSON()
+        var abc_json = abcjson.gen_json(tune[0], tune[1], #{@root}.anno_type, tune[2])
       }
 
       #{@player_model} = abc2svg.sndmem(#{@root})
       }
 
-      [@abc_model, @player_model]
+      $log.debug(`abc_json`)
+      @abc_model = JSON.parse(`abc_json`)
 
+      [@abc_model, @player_model]
     end
 
     # todo: mke private or even remove?
