@@ -270,7 +270,7 @@ module Harpnotes
         end.compact
 
         @measure_start_time = 0 #
-        if bars.first
+        if bars.first and not @wmeasure.nil?
           @measure_start_time        = bars.first[:time] - @wmeasure # for count_notes
           @next_note_marks[:measure] = true if bars.first and (@measure_start_time == 0) #bars[2] and (bars.first[:time] == (bars[2][:time] - bars[1][:time]))
         end
@@ -545,7 +545,8 @@ module Harpnotes
             count_range = count_start % 1 == 0 ? 'tra' : 'la'
           end
 
-
+        else
+          count_range = "x"
         end
         count_range
       end
