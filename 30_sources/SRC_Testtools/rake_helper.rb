@@ -222,6 +222,10 @@ pdffiles = createPdfPngFiletasks.sort
 desc "generate new outputfiles (parallel)"
 multitask :buildoutput => pdffiles
 
+desc "generate new outputfiles (single)"
+task :buildoutputsingle => pdffiles
+
+
 difffiles = createDifftasks.sort
 desc "generate difffiles (parallel)"
 multitask :builddiffs => difffiles
