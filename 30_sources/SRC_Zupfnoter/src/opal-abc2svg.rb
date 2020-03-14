@@ -192,7 +192,7 @@ I:stretchlast 1
           {break}
         audio.add(tune[0], tune[1])
         var abcjson = new AbcJSON()
-        var abc_json = abcjson.gen_json(tune[0], tune[1], #{@root}.anno_type, tune[2])
+        var abc_json = abcjson.gen_json(tune[0], tune[1], abc2svg.sym_name, tune[2])
       }
 
       #{@player_model} = abc2svg.sndmem(#{@root})

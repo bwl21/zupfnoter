@@ -98,10 +98,10 @@ module Harpnotes
         o_key_display = ""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
-         tempo_note = @abc_model[:voices].first[:symbols]
-                         .select{|i|i[:type] == @abc_model[:music_type_ids][:tempo]}.first rescue nil
+        tempo_note = @abc_model[:voices].first[:symbols]
+                         .select { |i| i[:type] == @abc_model[:music_type_ids][:tempo] }.first rescue nil
 
-        if tempo_note && tempo_note[:tempo_notes]
+        if @info_fields[:Q] #tempo_note && tempo_note[:tempo_notes]
           duration      = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           bpm           = tempo_note[:tempo].to_i
           tempo_display = @info_fields[:Q].join(" ")
@@ -243,12 +243,12 @@ module Harpnotes
           num_voice_index = voice_index.gsub("v_", '').to_i
 
           unless @score_statements.last && @score_statements.last[:sy][:voices][num_voice_index - 1]
-            $log.warning("#{I18n.t("Voice not in %%score")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}",
-                         charpos_to_line_column(@score_statements.last[:istart])
+            $log.warning("#{I18n.t("Voice not in %%score")}:  V:#{voice_model[:voice_properties][:id]}",
+                         charpos_to_line_column(1)
             )
           else
-            $log.warning("#{I18n.t("Empty voice in %%score")} #{num_voice_index}:  V:#{voice_model[:voice_properties][:id]}",
-                         charpos_to_line_column(@score_statements.last[:istart])
+            $log.warning("#{I18n.t("Voice has no notes or is not in %%score")}:  V:#{voice_model[:voice_properties][:id]}",
+                         charpos_to_line_column(1)
             )
           end
 
@@ -563,7 +563,7 @@ module Harpnotes
         if @score_statements.length > 1
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
-          $log.error(%Q{#{I18n.t("you have multiple %%score statements")}: #{@score_statements.length}}, start_pos, end_pos)
+          $log.warning(%Q{#{I18n.t("you have multiple %%score statements")}}, start_pos, end_pos)
         else
         end
       end
