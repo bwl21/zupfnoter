@@ -212,7 +212,7 @@ module Harpnotes
           begin
             result = self.send("_transform_#{type}", voice_model_element, index, voice_index)
           rescue Exception => e
-            $log.error("Bug: #{e}", charpos_to_line_column(voice_model_element[:istart]))
+            $log.error("Bug #{__FILE__}:#{__LINE__}: #{e}", charpos_to_line_column(voice_model_element[:istart]))
             nil
           end
           result
@@ -1027,15 +1027,15 @@ module Harpnotes
         if voice_element[:in_tuplet]
 
           # check for nested tuplets
-          if voice_element[:tp1]
+          if voice_element[:tp]&.[](1)
             start_pos = charpos_to_line_column(voice_element[:istart])
             end_pos   = charpos_to_line_column(voice_element[:iend])
             $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Nested Tuplet"), start_pos, end_pos)
           end
 
           #find tuplet start
-          if voice_element[:tp0]
-            @tuplet_p    = voice_element[:tp0]
+          if voice_element[:tp]&.[](0)
+            @tuplet_p    = voice_element[:tp]&.first&.[](:p) # [:tp][0][:p]
             tuplet_start = true
           else
             tuplet_start = nil
@@ -1044,8 +1044,8 @@ module Harpnotes
           # we are within a tuplet
           tuplet = @tuplet_p # the size of tuplet (3, etc.
 
-          # detect tuiplet end
-          if voice_element[:te0]
+          # detect tuplet end
+          if voice_element[:tpe] # == 1
             tuplet_end = true
           else
             tuplet_end = nil
