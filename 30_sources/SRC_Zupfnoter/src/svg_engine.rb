@@ -102,7 +102,7 @@ module Harpnotes
       nil
     end
 
-    def draw(sheet)
+    def   draw(sheet)
       @paper.clear
       @highlighted = []
       @paper.rect(@viewbox[0] + 1, @viewbox[1] + 1, @viewbox[2] - 2, @viewbox[3] - 2)
@@ -264,6 +264,9 @@ module Harpnotes
     # this binds one particular element
     def bind_the_element(svg_id)
       drawing_element = @interactive_elements[svg_id]
+
+      return if drawing_element.nil?
+
       svg_node        = Element.find("##{svg_id}") # find the DOM - node correspnding to Harpnote Object (k)
 
       # bind context menus

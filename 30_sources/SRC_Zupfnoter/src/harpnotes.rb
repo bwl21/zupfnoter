@@ -3572,18 +3572,25 @@ module Harpnotes
 
         start_orientation = Vector2d((((start_of_vertical - from) * [1, 0]).normalize).x, 0)
         end_orientation   = Vector2d((((end_of_vertical - to) * [1, 0]).normalize).x, 0)
-        vert_orientation  = Vector2d(0, (((start_of_vertical - end_of_vertical) * [0, 1]).normalize).y)
 
         start_offset = from_offset * [start_orientation.x, from_anchor] # 1 start after -1 start before
         # offset of array top
         end_offset = to_offset * [end_orientation.x, to_anchor] # 1 end after -1 end before
         # offset of line such that it ends inside of the array
 
+        # note that here we add the offsets
         start_of_vertical = start_of_vertical + start_offset * [0, 1] # set x of offest to 0
         end_of_vertical   = end_of_vertical + end_offset * [0, 1] # set x of offset to 0
 
         #start_of_jumpline = from + [start_offset.x * from_offset.x, +from_offset.y]
         #end_of_jumpline   = to + [end_offset.x * to_offset.x, -to_offset.y]
+
+        unless start_of_vertical.y == end_of_vertical.y
+          vert_orientation = Vector2d(0, (((start_of_vertical - end_of_vertical) * [0, 1]).normalize).y)
+        else #
+          vert_orientation = 0 # todo check if this is correct.
+        end
+
 
         #
         #  p4 <------------------p3
