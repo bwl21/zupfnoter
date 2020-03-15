@@ -259,8 +259,10 @@ I:stretchlast 1
     # This method is registered as callback to abc2svg
     #
     # we use gen_json in to prepare
+    # note that this is outdated due to the new player
+    # and model handling provided by abc3svg 13.3.2020
     #
-    def _callback_get_abcmodel(tsfirst, voice_tb, music_types, info)
+    def _callback_get_abcmodel_outdated(tsfirst, voice_tb, music_types, info)
 
       json_model = ""
       %x{
