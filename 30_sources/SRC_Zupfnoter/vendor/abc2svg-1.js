@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2020-03-11 09:31:08 +0100
+// compiled for Zupfnoter 2020-03-15 12:19:16 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -61,6 +61,12 @@ abc2svg.C = {
 	SL_HIDDEN: 0x04,
 	SL_DOTTED: 0x08		// (modifier bit)
     };
+
+// !! tied to the symbol types in abc2svg.js !!
+abc2svg.sym_name = ['bar', 'clef', 'custos', '', 'grace',
+		'key', 'meter', 'Zrest', 'note', 'part',
+		'rest', 'yspace', 'staves', 'Break', 'tempo',
+		'', 'block', 'remark']
 
 	// key table - index = number of accidentals + 7
 abc2svg.keys = [
@@ -4190,7 +4196,11 @@ function draw_slurs(s, last) {
 		}
 
 		// build the path of the symbols under the slur
-		if (dir *			// if slur on first voice
+		if (s.v == s2.v) {
+			v = s.v
+		} if (!cur_sy.voices[s.v] || !cur_sy.voices[s2.v]) {
+			v = s.v > s2.v ? s.v : s2.v
+		} else if (dir *			// if slur on first voice
 			(cur_sy.voices[s.v].range <= cur_sy.voices[s2.v].range ?
 				1 : -1) > 0)
 			v = s.v
@@ -7092,8 +7102,8 @@ function st_font(font) {
 		r += font.weight + " "
 	if (font.style)
 		r += font.style + " "
-	if (n.indexOf(' ') > 0)
-		n = '"' + n.replace(/"/g, "") + '"'	// '
+	if (n.indexOf('"') < 0 && n.indexOf(' ') > 0)
+		n = '"' + n + '"'
 	return r + font.size.toFixed(1) + 'px ' + n
 }
 function style_font(font) {
@@ -17143,12 +17153,6 @@ function delayed_update() {
 }
 
 // output the annotations
-// !! tied to the symbol types in abc2svg.js !!
-var anno_type = ['bar', 'clef', 'custos', '', 'grace',
-		'key', 'meter', 'Zrest', 'note', 'part',
-		'rest', 'yspace', 'staves', 'Break', 'tempo',
-		'', 'block', 'remark']
-
 function anno_out(s, t, f) {
 	if (s.istart == undefined)
 		return
@@ -17160,7 +17164,7 @@ function anno_out(s, t, f) {
 	if (s.grace)
 		type = C.GRACE
 
-	f(t || anno_type[type], s.istart, s.iend,
+	f(t || abc2svg.sym_name[type], s.istart, s.iend,
 		s.x - wl - 2, staff_tb[s.st].y + s.ymn + h - 2,
 		wl + wr + 4, h, s);
 }
@@ -18310,23 +18314,23 @@ function voice_adj(sys_chg) {
 	// (after the staff system)
 	s = glovar.tempo
 	if (s && staves_found <= 0) {	// && !s.del) {		- play problem
+					//fixme: which play problem?
 		v = par_sy.top_voice;
 		p_voice = voice_tb[v];
-		if (p_voice.sym && p_voice.sym.type != C.TEMPO) {
+		if (p_voice.sym
+		 && p_voice.sym.type != C.TEMPO
+		 && (!p_voice.sym.next
+		  || p_voice.sym.next.type != C.TEMPO)) {
 			s = clone(s);
 			s.v = v;
 			s.p_v = p_voice;
 			s.st = p_voice.st;
 			s.time = 0;
-			if (p_voice.sym) {
-				s.prev = p_voice.sym
-				s.next = p_voice.sym.next
-				if (s.next)
-					s.next.prev = s
-				p_voice.sym.next = s
-			} else {
-				p_voice.sym = s
-			}
+			s.prev = p_voice.sym
+			s.next = p_voice.sym.next
+			if (s.next)
+				s.next.prev = s
+			p_voice.sym.next = s
 		}
 	}
 
@@ -19387,7 +19391,7 @@ function generate(in_mc) {
 
 	// give the parser result to the application
 	if (user.get_abcmodel)
-		user.get_abcmodel(tsfirst, voice_tb, anno_type, info)
+		user.get_abcmodel(tsfirst, voice_tb, abc2svg.sym_name, info)
 
 	if (user.img_out)		// if SVG generation
 		self.output_music()
@@ -21333,8 +21337,6 @@ Abc.prototype.stv_g = function() { return stv_g };
 Abc.prototype.svg_flush = svg_flush;
 Abc.prototype.syntax = syntax;
 Abc.prototype.tunes = tunes
-Abc.prototype.anno_type = anno_type
-
 Abc.prototype.unlksym = unlksym;
 Abc.prototype.use_font = use_font;
 Abc.prototype.xy_str = xy_str;
@@ -21517,154 +21519,143 @@ abc2svg.version="1.20.8";abc2svg.vdate=""
 
 // AbcJSON creation
 function AbcJSON(nindent) {			// indentation level
-  var inb = Array((nindent || 2) + 1).join(' ') // indentation base
+	var inb = Array((nindent || 2) + 1).join(' ') // indentation base
 
-  AbcJSON.prototype.gen_json = function (tsfirst, voice_tb, anno_type, info) {
-    var objIdMap = new WeakMap;
-    objectcount = 0;
-    objectstack = []
+    AbcJSON.prototype.gen_json = function (tsfirst, voice_tb, anno_type, info) {
+	var	json, i, j, l, v, s, h,
+		ind2 = inb + inb,
+		ind3 = ind2 + inb,
+		ind4 = ind3 + inb,
+		links = {
+			next: true,
+			prev: true,
+			ts_next: true,
+			ts_prev: true,
+			extra: true,
+			note: true,
+			p_v: true,
+			s: true,
+			sn: true,
+			tie_s: true,
+			dd_st: true,
+		        sym: true,
+			last_sym: true,
+			last_note: true,
+			lyric_restart: true,
+			sym_restart: true,
+		        rep_s: true
+		},
+		objstk = []
 
-    function objectId(object) {
-      if (!objIdMap.has(object)) objIdMap.set(object, ++objectcount);
-      return objIdMap.get(object);
+	// generate an attribute
+	function attr_gen(ind, attr, val) {
+		var	i, e, l,
+			indn = ind + inb	// next indentation
+
+		if (links[attr]) {
+			switch (attr) {
+			case "extra":
+				json += h + ind + '"extra": [';
+				h = '\n'
+				for (e = val ; e; e = e.next)
+					attr_gen(indn, null, e);
+				json += '\n' + ind + ']'
+				break
+			case "tie_s":
+				json += h + ind + '"ti1": true'
+				break
+			}
+			return
+		}
+		json += h + ind
+		if (attr)
+			 json += '"' + attr.toString() + '": ';
+		switch (typeof(val)) {
+		case "undefined":
+			json += "null"
+			break
+		case "object":
+			if (!val) {
+				json += "null"
+				break
+			}
+			if (objstk.indexOf(val) >= 0)
+				throw new Error("!!! loop !!!\n" +
+						json.slice(-200))
+			if (Array.isArray(val)) {
+				if (val.length == 0) {
+					json += "[]"
+					break
+				}
+				h = '[\n';
+				l = val.length
+				for (i = 0; i < l; i++)
+					attr_gen(indn, null, val[i]);
+				json += '\n' + ind + ']'
+			} else {
+				objstk.push(val)
+				h = '{\n'
+				for (i in val)
+				    if (val.hasOwnProperty(i))
+					attr_gen(indn, i, val[i]);
+				json += '\n' + ind + '}'
+				objstk.pop()
+			}
+			break
+		default:
+			json += JSON.stringify(val)
+			break
+		}
+		h = ',\n'
+	} // attr_gen()
+
+	// music types
+	json = '';
+	h = '{\n';
+	attr_gen(inb, "music_types", anno_type);
+
+	h = ',\n' + inb + '"music_type_ids": {\n';
+	l = anno_type.length
+	for (i = 0; i < l; i++) {
+		if (anno_type[i]) {
+			json += h + ind2 + '"' + anno_type[i] + '": ' + i;
+			h = ',\n'
+		}
+	}
+
+	// info
+	h = '\n' + inb + '},\n';
+	attr_gen(inb, "info", info);
+
+	// voices
+	json += ',\n' + inb + '"voices": [';
+	v = 0;
+	h = '\n'
+	while (1) {
+		h += ind2 + '{\n' +
+			ind3 + '"voice_properties": {\n'
+		for (i in voice_tb[v])
+		    if (voice_tb[v].hasOwnProperty(i))
+			attr_gen(ind4, i, voice_tb[v][i]);
+
+		json += '\n' + ind3 + '},\n' +
+			ind3 + '"symbols": [';
+		s = voice_tb[v].sym
+		if (!s) {
+			json += ']\n' + ind3 + '}'
+		} else {
+			h = '\n'
+			for ( ; s; s = s.next)
+				attr_gen(ind4, null, s);
+			json += '\n' + ind3 + ']\n' +
+				ind2 + '}'
+		}
+		h = ',\n'
+		if (!voice_tb[++v])
+			break
+	}
+	return json + '\n' + inb + ']\n}\n'
     }
-
-    var json, i, j, l, v, s, h,
-      ind2 = inb + inb,
-      ind3 = ind2 + inb,
-      ind4 = ind3 + inb,
-      links = {
-        next: true,
-        prev: true,
-        ts_next: true,
-        ts_prev: true,
-        extra: true,
-        note: true,
-        p_v: true,
-        s: true,
-        sn: true,
-        tie_s: true,
-        dd_st: true,
-        sym: true,
-        rep_s: true,
-      }
-
-    // generate an attribute
-    function attr_gen(ind, attr, val) {
-      var i, e, l,
-        indn = ind + inb	// next indentation
-
-      if (links[attr]) {
-        switch (attr) {
-          case "extra":
-            json += h + ind + '"extra": [';
-            h = '\n'
-            for (e = val; e; e = e.next)
-              attr_gen(indn, null, e);
-            json += '\n' + ind + ']'
-            break
-          case "tie_s":
-            json += h + ind + '"ti1": true'
-            break
-        }
-        return
-      }
-      json += h + ind
-      if (attr)
-        json += '"' + attr.toString() + '": ';
-      switch (typeof (val)) {
-        case "undefined":
-          json += "null"
-          break
-        case "object":
-          if (!val) {
-            json += "null"
-            break
-          }
-
-          // now we check if we are in an endless loop
-          // caused by cyclic nesting of objects
-          // such a message is a bug and needs to be fixed
-          var oid = objectId(val)
-          if (objectstack.includes(oid)) {
-            json += '{ "__ref": ' + oid + '}'
-            break
-          }
-          objectstack.push(oid)
-
-          if (Array.isArray(val)) {
-            if (val.length == 0) {
-              json += "[]"
-              break
-            }
-            h = '[\n';
-            l = val.length
-            for (i = 0; i < l; i++)
-              attr_gen(indn, null, val[i]);
-            json += '\n' + ind + ']'
-          } else {
-            h = '{\n' // + '"__oid": ' + oid + ",\n"
-            for (i in val)
-              if (val.hasOwnProperty(i))
-                attr_gen(indn, i, val[i]);
-            json += '\n' + ind + '}'
-          }
-          objectstack.pop()
-          break
-        default:
-          json += JSON.stringify(val)
-          break
-      }
-      h = ',\n'
-    } // attr_gen()
-
-    // music types
-    json = '';
-    h = '{\n';
-    attr_gen(inb, "music_types", anno_type);
-
-    h = ',\n' + inb + '"music_type_ids": {\n';
-    l = anno_type.length
-    for (i = 0; i < l; i++) {
-      if (anno_type[i]) {
-        json += h + ind2 + '"' + anno_type[i] + '": ' + i;
-        h = ',\n'
-      }
-    }
-
-    // info
-    h = '\n' + inb + '},\n';
-    attr_gen(inb, "info", info);
-
-    // voices
-    json += ',\n' + inb + '"voices": [';
-    v = 0;
-    h = '\n'
-    while (1) {
-      h += ind2 + '{\n' +
-        ind3 + '"voice_properties": {\n'
-      for (i in voice_tb[v])
-        if (voice_tb[v].hasOwnProperty(i))
-          attr_gen(ind4, i, voice_tb[v][i]);
-
-      json += '\n' + ind3 + '},\n' +
-        ind3 + '"symbols": [';
-      s = voice_tb[v].sym
-      if (!s) {
-        json += ']\n' + ind3 + '}'
-      } else {
-        h = '\n'
-        for (; s; s = s.next)
-          attr_gen(ind4, null, s);
-        json += '\n' + ind3 + ']\n' +
-          ind2 + '}'
-      }
-      h = ',\n'
-      if (!voice_tb[++v])
-        break
-    }
-    return json + '\n' + inb + ']\n}\n'
-  }
 }
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
@@ -22290,7 +22281,7 @@ if (typeof module == 'object' && typeof exports == 'object')
 	exports.ToAudio = ToAudio
 // toaudio5.js - audio output using HTML5 audio
 //
-// Copyright (C) 2015-2019 Jean-Francois Moine
+// Copyright (C) 2015-2020 Jean-Francois Moine
 //
 // This file is part of abc2svg.
 //
@@ -22362,7 +22353,7 @@ function Audio5(i_conf) {
 	var	conf = i_conf,		// configuration
 		onend = function() {},
 		onnote = function() {},
-		errmsg = (conf.errmsg ? conf.errmsg : alert),
+		errmsg,
 		ac,			// audio context
 		gain,			// global gain
 
@@ -22719,8 +22710,7 @@ function Audio5(i_conf) {
 			onend = conf.onend
 		if (conf.onnote)
 			onnote = conf.onnote
-		if (conf.errmsg)
-			errmsg = conf.errmsg
+		errmsg = conf.errmsg || alert
 
 		// play a null file to unlock the iOS audio
 		// This is needed for iPhone/iPad/...
@@ -24164,8 +24154,82 @@ function ToAudio() {
 	i, n, dt, d, v,
 	rst = s,		// left repeat (repeat restart)
 	rst_fac,		// play factor on repeat restart
-	rsk,			// repeat variant (repeat skip)
+	rsk,			// repeat variant array (repeat skip)
 	instr = []		// [voice] bank + instrument
+
+	// adjust the MIDI pitches according to the transpositions
+	function midi_transp(s, voice_tb) {
+	    var p_v, s,
+		temper = voice_tb[0].temper,	// (set by the module temper.js)
+		v = voice_tb.length
+
+		// loop on the voice symbols
+		function vloop(s, sndtran, ctrans) {
+		    var	i, g, note,
+			transp = sndtran + ctrans
+
+			function set_note(note) {
+			    var m = abc2svg.b40m(note.b40 + transp)
+				if (temper		// if not equal temperament
+				 && (!note.acc
+				  || note.acc | 0 == note.acc)) // and not micro-tone
+					m += temper[m % 12]
+				note.midi = m
+			} // set_note()
+
+			while (s) {
+				switch (s.type) {
+				case C.CLEF:
+					ctrans = (s.clef_octave && !s.clef_oct_transp) ?
+							(s.clef_octave / 7 * 40) : 0
+					transp = ctrans + sndtran
+					break
+				case C.KEY:
+					if (s.k_sndtran != undefined) {
+						sndtran = s.k_sndtran
+						transp = ctrans + sndtran
+					}
+					break
+				case C.GRACE:
+					for (g = s.extra; g; g = g.next) {
+						for (i = 0; i <= g.nhd; i++)
+							set_note(g.notes[i])
+					}
+					break
+				case C.NOTE:
+					for (i = 0; i <= s.nhd; i++)
+						set_note(s.notes[i])
+					break
+				}
+				s = s.next
+			}
+		} // vloop()
+
+		// initialize the clefs and keys
+		while (--v >= 0) {
+			p_v = voice_tb[v]
+			if (!p_v.sym)
+				continue
+			if (p_v.key.k_bagpipe
+			 && !temper)
+	// detune in cents for just intonation in A
+	//  C    ^C     D    _E     E     F    ^F     G    _A     A    _B     B
+	// 15.3 -14.0  -2.0 -10.0   1.9  13.3 -16.0 -31.8 -12.0   0.0  11.4   3.8
+	// (C is ^C,			F is ^F and G is =G)
+	// 86				 84
+	// temp = [100-14, -14, -2, -10, 2, 100-16, -16, -32, -12, 0, 11, 4]
+	// but 'A' bagpipe = 480Hz => raise Math.log2(480/440)*1200 = 151
+				temper = new Float32Array([
+	2.37, 1.37, 1.49, 1.41, 1.53, 2.35, 1.35, 1.19, 1.39, 1.51, 1.62, 1.55
+				])
+
+			s = p_v.clef
+			vloop(p_v.sym,
+				p_v.key.k_sndtran || 0,
+				s.clef_octave && !s.clef_oct_transp ?
+					(s.clef_octave / 7 * 40) : 0)
+		}
+	} // midi_transp()
 
 	// handle a block symbol
 	function do_block(s) {
@@ -24215,7 +24279,7 @@ function ToAudio() {
 			next.time += d
 			next.dur -= d
 		}
-//fixme: assume the grace notes have the same duration
+//fixme: assume the grace notes in the sequence have the same duration
 		n = 0
 		for (g = s.extra; g; g = g.next)
 			n++
@@ -24249,20 +24313,20 @@ function ToAudio() {
 				break
 			if (d[1] == '-')
 				for (i = d[0]; i <= d[2]; i++)
-					rsk.rep_s[i] = s
+					rsk[i] = s
 			else if (d >= '1' && d <= '9')
-				rsk.rep_s[Number(d)] = s
+				rsk[Number(d)] = s
 			else if (d != ',')
-				rsk.rep_s.push(s)	// last
+				rsk.push(s)	// last
 		}
 	} // set_variant()
 
 	// add() main
 
-	// set the MIDI pitches
-	AbcMIDI().add(s, voice_tb)
+	// transpose the MIDI pitches
+	midi_transp(s, voice_tb)
 
-	// loop on the symbols
+	// set the time parameters
 	rst = s
 	rst_fac = play_fac
 	while (s) {
@@ -24285,23 +24349,16 @@ function ToAudio() {
 		switch (s.type) {
 		case C.BAR:
 
+			if (s.text && rsk) {		// if new variant
+				set_variant(rsk, s.text, s)
+				play_fac = rst_fac
+			}
+
 			// right repeat
 			if (s.bar_type[0] == ':') {
 				s.rep_p = rst		// :| to |:
-				n = s.text		// variants
-				while (s.ts_next && !s.ts_next.dur) {
-					s = s.ts_next
-					s.ptim = p_time
-					if (!n && s.text)
-						n = s.text
-				}
-				if (rsk) {		// if in a variant
-					if (!n)
-						n = "a"		// last time
-					set_variant(rsk, n, s)
-					play_fac = rst_fac
-					break
-				}
+				if (rsk)
+					s.rep_v = rsk // for knowing the number of variants
 			}
 
 			// left repeat
@@ -24313,16 +24370,12 @@ function ToAudio() {
 			// 1st time repeat
 			} else if (s.text && s.text[0] == '1'
 				&& !rsk) {		// error if |1 already
-				rsk = s
-				s.rep_s = [null]	// repeat skip
+				s.rep_s = rsk = [null]	// repeat skip
 				set_variant(rsk, s.text, s)
+				rst_fac = play_fac
 			}
-			while (s.ts_next && !s.ts_next.dur) {
+			while (s.ts_next && s.ts_next.type == C.BAR) {
 				s = s.ts_next
-				if (s.type == C.BLOCK)
-					do_block(s)
-				else if (s.tempo)
-					play_fac = set_tempo(s)
 				s.ptim = p_time
 			}
 			break
@@ -24364,15 +24417,17 @@ function ToAudio() {
 		}
 		s = s.ts_next
 	} // loop
-   }, // add()
+   } // add()
  } // return
 } // ToAudio()
 
 // play some next symbols
 //
-// This function is called by the upper function to start playing.
-// It is called by itself after delay and continue sound generation
-// up to the stop symbol or explicit stop by the user.
+// This function is called to start playing.
+// Playing is stopped on either
+// - reaching the 'end' symbol (not played) or
+// - reaching the end of tune or
+// - seeing the 'stop' flag (user request).
 //
 // The po object (Play Object) contains the following items:
 // - variables
@@ -24394,11 +24449,14 @@ function ToAudio() {
 //  - repv: variant number
 //  - timouts: array of the current timeouts
 //		this array may be used by the upper function in case of hard stop
+//  - p_v: voice table used for MIDI control
 // - methods
 //  - onend: (optional)
 //  - onnote: (optional)
 //  - note_run: start playing a note
 //  - get_time: return the time of the underlaying sound system
+if (!abc2svg)
+    var	abc2svg = {}
 abc2svg.play_next = function(po) {
 
 	// handle a tie
@@ -24456,7 +24514,7 @@ abc2svg.play_next = function(po) {
 			p_v: s2.p_v
 		}
 
-		for (i in s2.p_v.midictl) {
+		for (i in s2.p_v.midictl) { // MIDI controls at voice start time
 			s.ctrl = i
 			s.val = s2.p_v.midictl[i]
 			po.midi_ctrl(po, s, t)
@@ -24466,7 +24524,7 @@ abc2svg.play_next = function(po) {
 				po.midi_ctrl(po, s, t)
 		}
 		po.p_v[s2.v] = true	// synchronization done
-	}
+	} // set_ctrl()
 
     // start and continue to play
     function play_cont(po) {
@@ -24508,14 +24566,20 @@ abc2svg.play_next = function(po) {
 		switch (s.type) {
 		case C.BAR:
 			if (s.bar_type.slice(-1) == ':') // left repeat
-				po.repv = 0
-			if (s.rep_p) {			// right repeat
-				if (!po.repn) {
+				po.repv = 1
+			if (s.rep_p) {		// right repeat
+				po.repv++
+				if (!po.repn	// if repeat a first time
+				 && (!s.rep_v	// and no variant (anymore)
+				  || po.repv < s.rep_v.length)) {
 					po.stime += (s.ptim - s.rep_p.ptim) /
 							po.conf.speed
 					s = s.rep_p	// left repeat
-					while (s.ts_next && !s.ts_next.dur)
+					while (s.ts_next && !s.ts_next.dur) {
 						s = s.ts_next
+						if (s.subtype == "midictl")
+							po.midi_ctrl(po, s, t)
+					}
 					t = po.stime + s.ptim / po.conf.speed
 					po.repn = true
 					break
@@ -24523,7 +24587,7 @@ abc2svg.play_next = function(po) {
 				po.repn = false
 			}
 			if (s.rep_s) {			// first variant
-				s2 = s.rep_s[++po.repv]	// next variant
+				s2 = s.rep_s[po.repv]	// next variant
 				if (s2) {
 					po.stime += (s.ptim - s2.ptim) /
 							po.conf.speed
@@ -24613,6 +24677,8 @@ abc2svg.play_next = function(po) {
 	po.stime = po.get_time(po) + .3	// start time + 0.3s
 			- po.s_cur.ptim * po.conf.speed
 	po.p_v = []			// voice table for the MIDI controls
+	if (!po.repv)
+		po.repv = 1
 
 	play_cont(po)			// start playing
 } // play_next()
@@ -29226,4 +29292,4 @@ abc2svg.modules.hooks.push(abc2svg.diag.set_hooks);
 
 // the module is loaded
 abc2svg.modules.diagram.loaded = true
-abc2svg.version = abc2svg.version + " Git: v1.20.8-62-gf372f85"
+abc2svg.version = abc2svg.version + " Git: v1.20.8-69-gbf7b9c4"
