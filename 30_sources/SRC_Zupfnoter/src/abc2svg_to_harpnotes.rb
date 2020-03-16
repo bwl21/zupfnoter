@@ -70,7 +70,16 @@ module Harpnotes
         result
       end
 
-      def _get_key_by_accidentals(key_model)
+      def _get_key_by_accidentals(voice_element)
+
+        key_mode = voice_element[:k_mode]
+        if voice_element[:k_mode].nil?
+          key_mode = 0
+          start_pos = charpos_to_line_column(voice_element[:istart])
+          end_pos   = charpos_to_line_column(voice_element[:iend])
+          $log.error("please specify a key note", start_pos, end_pos)
+        end
+
         {
             #0=ionian(major), 1=dorian, 2=phrygian, 3=lydian, 4=mixolydia, 5=aeolian(minor) and 6=locrian
 
@@ -89,7 +98,7 @@ module Harpnotes
             -5 => ['Db', 'EbDor', 'FPhr', 'GbLyd', 'AbMix', 'Bbm', 'CLoc'],
             -6 => ['Gb', 'AbDor', 'BbPhr' 'CbLyd', 'DbMix', 'Ebm', 'FLoc'],
             -7 => ['Cb' 'DbDor', 'EbPhr' 'FbLyd', 'GbMix', 'Abm', 'BbLoc'],
-        }[key_model[:k_sf]][key_model[:k_mode]]
+        }[voice_element[:k_sf]][key_mode]
       end
 
       def _make_metadata
