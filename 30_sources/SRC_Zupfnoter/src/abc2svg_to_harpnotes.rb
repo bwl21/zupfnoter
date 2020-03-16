@@ -143,7 +143,7 @@ module Harpnotes
             start_pos = charpos_to_line_column(voice_element[:istart])
             end_pos   = charpos_to_line_column(voice_element[:iend])
             $log.error("illegal character in of [r:] (must be of [a-z][a-z0.9_])", start_pos, end_pos)
-            result = nil
+            result = result = "_#{result}_"
           end
         else
           result = "#{voice_element[:time]}" unless result
