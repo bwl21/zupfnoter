@@ -94,6 +94,7 @@ module Harpnotes
               result[key] = [entry.last.strip]
             end
           end
+          break result if key == 'K'
           result
         end
         retval
