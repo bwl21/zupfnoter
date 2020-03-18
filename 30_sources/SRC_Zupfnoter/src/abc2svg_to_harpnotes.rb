@@ -74,7 +74,7 @@ module Harpnotes
 
         key_mode = voice_element[:k_mode]
         if voice_element[:k_mode].nil?
-          key_mode = 0
+          key_mode  = 0
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
           $log.error("please specify a key note", start_pos, end_pos)
@@ -107,13 +107,15 @@ module Harpnotes
         o_key_display = ""
         o_key_display = "(Original in #{o_key})" unless key == o_key
 
-        tempo_note = @abc_model[:voices].first[:symbols]
-                         .select { |i| i[:type] == @abc_model[:music_type_ids][:tempo] }.first rescue nil
+        tempo_id   = @abc_model[:music_type_ids][:tempo]
+        tempo_note = @abc_model[:voices].map { |voice|
+          voice[:symbols].select { |i| i[:type] == tempo_id }.first
+        }.flatten.compact.first
 
-        if @info_fields[:Q] #tempo_note && tempo_note[:tempo_notes]
+        if tempo_note && tempo_note[:tempo_notes]
           duration      = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           bpm           = tempo_note[:tempo].to_i
-          tempo_display = @info_fields[:Q].join(" ")
+          tempo_display = %Q{1/#{1/duration.sum}=#{bpm}}
         else
           duration      = [0.25]
           bpm           = 120
