@@ -48,7 +48,7 @@ module Harpnotes
         result.harpnote_options = _make_harpnote_options
 
         filebase = result.meta_data[:filename]
-        $log.error(I18n.t("Filename not specified in song add an F: instruction"), [1, 1]) if filebase.empty?
+        $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("Filename not specified in song add an F: instruction"), [1, 1]) if filebase.empty?
 
         [result, player_model_abc]
       end
@@ -63,7 +63,7 @@ module Harpnotes
             filenamepart = ($conf.get("extract.#{i}.filenamepart") || title).strip.gsub(/[^a-zA-Z0-9\-\_]/, "_")
             {title: title, view_id: i, filenamepart: filenamepart}
           else
-            $log.error(I18n.t("could not find extract with number") + " #{i}", [1, 1], [1000, 1000])
+            $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("could not find extract with number") + " #{i}", [1, 1], [1000, 1000])
             nil
           end
         end.compact
@@ -77,7 +77,7 @@ module Harpnotes
           key_mode  = 0
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
-          $log.error("please specify a key note", start_pos, end_pos)
+          $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("please specify a key note"), start_pos, end_pos)
         end
 
         {
@@ -144,7 +144,7 @@ module Harpnotes
           unless result.match(/[a-z][a-zA-Z0-9_]*/)
             start_pos = charpos_to_line_column(voice_element[:istart])
             end_pos   = charpos_to_line_column(voice_element[:iend])
-            $log.error("illegal character in of [r:] (must be of [a-z][a-z0.9_])", start_pos, end_pos)
+            $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("illegal character in of [r:] (must be of [a-z][a-z0.9_])"), start_pos, end_pos)
             result = result = "_#{result}_"
           end
         else
@@ -223,7 +223,7 @@ module Harpnotes
           begin
             result = self.send("_transform_#{type}", voice_model_element, index, voice_index)
           rescue Exception => e
-            $log.error("Bug #{__FILE__}:#{__LINE__}: #{e}", charpos_to_line_column(voice_model_element[:istart]))
+            $log.error("#{__FILE__}:#{__LINE__}: " + "#{e}", charpos_to_line_column(voice_model_element[:istart]))
             nil
           end
           result
@@ -313,7 +313,7 @@ module Harpnotes
         #we push the previous note to serve for proper startlines
         if voice_element[:rbstart] == 2 and @variant_endings.last.empty?
           if distance.length != 3
-            $log.error("you need to specify 3 values: #{distance}", charpos_to_line_column(voice_element[:istart]), charpos_to_line_column(voice_element[:iend]))
+            $log.error("#{__FILE__}:#{__LINE__}: " + "you need to specify 3 values: #{distance}", charpos_to_line_column(voice_element[:istart]), charpos_to_line_column(voice_element[:iend]))
 
             distance = [-10, 10, 15]
           end
@@ -368,7 +368,7 @@ module Harpnotes
         if @part_table[voice_element[:time]]
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
-          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple parts for same note"), start_pos, end_pos)
+          $log.error("#{__FILE__}:#{__LINE__}: " + "abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple parts for same note"), start_pos, end_pos)
         end
         @part_table[voice_element[:time]] = voice_element[:text]
         nil
@@ -378,7 +378,7 @@ module Harpnotes
         if @remark_table[voice_element[:time]]
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
-          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple remarks for same note"), start_pos, end_pos)
+          $log.error("#{__FILE__}:#{__LINE__}: " + "abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Multiple remarks for same note"), start_pos, end_pos)
         end
         @remark_table[voice_element[:time]] = voice_element[:text]
         nil
@@ -658,12 +658,12 @@ module Harpnotes
 
       def _transform_tempo(voice_element, index, voice_id)
 
-        # note that abc2svd yields Tune based Tempo in voice_propoeties.sym as well as in symbols
+        # note that abc2svg yields Tune based Tempo in voice_propoeties.sym as well as in symbols
         # therefore we need to filter the Tune based tempo ...
         unless @tempo_statements.empty?
           start_pos = charpos_to_line_column(voice_element[:istart])
           end_pos   = charpos_to_line_column(voice_element[:iend])
-          $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
+          $log.error("#{__FILE__}:#{__LINE__}: " + "abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("tempo change not suported by zupfnoter"), start_pos, end_pos)
         end
         @tempo_statements.push(voice_element)
       end
@@ -809,7 +809,7 @@ module Harpnotes
 
             argument = goto_info[:distance].first || 2
             if target.nil?
-              $log.error("target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
+              $log.error(  "target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
             else
               result << Harpnotes::Music::Goto.new(element, target, conf_key: conf_key, distance: argument) #todo: better algorithm
             end
@@ -839,7 +839,7 @@ module Harpnotes
               when "#"
                 annotation = @annotations[text]
 
-                $log.error("could not find annotation #{text}", entity.start_pos, entity.end_pos) unless annotation
+                $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("could not find annotation") +" #{text}", entity.start_pos, entity.end_pos) unless annotation
               when "!"
                 annotation = {text: text, style: :regular}
               when "<"
@@ -989,7 +989,7 @@ module Harpnotes
             else
               start_pos = charpos_to_line_column(bar[:istart])
               end_pos   = charpos_to_line_column(bar[:iend])
-              $log.error("Syntax-Error in Jump anotation", start_pos, end_pos)
+              $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("Syntax-Error in Jump anotation"), start_pos, end_pos)
               #raise "Syntax-Error in Jump annotation: #{line}"
             end
           end
@@ -1041,23 +1041,23 @@ module Harpnotes
           if voice_element[:tp]&.[](1)
             start_pos = charpos_to_line_column(voice_element[:istart])
             end_pos   = charpos_to_line_column(voice_element[:iend])
-            $log.error("abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Nested Tuplet"), start_pos, end_pos)
-          end
+            $log.error("#{__FILE__}:#{__LINE__}: " + "abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Nested Tuplet"), start_pos, end_pos)
 
           #find tuplet start
-          if voice_element[:tp]&.[](0)
+          elsif voice_element[:tp]&.[](0)
             @tuplet_p    = voice_element[:tp]&.first&.[](:p) # [:tp][0][:p]
             tuplet_start = true
           else
-            tuplet_start = nil
+            tuplet_start = false
           end
 
           # we are within a tuplet
           tuplet = @tuplet_p # the size of tuplet (3, etc.
 
           # detect tuplet end
-          if voice_element[:tpe] # == 1
+          if voice_element[:tpe]  and not @tuplet_p.nil?
             tuplet_end = true
+            @tuplet_p    = nil
           else
             tuplet_end = nil
           end

@@ -867,7 +867,7 @@ class Controller
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
     rescue Exception => e
-      $log.error(%Q{#{e.message}}, nil, nil, e.backtrace)
+      $log.error(%Q{#{__FILE__}:#{__LINE__}: #{e.message}}, nil, nil, e.backtrace)
     ensure
       $conf.pop
     end

@@ -35,7 +35,7 @@ module Ajv
           path = path[1 .. -1].gsub("/", '.') if path.start_with? "/"
           result.push path
           message = %x{#{path}+ ': ' + #{error}.message + "\n" + JSON.stringify(error.params, null, " ")}
-          $log.error(message)
+          $log.error(%Q{#{__FILE__}:#{__LINE__} #{message}})
         end
       end
       result
@@ -56,7 +56,7 @@ module Ajv
     end
 
     def validate_filenameparts(conf)
-      filenamekeys  = conf.keys.select { |i| i.include? 'filenamepart' }
+      filenamekeys  = conf.keys.select { |i| i.match(/^extract\.\d+\.filenamepart/) }
       filenameparts = filenamekeys.inject({}) do |result, element|
         result[$conf[element]] ||= []
         result[$conf[element]].push element
@@ -64,9 +64,10 @@ module Ajv
       end
 
       filenameparts = filenameparts.keep_if { |k, v| v.length > 1 }
+
       filenameparts.each do |k, v|
-        message = I18n.t("duplicate filenameparts") + ": " + v.join(", ")
-        $log.error(message)
+        message = I18n.t("duplicate filenameparts") + ": ''#{k}'' in " + v.join(", ")
+        $log.error(%Q{#{__FILE__}:#{__LINE__} #{message}})
       end
       filenameparts.values.flatten.uniq
     end
