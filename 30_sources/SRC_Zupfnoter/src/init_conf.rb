@@ -521,13 +521,7 @@ module InitConf
                  title:  "Melodie",
                  voices: [1]
              },
-             "4" => {
-                 title:  "Extract 4",
-                 voices: [1]
-             },
-             "5" => {
-                 title: "Extract 5", voices: [1]
-             }
+
 
          },
 
