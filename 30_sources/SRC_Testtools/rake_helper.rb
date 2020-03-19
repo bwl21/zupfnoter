@@ -237,6 +237,9 @@ task :cleanoutput do |t, args|
     Dir["#{$conf[:testoutputfolder]}/*.#{ext}"].each do |file|
       FileUtils.rm file rescue nil
     end
+    Dir["#{$conf[:testdifffolder]}/*.#{ext}"].each do |file|
+      FileUtils.rm file rescue nil
+    end
   end
 end
 
@@ -347,8 +350,8 @@ task :showdiff, [:example] do |t, args|
 
     pngfilename = difffilename.gsub(".diff.", "_-test_a3.")
 
-    referr = File.read(%Q{#{$conf[:testreferencefolder]}/#{File.basename(filename, ".png")}.abc.err.log})
-    outerr = File.read(%Q{#{$conf[:testoutputfolder]}/#{File.basename(filename, ".png")}.abc.err.log})
+    referr = File.read(%Q{#{$conf[:testreferencefolder]}/#{File.basename(filename, ".png")}.abc.err.log}) rescue ""
+    outerr = File.read(%Q{#{$conf[:testoutputfolder]}/#{File.basename(filename, ".png")}.abc.err.log}) rescue ""
 
 
     diff_as_html = []
