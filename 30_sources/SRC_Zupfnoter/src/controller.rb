@@ -269,6 +269,15 @@ class Controller
   end
 
 # this method invokes the system conumers
+#
+
+  def make_error_popup
+    result = %Q{<p>Wenn du nicht weiter kommmst, poste eine Anfrage über Menü 'Hilfe / support'</p><p>}
+    result += $log.get_errors.join("<br/>\n")
+    result +=  "</p>"
+    result
+  end
+
   def   call_consumers(clazz)
     @systemstatus_consumers = {systemstatus:      [
                                                       lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
@@ -277,7 +286,7 @@ class Controller
                                unlock:            [lambda { `unlockscreen()` }],
                                localizedtexts:    [lambda { %x{update_localized_texts()} }],
                                statusline:        [],
-                               error_alert:       [lambda { `window.update_error_status_w2ui(#{$log.get_errors.join("<br/>\n")})` if $log.has_errors? }],
+                               error_alert:       [lambda { `window.update_error_status_w2ui(#{make_error_popup})` if $log.has_errors? }],
                                play_start:        [lambda { `update_play_w2ui('start')` }],
                                play_stop:         [lambda { `update_play_w2ui('stop')` }],
                                play_stopping:     [lambda { `update_play_w2ui('stopping')` }],
@@ -867,7 +876,7 @@ class Controller
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
     rescue Exception => e
-      $log.error(%Q{#{__FILE__}:#{__LINE__}: #{e.message}}, nil, nil, e.backtrace)
+        $log.error(%Q{#{__FILE__}:#{__LINE__}: #{e.message}}, nil, nil, e.backtrace)
     ensure
       $conf.pop
     end

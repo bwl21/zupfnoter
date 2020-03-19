@@ -378,6 +378,9 @@ function init_w2ui(uicontroller) {
     "tbHelp:tbHomepage": function () {
       window.open("http://www.zupfnoter.de")
     },
+    "tbHelp:tbSupport": function () {
+      window.open("https://www.zupfnoter.de/zupfnoter/frage-und-antwort/")
+    },
     "tbHelp:tbManual": function () {
       window.open("/public/UD_Zupfnoter-Handbuch-de_review.pdf")
     },
@@ -593,6 +596,7 @@ function init_w2ui(uicontroller) {
       {type: 'button', id: 'tbPlay', text: 'Play', icon: 'fa fa-play', tooltip: 'Play music'},
       {
         type: 'menu', text: 'Help', id: 'tbHelp', icon: 'fa fa-question', tooltip: 'Get help', items: [
+          {text: 'Support', icon: 'fa fa-life-ring', id: "tbSupport", tooltip: 'Open Support page'},
           {
             text: 'Version info',
             icon: 'fa fa-tags',
