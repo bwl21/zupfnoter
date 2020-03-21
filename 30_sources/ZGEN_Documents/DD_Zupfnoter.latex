@@ -306,6 +306,100 @@ operations.
 \caption{Render Flor}
 \end{figure}
 
+\hypertarget{elements-taken-from-abc2svg-provided-json-model}{%
+\subsection{elements taken from abc2svg provided json
+model}\label{elements-taken-from-abc2svg-provided-json-model}}
+
+\begin{itemize}
+\item
+  \texttt{music\_types}, \texttt{music\_type\_ids}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{bar}
+  \item
+    \texttt{note}
+  \item
+    \texttt{tempo}
+  \item
+    \texttt{block}, \texttt{chords}, \texttt{clef}, \texttt{format},
+    \texttt{grace}, \texttt{key}, \texttt{lyrics}, \texttt{meter}
+    \texttt{note}, \texttt{part}, \texttt{remark}, \texttt{rest},
+    \texttt{staves},
+  \end{itemize}
+\item
+  \texttt{info}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{V}, \texttt{X}, \texttt{T}, \texttt{F}, \texttt{C},
+    \texttt{Z} \texttt{S}, \texttt{M}
+  \end{itemize}
+\item
+  \texttt{voices}
+
+  \begin{itemize}
+  \item
+    \texttt{voice\_properties}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{key}, \texttt{okey}
+    \end{itemize}
+  \item
+    \texttt{symbols}
+  \item
+    \texttt{meter}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{a\_meter}
+
+      \begin{itemize}
+      \tightlist
+      \item
+        \texttt{bot}
+      \end{itemize}
+    \end{itemize}
+  \item
+    \texttt{wmeasure}
+
+    ``
+  \end{itemize}
+\item
+  Symbol
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{tempo\_notes}
+  \item
+    \texttt{tempo}
+  \item
+    \texttt{time}
+  \item
+    \texttt{type}
+  \item
+    \texttt{istart}
+  \item
+    \texttt{iend}
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{elements-not-taken-from-abc2svg}{%
+\subsection{elements not taken from
+abc2svg}\label{elements-not-taken-from-abc2svg}}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{info.v.*}
+\end{itemize}
+
 \hypertarget{build-environments}{%
 \section{build environments}\label{build-environments}}
 

@@ -2460,6 +2460,27 @@ zur Vollständigkeit aufgeführt.
 -   `?mode={demo | work}`
 -   `?debug`
 
+# Notwendige Änderungen beim Übergang von Zupfnoter 1.xx nach Zupfnoter 2.xx
+
+Wenn sich bei einem Programm die erste Stelle der Versionsnummer ändert, muss man ggf. die ABC-Dateien ändern.
+Auch wenn wir versuchen, diese Änderungen so gering wir möglich zu halten, so sind sie doch nicht zu vermeiden.
+Manche diese Änderungen stammen aus einer genaueren Interpretation des ABC-Standards.
+
+## Transponieren
+
+In Zupfnoter 1.x funktioniert manchmal das `%%transpose` noch. Zupfnoter wirft nun aber einen Fehler.
+
+## Haltebogen
+
+## Angabe der Geschwindigkeit (Q:)
+
+ 
+
+
+
+
+
+
 [^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um
     die Flußlinie der Melodiestimme (meist der ersten Stimme) handelt.

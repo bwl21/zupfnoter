@@ -341,9 +341,7 @@ Auszug 1 usw.
           },
           "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
           "2" : {"title": "Tenor, Bass", "voices": [3, 4]},
-          "3" : {"title": "Melodie", "voices": [1]},
-          "4" : {"title": "Extract 4", "voices": [1]},
-          "5" : {"title": "Extract 5", "voices": [1]}
+          "3" : {"title": "Melodie", "voices": [1]}
         }
           
 

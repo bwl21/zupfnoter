@@ -4,8 +4,11 @@
 
 * support decorations #30
 * Harmonieassistent #298
+* add support - link in help menu
+* upgrade to abc2svg - more close to the standard
 
-# 1.4 Feburar 2020
+
+# 1.14 Feburar 2020
 
 ## fix
 
@@ -15,7 +18,7 @@
 * sharp chord symbols like F# now work in transposed pieces #295
 * now we can control the style of title #294
 
-# 1.3 December 2019
+# 1.13 December 2019
 
 ## enhancement
 

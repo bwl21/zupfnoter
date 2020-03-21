@@ -48,21 +48,43 @@ class Chordengine
             '+'   => 'Augmented',
             '°'   => 'Diminished',
             'dom' => 'Maj',
+            '6'   =>  '6',
             '7'   => 'Dominant 7th',
             'sus' => 'Sus4'
         }
 
+    # todo: this table should be for step and mode
+    # %
+    # %
+    # % C:  C Am F Dm7
+    # % D:  G, Dm F6
+    # % E:
     @chordstofind =
         {
             ''    => 'Maj',
             'dim' => 'Diminished',
             '+'   => 'Augmented',
-            '°'   => 'Diminished',
+            #            '°'   => 'Diminished',
+            '6'   => '6',
             '7'   => 'Dominant 7th',
             'sus' => 'Sus4',
             "m7" => 'min',
             "m" => 'min'
         }
+
+
+    # todo: notenames as sharp_mode
+    #
+    @notenames = {
+        sharp: {
+            major: {%W{C C# D D# E F F# G G# A A# B}},
+            minor: {}
+        },
+        flat:  {
+            major: {%W{C Db D Eb E F Gb G Ab A Bb B}},
+            minor: {}
+        }
+    }
 
     @notenames_sharp = %W{C C# D D# E F F# G G# A A# B}
     @midi_sharp      = Hash[@notenames_sharp.each_with_index.to_a]

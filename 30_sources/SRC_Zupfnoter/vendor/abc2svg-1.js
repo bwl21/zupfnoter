@@ -1,4 +1,4 @@
-// compiled for Zupfnoter 2020-03-15 12:19:16 +0100
+// compiled for Zupfnoter 2020-03-20 09:16:49 +0100
 // abc2svg - ABC to SVG translator
 // @source: https://chiselapp.com/user/moinejf/repository/abc2svg
 // Copyright (C) 2014-2020 Jean-Francois Moine - LGPL3+
@@ -3299,7 +3299,7 @@ function draw_gracenotes(s) {
 
 	/* slur */
 //fixme: have a full key symbol in voice
-	if (s.p_v.key.k_bagpipe			/* no slur when bagpipe */
+	if (s.p_v.ckey.k_bagpipe		/* no slur when bagpipe */
 	 || !cfmt.graceslurs
 	 || slur				// explicit slur
 	 || s.tie_s				// some tie
@@ -5715,7 +5715,7 @@ Abc.prototype.draw_symbols = function(p_voice) {
 		if (s.invis) {
 			switch (s.type) {
 			case C.KEY:
-				p_voice.key = s
+				p_voice.ckey = s
 			default:
 				continue
 			case C.NOTE:	// (beams may start on invisible notes)
@@ -5794,7 +5794,7 @@ Abc.prototype.draw_symbols = function(p_voice) {
 			anno_stop(s)
 			break
 		case C.KEY:
-			p_voice.key = s
+			p_voice.ckey = s
 			if (s.second
 			 || s.invis
 			 || !staff_tb[s.st].topbar)
@@ -9649,10 +9649,10 @@ function get_ck_width() {
 	p_voice = voice_tb[0]
 
 	self.set_width(p_voice.clef);
-	self.set_width(p_voice.key);
+	self.set_width(p_voice.ckey);
 	self.set_width(p_voice.meter)
 	return [p_voice.clef.wl + p_voice.clef.wr +
-			p_voice.key.wl + p_voice.key.wr,
+			p_voice.ckey.wl + p_voice.ckey.wr,
 		p_voice.meter.wl + p_voice.meter.wr]
 }
 
@@ -10045,7 +10045,7 @@ function set_ottava() {
 		case C.NOTE:
 			delta = staff_d[st]
 			if (delta
-			 && !s.p_v.key.k_drum) {
+			 && !s.p_v.ckey.k_drum) {
 				for (m = s.nhd; m >= 0; m--) {
 					note = s.notes[m];
 					if (!note.opit)
@@ -10058,7 +10058,7 @@ function set_ottava() {
 			for (g = s.extra; g; g = g.next) {
 				delta = staff_d[st]
 				if (delta
-				 && !s.p_v.key.k_drum) {
+				 && !s.p_v.ckey.k_drum) {
 					for (m = 0; m <= g.nhd; m++) {
 						note = g.notes[m]
 						if (!note.opit)
@@ -10501,7 +10501,7 @@ Abc.prototype.set_pitch = function(last_s) {
 			for (g = s.extra; g; g = g.next) {
 				delta = staff_delta[g.st]
 				if (delta
-				 && !s.p_v.key.k_drum) {
+				 && !s.p_v.ckey.k_drum) {
 					for (m = 0; m <= g.nhd; m++) {
 						note = g.notes[m];
 						note.opit = note.pit
@@ -10539,7 +10539,7 @@ Abc.prototype.set_pitch = function(last_s) {
 		case C.NOTE:
 			delta = staff_delta[st]
 			if (delta
-			 && !s.p_v.key.k_drum) {
+			 && !s.p_v.ckey.k_drum) {
 				for (m = s.nhd; m >= 0; m--) {
 					note = s.notes[m]
 					note.opit = note.pit
@@ -10935,8 +10935,8 @@ function new_sym(s, p_v, last_s) {
 
 /* -- init the symbols at start of a music line -- */
 function init_music_line() {
-	var	p_voice, s, s2, s3, last_s, v, st, shr, shrmx,
-		nv = voice_tb.length
+   var	p_voice, s, s2, s3, last_s, v, st, shr, shrmx, shl,
+	nv = voice_tb.length
 
 	/* initialize the voices */
 	for (v = 0; v < nv; v++) {
@@ -11025,7 +11025,7 @@ function init_music_line() {
 			last_s = last_s.ts_next
 			continue
 		}
-		s2 = p_voice.key
+		s2 = p_voice.ckey
 		if (s2.k_sf || s2.k_a_acc) {
 			s = clone(s2)
 			new_sym(s, p_voice, last_s)
@@ -11101,6 +11101,7 @@ function init_music_line() {
 	while (1) {
 		s2 = s;
 		shrmx = 0
+		shl = 0
 		do {
 			self.set_width(s);
 			shr = s.wl
@@ -11108,6 +11109,8 @@ function init_music_line() {
 				shr += s.prev.wr
 			if (shr > shrmx)
 				shrmx = shr;
+			if (s.wr > shl)
+				shl = s.wr	// left width for next symbol
 			s = s.ts_next
 		} while (s != last_s && !s.seqst);
 		s2.shrink = shrmx;
@@ -11126,9 +11129,9 @@ function init_music_line() {
 			shr = s.wl;
 		s = s.ts_next
 	} while (s && !s.seqst);
-	last_s.shrink = s2.wr + shr
+	last_s.shrink = shl + shr
 	last_s.space = 0
-}
+} // init_music_line()
 
 /* -- set a pitch in all symbols and the start/stop of the beams -- */
 // and sort the pitches in the chords
@@ -11313,6 +11316,7 @@ function set_global() {
 	for (v = 0; v < nv; v++) {
 		p_voice = voice_tb[v];
 		set_words(p_voice)
+		p_voice.ckey = p_voice.key	// starting key
 // (test removed because v.second may change after %%staves)
 //		if (!p_voice.second && !p_voice.norepbra)
 			set_rb(p_voice)
@@ -13552,6 +13556,7 @@ function new_key(param) {
 		// fall thru
 	default:
 		s.k_map = []
+		s.k_mode = 0
 		return [s, info_split(param)]
 	}
     }
@@ -18755,7 +18760,7 @@ function set_transp() {
 				break
 			s = s.prev
 			if (!s) {
-				s = curvoice.key
+				s = curvoice.ckey
 				break
 			}
 		}
@@ -19986,8 +19991,8 @@ function new_voice(id) {
 //		cst: 0,
 		ulen: glovar.ulen,
 		dur_fact: 1,
-		key: clone(parse.ckey),	// key at start of tune (parse) / line (gene)
-		ckey: clone(parse.ckey),	// current key (parse)
+		key: clone(parse.ckey),		// key at start of tune (parse / gene)
+		ckey: clone(parse.ckey),	// current key (parse / gene)
 		okey: clone(parse.ckey),	// key without transposition (parse)
 		meter: clone(glovar.meter),
 		wmeasure: glovar.meter.wmeasure,
@@ -21501,7 +21506,7 @@ abc2svg.version="1.20.8";abc2svg.vdate=""
 
 // Usage:
 //	// Define a get_abcmodel() callback function
-//	// This one is called by abc2svg after ABC parsing 
+//	// This one is called by abc2svg after ABC parsing
 //	user.get_abcmodel = json_callback
 //
 //	// In this function
@@ -21527,6 +21532,7 @@ function AbcJSON(nindent) {			// indentation level
 		ind3 = ind2 + inb,
 		ind4 = ind3 + inb,
 		links = {
+			acc: true,
 			next: true,
 			prev: true,
 			ts_next: true,
@@ -21535,16 +21541,90 @@ function AbcJSON(nindent) {			// indentation level
 			note: true,
 			p_v: true,
 			s: true,
+			sls: true,
 			sn: true,
 			tie_s: true,
 			dd_st: true,
-		        sym: true,
+			sym: true,
 			last_sym: true,
 			last_note: true,
 			lyric_restart: true,
 			sym_restart: true,
-		        rep_s: true
+			rep_p: true,
+			rep_v: true,
+			rep_s: true,
+			voice_down: true,
 		},
+		znu = [
+			"a_dd",
+			"a_gch",
+			"a_ly",
+			"a_meter",
+			"a_meter",
+			"bar_type",
+			"block",
+			"bot",
+			"bot",
+			"C",
+			"chords",
+			"clef",
+			"dur",
+			"F",
+			"format",
+			"glyph",
+			"grace",
+			"id",
+			"iend",
+			"in_tuplet",
+			"info",
+			"invis",
+			"istart",
+			"k_mode",
+			"k_sf",
+			"key",
+			"lyrics",
+			"M",
+			"meter",
+			"meter",
+			"midi",
+			"music_type_ids",
+			"music_types",
+			"name",    // name in a_dd
+			"note",
+			"notes",
+			"okey",
+			"okey",
+			"p",
+			"part",
+			"rbstart",
+			"rbstop",
+			"remark",
+			"rest",
+			"S",
+			"staves",
+			"symbols",
+			"sy",
+			"t",
+			"T",
+			"te0",
+			"tempo",
+			"tempo",
+			"tempo_notes",
+			"text",
+			"ti1",
+			"time",
+			"tp",
+			"tpe",
+			"type",
+			"V",
+			"voice_properties",
+			"voices",
+			"W",
+			"wmeasure",
+			"wmeasure",
+			"X",
+			"Z",
+		],
 		objstk = []
 
 	// generate an attribute
@@ -21568,8 +21648,11 @@ function AbcJSON(nindent) {			// indentation level
 			return
 		}
 		json += h + ind
-		if (attr)
-			 json += '"' + attr.toString() + '": ';
+		if (attr) {
+			let xattr = attr
+			xattr = ( znu.indexOf(attr) < 0) ? attr + "!!!" : attr
+			json += '"' + xattr.toString() + '": ';
+		}
 		switch (typeof(val)) {
 		case "undefined":
 			json += "null"
@@ -21579,12 +21662,15 @@ function AbcJSON(nindent) {			// indentation level
 				json += "null"
 				break
 			}
-			if (objstk.indexOf(val) >= 0)
-				throw new Error("!!! loop !!!\n" +
-						json.slice(-200))
+			if (objstk.indexOf(val) >= 0) {
+				json += "!!! to_json: loop in '" + attr + "' !!!"
+				break
+			}
+			objstk.push(val)
 			if (Array.isArray(val)) {
 				if (val.length == 0) {
 					json += "[]"
+					objstk.pop()
 					break
 				}
 				h = '[\n';
@@ -21593,14 +21679,13 @@ function AbcJSON(nindent) {			// indentation level
 					attr_gen(indn, null, val[i]);
 				json += '\n' + ind + ']'
 			} else {
-				objstk.push(val)
 				h = '{\n'
 				for (i in val)
 				    if (val.hasOwnProperty(i))
 					attr_gen(indn, i, val[i]);
 				json += '\n' + ind + '}'
-				objstk.pop()
 			}
+			objstk.pop()
 			break
 		default:
 			json += JSON.stringify(val)
@@ -24943,18 +25028,18 @@ abc2svg.MIDI = {
 	for (i = 0; i < a.length; i++) {
 		switch (a[i]) {
 		case "instr=":			// %%MIDI program
-			curvoice.instr = a[i + 1]
+			curvoice.instr = a[++i]
 			break
 		case "midictl=":		// %%MIDI control
 			if (!curvoice.midictl)
 				curvoice.midictl = []
-			item = a[i + 1].split(' ');
+			item = a[++i].split(' ');
 			curvoice.midictl[item[0]] = Number(item[1])
 			break
 		case "mididrum=":		// %%MIDI drummap note midipitch
 			if (!curvoice.map)
 				curvoice.map = {}
-			curvoice.map = a[i + 1]
+			curvoice.map = a[++i]
 			break
 		}
 	}
@@ -29292,4 +29377,4 @@ abc2svg.modules.hooks.push(abc2svg.diag.set_hooks);
 
 // the module is loaded
 abc2svg.modules.diagram.loaded = true
-abc2svg.version = abc2svg.version + " Git: v1.20.8-69-gbf7b9c4"
+abc2svg.version = abc2svg.version + " Git: v1.20.8-84-gca0f9b1"

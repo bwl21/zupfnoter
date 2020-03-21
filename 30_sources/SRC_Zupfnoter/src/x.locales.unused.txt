@@ -15,6 +15,7 @@ edit extra increments
 edit global settings for the current song
 edit resources
 edittemplate
+Empty voice in %%score
 Empty voice
 end-of-translagion
 enter a page bound annotation
