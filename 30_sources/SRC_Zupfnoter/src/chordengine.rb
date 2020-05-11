@@ -53,7 +53,7 @@ class Chordengine
             'sus' => 'Sus4'
         }
 
-    # todo: this table should be for step and mode
+    # todo: this table should be for step and mode of the song
     # %
     # %
     # % C:  C Am F Dm7
@@ -72,6 +72,8 @@ class Chordengine
             "m" => 'min'
         }
 
+    @sharpkeys = %W{C G D A B F# C#}
+    @flatkeys  = %W{F Bb Eb Ab Db Gb}
 
     # todo: notenames as sharp_mode
     #
@@ -82,7 +84,12 @@ class Chordengine
         },
         flat:  {
             major: %W{C Db D Eb E F Gb G Ab A Bb B},
-            minor: {}
+            minor: {},
+            minor: %W{}
+        },
+        flat:  {
+            major: %W{C Db D Eb E F Gb G Ab A Bb B},
+            minor: %W{}
         }
     }
 

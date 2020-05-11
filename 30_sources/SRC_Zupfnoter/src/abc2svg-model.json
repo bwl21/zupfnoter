@@ -38,66 +38,32 @@
     "remark": 17
   },
   "info": {
-    "V": {
-      "*": [
-        "staffnonote=",
-        "2"
-      ]
-    },
-    "X": "3076",
-    "F": "3076_words-in-countnotes",
-    "T": "Words in countnotes",
+    "X": "3015",
+    "F": "3015_reference_sheet",
+    "T": "Zupfnoter Reference Sheet",
     "C": "",
     "S": "",
     "M": "4/4",
-    "Q": "1/4=120",
-    "K": "C"
+    "W": "Notes\n\n(1) full note\n(2) half note\n(3) quarter note\n(4) eighth note\n(5) sixteenth note\n(6) punctuated half note\n(7) punctuated quarter note\n\nRests\n\n(11) full rest\n(12) half rest\n(13) quarter rest\n(14) eighth  rest\n(15) sixteenth rest\n(16) punctuated half rest\n(17) punctuated quarter rest\n\nNotebound elements\n\n(20) measure bar\n(21) unison\n(22) triplet\n(23) tie\n(24) repeat signs\n(25) jumpline for repeat\n(26) synchline for unison\n(27) part note\n(28) countnotes\n(29) barnumbers\n(30) decoration (fermata)\n\nConnection lines\n\n(31) flowline\n(32) synchline\n(33) subflowline\n\nSheet annotation\n\n(34) legend\n(35) extract title in legend\n(36) lyrics\n(37) string names\n(38) string marks\n(39) cutmarks\n\nVariant ending\n\n(50) variant ending\n(51) input line\n(52) output line\n(53) followiup line\n\nOrganizational items\n\n(70) input filename\n(71) creation note\n(72) advertising Zupfnoter\n(73) Fingerprint\n\nSheet notes by preset\n\n(74) T04 to order\n(75) T02 Copryright music\n(76) T03 Coppyright harpnotes\n(77) T99 do not copy\n(78) T01 Number\n(79) T01 Number extract"
   },
   "voices": [
     {
       "voice_properties": {
-        "v": 0,
         "id": "1",
-        "time": 3072,
-        "pos": {
-          "dyn": 0,
-          "gch": 0,
-          "gst": 0,
-          "orn": 0,
-          "stm": 0,
-          "voc": 0,
-          "vol": 0
-        },
-        "scale": 1,
-        "ulen": 384,
-        "dur_fact": 1,
+        "time": 10752,
         "key": {
           "type": 5,
-          "k_delta": 0,
           "dur": 0,
-          "fname": "abc",
-          "istart": 84,
-          "iend": 87,
-          "k_sf": 0,
-          "k_mode": 0
-        },
-        "ckey": {
-          "type": 5,
-          "k_delta": 0,
-          "dur": 0,
-          "fname": "abc",
-          "istart": 84,
-          "iend": 87,
+          "istart": 193,
+          "iend": 196,
           "k_sf": 0,
           "k_mode": 0
         },
         "okey": {
           "type": 5,
-          "k_delta": 0,
           "dur": 0,
-          "fname": "abc",
-          "istart": 84,
-          "iend": 87,
+          "istart": 193,
+          "iend": 196,
           "k_sf": 0,
           "k_mode": 0
         },
@@ -106,687 +72,1686 @@
           "dur": 0,
           "a_meter": [
             {
-              "top": "4",
               "bot": "4"
             }
           ],
-          "fname": "abc",
-          "istart": 62,
-          "iend": 67,
+          "istart": 171,
+          "iend": 176,
           "wmeasure": 1536
         },
         "wmeasure": 1536,
         "clef": {
           "type": 1,
-          "clef_line": 2,
-          "clef_type": "t",
-          "v": 0,
           "time": 0,
           "dur": 0,
-          "fname": "abc",
-          "istart": 103,
-          "iend": 140
-        },
-        "hy_st": 0,
-        "cst": 0,
-        "st": 0,
-        "init": true,
-        "staffnonote": 2,
-        "nm": "Sopran",
-        "new_name": true,
-        "snm": "S",
-        "sym": {
-          "type": 14,
-          "dur": 0,
-          "fname": "abc",
-          "istart": 74,
-          "iend": 83,
-          "tempo_notes": [
-            384
-          ],
-          "tempo": 120,
-          "v": 0,
-          "st": 0,
-          "time": 0,
-          "seqst": true
-        },
-        "last_sym": {
-          "type": 0,
-          "fname": "abc",
-          "istart": 158,
-          "dur": 0,
-          "multi": 0,
-          "iend": 160,
-          "rbstop": 2,
-          "bar_type": "|]",
-          "v": 0,
-          "st": 0,
-          "time": 3072,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "eoln": true,
-          "seqst": true,
-          "bar_num": 3
-        },
-        "last_note": {
-          "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 154,
-          "notes": [
-            {
-              "pit": 27,
-              "apit": 27,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 768,
-              "midi": 79
-            }
-          ],
-          "dur_orig": 768,
-          "dur": 768,
-          "head": 1,
-          "dots": 0,
-          "nflags": -1,
-          "v": 0,
-          "st": 0,
-          "time": 2304,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 156,
-          "beam_end": true,
-          "a_ly": [
-            {
-              "t": "chen",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 25.771200156211854,
-              "istart": 181,
-              "iend": 185
-            }
-          ],
-          "seqst": true
-        },
-        "lyric_restart": null,
-        "sym_restart": {
-          "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 141,
-          "notes": [
-            {
-              "pit": 23,
-              "apit": 23,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 72
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "head": 0,
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 0,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 142,
-          "beam_end": true,
-          "a_ly": [
-            {
-              "t": "al\n",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 9.855300039052963,
-              "istart": 163,
-              "iend": 166
-            }
-          ]
-        },
-        "have_ly": true,
-        "lyric_start": {
-          "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 141,
-          "notes": [
-            {
-              "pit": 23,
-              "apit": 23,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 72
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "head": 0,
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 0,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 142,
-          "beam_end": true,
-          "a_ly": [
-            {
-              "t": "al\n",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 9.855300039052963,
-              "istart": 163,
-              "iend": 166
-            }
-          ]
-        },
-        "lyric_line": 0,
-        "lyric_cont": {
-          "type": 0,
-          "fname": "abc",
-          "istart": 158,
-          "dur": 0,
-          "multi": 0,
-          "iend": 160,
-          "rbstop": 2,
-          "bar_type": "|]",
-          "v": 0,
-          "st": 0,
-          "time": 3072,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "eoln": true,
-          "seqst": true,
-          "bar_num": 3
+          "istart": 227,
+          "iend": 264
         }
       },
       "symbols": [
         {
+          "type": 12,
+          "dur": 0,
+          "istart": 227,
+          "iend": 264,
+          "time": 0
+        },
+        {
           "type": 14,
           "dur": 0,
-          "fname": "abc",
-          "istart": 74,
-          "iend": 83,
+          "istart": 183,
+          "iend": 192,
           "tempo_notes": [
             384
           ],
           "tempo": 120,
-          "v": 0,
-          "st": 0,
-          "time": 0,
-          "seqst": true
-        },
-        {
-          "type": 12,
-          "dur": 0,
-          "sy": {
-            "voices": [
-              {
-                "range": 0,
-                "st": 0,
-                "second": null
-              }
-            ],
-            "staves": [
-              {
-                "stafflines": "|||||",
-                "staffscale": 1,
-                "flags": 0
-              }
-            ],
-            "top_voice": 0,
-            "nstaff": 0
-          },
-          "fname": "abc",
-          "istart": 103,
-          "iend": 140,
-          "v": 0,
-          "st": 0,
-          "time": 0,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          }
+          "time": 0
         },
         {
           "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 141,
-          "notes": [
+          "istart": 290,
+          "a_gch": [
             {
-              "pit": 23,
-              "apit": 23,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 72
+              "text": "#(1)@5,-2",
+              "istart": 265,
+              "iend": 277,
+              "type": "^"
+            },
+            {
+              "text": "#(31)@5,5",
+              "istart": 278,
+              "iend": 290,
+              "type": "^"
             }
           ],
-          "dur_orig": 384,
-          "dur": 384,
-          "head": 0,
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
+          "notes": [
+            {
+              "dur": 1536,
+              "midi": 67
+            }
+          ],
+          "dur": 1536,
           "time": 0,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 142,
-          "beam_end": true,
+          "iend": 292
+        },
+        {
+          "type": 0,
+          "istart": 293,
+          "dur": 0,
+          "iend": 294,
+          "bar_type": "|",
+          "time": 1536
+        },
+        {
+          "type": 8,
+          "istart": 307,
+          "a_gch": [
+            {
+              "text": "#(2)@5,-2",
+              "istart": 295,
+              "iend": 307,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 768,
+              "midi": 69
+            }
+          ],
+          "dur": 768,
+          "time": 1536,
+          "iend": 309
+        },
+        {
+          "type": 8,
+          "istart": 322,
+          "a_gch": [
+            {
+              "text": "#(3)@5,-2",
+              "istart": 310,
+              "iend": 322,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 69
+            }
+          ],
+          "dur": 384,
+          "time": 2304,
+          "iend": 323
+        },
+        {
+          "type": 8,
+          "istart": 336,
+          "a_gch": [
+            {
+              "text": "#(4)@5,-2",
+              "istart": 324,
+              "iend": 336,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 192,
+              "midi": 69
+            }
+          ],
+          "dur": 192,
+          "time": 2688,
+          "iend": 338
+        },
+        {
+          "type": 8,
+          "istart": 351,
+          "a_gch": [
+            {
+              "text": "#(5)@5,-2",
+              "istart": 339,
+              "iend": 351,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 96,
+              "midi": 69
+            }
+          ],
+          "dur": 96,
+          "time": 2880,
+          "iend": 354
+        },
+        {
+          "type": 8,
+          "istart": 355,
+          "notes": [
+            {
+              "dur": 96,
+              "midi": 69
+            }
+          ],
+          "dur": 96,
+          "time": 2976,
+          "iend": 358
+        },
+        {
+          "type": 0,
+          "istart": 358,
+          "dur": 0,
+          "rbstop": 2,
+          "iend": 360,
+          "bar_type": "|:",
+          "time": 3072
+        },
+        {
+          "type": 8,
+          "istart": 368,
+          "a_gch": [
+            {
+              "text": "#(6)",
+              "istart": 361,
+              "iend": 368,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 1152,
+              "midi": 69
+            }
+          ],
+          "dur": 1152,
+          "time": 3072,
+          "iend": 370
+        },
+        {
+          "type": 8,
+          "istart": 386,
+          "a_gch": [
+            {
+              "text": "#(25)@20,-5",
+              "istart": 371,
+              "iend": 385,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 69
+            }
+          ],
+          "dur": 384,
+          "time": 4224,
+          "iend": 387
+        },
+        {
+          "type": 0,
+          "istart": 388,
+          "dur": 0,
+          "rbstop": 2,
+          "iend": 390,
+          "bar_type": ":|",
+          "time": 4608
+        },
+        {
+          "type": 8,
+          "istart": 403,
+          "a_gch": [
+            {
+              "text": "#(7)@5,-2",
+              "istart": 391,
+              "iend": 403,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 576,
+              "midi": 69
+            }
+          ],
+          "dur": 576,
+          "time": 4608,
+          "iend": 404
+        },
+        {
+          "type": 8,
+          "istart": 407,
+          "notes": [
+            {
+              "dur": 192,
+              "midi": 69
+            }
+          ],
+          "dur": 192,
+          "time": 5184,
+          "iend": 408
+        },
+        {
+          "type": 9,
+          "text": "Rests",
+          "dur": 0,
+          "istart": 410,
+          "iend": 419,
+          "time": 5376
+        },
+        {
+          "type": 10,
+          "istart": 432,
+          "a_gch": [
+            {
+              "text": "#(11)@5,-2",
+              "istart": 419,
+              "iend": 432,
+              "type": "^"
+            }
+          ],
+          "dur": 1536,
+          "notes": [
+            {
+              "dur": 1536
+            }
+          ],
+          "time": 5376,
+          "iend": 434
+        },
+        {
+          "type": 0,
+          "istart": 435,
+          "dur": 0,
+          "iend": 436,
+          "bar_type": "|",
+          "time": 6912
+        },
+        {
+          "type": 10,
+          "istart": 450,
+          "a_gch": [
+            {
+              "text": "#(12)@5,-2",
+              "istart": 437,
+              "iend": 450,
+              "type": "^"
+            }
+          ],
+          "dur": 768,
+          "notes": [
+            {
+              "dur": 768
+            }
+          ],
+          "time": 6912,
+          "iend": 452
+        },
+        {
+          "type": 10,
+          "istart": 466,
+          "a_gch": [
+            {
+              "text": "#(13)@5,-2",
+              "istart": 453,
+              "iend": 466,
+              "type": "^"
+            }
+          ],
+          "dur": 384,
+          "notes": [
+            {
+              "dur": 384
+            }
+          ],
+          "time": 7680,
+          "iend": 467
+        },
+        {
+          "type": 10,
+          "istart": 481,
+          "a_gch": [
+            {
+              "text": "#(14)@5,-2",
+              "istart": 468,
+              "iend": 481,
+              "type": "^"
+            }
+          ],
+          "dur": 192,
+          "notes": [
+            {
+              "dur": 192
+            }
+          ],
+          "time": 8064,
+          "iend": 483
+        },
+        {
+          "type": 10,
+          "istart": 497,
+          "a_gch": [
+            {
+              "text": "#(15)@5,-2",
+              "istart": 484,
+              "iend": 497,
+              "type": "^"
+            }
+          ],
+          "dur": 96,
+          "notes": [
+            {
+              "dur": 96
+            }
+          ],
+          "time": 8256,
+          "iend": 500
+        },
+        {
+          "type": 10,
+          "istart": 501,
+          "dur": 96,
+          "notes": [
+            {
+              "dur": 96
+            }
+          ],
+          "time": 8352,
+          "iend": 504
+        },
+        {
+          "type": 0,
+          "istart": 504,
+          "dur": 0,
+          "iend": 505,
+          "bar_type": "|",
+          "time": 8448
+        },
+        {
+          "type": 10,
+          "istart": 519,
+          "a_gch": [
+            {
+              "text": "#(16)@5,-2",
+              "istart": 506,
+              "iend": 519,
+              "type": "^"
+            }
+          ],
+          "dur": 1152,
+          "notes": [
+            {
+              "dur": 1152
+            }
+          ],
+          "time": 8448,
+          "iend": 521
+        },
+        {
+          "type": 10,
+          "istart": 522,
+          "dur": 384,
+          "notes": [
+            {
+              "dur": 384
+            }
+          ],
+          "time": 9600,
+          "iend": 523
+        },
+        {
+          "type": 0,
+          "istart": 524,
+          "dur": 0,
+          "iend": 525,
+          "bar_type": "|",
+          "time": 9984
+        },
+        {
+          "type": 10,
+          "istart": 539,
+          "a_gch": [
+            {
+              "text": "#(17)@5,-2",
+              "istart": 526,
+              "iend": 539,
+              "type": "^"
+            }
+          ],
+          "dur": 576,
+          "notes": [
+            {
+              "dur": 576
+            }
+          ],
+          "time": 9984,
+          "iend": 540
+        },
+        {
+          "type": 10,
+          "istart": 543,
+          "dur": 192,
+          "notes": [
+            {
+              "dur": 192
+            }
+          ],
+          "time": 10560,
+          "iend": 544
+        }
+      ]
+    },
+    {
+      "voice_properties": {
+        "id": "2",
+        "time": 10752,
+        "key": {
+          "type": 5,
+          "dur": 0,
+          "istart": 193,
+          "iend": 196,
+          "k_sf": 6,
+          "k_mode": 0
+        },
+        "okey": {
+          "type": 5,
+          "dur": 0,
+          "istart": 193,
+          "iend": 196,
+          "k_sf": 0,
+          "k_mode": 0
+        },
+        "meter": {
+          "type": 6,
+          "dur": 0,
+          "a_meter": [
+            {
+              "bot": "4"
+            }
+          ],
+          "istart": 171,
+          "iend": 176,
+          "wmeasure": 1536
+        },
+        "wmeasure": 1536,
+        "clef": {
+          "type": 1,
+          "time": 0,
+          "dur": 0,
+          "istart": 546,
+          "iend": 592
+        }
+      },
+      "symbols": [
+        {
+          "type": 8,
+          "istart": 602,
+          "a_gch": [
+            {
+              "text": "#(20)",
+              "istart": 594,
+              "iend": 602,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 768,
+              "midi": 63
+            }
+          ],
+          "dur": 768,
+          "time": 0,
+          "iend": 604
+        },
+        {
+          "type": 8,
+          "istart": 620,
+          "a_gch": [
+            {
+              "text": "#(33)@-10,-5",
+              "istart": 605,
+              "iend": 620,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 768,
+              "midi": 65
+            }
+          ],
+          "dur": 768,
+          "time": 768,
+          "iend": 622
+        },
+        {
+          "type": 0,
+          "istart": 623,
+          "dur": 0,
+          "iend": 624,
+          "bar_type": "|",
+          "time": 1536
+        },
+        {
+          "type": 8,
+          "istart": 639,
+          "a_gch": [
+            {
+              "text": "#(22)@8,5",
+              "istart": 627,
+              "iend": 639,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 63
+            }
+          ],
+          "dur": 256,
+          "time": 1536,
+          "iend": 640,
+          "tp": [
+            {
+              "p": 3
+            }
+          ],
+          "in_tuplet": true
+        },
+        {
+          "type": 8,
+          "istart": 641,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 63
+            }
+          ],
+          "dur": 256,
+          "time": 1792,
+          "iend": 642,
+          "in_tuplet": true
+        },
+        {
+          "type": 8,
+          "istart": 643,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 63
+            }
+          ],
+          "dur": 256,
+          "time": 2048,
+          "iend": 644,
+          "in_tuplet": true,
+          "tpe": 1
+        },
+        {
+          "type": 8,
+          "istart": 658,
+          "a_gch": [
+            {
+              "text": "#(23)@5,1",
+              "istart": 645,
+              "iend": 657,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 63
+            }
+          ],
+          "dur": 384,
+          "time": 2304,
+          "iend": 660
+        },
+        {
+          "type": 8,
+          "istart": 660,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 63
+            }
+          ],
+          "dur": 384,
+          "time": 2688,
+          "iend": 661
+        },
+        {
+          "type": 0,
+          "istart": 662,
+          "dur": 0,
+          "rbstop": 2,
+          "iend": 664,
+          "bar_type": "|:",
+          "time": 3072
+        },
+        {
+          "type": 8,
+          "istart": 665,
+          "notes": [
+            {
+              "dur": 1152,
+              "midi": 63
+            }
+          ],
+          "dur": 1152,
+          "time": 3072,
+          "iend": 667
+        },
+        {
+          "type": 8,
+          "istart": 683,
+          "a_gch": [
+            {
+              "text": "#(24)@10,2",
+              "istart": 668,
+              "iend": 681,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 63
+            }
+          ],
+          "dur": 384,
+          "time": 4224,
+          "iend": 684
+        },
+        {
+          "type": 0,
+          "istart": 685,
+          "dur": 0,
+          "rbstop": 2,
+          "iend": 687,
+          "bar_type": ":|",
+          "time": 4608
+        },
+        {
+          "type": 8,
+          "istart": 703,
+          "a_gch": [
+            {
+              "text": "#(26)@-30,3",
+              "istart": 688,
+              "iend": 702,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 576,
+              "midi": 59
+            },
+            {
+              "dur": 576,
+              "midi": 63
+            }
+          ],
+          "dur": 576,
+          "time": 4608,
+          "iend": 707
+        },
+        {
+          "type": 8,
+          "istart": 710,
+          "notes": [
+            {
+              "dur": 192,
+              "midi": 63
+            }
+          ],
+          "dur": 192,
+          "time": 5184,
+          "iend": 711
+        },
+        {
+          "type": 10,
+          "istart": 721,
+          "a_gch": [
+            {
+              "text": "#(27)",
+              "istart": 713,
+              "iend": 721,
+              "type": "^"
+            }
+          ],
+          "dur": 1536,
+          "notes": [
+            {
+              "dur": 1536
+            }
+          ],
+          "time": 5376,
+          "iend": 723
+        },
+        {
+          "type": 0,
+          "istart": 724,
+          "dur": 0,
+          "iend": 725,
+          "bar_type": "|",
+          "time": 6912
+        },
+        {
+          "type": 10,
+          "istart": 726,
+          "dur": 768,
+          "notes": [
+            {
+              "dur": 768
+            }
+          ],
+          "time": 6912,
+          "iend": 728
+        },
+        {
+          "type": 10,
+          "istart": 729,
+          "dur": 384,
+          "notes": [
+            {
+              "dur": 384
+            }
+          ],
+          "time": 7680,
+          "iend": 730
+        },
+        {
+          "type": 10,
+          "istart": 731,
+          "dur": 192,
+          "notes": [
+            {
+              "dur": 192
+            }
+          ],
+          "time": 8064,
+          "iend": 733
+        },
+        {
+          "type": 10,
+          "istart": 734,
+          "dur": 96,
+          "notes": [
+            {
+              "dur": 96
+            }
+          ],
+          "time": 8256,
+          "iend": 737
+        },
+        {
+          "type": 10,
+          "istart": 738,
+          "dur": 96,
+          "notes": [
+            {
+              "dur": 96
+            }
+          ],
+          "time": 8352,
+          "iend": 741
+        },
+        {
+          "type": 0,
+          "istart": 741,
+          "dur": 0,
+          "iend": 742,
+          "bar_type": "|",
+          "time": 8448
+        },
+        {
+          "type": 10,
+          "istart": 743,
+          "dur": 1152,
+          "notes": [
+            {
+              "dur": 1152
+            }
+          ],
+          "time": 8448,
+          "iend": 745
+        },
+        {
+          "type": 10,
+          "istart": 746,
+          "dur": 384,
+          "notes": [
+            {
+              "dur": 384
+            }
+          ],
+          "time": 9600,
+          "iend": 747
+        },
+        {
+          "type": 0,
+          "istart": 748,
+          "dur": 0,
+          "iend": 749,
+          "bar_type": "|",
+          "time": 9984
+        },
+        {
+          "type": 10,
+          "istart": 750,
+          "dur": 576,
+          "notes": [
+            {
+              "dur": 576
+            }
+          ],
+          "time": 9984,
+          "iend": 751
+        },
+        {
+          "type": 10,
+          "istart": 754,
+          "dur": 192,
+          "notes": [
+            {
+              "dur": 192
+            }
+          ],
+          "time": 10560,
+          "iend": 755
+        }
+      ]
+    },
+    {
+      "voice_properties": {
+        "id": "3",
+        "time": 9600,
+        "key": {
+          "type": 5,
+          "dur": 0,
+          "istart": 193,
+          "iend": 196,
+          "k_sf": 0,
+          "k_mode": 0
+        },
+        "okey": {
+          "type": 5,
+          "dur": 0,
+          "istart": 193,
+          "iend": 196,
+          "k_sf": 0,
+          "k_mode": 0
+        },
+        "meter": {
+          "type": 6,
+          "dur": 0,
+          "a_meter": [
+            {
+              "bot": "4"
+            }
+          ],
+          "istart": 171,
+          "iend": 176,
+          "wmeasure": 1536
+        },
+        "wmeasure": 1536,
+        "clef": {
+          "type": 1,
+          "time": 0
+        }
+      },
+      "symbols": [
+        {
+          "type": 8,
+          "istart": 784,
+          "a_gch": [
+            {
+              "text": "#(28)@10,0",
+              "istart": 771,
+              "iend": 784,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 1536,
+              "midi": 57
+            }
+          ],
+          "dur": 1536,
+          "time": 0,
+          "iend": 786,
           "a_ly": [
             {
-              "t": "al\n",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 9.855300039052963,
-              "istart": 163,
-              "iend": 166
+              "t": "bla",
+              "istart": 999,
+              "iend": 1002
+            }
+          ]
+        },
+        {
+          "type": 0,
+          "istart": 787,
+          "dur": 0,
+          "iend": 788,
+          "bar_type": "|",
+          "time": 1536
+        },
+        {
+          "type": 8,
+          "istart": 805,
+          "a_gch": [
+            {
+              "text": "#(29)@10,-5",
+              "istart": 790,
+              "iend": 804,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 768,
+              "midi": 57
+            }
+          ],
+          "dur": 768,
+          "time": 1536,
+          "iend": 807,
+          "a_ly": [
+            {
+              "t": "bla",
+              "istart": 1003,
+              "iend": 1006
             }
           ]
         },
         {
           "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 143,
+          "istart": 808,
           "notes": [
             {
-              "pit": 24,
-              "apit": 24,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
               "dur": 384,
-              "midi": 74
+              "midi": 57
             }
           ],
-          "dur_orig": 384,
           "dur": 384,
-          "head": 0,
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 384,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 144,
-          "beam_end": true,
-          "a_ly": [
-            {
-              "t": "le",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 9.855300039052963,
-              "istart": 166,
-              "iend": 168
-            }
-          ],
-          "seqst": true
-        },
-        {
-          "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 145,
-          "notes": [
-            {
-              "pit": 25,
-              "apit": 25,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 76
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "head": 0,
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 768,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 146,
-          "beam_end": true,
-          "a_ly": [
-            {
-              "t": "mei\n",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 20.474999999999998,
-              "istart": 169,
-              "iend": 173
-            }
-          ],
-          "seqst": true
-        },
-        {
-          "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 147,
-          "notes": [
-            {
-              "pit": 26,
-              "apit": 26,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 384,
-              "midi": 77
-            }
-          ],
-          "dur_orig": 384,
-          "dur": 384,
-          "head": 0,
-          "dots": 0,
-          "nflags": 0,
-          "v": 0,
-          "st": 0,
-          "time": 1152,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 148,
-          "beam_end": true,
-          "a_ly": [
-            {
-              "t": "ne",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 12.885600078105927,
-              "istart": 173,
-              "iend": 175
-            }
-          ],
-          "seqst": true
-        },
-        {
-          "type": 0,
-          "fname": "abc",
-          "istart": 149,
-          "dur": 0,
-          "multi": 0,
-          "iend": 150,
-          "bar_type": "|",
-          "v": 0,
-          "st": 0,
-          "time": 1536,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "seqst": true,
-          "bar_num": 2
-        },
-        {
-          "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 151,
-          "notes": [
-            {
-              "pit": 27,
-              "apit": 27,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 768,
-              "midi": 79
-            }
-          ],
-          "dur_orig": 768,
-          "dur": 768,
-          "head": 1,
-          "dots": 0,
-          "nflags": -1,
-          "v": 0,
-          "st": 0,
-          "time": 1536,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 153,
-          "beam_end": true,
-          "a_ly": [
-            {
-              "t": "Ent\n",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 18.959849980473518,
-              "istart": 176,
-              "iend": 180
-            }
-          ],
-          "seqst": true
-        },
-        {
-          "type": 8,
-          "fname": "abc",
-          "stem": 0,
-          "multi": 0,
-          "nhd": 0,
-          "xmx": 0,
-          "istart": 154,
-          "notes": [
-            {
-              "pit": 27,
-              "apit": 27,
-              "shhd": 0,
-              "shac": 0,
-              "ti1": 0,
-              "dur": 768,
-              "midi": 79
-            }
-          ],
-          "dur_orig": 768,
-          "dur": 768,
-          "head": 1,
-          "dots": 0,
-          "nflags": -1,
-          "v": 0,
-          "st": 0,
           "time": 2304,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "iend": 156,
-          "beam_end": true,
+          "iend": 809,
           "a_ly": [
             {
-              "t": "chen",
-              "font": {
-                "name": "serifBold",
-                "size": 13,
-                "swfac": 13.65,
-                "fid": 3
-              },
-              "w": 25.771200156211854,
-              "istart": 181,
-              "iend": 185
+              "t": "bla",
+              "istart": 1007,
+              "iend": 1010
+            }
+          ]
+        },
+        {
+          "type": 8,
+          "istart": 810,
+          "notes": [
+            {
+              "dur": 192,
+              "midi": 57
             }
           ],
-          "seqst": true
+          "dur": 192,
+          "time": 2688,
+          "iend": 812,
+          "a_ly": [
+            {
+              "t": "bla",
+              "istart": 1011,
+              "iend": 1014
+            }
+          ]
+        },
+        {
+          "type": 8,
+          "istart": 813,
+          "notes": [
+            {
+              "dur": 96,
+              "midi": 57
+            }
+          ],
+          "dur": 96,
+          "time": 2880,
+          "iend": 816,
+          "a_ly": [
+            {
+              "t": "ba",
+              "istart": 1015,
+              "iend": 1017
+            }
+          ]
+        },
+        {
+          "type": 8,
+          "istart": 817,
+          "notes": [
+            {
+              "dur": 96,
+              "midi": 57
+            }
+          ],
+          "dur": 96,
+          "time": 2976,
+          "iend": 820,
+          "a_ly": [
+            {
+              "t": "ba",
+              "istart": 1018,
+              "iend": 1020
+            }
+          ]
         },
         {
           "type": 0,
-          "fname": "abc",
-          "istart": 158,
+          "istart": 832,
           "dur": 0,
-          "multi": 0,
-          "iend": 160,
+          "a_gch": [
+            {
+              "text": "@@-2,2,-2",
+              "istart": 820,
+              "iend": 832,
+              "type": "^"
+            }
+          ],
+          "text": "1",
           "rbstop": 2,
-          "bar_type": "|]",
-          "v": 0,
-          "st": 0,
+          "rbstart": 2,
+          "iend": 834,
+          "bar_type": "|",
+          "time": 3072
+        },
+        {
+          "type": 8,
+          "istart": 849,
+          "a_gch": [
+            {
+              "text": "#(28)@10,-2",
+              "istart": 835,
+              "iend": 849,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 1152,
+              "midi": 57
+            }
+          ],
+          "dur": 1152,
           "time": 3072,
-          "pos": {
-            "dyn": 0,
-            "gch": 0,
-            "gst": 0,
-            "orn": 0,
-            "stm": 0,
-            "voc": 0,
-            "vol": 0
-          },
-          "eoln": true,
-          "seqst": true,
-          "bar_num": 3
+          "iend": 851
+        },
+        {
+          "type": 8,
+          "istart": 868,
+          "a_gch": [
+            {
+              "text": "#(51)@-40,0",
+              "istart": 853,
+              "iend": 867,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 4224,
+          "iend": 869
+        },
+        {
+          "type": 0,
+          "istart": 871,
+          "dur": 0,
+          "text": "2",
+          "rbstop": 2,
+          "rbstart": 2,
+          "iend": 873,
+          "bar_type": "|",
+          "time": 4608
+        },
+        {
+          "type": 8,
+          "istart": 891,
+          "a_gch": [
+            {
+              "text": "#(50)@-15,-10",
+              "istart": 874,
+              "iend": 890,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 4608,
+          "iend": 892
+        },
+        {
+          "type": 8,
+          "istart": 923,
+          "a_gch": [
+            {
+              "text": "#(53)@-40,10",
+              "istart": 893,
+              "iend": 908,
+              "type": "^"
+            },
+            {
+              "text": "#(52)@1,10",
+              "istart": 909,
+              "iend": 922,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 1152,
+              "midi": 57
+            }
+          ],
+          "dur": 1152,
+          "time": 4992,
+          "iend": 925
+        },
+        {
+          "type": 0,
+          "istart": 926,
+          "dur": 0,
+          "iend": 928,
+          "rbstop": 2,
+          "bar_type": "||",
+          "time": 6144
+        },
+        {
+          "type": 8,
+          "istart": 930,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 6144,
+          "iend": 931
+        },
+        {
+          "type": 8,
+          "istart": 932,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 6528,
+          "iend": 933
+        },
+        {
+          "type": 8,
+          "istart": 943,
+          "a_gch": [
+            {
+              "text": "#(30)",
+              "istart": 934,
+              "iend": 942,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 6912,
+          "a_dd": [
+            {
+              "name": "fermata",
+              "glyph": "hld"
+            }
+          ],
+          "iend": 944
+        },
+        {
+          "type": 8,
+          "istart": 950,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 7296,
+          "a_dd": [
+            {
+              "name": "<(",
+              "glyph": "cresc"
+            }
+          ],
+          "iend": 951
+        },
+        {
+          "type": 8,
+          "istart": 957,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 7680,
+          "a_dd": [
+            {
+              "name": ">(",
+              "glyph": "dim"
+            }
+          ],
+          "iend": 958
+        },
+        {
+          "type": 8,
+          "istart": 965,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 8064,
+          "a_dd": [
+            {
+              "name": "fff",
+              "glyph": "fff"
+            }
+          ],
+          "iend": 966
+        },
+        {
+          "type": 8,
+          "istart": 973,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 8448,
+          "a_dd": [
+            {
+              "name": "ppp",
+              "glyph": "ppp"
+            }
+          ],
+          "iend": 974
+        },
+        {
+          "type": 8,
+          "istart": 982,
+          "a_gch": [
+            {
+              "text": "#vb",
+              "istart": 975,
+              "iend": 981,
+              "type": "^"
+            }
+          ],
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 57
+            }
+          ],
+          "dur": 384,
+          "time": 8832,
+          "iend": 983
+        },
+        {
+          "type": 8,
+          "istart": 995,
+          "notes": [
+            {
+              "dur": 384,
+              "midi": 59
+            }
+          ],
+          "dur": 384,
+          "time": 9216,
+          "a_dd": [
+            {
+              "name": "emphasis",
+              "glyph": "accent"
+            }
+          ],
+          "iend": 996
+        }
+      ]
+    },
+    {
+      "voice_properties": {
+        "id": "4",
+        "time": 10752,
+        "key": {
+          "type": 5,
+          "dur": 0,
+          "istart": 193,
+          "iend": 196,
+          "k_sf": 0,
+          "k_mode": 0
+        },
+        "okey": {
+          "type": 5,
+          "dur": 0,
+          "istart": 193,
+          "iend": 196,
+          "k_sf": 0,
+          "k_mode": 0
+        },
+        "meter": {
+          "type": 6,
+          "dur": 0,
+          "a_meter": [
+            {
+              "bot": "4"
+            }
+          ],
+          "istart": 171,
+          "iend": 176,
+          "wmeasure": 1536
+        },
+        "wmeasure": 1536,
+        "clef": {
+          "type": 1,
+          "time": 0
+        }
+      },
+      "symbols": [
+        {
+          "type": 10,
+          "istart": 1064,
+          "invis": true,
+          "dur": 1536,
+          "time": 0,
+          "iend": 1066
+        },
+        {
+          "type": 0,
+          "dur": 0,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 1536,
+          "bar_type": "|"
+        },
+        {
+          "type": 10,
+          "dur": 1536,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 1536,
+          "invis": true
+        },
+        {
+          "type": 0,
+          "dur": 0,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 3072,
+          "bar_type": "|"
+        },
+        {
+          "type": 10,
+          "dur": 1536,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 3072,
+          "invis": true
+        },
+        {
+          "type": 0,
+          "dur": 0,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 4608,
+          "bar_type": "|"
+        },
+        {
+          "type": 10,
+          "dur": 1536,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 4608,
+          "invis": true
+        },
+        {
+          "type": 0,
+          "dur": 0,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 6144,
+          "bar_type": "|"
+        },
+        {
+          "type": 10,
+          "dur": 1536,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 6144,
+          "invis": true
+        },
+        {
+          "type": 0,
+          "dur": 0,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 7680,
+          "bar_type": "|"
+        },
+        {
+          "type": 10,
+          "dur": 1536,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 7680,
+          "invis": true
+        },
+        {
+          "type": 0,
+          "dur": 0,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 9216,
+          "bar_type": "|"
+        },
+        {
+          "type": 10,
+          "dur": 1536,
+          "istart": 1064,
+          "iend": 1066,
+          "time": 9216,
+          "invis": true,
+          "a_dd": null
+        },
+        {
+          "type": 8,
+          "istart": 1066,
+          "notes": [
+            {
+              "dur": 192,
+              "midi": 43
+            },
+            {
+              "dur": 192,
+              "midi": 44
+            },
+            {
+              "dur": 192,
+              "midi": 45
+            },
+            {
+              "dur": 192,
+              "midi": 46
+            },
+            {
+              "dur": 192,
+              "midi": 47
+            },
+            {
+              "dur": 192,
+              "midi": 48
+            },
+            {
+              "dur": 192,
+              "midi": 49
+            },
+            {
+              "dur": 192,
+              "midi": 50
+            },
+            {
+              "dur": 192,
+              "midi": 51
+            },
+            {
+              "dur": 192,
+              "midi": 52
+            },
+            {
+              "dur": 192,
+              "midi": 53
+            },
+            {
+              "dur": 192,
+              "midi": 54
+            },
+            {
+              "dur": 192,
+              "midi": 55
+            },
+            {
+              "dur": 192,
+              "midi": 56
+            },
+            {
+              "dur": 192,
+              "midi": 57
+            },
+            {
+              "dur": 192,
+              "midi": 58
+            },
+            {
+              "dur": 192,
+              "midi": 59
+            },
+            {
+              "dur": 192,
+              "midi": 60
+            },
+            {
+              "dur": 192,
+              "midi": 61
+            },
+            {
+              "dur": 192,
+              "midi": 62
+            },
+            {
+              "dur": 192,
+              "midi": 63
+            },
+            {
+              "dur": 192,
+              "midi": 64
+            },
+            {
+              "dur": 192,
+              "midi": 65
+            },
+            {
+              "dur": 192,
+              "midi": 66
+            },
+            {
+              "dur": 192,
+              "midi": 67
+            },
+            {
+              "dur": 192,
+              "midi": 68
+            },
+            {
+              "dur": 192,
+              "midi": 69
+            },
+            {
+              "dur": 192,
+              "midi": 70
+            },
+            {
+              "dur": 192,
+              "midi": 71
+            },
+            {
+              "dur": 192,
+              "midi": 72
+            },
+            {
+              "dur": 192,
+              "midi": 73
+            },
+            {
+              "dur": 192,
+              "midi": 74
+            },
+            {
+              "dur": 192,
+              "midi": 75
+            },
+            {
+              "dur": 192,
+              "midi": 76
+            },
+            {
+              "dur": 192,
+              "midi": 77
+            },
+            {
+              "dur": 192,
+              "midi": 78
+            },
+            {
+              "dur": 192,
+              "midi": 79
+            }
+          ],
+          "dur": 192,
+          "time": 10752,
+          "iend": 1133
         }
       ]
     }
