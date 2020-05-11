@@ -77,11 +77,11 @@ class Chordengine
     #
     @notenames = {
         sharp: {
-            major: {%W{C C# D D# E F F# G G# A A# B}},
+            major: %W{C C# D D# E F F# G G# A A# B},
             minor: {}
         },
         flat:  {
-            major: {%W{C Db D Eb E F Gb G Ab A Bb B}},
+            major: %W{C Db D Eb E F Gb G Ab A Bb B},
             minor: {}
         }
     }
