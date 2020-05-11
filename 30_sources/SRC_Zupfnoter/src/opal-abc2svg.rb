@@ -144,14 +144,13 @@ I:stretchlast 1
       abc_text_insert = %Q{
 %%textoption right
 %%textfont * * 8
-%%text #{checksum}
-      }
+%%text #{checksum}}
 
       @abc_source           = strip_js(abc_code)
       @interactive_elements = {}
       @svgbuf               = []
       %x{
-      #{@root}.tosvg(#{"abc"}, #{@abc_source + abc_text_insert});
+      #{@root}.tosvg(#{"abc"}, #{@abc_source});
       }
 
       {svg: get_svg(), interactive_elements: @interactive_elements}

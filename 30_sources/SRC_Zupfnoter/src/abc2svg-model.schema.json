@@ -1,0 +1,573 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "abc2svg integration model",
+  "description": "This describes the structures provided by abc2svg ABCJson.json()",
+  "required": [
+    "music_types",
+    "music_type_ids",
+    "info",
+    "voices"
+  ],
+  "definitions": {
+    "time": {
+      "$id": "#/time",
+      "type": "integer",
+      "title": "The Time Schema",
+      "description": "This represents a time value"
+    },
+    "type": {
+      "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/type",
+      "type": "number",
+      "title": "The Type Schema",
+      "description": "The voice element type as specified in #/properties/music_type_ids"
+    },
+    "dur": {
+      "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/dur",
+      "type": "number",
+      "title": "The Dur Schema",
+      "description": "The duration of the voice element"
+    },
+    "istart": {
+      "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/istart",
+      "type": "number",
+      "title": "The Istart Schema",
+      "description": "the start position of the voice element in abc"
+    },
+    "iend": {
+      "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/iend",
+      "type": "number",
+      "title": "The Iend Schema",
+      "description": "the end position of the voice element in abc"
+    },
+    "k_sf": {
+      "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/k_sf",
+      "type": "number",
+      "title": "The K_sf Schema",
+      "description": "-7=Cb, -6=Gb, -5=Db, -4=Ab, -3=Eb, -2Bb, -1=F,  0: C, 1: G, 2: D, 3:A, 4:E, 5:B, 6:F#, 7: C#,"
+    },
+    "k_mode": {
+      "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/k_mode",
+      "type": "number",
+      "title": "The K_mode Schema",
+      "description": "0=ionian(major), 1=dorian, 2=phrygian, 3=lydian, 4=mixolydia, 5=aeolian(minor) and 6=locrian"
+    }
+  }
+  "properties": {
+    "music_types": {
+      "$id": "#/properties/music_types",
+      "type": "array",
+      "title": "The Music_types Schema",
+      "description": "This provides a lookuptable to map internal nmerical values to strings. the internal numer corresponds to the array index",
+      "items": {
+        "$id": "#/properties/music_types/items",
+        "type": "string",
+        "title": "The Items Schema",
+        "description": "A particular name of a voice element type"
+      }
+    },
+    "music_type_ids": {
+      "$id": "#/properties/music_type_ids",
+      "type": "object",
+      "title": "The Music_type_ids Schema",
+      "description": "this is the inverse of #/properties/music_types",
+      "required": [
+        "bar",
+        "clef",
+        "custos",
+        "grace",
+        "key",
+        "meter",
+        "Zrest",
+        "note",
+        "part",
+        "rest",
+        "yspace",
+        "staves",
+        "Break",
+        "tempo",
+        "block",
+        "remark"
+      ],
+      "properties": {
+        "bar": {
+          "$id": "#/properties/music_type_ids/properties/bar",
+          "type": "number",
+          "title": "The Bar Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "clef": {
+          "$id": "#/properties/music_type_ids/properties/clef",
+          "type": "number",
+          "title": "The Clef Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "custos": {
+          "$id": "#/properties/music_type_ids/properties/custos",
+          "type": "number",
+          "title": "The Custos Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "grace": {
+          "$id": "#/properties/music_type_ids/properties/grace",
+          "type": "number",
+          "title": "The Grace Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "key": {
+          "$id": "#/properties/music_type_ids/properties/key",
+          "type": "number",
+          "title": "The Key Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "meter": {
+          "$id": "#/properties/music_type_ids/properties/meter",
+          "type": "number",
+          "title": "The Meter Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "Zrest": {
+          "$id": "#/properties/music_type_ids/properties/Zrest",
+          "type": "number",
+          "title": "The Zrest Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "note": {
+          "$id": "#/properties/music_type_ids/properties/note",
+          "type": "number",
+          "title": "The Note Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "part": {
+          "$id": "#/properties/music_type_ids/properties/part",
+          "type": "number",
+          "title": "The Part Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "rest": {
+          "$id": "#/properties/music_type_ids/properties/rest",
+          "type": "number",
+          "title": "The Rest Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "yspace": {
+          "$id": "#/properties/music_type_ids/properties/yspace",
+          "type": "number",
+          "title": "The Yspace Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "staves": {
+          "$id": "#/properties/music_type_ids/properties/staves",
+          "type": "number",
+          "title": "The Staves Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "Break": {
+          "$id": "#/properties/music_type_ids/properties/Break",
+          "type": "number",
+          "title": "The Break Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "tempo": {
+          "$id": "#/properties/music_type_ids/properties/tempo",
+          "type": "number",
+          "title": "The Tempo Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "block": {
+          "$id": "#/properties/music_type_ids/properties/block",
+          "type": "number",
+          "title": "The Block Schema",
+          "description": "An explanation about the purpose of this instance."
+        },
+        "remark": {
+          "$id": "#/properties/music_type_ids/properties/remark",
+          "type": "number",
+          "title": "The Remark Schema",
+          "description": "An explanation about the purpose of this instance."
+        }
+      }
+    },
+    "info": {
+      "$id": "#/properties/info",
+      "type": "object",
+      "title": "The Info Schema",
+      "description": "this represents the literal content of info lines in the abc header. Note that multiple lines are joined with \\n",
+      "required": [
+        "X",
+        "F",
+        "T",
+        "C",
+        "S",
+        "M",
+        "W"
+      ],
+      "properties": {
+        "X": {
+          "$id": "#/properties/info/properties/X",
+          "type": "string",
+          "title": "The X Schema",
+          "description": "the content of X: for tune id"
+        },
+        "F": {
+          "$id": "#/properties/info/properties/F",
+          "type": "string",
+          "title": "The F Schema",
+          "description": "the content of F: for filename"
+        },
+        "T": {
+          "$id": "#/properties/info/properties/T",
+          "type": "string",
+          "title": "The T Schema",
+          "description": "the content of T: for title"
+        },
+        "C": {
+          "$id": "#/properties/info/properties/C",
+          "type": "string",
+          "title": "The C Schema",
+          "description": "the content of C: used for copyright owner"
+        },
+        "S": {
+          "$id": "#/properties/info/properties/S",
+          "type": "string",
+          "title": "The S Schema",
+          "description": "the content of S: for source"
+        },
+        "M": {
+          "$id": "#/properties/info/properties/M",
+          "type": "string",
+          "title": "The M Schema",
+          "description": "the content of M: for measure"
+        },
+        "W": {
+          "$id": "#/properties/info/properties/W",
+          "type": "string",
+          "title": "The W Schema",
+          "description": "the content of W: lines for wording"
+        }
+      }
+    },
+    "voices": {
+      "$id": "#/properties/voices",
+      "type": "array",
+      "title": "The Voices Schema",
+      "description": "This represents the voices in the tune",
+      "items": {
+        "$id": "#/properties/voices/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "description": "This represents one particular voice in the tune",
+        "required": [
+          "voice_properties",
+          "symbols"
+        ],
+        "properties": {
+          "voice_properties": {
+            "$id": "#/properties/voices/items/properties/voice_properties",
+            "type": "object",
+            "title": "The Voice_properties Schema",
+            "description": "Ths represents the properties of the given voice",
+            "required": [
+              "id",
+              "time",
+              "key",
+              "okey",
+              "meter",
+              "wmeasure",
+              "clef"
+            ],
+            "properties": {
+              "id": {
+                "$id": "#/properties/voices/items/properties/voice_properties/properties/id",
+                "type": "string",
+                "title": "The Id Schema",
+                "description": "This is the ide of the voice as specified in the V: header"
+              },
+              "time": {
+                "$ref": "#/definitions/time",
+                "description": "This is the time of the last note of this voice"
+              }
+            },
+            "key": {
+              "$id": "#/properties/voices/items/properties/voice_properties/properties/key",
+              "type": "object",
+              "title": "The Key Schema",
+              "description": "this denotes the initial key signature of the tune",
+              "required": [
+                "type",
+                "dur",
+                "istart",
+                "iend",
+                "k_sf",
+                "k_mode"
+              ],
+              "properties": {
+                "type": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/type",
+                  "type": "number",
+                  "title": "The Type Schema",
+                  "description": "The voice element type as specified in #/properties/music_type_ids"
+                },
+                "dur": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/dur",
+                  "type": "number",
+                  "title": "The Dur Schema",
+                  "description": "The duration of the voice element"
+                },
+                "istart": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/istart",
+                  "type": "number",
+                  "title": "The Istart Schema",
+                  "description": "the start position of the voice element in abc"
+                },
+                "iend": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/iend",
+                  "type": "number",
+                  "title": "The Iend Schema",
+                  "description": "the end position of the voice element in abc"
+                },
+                "k_sf": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/k_sf",
+                  "type": "number",
+                  "title": "The K_sf Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "k_mode": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/key/properties/k_mode",
+                  "type": "number",
+                  "title": "The K_mode Schema",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            },
+            "okey": {
+              "$id": "#/properties/voices/items/properties/voice_properties/properties/okey",
+              "type": "object",
+              "title": "The Okey Schema",
+              "description": "An explanation about the purpose of this instance.",
+              "required": [
+                "type",
+                "dur",
+                "istart",
+                "iend",
+                "k_sf",
+                "k_mode"
+              ],
+              "properties": {
+                "type": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/okey/properties/type",
+                  "type": "number",
+                  "title": "The Type Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "dur": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/okey/properties/dur",
+                  "type": "number",
+                  "title": "The Dur Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "istart": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/okey/properties/istart",
+                  "type": "number",
+                  "title": "The Istart Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "iend": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/okey/properties/iend",
+                  "type": "number",
+                  "title": "The Iend Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "k_sf": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/okey/properties/k_sf",
+                  "type": "number",
+                  "title": "The K_sf Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "k_mode": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/okey/properties/k_mode",
+                  "type": "number",
+                  "title": "The K_mode Schema",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            },
+            "meter": {
+              "$id": "#/properties/voices/items/properties/voice_properties/properties/meter",
+              "type": "object",
+              "title": "The Meter Schema",
+              "description": "An explanation about the purpose of this instance.",
+              "required": [
+                "type",
+                "dur",
+                "a_meter",
+                "istart",
+                "iend",
+                "wmeasure"
+              ],
+              "properties": {
+                "type": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/type",
+                  "type": "number",
+                  "title": "The Type Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "dur": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/dur",
+                  "type": "number",
+                  "title": "The Dur Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "a_meter": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/a_meter",
+                  "type": "array",
+                  "title": "The A_meter Schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "items": {
+                    "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/a_meter/items",
+                    "type": "object",
+                    "title": "The Items Schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "required": [
+                      "bot"
+                    ],
+                    "properties": {
+                      "bot": {
+                        "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/a_meter/items/properties/bot",
+                        "type": "string",
+                        "title": "The Bot Schema",
+                        "description": "An explanation about the purpose of this instance."
+                      }
+                    }
+                  }
+                },
+                "istart": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/istart",
+                  "type": "number",
+                  "title": "The Istart Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "iend": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/iend",
+                  "type": "number",
+                  "title": "The Iend Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "wmeasure": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/meter/properties/wmeasure",
+                  "type": "number",
+                  "title": "The Wmeasure Schema",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            },
+            "wmeasure": {
+              "$id": "#/properties/voices/items/properties/voice_properties/properties/wmeasure",
+              "type": "number",
+              "title": "The Wmeasure Schema",
+              "description": "An explanation about the purpose of this instance."
+            },
+            "clef": {
+              "$id": "#/properties/voices/items/properties/voice_properties/properties/clef",
+              "type": "object",
+              "title": "The Clef Schema",
+              "description": "An explanation about the purpose of this instance.",
+              "required": [
+                "type",
+                "time",
+                "dur",
+                "istart",
+                "iend"
+              ],
+              "properties": {
+                "type": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/clef/properties/type",
+                  "type": "number",
+                  "title": "The Type Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "time": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/clef/properties/time",
+                  "type": "number",
+                  "title": "The Time Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "dur": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/clef/properties/dur",
+                  "type": "number",
+                  "title": "The Dur Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "istart": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/clef/properties/istart",
+                  "type": "number",
+                  "title": "The Istart Schema",
+                  "description": "An explanation about the purpose of this instance."
+                },
+                "iend": {
+                  "$id": "#/properties/voices/items/properties/voice_properties/properties/clef/properties/iend",
+                  "type": "number",
+                  "title": "The Iend Schema",
+                  "description": "An explanation about the purpose of this instance."
+                }
+              }
+            }
+          }
+        },
+        "symbols": {
+          "$id": "#/properties/voices/items/properties/symbols",
+          "type": "array",
+          "title": "The Symbols Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "items": {
+            "$id": "#/properties/voices/items/properties/symbols/items",
+            "type": "object",
+            "title": "The Items Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "required": [
+              "type",
+              "dur",
+              "istart",
+              "iend",
+              "time"
+            ],
+            "properties": {
+              "type": {
+                "$id": "#/properties/voices/items/properties/symbols/items/properties/type",
+                "type": "number",
+                "title": "The Type Schema",
+                "description": "An explanation about the purpose of this instance."
+              },
+              "dur": {
+                "$id": "#/properties/voices/items/properties/symbols/items/properties/dur",
+                "type": "number",
+                "title": "The Dur Schema",
+                "description": "An explanation about the purpose of this instance."
+              },
+              "istart": {
+                "$id": "#/properties/voices/items/properties/symbols/items/properties/istart",
+                "type": "number",
+                "title": "The Istart Schema",
+                "description": "An explanation about the purpose of this instance."
+              },
+              "iend": {
+                "$id": "#/properties/voices/items/properties/symbols/items/properties/iend",
+                "type": "number",
+                "title": "The Iend Schema",
+                "description": "An explanation about the purpose of this instance."
+              },
+              "time": {
+                "$id": "#/properties/voices/items/properties/symbols/items/properties/time",
+                "type": "number",
+                "title": "The Time Schema",
+                "description": "An explanation about the purpose of this instance."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+}
