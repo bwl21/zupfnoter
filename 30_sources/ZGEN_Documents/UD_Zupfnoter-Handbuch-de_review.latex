@@ -203,7 +203,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.14-5-g26d934e6
+Version V\_1.14-56-g2c10bec3
 
 \begin{verbatim}
 © 2020 https://www.zupfnoter.de
@@ -3352,7 +3352,7 @@ dass er wieder sichtbar wird.
 \subsubsection{Flu\ss linien gestalten}\label{flowconf}}
 
 Bei manchen St\"{u}cken kommt es vor, dass die Flu\ss linie einer Stimme
-durch die Begleintnoten verl\"{a}uft. In diemesm Fall muss man ggf. die
+durch die Begleintnoten verl\"{a}uft. In diesem Fall muss man ggf. die
 Flu\ss linie um die Begleitnonten ``herumbiegen''. Da zu gibt es eine
 experimentelle M\"{o}glichkeit die Flu\ss linie mit der Maus zu
 gestalten, \"{a}hnlich wie die Triolenb\"{o}gen.
@@ -3365,6 +3365,21 @@ Die Bearbeitungsm\"{o}glichkeiten m\"{u}ssen in der
 \textbf{Hinweis:} Wenn die Bearbeitung der Flu\ss linien eingeschaltet
 ist, wird Zupfnoter deutlich langsamer.
 \end{quote}
+
+Die Flu\ss linie wird unterbrochen
+
+\begin{itemize}
+\tightlist
+\item
+  vor und nach einer Wiederholung
+\item
+  bei einem Taktstrich \texttt{\textbar{}\textbar{}} bzw.
+  \texttt{\textbar{}{]}}
+\item
+  bei eienmm Abschnitt (Part) mit \texttt{{[}P:{]}}
+\item
+  pro Stimme mit der Dekoration !breath!
+\end{itemize}
 
 \clearpage
 
@@ -4438,6 +4453,30 @@ Parameter werden hier zur Vollst\"{a}ndigkeit aufgef\"{u}hrt.
   \texttt{?debug}
 \end{itemize}
 
+\hypertarget{notwendige-aux308nderungen-beim-uux308bergang-von-zupfnoter-1.xx-nach-zupfnoter-2.xx}{%
+\section{Notwendige \"{A}nderungen beim \"{U}bergang von Zupfnoter 1.xx
+nach Zupfnoter
+2.xx}\label{notwendige-aux308nderungen-beim-uux308bergang-von-zupfnoter-1.xx-nach-zupfnoter-2.xx}}
+
+Wenn sich bei einem Programm die erste Stelle der Versionsnummer
+\"{a}ndert, muss man ggf. die ABC-Dateien \"{a}ndern. Auch wenn wir
+versuchen, diese \"{A}nderungen so gering wir m\"{o}glich zu halten, so
+sind sie doch nicht zu vermeiden. Manche diese \"{A}nderungen stammen
+aus einer genaueren Interpretation des ABC-Standards.
+
+\hypertarget{transponieren-1}{%
+\subsection{Transponieren}\label{transponieren-1}}
+
+In Zupfnoter 1.x funktioniert manchmal das \texttt{\%\%transpose} noch.
+Zupfnoter wirft nun aber einen Fehler.
+
+\hypertarget{haltebogen}{%
+\subsection{Haltebogen}\label{haltebogen}}
+
+\hypertarget{angabe-der-geschwindigkeit-q}{%
+\subsection{Angabe der Geschwindigkeit
+(Q:)}\label{angabe-der-geschwindigkeit-q}}
+
 \cleardoublepage
 
 \hypertarget{zupfnoter-fuux308r-experten}{%
@@ -4730,8 +4769,8 @@ mit einer Note verbinden (Notenbeschriftung).
 \end{verbatim}
 
 \hypertarget{annotations.rit}{%
-\subsection{\texorpdfstring{\texttt{annotations.rit}
--}{annotations.rit -}}\label{annotations.rit}}
+\subsection{\texorpdfstring{\texttt{annotations.rit} -
+rit}{annotations.rit - rit}}\label{annotations.rit}}
 
 TODO:\marginpar{TODO} Helptext f\"{u}r annotations.rit einf\"{u}gen
 
@@ -4808,8 +4847,9 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 \end{itemize}
 
 \hypertarget{annotations.vb}{%
-\subsection{\texorpdfstring{\texttt{annotations.vb}
--}{annotations.vb -}}\label{annotations.vb}}
+\subsection{\texorpdfstring{\texttt{annotations.vb} - D\"{a}mpfer unter
+der
+Note}{annotations.vb - D\"{a}mpfer unter der Note}}\label{annotations.vb}}
 
 TODO:\marginpar{TODO} Helptext f\"{u}r annotations.vb einf\"{u}gen
 
@@ -5181,9 +5221,7 @@ spezifiziert den Auszug 1 usw.
       },
       "1" : {"title": "Sopran, Alt", "voices": [1, 2]},
       "2" : {"title": "Tenor, Bass", "voices": [3, 4]},
-      "3" : {"title": "Melodie", "voices": [1]},
-      "4" : {"title": "Extract 4", "voices": [1]},
-      "5" : {"title": "Extract 5", "voices": [1]}
+      "3" : {"title": "Melodie", "voices": [1]}
     }
       
 \end{verbatim}

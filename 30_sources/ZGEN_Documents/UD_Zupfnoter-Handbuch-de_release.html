@@ -100,259 +100,264 @@
 <li><a href="#parameter-in-der-zupfnoter-url"><span class="toc-section-number">4.8.17</span> Parameter in der Zupfnoter-URL</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#zupfnoter-für-experten"><span class="toc-section-number">5</span> Zupfnoter für Experten</a><ul>
-<li><a href="#zupfnoter-einstellungen"><span class="toc-section-number">5.1</span> Zupfnoter Einstellungen</a><ul>
-<li><a href="#persönliche-einstellungen"><span class="toc-section-number">5.1.1</span> Persönliche Einstellungen</a></li>
-<li><a href="#grundlegende-blatteinstellungen"><span class="toc-section-number">5.1.2</span> Grundlegende Blatteinstellungen (Konfiguration)</a></li>
+<li><a href="#notwendige-änderungen-beim-übergang-von-zupfnoter-1.xx-nach-zupfnoter-2.xx"><span class="toc-section-number">5</span> Notwendige Änderungen beim Übergang von Zupfnoter 1.xx nach Zupfnoter 2.xx</a><ul>
+<li><a href="#transponieren-1"><span class="toc-section-number">5.1</span> Transponieren</a></li>
+<li><a href="#haltebogen"><span class="toc-section-number">5.2</span> Haltebogen</a></li>
+<li><a href="#angabe-der-geschwindigkeit-q"><span class="toc-section-number">5.3</span> Angabe der Geschwindigkeit (Q:)</a></li>
 </ul></li>
-<li><a href="#zusaetze"><span class="toc-section-number">5.2</span> Zupfnoter-spezifische Zusätze</a></li>
+<li><a href="#zupfnoter-für-experten"><span class="toc-section-number">6</span> Zupfnoter für Experten</a><ul>
+<li><a href="#zupfnoter-einstellungen"><span class="toc-section-number">6.1</span> Zupfnoter Einstellungen</a><ul>
+<li><a href="#persönliche-einstellungen"><span class="toc-section-number">6.1.1</span> Persönliche Einstellungen</a></li>
+<li><a href="#grundlegende-blatteinstellungen"><span class="toc-section-number">6.1.2</span> Grundlegende Blatteinstellungen (Konfiguration)</a></li>
 </ul></li>
-<li><a href="#best-practice"><span class="toc-section-number">6</span> Best practice</a></li>
-<li><a href="#abc-tutorial"><span class="toc-section-number">7</span> ABC Tutorial</a></li>
-<li><a href="#konfiguration"><span class="toc-section-number">8</span> Konfiguration der Ausgabe</a><ul>
-<li><a href="#annotations"><span class="toc-section-number">8.1</span> <code>annotations</code> - Notenbeschriftungsvorlagen</a></li>
-<li><a href="#annotations.rit"><span class="toc-section-number">8.2</span> <code>annotations.rit</code> -</a></li>
-<li><a href="#annotations.rit.pos"><span class="toc-section-number">8.3</span> <code>annotations.rit.pos</code> - Position</a></li>
-<li><a href="#annotations.rit.style"><span class="toc-section-number">8.4</span> <code>annotations.rit.style</code> - Stil</a></li>
-<li><a href="#annotations.rit.text"><span class="toc-section-number">8.5</span> <code>annotations.rit.text</code> - Text</a></li>
-<li><a href="#annotations.vb"><span class="toc-section-number">8.6</span> <code>annotations.vb</code> -</a></li>
-<li><a href="#annotations.vb.pos"><span class="toc-section-number">8.7</span> <code>annotations.vb.pos</code> - Position</a></li>
-<li><a href="#annotations.vb.text"><span class="toc-section-number">8.8</span> <code>annotations.vb.text</code> - Text</a></li>
-<li><a href="#annotations.vl"><span class="toc-section-number">8.9</span> <code>annotations.vl</code> - ‘V’ links</a></li>
-<li><a href="#annotations.vl.pos"><span class="toc-section-number">8.10</span> <code>annotations.vl.pos</code> - Position</a></li>
-<li><a href="#annotations.vl.text"><span class="toc-section-number">8.11</span> <code>annotations.vl.text</code> - Text</a></li>
-<li><a href="#annotations.vr"><span class="toc-section-number">8.12</span> <code>annotations.vr</code> - ‘V’ rechts</a></li>
-<li><a href="#annotations.vr.pos"><span class="toc-section-number">8.13</span> <code>annotations.vr.pos</code> - Position</a></li>
-<li><a href="#annotations.vr.text"><span class="toc-section-number">8.14</span> <code>annotations.vr.text</code> - Text</a></li>
-<li><a href="#annotations.vt"><span class="toc-section-number">8.15</span> <code>annotations.vt</code> - ‘V’ oben</a></li>
-<li><a href="#annotations.vt.pos"><span class="toc-section-number">8.16</span> <code>annotations.vt.pos</code> - Position</a></li>
-<li><a href="#annotations.vt.text"><span class="toc-section-number">8.17</span> <code>annotations.vt.text</code> - Text</a></li>
-<li><a href="#extract"><span class="toc-section-number">8.18</span> <code>extract</code> - Auszug</a></li>
-<li><a href="#extract.0.barnumbers"><span class="toc-section-number">8.19</span> <code>extract.0.barnumbers</code> - Taktnummern</a></li>
-<li><a href="#extract.0.barnumbers.apanchor"><span class="toc-section-number">8.20</span> <code>extract.0.barnumbers.apanchor</code> - autom. pos. Anker</a></li>
-<li><a href="#extract.0.barnumbers.apbase"><span class="toc-section-number">8.21</span> <code>extract.0.barnumbers.apbase</code> - autom. pos. Basis</a></li>
-<li><a href="#extract.0.barnumbers.autopos"><span class="toc-section-number">8.22</span> <code>extract.0.barnumbers.autopos</code> - autom. pos.</a></li>
-<li><a href="#extract.0.barnumbers.pos"><span class="toc-section-number">8.23</span> <code>extract.0.barnumbers.pos</code> - Position</a></li>
-<li><a href="#extract.0.barnumbers.prefix"><span class="toc-section-number">8.24</span> <code>extract.0.barnumbers.prefix</code> - Präfix</a></li>
-<li><a href="#extract.0.barnumbers.style"><span class="toc-section-number">8.25</span> <code>extract.0.barnumbers.style</code> - Stil</a></li>
-<li><a href="#extract.0.barnumbers.voices"><span class="toc-section-number">8.26</span> <code>extract.0.barnumbers.voices</code> - Stimmen</a></li>
-<li><a href="#extract.0.chords"><span class="toc-section-number">8.27</span> <code>extract.0.chords</code> - Akkordsymbole</a></li>
-<li><a href="#extract.0.chords.apanchor"><span class="toc-section-number">8.28</span> <code>extract.0.chords.apanchor</code> - autom. pos. Anker</a></li>
-<li><a href="#extract.0.chords.apbase"><span class="toc-section-number">8.29</span> <code>extract.0.chords.apbase</code> - autom. pos. Basis</a></li>
-<li><a href="#extract.0.chords.autopos"><span class="toc-section-number">8.30</span> <code>extract.0.chords.autopos</code> - autom. pos.</a></li>
-<li><a href="#extract.0.chords.pos"><span class="toc-section-number">8.31</span> <code>extract.0.chords.pos</code> - Position</a></li>
-<li><a href="#extract.0.chords.style"><span class="toc-section-number">8.32</span> <code>extract.0.chords.style</code> - Stil</a></li>
-<li><a href="#extract.0.chords.voices"><span class="toc-section-number">8.33</span> <code>extract.0.chords.voices</code> - Stimmen</a></li>
-<li><a href="#extract.0.countnotes"><span class="toc-section-number">8.34</span> <code>extract.0.countnotes</code> - Zählmarken</a></li>
-<li><a href="#extract.0.countnotes.apanchor"><span class="toc-section-number">8.35</span> <code>extract.0.countnotes.apanchor</code> - autom. pos. Anker</a></li>
-<li><a href="#extract.0.countnotes.apbase"><span class="toc-section-number">8.36</span> <code>extract.0.countnotes.apbase</code> - autom. pos. Basis</a></li>
-<li><a href="#extract.0.countnotes.autopos"><span class="toc-section-number">8.37</span> <code>extract.0.countnotes.autopos</code> - autom. pos.</a></li>
-<li><a href="#extract.0.countnotes.pos"><span class="toc-section-number">8.38</span> <code>extract.0.countnotes.pos</code> - Position</a></li>
-<li><a href="#extract.0.countnotes.style"><span class="toc-section-number">8.39</span> <code>extract.0.countnotes.style</code> - Stil</a></li>
-<li><a href="#extract.0.countnotes.voices"><span class="toc-section-number">8.40</span> <code>extract.0.countnotes.voices</code> - Stimmen</a></li>
-<li><a href="#extract.0.flowlines"><span class="toc-section-number">8.41</span> <code>extract.0.flowlines</code> - Flußlinien</a></li>
-<li><a href="#extract.0.images"><span class="toc-section-number">8.42</span> <code>extract.0.images</code> - Bilder</a></li>
-<li><a href="#extract.0.jumplines"><span class="toc-section-number">8.43</span> <code>extract.0.jumplines</code> - Sprunglinien</a></li>
-<li><a href="#extract.0.layout"><span class="toc-section-number">8.44</span> <code>extract.0.layout</code> - Layout</a></li>
-<li><a href="#extract.0.layout.DRAWING_AREA_SIZE"><span class="toc-section-number">8.45</span> <code>extract.0.layout.DRAWING_AREA_SIZE</code> - Zeichenfl.Größe</a></li>
-<li><a href="#extract.0.layout.ELLIPSE_SIZE"><span class="toc-section-number">8.46</span> <code>extract.0.layout.ELLIPSE_SIZE</code> - Notengröße</a></li>
-<li><a href="#extract.0.layout.LINE_MEDIUM"><span class="toc-section-number">8.47</span> <code>extract.0.layout.LINE_MEDIUM</code> - Linienstärke mittel</a></li>
-<li><a href="#extract.0.layout.LINE_THICK"><span class="toc-section-number">8.48</span> <code>extract.0.layout.LINE_THICK</code> - Linienstärke dick</a></li>
-<li><a href="#extract.0.layout.LINE_THIN"><span class="toc-section-number">8.49</span> <code>extract.0.layout.LINE_THIN</code> - Linienstärke dünn</a></li>
-<li><a href="#extract.0.layout.PITCH_OFFSET"><span class="toc-section-number">8.50</span> <code>extract.0.layout.PITCH_OFFSET</code> - PitchOffset</a></li>
-<li><a href="#extract.0.layout.REST_SIZE"><span class="toc-section-number">8.51</span> <code>extract.0.layout.REST_SIZE</code> - Pausengröße</a></li>
-<li><a href="#extract.0.layout.X_OFFSET"><span class="toc-section-number">8.52</span> <code>extract.0.layout.X_OFFSET</code> - X - Offset</a></li>
-<li><a href="#extract.0.layout.X_SPACING"><span class="toc-section-number">8.53</span> <code>extract.0.layout.X_SPACING</code> - Saitenabstand</a></li>
-<li><a href="#extract.0.layout.beams"><span class="toc-section-number">8.54</span> <code>extract.0.layout.beams</code> - Notenhälse</a></li>
-<li><a href="#extract.0.layout.bottomup"><span class="toc-section-number">8.55</span> <code>extract.0.layout.bottomup</code> - Spiel aufwärts</a></li>
-<li><a href="#extract.0.layout.color"><span class="toc-section-number">8.56</span> <code>extract.0.layout.color</code> - Farbeinstellung</a></li>
-<li><a href="#extract.0.layout.color.color_default"><span class="toc-section-number">8.57</span> <code>extract.0.layout.color.color_default</code> - Sonstiges</a></li>
-<li><a href="#extract.0.layout.color.color_variant1"><span class="toc-section-number">8.58</span> <code>extract.0.layout.color.color_variant1</code> - Variante1</a></li>
-<li><a href="#extract.0.layout.color.color_variant2"><span class="toc-section-number">8.59</span> <code>extract.0.layout.color.color_variant2</code> - Variante2</a></li>
-<li><a href="#extract.0.layout.instrument"><span class="toc-section-number">8.60</span> <code>extract.0.layout.instrument</code> - Instrument</a></li>
-<li><a href="#extract.0.layout.jumpline_anchor"><span class="toc-section-number">8.61</span> <code>extract.0.layout.jumpline_anchor</code> - Sprungl.Anker</a></li>
-<li><a href="#extract.0.layout.limit_a3"><span class="toc-section-number">8.62</span> <code>extract.0.layout.limit_a3</code> - Begrenzung auf A3</a></li>
-<li><a href="#extract.0.layout.packer"><span class="toc-section-number">8.63</span> <code>extract.0.layout.packer</code> - Packer</a></li>
-<li><a href="#extract.0.layout.packer.pack_max_spreadfactor"><span class="toc-section-number">8.64</span> <code>extract.0.layout.packer.pack_max_spreadfactor</code> - max. Spreizung</a></li>
-<li><a href="#extract.0.layout.packer.pack_method"><span class="toc-section-number">8.65</span> <code>extract.0.layout.packer.pack_method</code> - Packmethode</a></li>
-<li><a href="#extract.0.layout.packer.pack_min_increment"><span class="toc-section-number">8.66</span> <code>extract.0.layout.packer.pack_min_increment</code> - min. Inkrement</a></li>
-<li><a href="#extract.0.layout.tuning"><span class="toc-section-number">8.67</span> <code>extract.0.layout.tuning</code> - Stimmung</a></li>
-<li><a href="#extract.0.layoutlines"><span class="toc-section-number">8.68</span> <code>extract.0.layoutlines</code> - Stimmen für Layout</a></li>
-<li><a href="#extract.0.legend"><span class="toc-section-number">8.69</span> <code>extract.0.legend</code> - Legende</a></li>
-<li><a href="#extract.0.legend.align"><span class="toc-section-number">8.70</span> <code>extract.0.legend.align</code> - Ausrichtung</a></li>
-<li><a href="#extract.0.legend.pos"><span class="toc-section-number">8.71</span> <code>extract.0.legend.pos</code> - Position</a></li>
-<li><a href="#extract.0.legend.spos"><span class="toc-section-number">8.72</span> <code>extract.0.legend.spos</code> - Pos. Subleg.</a></li>
-<li><a href="#extract.0.legend.style"><span class="toc-section-number">8.73</span> <code>extract.0.legend.style</code> - Stil</a></li>
-<li><a href="#extract.0.legend.tstyle"><span class="toc-section-number">8.74</span> <code>extract.0.legend.tstyle</code> - Stil f. Titel</a></li>
-<li><a href="#extract.0.lyrics"><span class="toc-section-number">8.75</span> <code>extract.0.lyrics</code> - Liedtexte</a></li>
-<li><a href="#extract.0.nonflowrest"><span class="toc-section-number">8.76</span> <code>extract.0.nonflowrest</code> - Begleitpausen</a></li>
-<li><a href="#extract.0.notebound.minc"><span class="toc-section-number">8.77</span> <code>extract.0.notebound.minc</code> - extra Vorschub</a></li>
-<li><a href="#extract.0.notebound.minc.x.minc_f"><span class="toc-section-number">8.78</span> <code>extract.0.notebound.minc.x.minc_f</code> - Faktor</a></li>
-<li><a href="#extract.0.notebound.tuplet"><span class="toc-section-number">8.79</span> <code>extract.0.notebound.tuplet</code> - n-Tole</a></li>
-<li><a href="#extract.0.notes"><span class="toc-section-number">8.80</span> <code>extract.0.notes</code> - Seitenbeschriftungen</a></li>
-<li><a href="#extract.0.printer"><span class="toc-section-number">8.81</span> <code>extract.0.printer</code> - Drucker</a></li>
-<li><a href="#extract.0.printer.a3_offset"><span class="toc-section-number">8.82</span> <code>extract.0.printer.a3_offset</code> - Offset für A3</a></li>
-<li><a href="#extract.0.printer.a4_offset"><span class="toc-section-number">8.83</span> <code>extract.0.printer.a4_offset</code> - Offset für A4</a></li>
-<li><a href="#extract.0.printer.a4_pages"><span class="toc-section-number">8.84</span> <code>extract.0.printer.a4_pages</code> - Seiten bei A4</a></li>
-<li><a href="#extract.0.printer.show_border"><span class="toc-section-number">8.85</span> <code>extract.0.printer.show_border</code> - Blattbegr. zeich.</a></li>
-<li><a href="#extract.0.repeatsigns"><span class="toc-section-number">8.86</span> <code>extract.0.repeatsigns</code> - Wiederholungszeichen</a></li>
-<li><a href="#extract.0.repeatsigns.left"><span class="toc-section-number">8.87</span> <code>extract.0.repeatsigns.left</code> - links</a></li>
-<li><a href="#extract.0.repeatsigns.left.pos"><span class="toc-section-number">8.88</span> <code>extract.0.repeatsigns.left.pos</code> - Position</a></li>
-<li><a href="#extract.0.repeatsigns.left.style"><span class="toc-section-number">8.89</span> <code>extract.0.repeatsigns.left.style</code> - Stil</a></li>
-<li><a href="#extract.0.repeatsigns.left.text"><span class="toc-section-number">8.90</span> <code>extract.0.repeatsigns.left.text</code> - Text</a></li>
-<li><a href="#extract.0.repeatsigns.right"><span class="toc-section-number">8.91</span> <code>extract.0.repeatsigns.right</code> - rechts</a></li>
-<li><a href="#extract.0.repeatsigns.right.pos"><span class="toc-section-number">8.92</span> <code>extract.0.repeatsigns.right.pos</code> - Position</a></li>
-<li><a href="#extract.0.repeatsigns.right.style"><span class="toc-section-number">8.93</span> <code>extract.0.repeatsigns.right.style</code> - Stil</a></li>
-<li><a href="#extract.0.repeatsigns.right.text"><span class="toc-section-number">8.94</span> <code>extract.0.repeatsigns.right.text</code> - Text</a></li>
-<li><a href="#extract.0.repeatsigns.voices"><span class="toc-section-number">8.95</span> <code>extract.0.repeatsigns.voices</code> - Stimmen</a></li>
-<li><a href="#extract.0.sortmark"><span class="toc-section-number">8.96</span> <code>extract.0.sortmark</code> - Sortiermarke</a></li>
-<li><a href="#extract.0.sortmark.fill"><span class="toc-section-number">8.97</span> <code>extract.0.sortmark.fill</code> - ausfüllen</a></li>
-<li><a href="#extract.0.sortmark.show"><span class="toc-section-number">8.98</span> <code>extract.0.sortmark.show</code> - anzeigen</a></li>
-<li><a href="#extract.0.sortmark.size"><span class="toc-section-number">8.99</span> <code>extract.0.sortmark.size</code> - Größe</a></li>
-<li><a href="#extract.0.startpos"><span class="toc-section-number">8.100</span> <code>extract.0.startpos</code> - Startposition</a></li>
-<li><a href="#extract.0.stringnames"><span class="toc-section-number">8.101</span> <code>extract.0.stringnames</code> - Saitennamen</a></li>
-<li><a href="#extract.0.stringnames.marks"><span class="toc-section-number">8.102</span> <code>extract.0.stringnames.marks</code> - Saitenmarken</a></li>
-<li><a href="#extract.0.stringnames.marks.hpos"><span class="toc-section-number">8.103</span> <code>extract.0.stringnames.marks.hpos</code> - horiz. Position</a></li>
-<li><a href="#extract.0.stringnames.marks.vpos"><span class="toc-section-number">8.104</span> <code>extract.0.stringnames.marks.vpos</code> - vert. Position</a></li>
-<li><a href="#extract.0.stringnames.style"><span class="toc-section-number">8.105</span> <code>extract.0.stringnames.style</code> - Stil</a></li>
-<li><a href="#extract.0.stringnames.text"><span class="toc-section-number">8.106</span> <code>extract.0.stringnames.text</code> - Text</a></li>
-<li><a href="#extract.0.stringnames.vpos"><span class="toc-section-number">8.107</span> <code>extract.0.stringnames.vpos</code> - vert. Position</a></li>
-<li><a href="#extract.0.subflowlines"><span class="toc-section-number">8.108</span> <code>extract.0.subflowlines</code> - Hilfsmelodielinien</a></li>
-<li><a href="#extract.0.synchlines"><span class="toc-section-number">8.109</span> <code>extract.0.synchlines</code> - Synchronisationslinien</a></li>
-<li><a href="#extract.0.title"><span class="toc-section-number">8.110</span> <code>extract.0.title</code> - Titel</a></li>
-<li><a href="#extract.0.tuplets"><span class="toc-section-number">8.111</span> <code>extract.0.tuplets</code> - n-Tolen</a></li>
-<li><a href="#extract.0.tuplets.text"><span class="toc-section-number">8.112</span> <code>extract.0.tuplets.text</code> - Text</a></li>
-<li><a href="#extract.0.voices"><span class="toc-section-number">8.113</span> <code>extract.0.voices</code> - Stimmen</a></li>
-<li><a href="#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes"><span class="toc-section-number">8.114</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes</code> - Zählmarken</a></li>
-<li><a href="#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft"><span class="toc-section-number">8.115</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft</code> - Text rechte Zählmarke</a></li>
-<li><a href="#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright"><span class="toc-section-number">8.116</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright</code> - Text linke Zählmarke</a></li>
-<li><a href="#presets.notes"><span class="toc-section-number">8.117</span> <code>presets.notes</code> - Seitenbeschriftungen</a></li>
-<li><a href="#presets.notes.T01_T99"><span class="toc-section-number">8.118</span> <code>presets.notes.T01_T99</code> - T01 .. T99 Alle ..</a></li>
-<li><a href="#presets.notes.T01_number"><span class="toc-section-number">8.119</span> <code>presets.notes.T01_number</code> - T01 Nummer</a></li>
-<li><a href="#presets.notes.T01_number_extract"><span class="toc-section-number">8.120</span> <code>presets.notes.T01_number_extract</code> - T01 Auszug-Nummer</a></li>
-<li><a href="#presets.notes.T02_copyright_music"><span class="toc-section-number">8.121</span> <code>presets.notes.T02_copyright_music</code> - T02 Copyright Musik</a></li>
-<li><a href="#presets.notes.T03_copyright_harpnotes"><span class="toc-section-number">8.122</span> <code>presets.notes.T03_copyright_harpnotes</code> - T03 Copyright Unterlegnoten</a></li>
-<li><a href="#presets.notes.T04_to_order"><span class="toc-section-number">8.123</span> <code>presets.notes.T04_to_order</code> - T04 zu beziehen bei</a></li>
-<li><a href="#presets.notes.T05_printed_extracts"><span class="toc-section-number">8.124</span> <code>presets.notes.T05_printed_extracts</code> - T05 verfügbare Auszüge</a></li>
-<li><a href="#presets.notes.T06_legend"><span class="toc-section-number">8.125</span> <code>presets.notes.T06_legend</code> - T06 Legende</a></li>
-<li><a href="#presets.notes.T99_do_not_copy"><span class="toc-section-number">8.126</span> <code>presets.notes.T99_do_not_copy</code> - T99 bitte nicht kopieren</a></li>
-<li><a href="#produce"><span class="toc-section-number">8.127</span> <code>produce</code> - PDF für Auszüge</a></li>
-<li><a href="#restposition"><span class="toc-section-number">8.128</span> <code>restposition</code> - Position der Pausen</a></li>
-<li><a href="#restposition.default"><span class="toc-section-number">8.129</span> <code>restposition.default</code> - Vorgabewert</a></li>
-<li><a href="#restposition.repeatend"><span class="toc-section-number">8.130</span> <code>restposition.repeatend</code> - Wiederholungsende</a></li>
-<li><a href="#restposition.repeatstart"><span class="toc-section-number">8.131</span> <code>restposition.repeatstart</code> - Wiederholungsanfang</a></li>
-<li><a href="#template"><span class="toc-section-number">8.132</span> <code>template</code> - Dateivorlage</a></li>
-<li><a href="#template.filebase"><span class="toc-section-number">8.133</span> <code>template.filebase</code> - Filename-Basis</a></li>
-<li><a href="#template.title"><span class="toc-section-number">8.134</span> <code>template.title</code> - Titel</a></li>
-<li><a href="#templates"><span class="toc-section-number">8.135</span> <code>templates</code> - Vorlagen</a></li>
-<li><a href="#templates.annotations"><span class="toc-section-number">8.136</span> <code>templates.annotations</code> - Notenbeschriftungsvorlagen</a></li>
-<li><a href="#templates.annotations.pos"><span class="toc-section-number">8.137</span> <code>templates.annotations.pos</code> - Position</a></li>
-<li><a href="#templates.annotations.text"><span class="toc-section-number">8.138</span> <code>templates.annotations.text</code> - Text</a></li>
-<li><a href="#templates.extracts"><span class="toc-section-number">8.139</span> <code>templates.extracts</code> - Auszüge</a></li>
-<li><a href="#templates.extracts.filenamepart"><span class="toc-section-number">8.140</span> <code>templates.extracts.filenamepart</code> - Filename-Zusatz</a></li>
-<li><a href="#templates.extracts.notes"><span class="toc-section-number">8.141</span> <code>templates.extracts.notes</code> - Seitenbeschriftungen</a></li>
-<li><a href="#templates.extracts.notes.T01_number_extract"><span class="toc-section-number">8.142</span> <code>templates.extracts.notes.T01_number_extract</code> - T01 Auszug-Nummer</a></li>
-<li><a href="#templates.extracts.notes.T01_number_extract.text"><span class="toc-section-number">8.143</span> <code>templates.extracts.notes.T01_number_extract.text</code> - Text</a></li>
-<li><a href="#templates.extracts.title"><span class="toc-section-number">8.144</span> <code>templates.extracts.title</code> - Titel</a></li>
-<li><a href="#templates.images"><span class="toc-section-number">8.145</span> <code>templates.images</code> - Bilder</a></li>
-<li><a href="#templates.images.height"><span class="toc-section-number">8.146</span> <code>templates.images.height</code> - Bildhöhe</a></li>
-<li><a href="#templates.images.imagename"><span class="toc-section-number">8.147</span> <code>templates.images.imagename</code> - Bildname</a></li>
-<li><a href="#templates.images.pos"><span class="toc-section-number">8.148</span> <code>templates.images.pos</code> - Position</a></li>
-<li><a href="#templates.images.show"><span class="toc-section-number">8.149</span> <code>templates.images.show</code> - anzeigen</a></li>
-<li><a href="#templates.lyrics"><span class="toc-section-number">8.150</span> <code>templates.lyrics</code> - Liedtexte</a></li>
-<li><a href="#templates.lyrics.pos"><span class="toc-section-number">8.151</span> <code>templates.lyrics.pos</code> - Position</a></li>
-<li><a href="#templates.lyrics.style"><span class="toc-section-number">8.152</span> <code>templates.lyrics.style</code> - Stil</a></li>
-<li><a href="#templates.lyrics.verses"><span class="toc-section-number">8.153</span> <code>templates.lyrics.verses</code> - Strophen</a></li>
-<li><a href="#templates.notes"><span class="toc-section-number">8.154</span> <code>templates.notes</code> - Seitenbeschriftungen</a></li>
-<li><a href="#templates.notes.pos"><span class="toc-section-number">8.155</span> <code>templates.notes.pos</code> - Position</a></li>
-<li><a href="#templates.notes.style"><span class="toc-section-number">8.156</span> <code>templates.notes.style</code> - Stil</a></li>
-<li><a href="#templates.notes.text"><span class="toc-section-number">8.157</span> <code>templates.notes.text</code> - Text</a></li>
-<li><a href="#templates.tuplet"><span class="toc-section-number">8.158</span> <code>templates.tuplet</code> - n-Tole</a></li>
-<li><a href="#templates.tuplet.cp1"><span class="toc-section-number">8.159</span> <code>templates.tuplet.cp1</code> - cp1</a></li>
-<li><a href="#templates.tuplet.cp2"><span class="toc-section-number">8.160</span> <code>templates.tuplet.cp2</code> - cp2</a></li>
-<li><a href="#templates.tuplet.shape"><span class="toc-section-number">8.161</span> <code>templates.tuplet.shape</code> - Linienform</a></li>
-<li><a href="#templates.tuplet.show"><span class="toc-section-number">8.162</span> <code>templates.tuplet.show</code> - anzeigen</a></li>
-<li><a href="#wrap"><span class="toc-section-number">8.163</span> <code>wrap</code> - wrap</a></li>
+<li><a href="#zusaetze"><span class="toc-section-number">6.2</span> Zupfnoter-spezifische Zusätze</a></li>
 </ul></li>
-<li><a href="#änderungsgeschichte"><span class="toc-section-number">9</span> Änderungsgeschichte</a><ul>
-<li><a href="#v-1.14-februar-202"><span class="toc-section-number">9.1</span> V 1.14 Februar 202</a></li>
-<li><a href="#v-1.13-dezember-2019"><span class="toc-section-number">9.2</span> V 1.13 Dezember 2019</a><ul>
-<li><a href="#fix"><span class="toc-section-number">9.2.1</span> fix</a></li>
-<li><a href="#enhancement"><span class="toc-section-number">9.2.2</span> enhancement</a></li>
+<li><a href="#best-practice"><span class="toc-section-number">7</span> Best practice</a></li>
+<li><a href="#abc-tutorial"><span class="toc-section-number">8</span> ABC Tutorial</a></li>
+<li><a href="#konfiguration"><span class="toc-section-number">9</span> Konfiguration der Ausgabe</a><ul>
+<li><a href="#annotations"><span class="toc-section-number">9.1</span> <code>annotations</code> - Notenbeschriftungsvorlagen</a></li>
+<li><a href="#annotations.rit"><span class="toc-section-number">9.2</span> <code>annotations.rit</code> - rit</a></li>
+<li><a href="#annotations.rit.pos"><span class="toc-section-number">9.3</span> <code>annotations.rit.pos</code> - Position</a></li>
+<li><a href="#annotations.rit.style"><span class="toc-section-number">9.4</span> <code>annotations.rit.style</code> - Stil</a></li>
+<li><a href="#annotations.rit.text"><span class="toc-section-number">9.5</span> <code>annotations.rit.text</code> - Text</a></li>
+<li><a href="#annotations.vb"><span class="toc-section-number">9.6</span> <code>annotations.vb</code> - Dämpfer unter der Note</a></li>
+<li><a href="#annotations.vb.pos"><span class="toc-section-number">9.7</span> <code>annotations.vb.pos</code> - Position</a></li>
+<li><a href="#annotations.vb.text"><span class="toc-section-number">9.8</span> <code>annotations.vb.text</code> - Text</a></li>
+<li><a href="#annotations.vl"><span class="toc-section-number">9.9</span> <code>annotations.vl</code> - ‘V’ links</a></li>
+<li><a href="#annotations.vl.pos"><span class="toc-section-number">9.10</span> <code>annotations.vl.pos</code> - Position</a></li>
+<li><a href="#annotations.vl.text"><span class="toc-section-number">9.11</span> <code>annotations.vl.text</code> - Text</a></li>
+<li><a href="#annotations.vr"><span class="toc-section-number">9.12</span> <code>annotations.vr</code> - ‘V’ rechts</a></li>
+<li><a href="#annotations.vr.pos"><span class="toc-section-number">9.13</span> <code>annotations.vr.pos</code> - Position</a></li>
+<li><a href="#annotations.vr.text"><span class="toc-section-number">9.14</span> <code>annotations.vr.text</code> - Text</a></li>
+<li><a href="#annotations.vt"><span class="toc-section-number">9.15</span> <code>annotations.vt</code> - ‘V’ oben</a></li>
+<li><a href="#annotations.vt.pos"><span class="toc-section-number">9.16</span> <code>annotations.vt.pos</code> - Position</a></li>
+<li><a href="#annotations.vt.text"><span class="toc-section-number">9.17</span> <code>annotations.vt.text</code> - Text</a></li>
+<li><a href="#extract"><span class="toc-section-number">9.18</span> <code>extract</code> - Auszug</a></li>
+<li><a href="#extract.0.barnumbers"><span class="toc-section-number">9.19</span> <code>extract.0.barnumbers</code> - Taktnummern</a></li>
+<li><a href="#extract.0.barnumbers.apanchor"><span class="toc-section-number">9.20</span> <code>extract.0.barnumbers.apanchor</code> - autom. pos. Anker</a></li>
+<li><a href="#extract.0.barnumbers.apbase"><span class="toc-section-number">9.21</span> <code>extract.0.barnumbers.apbase</code> - autom. pos. Basis</a></li>
+<li><a href="#extract.0.barnumbers.autopos"><span class="toc-section-number">9.22</span> <code>extract.0.barnumbers.autopos</code> - autom. pos.</a></li>
+<li><a href="#extract.0.barnumbers.pos"><span class="toc-section-number">9.23</span> <code>extract.0.barnumbers.pos</code> - Position</a></li>
+<li><a href="#extract.0.barnumbers.prefix"><span class="toc-section-number">9.24</span> <code>extract.0.barnumbers.prefix</code> - Präfix</a></li>
+<li><a href="#extract.0.barnumbers.style"><span class="toc-section-number">9.25</span> <code>extract.0.barnumbers.style</code> - Stil</a></li>
+<li><a href="#extract.0.barnumbers.voices"><span class="toc-section-number">9.26</span> <code>extract.0.barnumbers.voices</code> - Stimmen</a></li>
+<li><a href="#extract.0.chords"><span class="toc-section-number">9.27</span> <code>extract.0.chords</code> - Akkordsymbole</a></li>
+<li><a href="#extract.0.chords.apanchor"><span class="toc-section-number">9.28</span> <code>extract.0.chords.apanchor</code> - autom. pos. Anker</a></li>
+<li><a href="#extract.0.chords.apbase"><span class="toc-section-number">9.29</span> <code>extract.0.chords.apbase</code> - autom. pos. Basis</a></li>
+<li><a href="#extract.0.chords.autopos"><span class="toc-section-number">9.30</span> <code>extract.0.chords.autopos</code> - autom. pos.</a></li>
+<li><a href="#extract.0.chords.pos"><span class="toc-section-number">9.31</span> <code>extract.0.chords.pos</code> - Position</a></li>
+<li><a href="#extract.0.chords.style"><span class="toc-section-number">9.32</span> <code>extract.0.chords.style</code> - Stil</a></li>
+<li><a href="#extract.0.chords.voices"><span class="toc-section-number">9.33</span> <code>extract.0.chords.voices</code> - Stimmen</a></li>
+<li><a href="#extract.0.countnotes"><span class="toc-section-number">9.34</span> <code>extract.0.countnotes</code> - Zählmarken</a></li>
+<li><a href="#extract.0.countnotes.apanchor"><span class="toc-section-number">9.35</span> <code>extract.0.countnotes.apanchor</code> - autom. pos. Anker</a></li>
+<li><a href="#extract.0.countnotes.apbase"><span class="toc-section-number">9.36</span> <code>extract.0.countnotes.apbase</code> - autom. pos. Basis</a></li>
+<li><a href="#extract.0.countnotes.autopos"><span class="toc-section-number">9.37</span> <code>extract.0.countnotes.autopos</code> - autom. pos.</a></li>
+<li><a href="#extract.0.countnotes.pos"><span class="toc-section-number">9.38</span> <code>extract.0.countnotes.pos</code> - Position</a></li>
+<li><a href="#extract.0.countnotes.style"><span class="toc-section-number">9.39</span> <code>extract.0.countnotes.style</code> - Stil</a></li>
+<li><a href="#extract.0.countnotes.voices"><span class="toc-section-number">9.40</span> <code>extract.0.countnotes.voices</code> - Stimmen</a></li>
+<li><a href="#extract.0.flowlines"><span class="toc-section-number">9.41</span> <code>extract.0.flowlines</code> - Flußlinien</a></li>
+<li><a href="#extract.0.images"><span class="toc-section-number">9.42</span> <code>extract.0.images</code> - Bilder</a></li>
+<li><a href="#extract.0.jumplines"><span class="toc-section-number">9.43</span> <code>extract.0.jumplines</code> - Sprunglinien</a></li>
+<li><a href="#extract.0.layout"><span class="toc-section-number">9.44</span> <code>extract.0.layout</code> - Layout</a></li>
+<li><a href="#extract.0.layout.DRAWING_AREA_SIZE"><span class="toc-section-number">9.45</span> <code>extract.0.layout.DRAWING_AREA_SIZE</code> - Zeichenfl.Größe</a></li>
+<li><a href="#extract.0.layout.ELLIPSE_SIZE"><span class="toc-section-number">9.46</span> <code>extract.0.layout.ELLIPSE_SIZE</code> - Notengröße</a></li>
+<li><a href="#extract.0.layout.LINE_MEDIUM"><span class="toc-section-number">9.47</span> <code>extract.0.layout.LINE_MEDIUM</code> - Linienstärke mittel</a></li>
+<li><a href="#extract.0.layout.LINE_THICK"><span class="toc-section-number">9.48</span> <code>extract.0.layout.LINE_THICK</code> - Linienstärke dick</a></li>
+<li><a href="#extract.0.layout.LINE_THIN"><span class="toc-section-number">9.49</span> <code>extract.0.layout.LINE_THIN</code> - Linienstärke dünn</a></li>
+<li><a href="#extract.0.layout.PITCH_OFFSET"><span class="toc-section-number">9.50</span> <code>extract.0.layout.PITCH_OFFSET</code> - PitchOffset</a></li>
+<li><a href="#extract.0.layout.REST_SIZE"><span class="toc-section-number">9.51</span> <code>extract.0.layout.REST_SIZE</code> - Pausengröße</a></li>
+<li><a href="#extract.0.layout.X_OFFSET"><span class="toc-section-number">9.52</span> <code>extract.0.layout.X_OFFSET</code> - X - Offset</a></li>
+<li><a href="#extract.0.layout.X_SPACING"><span class="toc-section-number">9.53</span> <code>extract.0.layout.X_SPACING</code> - Saitenabstand</a></li>
+<li><a href="#extract.0.layout.beams"><span class="toc-section-number">9.54</span> <code>extract.0.layout.beams</code> - Notenhälse</a></li>
+<li><a href="#extract.0.layout.bottomup"><span class="toc-section-number">9.55</span> <code>extract.0.layout.bottomup</code> - Spiel aufwärts</a></li>
+<li><a href="#extract.0.layout.color"><span class="toc-section-number">9.56</span> <code>extract.0.layout.color</code> - Farbeinstellung</a></li>
+<li><a href="#extract.0.layout.color.color_default"><span class="toc-section-number">9.57</span> <code>extract.0.layout.color.color_default</code> - Sonstiges</a></li>
+<li><a href="#extract.0.layout.color.color_variant1"><span class="toc-section-number">9.58</span> <code>extract.0.layout.color.color_variant1</code> - Variante1</a></li>
+<li><a href="#extract.0.layout.color.color_variant2"><span class="toc-section-number">9.59</span> <code>extract.0.layout.color.color_variant2</code> - Variante2</a></li>
+<li><a href="#extract.0.layout.instrument"><span class="toc-section-number">9.60</span> <code>extract.0.layout.instrument</code> - Instrument</a></li>
+<li><a href="#extract.0.layout.jumpline_anchor"><span class="toc-section-number">9.61</span> <code>extract.0.layout.jumpline_anchor</code> - Sprungl.Anker</a></li>
+<li><a href="#extract.0.layout.limit_a3"><span class="toc-section-number">9.62</span> <code>extract.0.layout.limit_a3</code> - Begrenzung auf A3</a></li>
+<li><a href="#extract.0.layout.packer"><span class="toc-section-number">9.63</span> <code>extract.0.layout.packer</code> - Packer</a></li>
+<li><a href="#extract.0.layout.packer.pack_max_spreadfactor"><span class="toc-section-number">9.64</span> <code>extract.0.layout.packer.pack_max_spreadfactor</code> - max. Spreizung</a></li>
+<li><a href="#extract.0.layout.packer.pack_method"><span class="toc-section-number">9.65</span> <code>extract.0.layout.packer.pack_method</code> - Packmethode</a></li>
+<li><a href="#extract.0.layout.packer.pack_min_increment"><span class="toc-section-number">9.66</span> <code>extract.0.layout.packer.pack_min_increment</code> - min. Inkrement</a></li>
+<li><a href="#extract.0.layout.tuning"><span class="toc-section-number">9.67</span> <code>extract.0.layout.tuning</code> - Stimmung</a></li>
+<li><a href="#extract.0.layoutlines"><span class="toc-section-number">9.68</span> <code>extract.0.layoutlines</code> - Stimmen für Layout</a></li>
+<li><a href="#extract.0.legend"><span class="toc-section-number">9.69</span> <code>extract.0.legend</code> - Legende</a></li>
+<li><a href="#extract.0.legend.align"><span class="toc-section-number">9.70</span> <code>extract.0.legend.align</code> - Ausrichtung</a></li>
+<li><a href="#extract.0.legend.pos"><span class="toc-section-number">9.71</span> <code>extract.0.legend.pos</code> - Position</a></li>
+<li><a href="#extract.0.legend.spos"><span class="toc-section-number">9.72</span> <code>extract.0.legend.spos</code> - Pos. Subleg.</a></li>
+<li><a href="#extract.0.legend.style"><span class="toc-section-number">9.73</span> <code>extract.0.legend.style</code> - Stil</a></li>
+<li><a href="#extract.0.legend.tstyle"><span class="toc-section-number">9.74</span> <code>extract.0.legend.tstyle</code> - Stil f. Titel</a></li>
+<li><a href="#extract.0.lyrics"><span class="toc-section-number">9.75</span> <code>extract.0.lyrics</code> - Liedtexte</a></li>
+<li><a href="#extract.0.nonflowrest"><span class="toc-section-number">9.76</span> <code>extract.0.nonflowrest</code> - Begleitpausen</a></li>
+<li><a href="#extract.0.notebound.minc"><span class="toc-section-number">9.77</span> <code>extract.0.notebound.minc</code> - extra Vorschub</a></li>
+<li><a href="#extract.0.notebound.minc.x.minc_f"><span class="toc-section-number">9.78</span> <code>extract.0.notebound.minc.x.minc_f</code> - Faktor</a></li>
+<li><a href="#extract.0.notebound.tuplet"><span class="toc-section-number">9.79</span> <code>extract.0.notebound.tuplet</code> - n-Tole</a></li>
+<li><a href="#extract.0.notes"><span class="toc-section-number">9.80</span> <code>extract.0.notes</code> - Seitenbeschriftungen</a></li>
+<li><a href="#extract.0.printer"><span class="toc-section-number">9.81</span> <code>extract.0.printer</code> - Drucker</a></li>
+<li><a href="#extract.0.printer.a3_offset"><span class="toc-section-number">9.82</span> <code>extract.0.printer.a3_offset</code> - Offset für A3</a></li>
+<li><a href="#extract.0.printer.a4_offset"><span class="toc-section-number">9.83</span> <code>extract.0.printer.a4_offset</code> - Offset für A4</a></li>
+<li><a href="#extract.0.printer.a4_pages"><span class="toc-section-number">9.84</span> <code>extract.0.printer.a4_pages</code> - Seiten bei A4</a></li>
+<li><a href="#extract.0.printer.show_border"><span class="toc-section-number">9.85</span> <code>extract.0.printer.show_border</code> - Blattbegr. zeich.</a></li>
+<li><a href="#extract.0.repeatsigns"><span class="toc-section-number">9.86</span> <code>extract.0.repeatsigns</code> - Wiederholungszeichen</a></li>
+<li><a href="#extract.0.repeatsigns.left"><span class="toc-section-number">9.87</span> <code>extract.0.repeatsigns.left</code> - links</a></li>
+<li><a href="#extract.0.repeatsigns.left.pos"><span class="toc-section-number">9.88</span> <code>extract.0.repeatsigns.left.pos</code> - Position</a></li>
+<li><a href="#extract.0.repeatsigns.left.style"><span class="toc-section-number">9.89</span> <code>extract.0.repeatsigns.left.style</code> - Stil</a></li>
+<li><a href="#extract.0.repeatsigns.left.text"><span class="toc-section-number">9.90</span> <code>extract.0.repeatsigns.left.text</code> - Text</a></li>
+<li><a href="#extract.0.repeatsigns.right"><span class="toc-section-number">9.91</span> <code>extract.0.repeatsigns.right</code> - rechts</a></li>
+<li><a href="#extract.0.repeatsigns.right.pos"><span class="toc-section-number">9.92</span> <code>extract.0.repeatsigns.right.pos</code> - Position</a></li>
+<li><a href="#extract.0.repeatsigns.right.style"><span class="toc-section-number">9.93</span> <code>extract.0.repeatsigns.right.style</code> - Stil</a></li>
+<li><a href="#extract.0.repeatsigns.right.text"><span class="toc-section-number">9.94</span> <code>extract.0.repeatsigns.right.text</code> - Text</a></li>
+<li><a href="#extract.0.repeatsigns.voices"><span class="toc-section-number">9.95</span> <code>extract.0.repeatsigns.voices</code> - Stimmen</a></li>
+<li><a href="#extract.0.sortmark"><span class="toc-section-number">9.96</span> <code>extract.0.sortmark</code> - Sortiermarke</a></li>
+<li><a href="#extract.0.sortmark.fill"><span class="toc-section-number">9.97</span> <code>extract.0.sortmark.fill</code> - ausfüllen</a></li>
+<li><a href="#extract.0.sortmark.show"><span class="toc-section-number">9.98</span> <code>extract.0.sortmark.show</code> - anzeigen</a></li>
+<li><a href="#extract.0.sortmark.size"><span class="toc-section-number">9.99</span> <code>extract.0.sortmark.size</code> - Größe</a></li>
+<li><a href="#extract.0.startpos"><span class="toc-section-number">9.100</span> <code>extract.0.startpos</code> - Startposition</a></li>
+<li><a href="#extract.0.stringnames"><span class="toc-section-number">9.101</span> <code>extract.0.stringnames</code> - Saitennamen</a></li>
+<li><a href="#extract.0.stringnames.marks"><span class="toc-section-number">9.102</span> <code>extract.0.stringnames.marks</code> - Saitenmarken</a></li>
+<li><a href="#extract.0.stringnames.marks.hpos"><span class="toc-section-number">9.103</span> <code>extract.0.stringnames.marks.hpos</code> - horiz. Position</a></li>
+<li><a href="#extract.0.stringnames.marks.vpos"><span class="toc-section-number">9.104</span> <code>extract.0.stringnames.marks.vpos</code> - vert. Position</a></li>
+<li><a href="#extract.0.stringnames.style"><span class="toc-section-number">9.105</span> <code>extract.0.stringnames.style</code> - Stil</a></li>
+<li><a href="#extract.0.stringnames.text"><span class="toc-section-number">9.106</span> <code>extract.0.stringnames.text</code> - Text</a></li>
+<li><a href="#extract.0.stringnames.vpos"><span class="toc-section-number">9.107</span> <code>extract.0.stringnames.vpos</code> - vert. Position</a></li>
+<li><a href="#extract.0.subflowlines"><span class="toc-section-number">9.108</span> <code>extract.0.subflowlines</code> - Hilfsmelodielinien</a></li>
+<li><a href="#extract.0.synchlines"><span class="toc-section-number">9.109</span> <code>extract.0.synchlines</code> - Synchronisationslinien</a></li>
+<li><a href="#extract.0.title"><span class="toc-section-number">9.110</span> <code>extract.0.title</code> - Titel</a></li>
+<li><a href="#extract.0.tuplets"><span class="toc-section-number">9.111</span> <code>extract.0.tuplets</code> - n-Tolen</a></li>
+<li><a href="#extract.0.tuplets.text"><span class="toc-section-number">9.112</span> <code>extract.0.tuplets.text</code> - Text</a></li>
+<li><a href="#extract.0.voices"><span class="toc-section-number">9.113</span> <code>extract.0.voices</code> - Stimmen</a></li>
+<li><a href="#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes"><span class="toc-section-number">9.114</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes</code> - Zählmarken</a></li>
+<li><a href="#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft"><span class="toc-section-number">9.115</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft</code> - Text rechte Zählmarke</a></li>
+<li><a href="#presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright"><span class="toc-section-number">9.116</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright</code> - Text linke Zählmarke</a></li>
+<li><a href="#presets.notes"><span class="toc-section-number">9.117</span> <code>presets.notes</code> - Seitenbeschriftungen</a></li>
+<li><a href="#presets.notes.T01_T99"><span class="toc-section-number">9.118</span> <code>presets.notes.T01_T99</code> - T01 .. T99 Alle ..</a></li>
+<li><a href="#presets.notes.T01_number"><span class="toc-section-number">9.119</span> <code>presets.notes.T01_number</code> - T01 Nummer</a></li>
+<li><a href="#presets.notes.T01_number_extract"><span class="toc-section-number">9.120</span> <code>presets.notes.T01_number_extract</code> - T01 Auszug-Nummer</a></li>
+<li><a href="#presets.notes.T02_copyright_music"><span class="toc-section-number">9.121</span> <code>presets.notes.T02_copyright_music</code> - T02 Copyright Musik</a></li>
+<li><a href="#presets.notes.T03_copyright_harpnotes"><span class="toc-section-number">9.122</span> <code>presets.notes.T03_copyright_harpnotes</code> - T03 Copyright Unterlegnoten</a></li>
+<li><a href="#presets.notes.T04_to_order"><span class="toc-section-number">9.123</span> <code>presets.notes.T04_to_order</code> - T04 zu beziehen bei</a></li>
+<li><a href="#presets.notes.T05_printed_extracts"><span class="toc-section-number">9.124</span> <code>presets.notes.T05_printed_extracts</code> - T05 verfügbare Auszüge</a></li>
+<li><a href="#presets.notes.T06_legend"><span class="toc-section-number">9.125</span> <code>presets.notes.T06_legend</code> - T06 Legende</a></li>
+<li><a href="#presets.notes.T99_do_not_copy"><span class="toc-section-number">9.126</span> <code>presets.notes.T99_do_not_copy</code> - T99 bitte nicht kopieren</a></li>
+<li><a href="#produce"><span class="toc-section-number">9.127</span> <code>produce</code> - PDF für Auszüge</a></li>
+<li><a href="#restposition"><span class="toc-section-number">9.128</span> <code>restposition</code> - Position der Pausen</a></li>
+<li><a href="#restposition.default"><span class="toc-section-number">9.129</span> <code>restposition.default</code> - Vorgabewert</a></li>
+<li><a href="#restposition.repeatend"><span class="toc-section-number">9.130</span> <code>restposition.repeatend</code> - Wiederholungsende</a></li>
+<li><a href="#restposition.repeatstart"><span class="toc-section-number">9.131</span> <code>restposition.repeatstart</code> - Wiederholungsanfang</a></li>
+<li><a href="#template"><span class="toc-section-number">9.132</span> <code>template</code> - Dateivorlage</a></li>
+<li><a href="#template.filebase"><span class="toc-section-number">9.133</span> <code>template.filebase</code> - Filename-Basis</a></li>
+<li><a href="#template.title"><span class="toc-section-number">9.134</span> <code>template.title</code> - Titel</a></li>
+<li><a href="#templates"><span class="toc-section-number">9.135</span> <code>templates</code> - Vorlagen</a></li>
+<li><a href="#templates.annotations"><span class="toc-section-number">9.136</span> <code>templates.annotations</code> - Notenbeschriftungsvorlagen</a></li>
+<li><a href="#templates.annotations.pos"><span class="toc-section-number">9.137</span> <code>templates.annotations.pos</code> - Position</a></li>
+<li><a href="#templates.annotations.text"><span class="toc-section-number">9.138</span> <code>templates.annotations.text</code> - Text</a></li>
+<li><a href="#templates.extracts"><span class="toc-section-number">9.139</span> <code>templates.extracts</code> - Auszüge</a></li>
+<li><a href="#templates.extracts.filenamepart"><span class="toc-section-number">9.140</span> <code>templates.extracts.filenamepart</code> - Filename-Zusatz</a></li>
+<li><a href="#templates.extracts.notes"><span class="toc-section-number">9.141</span> <code>templates.extracts.notes</code> - Seitenbeschriftungen</a></li>
+<li><a href="#templates.extracts.notes.T01_number_extract"><span class="toc-section-number">9.142</span> <code>templates.extracts.notes.T01_number_extract</code> - T01 Auszug-Nummer</a></li>
+<li><a href="#templates.extracts.notes.T01_number_extract.text"><span class="toc-section-number">9.143</span> <code>templates.extracts.notes.T01_number_extract.text</code> - Text</a></li>
+<li><a href="#templates.extracts.title"><span class="toc-section-number">9.144</span> <code>templates.extracts.title</code> - Titel</a></li>
+<li><a href="#templates.images"><span class="toc-section-number">9.145</span> <code>templates.images</code> - Bilder</a></li>
+<li><a href="#templates.images.height"><span class="toc-section-number">9.146</span> <code>templates.images.height</code> - Bildhöhe</a></li>
+<li><a href="#templates.images.imagename"><span class="toc-section-number">9.147</span> <code>templates.images.imagename</code> - Bildname</a></li>
+<li><a href="#templates.images.pos"><span class="toc-section-number">9.148</span> <code>templates.images.pos</code> - Position</a></li>
+<li><a href="#templates.images.show"><span class="toc-section-number">9.149</span> <code>templates.images.show</code> - anzeigen</a></li>
+<li><a href="#templates.lyrics"><span class="toc-section-number">9.150</span> <code>templates.lyrics</code> - Liedtexte</a></li>
+<li><a href="#templates.lyrics.pos"><span class="toc-section-number">9.151</span> <code>templates.lyrics.pos</code> - Position</a></li>
+<li><a href="#templates.lyrics.style"><span class="toc-section-number">9.152</span> <code>templates.lyrics.style</code> - Stil</a></li>
+<li><a href="#templates.lyrics.verses"><span class="toc-section-number">9.153</span> <code>templates.lyrics.verses</code> - Strophen</a></li>
+<li><a href="#templates.notes"><span class="toc-section-number">9.154</span> <code>templates.notes</code> - Seitenbeschriftungen</a></li>
+<li><a href="#templates.notes.pos"><span class="toc-section-number">9.155</span> <code>templates.notes.pos</code> - Position</a></li>
+<li><a href="#templates.notes.style"><span class="toc-section-number">9.156</span> <code>templates.notes.style</code> - Stil</a></li>
+<li><a href="#templates.notes.text"><span class="toc-section-number">9.157</span> <code>templates.notes.text</code> - Text</a></li>
+<li><a href="#templates.tuplet"><span class="toc-section-number">9.158</span> <code>templates.tuplet</code> - n-Tole</a></li>
+<li><a href="#templates.tuplet.cp1"><span class="toc-section-number">9.159</span> <code>templates.tuplet.cp1</code> - cp1</a></li>
+<li><a href="#templates.tuplet.cp2"><span class="toc-section-number">9.160</span> <code>templates.tuplet.cp2</code> - cp2</a></li>
+<li><a href="#templates.tuplet.shape"><span class="toc-section-number">9.161</span> <code>templates.tuplet.shape</code> - Linienform</a></li>
+<li><a href="#templates.tuplet.show"><span class="toc-section-number">9.162</span> <code>templates.tuplet.show</code> - anzeigen</a></li>
+<li><a href="#wrap"><span class="toc-section-number">9.163</span> <code>wrap</code> - wrap</a></li>
 </ul></li>
-<li><a href="#v-1.12-august-2019"><span class="toc-section-number">9.3</span> V 1.12 August 2019</a><ul>
-<li><a href="#fehlerbehebung"><span class="toc-section-number">9.3.1</span> Fehlerbehebung</a></li>
-<li><a href="#erweiterung"><span class="toc-section-number">9.3.2</span> Erweiterung</a></li>
-<li><a href="#kompatibilität"><span class="toc-section-number">9.3.3</span> Kompatibilität</a></li>
+<li><a href="#änderungsgeschichte"><span class="toc-section-number">10</span> Änderungsgeschichte</a><ul>
+<li><a href="#v-1.14-februar-202"><span class="toc-section-number">10.1</span> V 1.14 Februar 202</a></li>
+<li><a href="#v-1.13-dezember-2019"><span class="toc-section-number">10.2</span> V 1.13 Dezember 2019</a><ul>
+<li><a href="#fix"><span class="toc-section-number">10.2.1</span> fix</a></li>
+<li><a href="#enhancement"><span class="toc-section-number">10.2.2</span> enhancement</a></li>
 </ul></li>
-<li><a href="#v-1.11-18.4.2019"><span class="toc-section-number">9.4</span> V 1.11 18.4.2019</a><ul>
-<li><a href="#fix-1"><span class="toc-section-number">9.4.1</span> fix</a></li>
-<li><a href="#enhancement-1"><span class="toc-section-number">9.4.2</span> enhancement</a></li>
+<li><a href="#v-1.12-august-2019"><span class="toc-section-number">10.3</span> V 1.12 August 2019</a><ul>
+<li><a href="#fehlerbehebung"><span class="toc-section-number">10.3.1</span> Fehlerbehebung</a></li>
+<li><a href="#erweiterung"><span class="toc-section-number">10.3.2</span> Erweiterung</a></li>
+<li><a href="#kompatibilität"><span class="toc-section-number">10.3.3</span> Kompatibilität</a></li>
 </ul></li>
-<li><a href="#v.1.10-nov-2018"><span class="toc-section-number">9.5</span> V.1.10 Nov 2018</a><ul>
-<li><a href="#fix-2"><span class="toc-section-number">9.5.1</span> fix</a></li>
-<li><a href="#enhancement-2"><span class="toc-section-number">9.5.2</span> enhancement</a></li>
-<li><a href="#kompatibilität-1"><span class="toc-section-number">9.5.3</span> Kompatibilität</a></li>
+<li><a href="#v-1.11-18.4.2019"><span class="toc-section-number">10.4</span> V 1.11 18.4.2019</a><ul>
+<li><a href="#fix-1"><span class="toc-section-number">10.4.1</span> fix</a></li>
+<li><a href="#enhancement-1"><span class="toc-section-number">10.4.2</span> enhancement</a></li>
 </ul></li>
-<li><a href="#v-1.9.2"><span class="toc-section-number">9.6</span> V 1.9.2</a><ul>
-<li><a href="#fehlerbehbungen"><span class="toc-section-number">9.6.1</span> Fehlerbehbungen</a></li>
-<li><a href="#erweiterungen"><span class="toc-section-number">9.6.2</span> Erweiterungen</a></li>
-<li><a href="#experimental"><span class="toc-section-number">9.6.3</span> experimental</a></li>
-<li><a href="#kompatibilität-2"><span class="toc-section-number">9.6.4</span> Kompatibilität</a></li>
+<li><a href="#v.1.10-nov-2018"><span class="toc-section-number">10.5</span> V.1.10 Nov 2018</a><ul>
+<li><a href="#fix-2"><span class="toc-section-number">10.5.1</span> fix</a></li>
+<li><a href="#enhancement-2"><span class="toc-section-number">10.5.2</span> enhancement</a></li>
+<li><a href="#kompatibilität-1"><span class="toc-section-number">10.5.3</span> Kompatibilität</a></li>
 </ul></li>
-<li><a href="#v.1.9.1"><span class="toc-section-number">9.7</span> v.1.9.1</a></li>
-<li><a href="#v-1.9.0"><span class="toc-section-number">9.8</span> v 1.9.0</a><ul>
-<li><a href="#fehlerbehebungen"><span class="toc-section-number">9.8.1</span> Fehlerbehebungen</a></li>
-<li><a href="#erweiterungen-1"><span class="toc-section-number">9.8.2</span> Erweiterungen</a></li>
-<li><a href="#kompatibilität-3"><span class="toc-section-number">9.8.3</span> Kompatibilität</a></li>
+<li><a href="#v-1.9.2"><span class="toc-section-number">10.6</span> V 1.9.2</a><ul>
+<li><a href="#fehlerbehbungen"><span class="toc-section-number">10.6.1</span> Fehlerbehbungen</a></li>
+<li><a href="#erweiterungen"><span class="toc-section-number">10.6.2</span> Erweiterungen</a></li>
+<li><a href="#experimental"><span class="toc-section-number">10.6.3</span> experimental</a></li>
+<li><a href="#kompatibilität-2"><span class="toc-section-number">10.6.4</span> Kompatibilität</a></li>
 </ul></li>
-<li><a href="#v-1.8"><span class="toc-section-number">9.9</span> v 1.8</a><ul>
-<li><a href="#fehlerbehebungen-1"><span class="toc-section-number">9.9.1</span> Fehlerbehebungen</a></li>
-<li><a href="#erweiterungen-2"><span class="toc-section-number">9.9.2</span> Erweiterungen</a></li>
-<li><a href="#experimentelles"><span class="toc-section-number">9.9.3</span> Experimentelles</a></li>
-<li><a href="#kompatibilität-4"><span class="toc-section-number">9.9.4</span> Kompatibilität</a></li>
+<li><a href="#v.1.9.1"><span class="toc-section-number">10.7</span> v.1.9.1</a></li>
+<li><a href="#v-1.9.0"><span class="toc-section-number">10.8</span> v 1.9.0</a><ul>
+<li><a href="#fehlerbehebungen"><span class="toc-section-number">10.8.1</span> Fehlerbehebungen</a></li>
+<li><a href="#erweiterungen-1"><span class="toc-section-number">10.8.2</span> Erweiterungen</a></li>
+<li><a href="#kompatibilität-3"><span class="toc-section-number">10.8.3</span> Kompatibilität</a></li>
 </ul></li>
-<li><a href="#v-1.7.1"><span class="toc-section-number">9.10</span> v 1.7.1</a><ul>
-<li><a href="#fix-3"><span class="toc-section-number">9.10.1</span> fix</a></li>
+<li><a href="#v-1.8"><span class="toc-section-number">10.9</span> v 1.8</a><ul>
+<li><a href="#fehlerbehebungen-1"><span class="toc-section-number">10.9.1</span> Fehlerbehebungen</a></li>
+<li><a href="#erweiterungen-2"><span class="toc-section-number">10.9.2</span> Erweiterungen</a></li>
+<li><a href="#experimentelles"><span class="toc-section-number">10.9.3</span> Experimentelles</a></li>
+<li><a href="#kompatibilität-4"><span class="toc-section-number">10.9.4</span> Kompatibilität</a></li>
 </ul></li>
-<li><a href="#v-1.7"><span class="toc-section-number">9.11</span> v 1.7</a><ul>
-<li><a href="#fix-4"><span class="toc-section-number">9.11.1</span> fix</a></li>
-<li><a href="#enhancement-3"><span class="toc-section-number">9.11.2</span> enhancement</a></li>
-<li><a href="#internal-stuff"><span class="toc-section-number">9.11.3</span> internal stuff</a></li>
-<li><a href="#experimental-feature"><span class="toc-section-number">9.11.4</span> experimental feature</a></li>
-<li><a href="#backwards-compatibility-issues"><span class="toc-section-number">9.11.5</span> backwards compatibility issues</a></li>
-<li><a href="#known-issues"><span class="toc-section-number">9.11.6</span> known issues</a></li>
+<li><a href="#v-1.7.1"><span class="toc-section-number">10.10</span> v 1.7.1</a><ul>
+<li><a href="#fix-3"><span class="toc-section-number">10.10.1</span> fix</a></li>
 </ul></li>
-<li><a href="#v-1.6.1-2017-05-17"><span class="toc-section-number">9.12</span> V 1.6.1 2017-05-17</a><ul>
-<li><a href="#fehlerbehebungen-2"><span class="toc-section-number">9.12.1</span> Fehlerbehebungen</a></li>
-<li><a href="#erweiterung-1"><span class="toc-section-number">9.12.2</span> Erweiterung</a></li>
-<li><a href="#experimentelle-erweiterungen"><span class="toc-section-number">9.12.3</span> Experimentelle Erweiterungen</a></li>
-<li><a href="#inkompatible-änderungen---notwendige-anpassungen"><span class="toc-section-number">9.12.4</span> inkompatible Änderungen - notwendige Anpassungen</a></li>
+<li><a href="#v-1.7"><span class="toc-section-number">10.11</span> v 1.7</a><ul>
+<li><a href="#fix-4"><span class="toc-section-number">10.11.1</span> fix</a></li>
+<li><a href="#enhancement-3"><span class="toc-section-number">10.11.2</span> enhancement</a></li>
+<li><a href="#internal-stuff"><span class="toc-section-number">10.11.3</span> internal stuff</a></li>
+<li><a href="#experimental-feature"><span class="toc-section-number">10.11.4</span> experimental feature</a></li>
+<li><a href="#backwards-compatibility-issues"><span class="toc-section-number">10.11.5</span> backwards compatibility issues</a></li>
+<li><a href="#known-issues"><span class="toc-section-number">10.11.6</span> known issues</a></li>
 </ul></li>
-<li><a href="#v-1.5"><span class="toc-section-number">9.13</span> V 1.5</a><ul>
-<li><a href="#backward-compatibility-issues"><span class="toc-section-number">9.13.1</span> backward compatibility issues</a></li>
-<li><a href="#fix-5"><span class="toc-section-number">9.13.2</span> Fix</a></li>
-<li><a href="#enhancement-4"><span class="toc-section-number">9.13.3</span> Enhancement</a></li>
+<li><a href="#v-1.6.1-2017-05-17"><span class="toc-section-number">10.12</span> V 1.6.1 2017-05-17</a><ul>
+<li><a href="#fehlerbehebungen-2"><span class="toc-section-number">10.12.1</span> Fehlerbehebungen</a></li>
+<li><a href="#erweiterung-1"><span class="toc-section-number">10.12.2</span> Erweiterung</a></li>
+<li><a href="#experimentelle-erweiterungen"><span class="toc-section-number">10.12.3</span> Experimentelle Erweiterungen</a></li>
+<li><a href="#inkompatible-änderungen---notwendige-anpassungen"><span class="toc-section-number">10.12.4</span> inkompatible Änderungen - notwendige Anpassungen</a></li>
 </ul></li>
-<li><a href="#v-1.4.2"><span class="toc-section-number">9.14</span> V 1.4.2</a><ul>
-<li><a href="#fix-6"><span class="toc-section-number">9.14.1</span> Fix</a></li>
+<li><a href="#v-1.5"><span class="toc-section-number">10.13</span> V 1.5</a><ul>
+<li><a href="#backward-compatibility-issues"><span class="toc-section-number">10.13.1</span> backward compatibility issues</a></li>
+<li><a href="#fix-5"><span class="toc-section-number">10.13.2</span> Fix</a></li>
+<li><a href="#enhancement-4"><span class="toc-section-number">10.13.3</span> Enhancement</a></li>
 </ul></li>
-<li><a href="#v-1.4.2-1"><span class="toc-section-number">9.15</span> V 1.4.2</a><ul>
-<li><a href="#fix-7"><span class="toc-section-number">9.15.1</span> Fix</a></li>
-<li><a href="#enhancement-5"><span class="toc-section-number">9.15.2</span> enhancement</a></li>
+<li><a href="#v-1.4.2"><span class="toc-section-number">10.14</span> V 1.4.2</a><ul>
+<li><a href="#fix-6"><span class="toc-section-number">10.14.1</span> Fix</a></li>
 </ul></li>
-<li><a href="#v-1.4.1"><span class="toc-section-number">9.16</span> V 1.4.1</a><ul>
-<li><a href="#enhancment"><span class="toc-section-number">9.16.1</span> enhancment</a></li>
-<li><a href="#fixes"><span class="toc-section-number">9.16.2</span> fixes</a></li>
+<li><a href="#v-1.4.2-1"><span class="toc-section-number">10.15</span> V 1.4.2</a><ul>
+<li><a href="#fix-7"><span class="toc-section-number">10.15.1</span> Fix</a></li>
+<li><a href="#enhancement-5"><span class="toc-section-number">10.15.2</span> enhancement</a></li>
 </ul></li>
-<li><a href="#v-1.4.0"><span class="toc-section-number">9.17</span> V 1.4.0</a></li>
-<li><a href="#v-1.3.1-2016-05-17"><span class="toc-section-number">9.18</span> V 1.3.1 2016-05-17</a></li>
-<li><a href="#v-1.2.2"><span class="toc-section-number">9.19</span> V 1.2.2</a></li>
-<li><a href="#v-1.2.1"><span class="toc-section-number">9.20</span> V 1.2.1</a></li>
-<li><a href="#v-1.2.0-2016-04-21"><span class="toc-section-number">9.21</span> V 1.2.0 2016-04-21</a></li>
-<li><a href="#v-1.1.1-2016-04-05"><span class="toc-section-number">9.22</span> V 1.1.1 2016-04-05</a></li>
-<li><a href="#v-1.1.0-2016-04-05"><span class="toc-section-number">9.23</span> V 1.1.0 2016-04-05</a></li>
-<li><a href="#v-1.0.0-2016-04-03"><span class="toc-section-number">9.24</span> V 1.0.0 2016-04-03</a></li>
+<li><a href="#v-1.4.1"><span class="toc-section-number">10.16</span> V 1.4.1</a><ul>
+<li><a href="#enhancment"><span class="toc-section-number">10.16.1</span> enhancment</a></li>
+<li><a href="#fixes"><span class="toc-section-number">10.16.2</span> fixes</a></li>
+</ul></li>
+<li><a href="#v-1.4.0"><span class="toc-section-number">10.17</span> V 1.4.0</a></li>
+<li><a href="#v-1.3.1-2016-05-17"><span class="toc-section-number">10.18</span> V 1.3.1 2016-05-17</a></li>
+<li><a href="#v-1.2.2"><span class="toc-section-number">10.19</span> V 1.2.2</a></li>
+<li><a href="#v-1.2.1"><span class="toc-section-number">10.20</span> V 1.2.1</a></li>
+<li><a href="#v-1.2.0-2016-04-21"><span class="toc-section-number">10.21</span> V 1.2.0 2016-04-21</a></li>
+<li><a href="#v-1.1.1-2016-04-05"><span class="toc-section-number">10.22</span> V 1.1.1 2016-04-05</a></li>
+<li><a href="#v-1.1.0-2016-04-05"><span class="toc-section-number">10.23</span> V 1.1.0 2016-04-05</a></li>
+<li><a href="#v-1.0.0-2016-04-03"><span class="toc-section-number">10.24</span> V 1.0.0 2016-04-03</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -1481,11 +1486,18 @@ setstdextract  : configure stdc onfig in localstore</code></pre></li>
 <p><strong>Hinweis</strong>: Es kann vorkommen, dass die Griffe von Noten verdeckt und daher mit der Maus nicht erreichbar sind. In diesem Fall kannst du an der Triolenbeschriftung oder an einem andere Griff <code>Edit Cconfig</code> aufrufen und den Kontrollpunkt so ändern, dass er wieder sichtbar wird.</p>
 </blockquote>
 <h3 id="flowconf"><span class="header-section-number">4.6.4</span> Flußlinien gestalten</h3>
-<p>Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie um die Begleitnonten “herumbiegen”. Da zu gibt es eine experimentelle Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die Triolenbögen.</p>
+<p>Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch die Begleintnoten verläuft. In diesem Fall muss man ggf. die Flußlinie um die Begleitnonten “herumbiegen”. Da zu gibt es eine experimentelle Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die Triolenbögen.</p>
 <p>Die Bearbeitungsmöglichkeiten müssen in der <a href="#konsole-fenster">Konsole</a> bzw. im Menü <code>Extras</code> eingeschaltet werden.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Wenn die Bearbeitung der Flußlinien eingeschaltet ist, wird Zupfnoter deutlich langsamer.</p>
 </blockquote>
+<p>Die Flußlinie wird unterbrochen</p>
+<ul>
+<li>vor und nach einer Wiederholung</li>
+<li>bei einem Taktstrich <code>||</code> bzw. <code>|]</code></li>
+<li>bei eienmm Abschnitt (Part) mit <code>[P:]</code></li>
+<li>pro Stimme mit der Dekoration !breath!</li>
+</ul>
 <!-- -->
 
 <h2 id="auszuege"><span class="header-section-number">4.7</span> Erstellung von Auszügen</h2>
@@ -1863,12 +1875,18 @@ I:staffnonote 2</code></pre>
 <li><code>?mode={demo | work}</code></li>
 <li><code>?debug</code></li>
 </ul>
+<h1 id="notwendige-änderungen-beim-übergang-von-zupfnoter-1.xx-nach-zupfnoter-2.xx"><span class="header-section-number">5</span> Notwendige Änderungen beim Übergang von Zupfnoter 1.xx nach Zupfnoter 2.xx</h1>
+<p>Wenn sich bei einem Programm die erste Stelle der Versionsnummer ändert, muss man ggf. die ABC-Dateien ändern. Auch wenn wir versuchen, diese Änderungen so gering wir möglich zu halten, so sind sie doch nicht zu vermeiden. Manche diese Änderungen stammen aus einer genaueren Interpretation des ABC-Standards.</p>
+<h2 id="transponieren-1"><span class="header-section-number">5.1</span> Transponieren</h2>
+<p>In Zupfnoter 1.x funktioniert manchmal das <code>%%transpose</code> noch. Zupfnoter wirft nun aber einen Fehler.</p>
+<h2 id="haltebogen"><span class="header-section-number">5.2</span> Haltebogen</h2>
+<h2 id="angabe-der-geschwindigkeit-q"><span class="header-section-number">5.3</span> Angabe der Geschwindigkeit (Q:)</h2>
 
-<h1 id="zupfnoter-für-experten"><span class="header-section-number">5</span> Zupfnoter für Experten</h1>
-<h2 id="zupfnoter-einstellungen"><span class="header-section-number">5.1</span> Zupfnoter Einstellungen</h2>
-<h3 id="persönliche-einstellungen"><span class="header-section-number">5.1.1</span> Persönliche Einstellungen</h3>
+<h1 id="zupfnoter-für-experten"><span class="header-section-number">6</span> Zupfnoter für Experten</h1>
+<h2 id="zupfnoter-einstellungen"><span class="header-section-number">6.1</span> Zupfnoter Einstellungen</h2>
+<h3 id="persönliche-einstellungen"><span class="header-section-number">6.1.1</span> Persönliche Einstellungen</h3>
 <p>see https://github.com/bwl21/zupfnoter/issues/71</p>
-<h3 id="grundlegende-blatteinstellungen"><span class="header-section-number">5.1.2</span> Grundlegende Blatteinstellungen (Konfiguration)</h3>
+<h3 id="grundlegende-blatteinstellungen"><span class="header-section-number">6.1.2</span> Grundlegende Blatteinstellungen (Konfiguration)</h3>
 <p>TODO: text überarbeiten</p>
 <ul>
 <li><p><strong>Titel</strong>: [extract.x.title]</p>
@@ -1918,7 +1936,7 @@ I:staffnonote 2</code></pre>
 <li><p><strong>Taktnummern:</strong> [extract.x.barnumbers]</p>
 <p>Diese Einstellung bestimmt, an welchen Stimmen die Takte numeriert werden. Ebenso wird Position und Darstellung bestimmt.</p></li>
 </ul>
-<h2 id="zusaetze"><span class="header-section-number">5.2</span> Zupfnoter-spezifische Zusätze</h2>
+<h2 id="zusaetze"><span class="header-section-number">6.2</span> Zupfnoter-spezifische Zusätze</h2>
 <p>Zupfnoter verwendet “Annotations” der ABC-Notation mit spezifischen Konventionen. Diese Zusätze stehen vor der Note bzw. dem Taktstrich auf den sie sich beziehen.</p>
 <p>Zupfnoter-Annotations beginnen mit einem der Zeichen <code>:</code>, <code>@</code>, <code>!</code>, <code>#</code>, <code>&lt;</code>, <code>&gt;</code>. Beispielsweise bedeutet <code>&quot;^&gt;&quot;</code> dass das Notensymbol in den Unterlegnoten nach rechts verschoben werden.</p>
 <blockquote>
@@ -1939,7 +1957,7 @@ I:staffnonote 2</code></pre>
 <p><strong>Hinweis</strong>: Wenn keine Verschiebemarke vorhanden ist, wird diese Referenz über die Zeitachse hergestellt. Daher geht diese Verbindung eventuell verloren, wenn das Zeitgefüge des Musikstückes verändert wird. Das kann durch Einfügen einer Verschiebemarke verhindert werden.</p>
 </blockquote></li>
 </ul>
-<h1 id="best-practice"><span class="header-section-number">6</span> Best practice</h1>
+<h1 id="best-practice"><span class="header-section-number">7</span> Best practice</h1>
 <p>TODO: stay tunend</p>
 <ul>
 <li>guter ton der harfennoten</li>
@@ -1952,14 +1970,14 @@ I:staffnonote 2</code></pre>
 <li>Abdrucksrechte</li>
 <li>Hinweis: bitte nicht kopieren …</li>
 </ul>
-<h1 id="abc-tutorial"><span class="header-section-number">7</span> ABC Tutorial</h1>
+<h1 id="abc-tutorial"><span class="header-section-number">8</span> ABC Tutorial</h1>
 <p>todo Penzing</p>
 <!--
 do not edit this file. it is generated by rake build from localization/help_de-de.md
 
 maintain the keys to be shown here in conf_doc_source.rb
 -->
-<h1 id="konfiguration"><span class="header-section-number">8</span> Konfiguration der Ausgabe</h1>
+<h1 id="konfiguration"><span class="header-section-number">9</span> Konfiguration der Ausgabe</h1>
 <p>Dieses Kapitel beschreibt die Konfiguration der Erstellung der Unterlegnotenblätter. Das Kapitel ist als Referenz aufgebaut. Die einzelnen Konfigurationsparameter werden in alphabetischer Reihenfolge aufgeführt. Bei den einzelnen Parametern wird der Text der Online-Hilfe, sowie die Voreinstellungen des Systems dargestellt.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Auch wenn in den Bildschirmmasken die Namen der Konfigurationsparameter übersetzt sind, so basiert diese Referenz den englischen Namen.</p>
@@ -1967,7 +1985,7 @@ maintain the keys to be shown here in conf_doc_source.rb
 <blockquote>
 <p><strong>Hinweis</strong>: Manche Konfigurationsparameter können mehrfach auftreten (z.B. <code>extract</code>). In diesem Kapitel wird dann immer die Instanz mit der Nr. 0 (z.B. <code>extract.0</code>) beschrieben.</p>
 </blockquote>
-<h2 id="annotations"><span class="header-section-number">8.1</span> <code>annotations</code> - Notenbeschriftungsvorlagen</h2>
+<h2 id="annotations"><span class="header-section-number">9.1</span> <code>annotations</code> - Notenbeschriftungsvorlagen</h2>
 <p>Hier kannst du eine Liste von Beschriftungsvorlagen angeben.</p>
 <p>Zupfnoter bringt einige solcher Definitionen bereits mit.</p>
 <p>Diese Beschriftungsvorlagen kannst du über “Zusatz einfügen” mit einer Note verbinden (Notenbeschriftung).</p>
@@ -1979,19 +1997,19 @@ maintain the keys to be shown here in conf_doc_source.rb
       &quot;vt&quot;  : {&quot;pos&quot;: [-1, -5], &quot;text&quot;: &quot;v&quot;}
     }
       </code></pre>
-<h2 id="annotations.rit"><span class="header-section-number">8.2</span> <code>annotations.rit</code> -</h2>
+<h2 id="annotations.rit"><span class="header-section-number">9.2</span> <code>annotations.rit</code> - rit</h2>
 <p>TODO: Helptext für annotations.rit einfügen</p>
 <pre><code>    &quot;rit&quot;: {&quot;pos&quot;: [2, -5], &quot;style&quot;: &quot;italic&quot;, &quot;text&quot;: &quot;rit&quot;}
       </code></pre>
-<h2 id="annotations.rit.pos"><span class="header-section-number">8.3</span> <code>annotations.rit.pos</code> - Position</h2>
+<h2 id="annotations.rit.pos"><span class="header-section-number">9.3</span> <code>annotations.rit.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [2, -5]
       </code></pre>
-<h2 id="annotations.rit.style"><span class="header-section-number">8.4</span> <code>annotations.rit.style</code> - Stil</h2>
+<h2 id="annotations.rit.style"><span class="header-section-number">9.4</span> <code>annotations.rit.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;italic&quot;
       </code></pre>
-<h2 id="annotations.rit.text"><span class="header-section-number">8.5</span> <code>annotations.rit.text</code> - Text</h2>
+<h2 id="annotations.rit.text"><span class="header-section-number">9.5</span> <code>annotations.rit.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -2008,15 +2026,15 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;rit&quot;</code></pre></li>
 </ul>
-<h2 id="annotations.vb"><span class="header-section-number">8.6</span> <code>annotations.vb</code> -</h2>
+<h2 id="annotations.vb"><span class="header-section-number">9.6</span> <code>annotations.vb</code> - Dämpfer unter der Note</h2>
 <p>TODO: Helptext für annotations.vb einfügen</p>
 <pre><code>    &quot;vb&quot;: {&quot;pos&quot;: [-1, 2], &quot;text&quot;: &quot;v&quot;}
       </code></pre>
-<h2 id="annotations.vb.pos"><span class="header-section-number">8.7</span> <code>annotations.vb.pos</code> - Position</h2>
+<h2 id="annotations.vb.pos"><span class="header-section-number">9.7</span> <code>annotations.vb.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [-1, 2]
       </code></pre>
-<h2 id="annotations.vb.text"><span class="header-section-number">8.8</span> <code>annotations.vb.text</code> - Text</h2>
+<h2 id="annotations.vb.text"><span class="header-section-number">9.8</span> <code>annotations.vb.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -2033,16 +2051,16 @@ maintain the keys to be shown here in conf_doc_source.rb
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
 </ul>
-<h2 id="annotations.vl"><span class="header-section-number">8.9</span> <code>annotations.vl</code> - ‘V’ links</h2>
+<h2 id="annotations.vl"><span class="header-section-number">9.9</span> <code>annotations.vl</code> - ‘V’ links</h2>
 <p>Hier siehst du ein Beispiel für eine Notenbeschriftung (hier mit dem Namen <code>vl</code>).<br />
 Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass die Saite nach Ablauf des Notenwertes abgedämpft werden soll.</p>
 <pre><code>    &quot;vl&quot;: {&quot;pos&quot;: [-5, -5], &quot;text&quot;: &quot;v&quot;}
       </code></pre>
-<h2 id="annotations.vl.pos"><span class="header-section-number">8.10</span> <code>annotations.vl.pos</code> - Position</h2>
+<h2 id="annotations.vl.pos"><span class="header-section-number">9.10</span> <code>annotations.vl.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [-5, -5]
       </code></pre>
-<h2 id="annotations.vl.text"><span class="header-section-number">8.11</span> <code>annotations.vl.text</code> - Text</h2>
+<h2 id="annotations.vl.text"><span class="header-section-number">9.11</span> <code>annotations.vl.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -2059,14 +2077,14 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
 </ul>
-<h2 id="annotations.vr"><span class="header-section-number">8.12</span> <code>annotations.vr</code> - ‘V’ rechts</h2>
+<h2 id="annotations.vr"><span class="header-section-number">9.12</span> <code>annotations.vr</code> - ‘V’ rechts</h2>
 <pre><code>    &quot;vr&quot;: {&quot;pos&quot;: [2, -5], &quot;text&quot;: &quot;v&quot;}
       </code></pre>
-<h2 id="annotations.vr.pos"><span class="header-section-number">8.13</span> <code>annotations.vr.pos</code> - Position</h2>
+<h2 id="annotations.vr.pos"><span class="header-section-number">9.13</span> <code>annotations.vr.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [2, -5]
       </code></pre>
-<h2 id="annotations.vr.text"><span class="header-section-number">8.14</span> <code>annotations.vr.text</code> - Text</h2>
+<h2 id="annotations.vr.text"><span class="header-section-number">9.14</span> <code>annotations.vr.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -2083,14 +2101,14 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
 </ul>
-<h2 id="annotations.vt"><span class="header-section-number">8.15</span> <code>annotations.vt</code> - ‘V’ oben</h2>
+<h2 id="annotations.vt"><span class="header-section-number">9.15</span> <code>annotations.vt</code> - ‘V’ oben</h2>
 <pre><code>    &quot;vt&quot;: {&quot;pos&quot;: [-1, -5], &quot;text&quot;: &quot;v&quot;}
       </code></pre>
-<h2 id="annotations.vt.pos"><span class="header-section-number">8.16</span> <code>annotations.vt.pos</code> - Position</h2>
+<h2 id="annotations.vt.pos"><span class="header-section-number">9.16</span> <code>annotations.vt.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [-1, -5]
       </code></pre>
-<h2 id="annotations.vt.text"><span class="header-section-number">8.17</span> <code>annotations.vt.text</code> - Text</h2>
+<h2 id="annotations.vt.text"><span class="header-section-number">9.17</span> <code>annotations.vt.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -2107,7 +2125,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;v&quot;</code></pre></li>
 </ul>
-<h2 id="extract"><span class="header-section-number">8.18</span> <code>extract</code> - Auszug</h2>
+<h2 id="extract"><span class="header-section-number">9.18</span> <code>extract</code> - Auszug</h2>
 <p>Hier kannst du Auszüge für deine Unterlegnoten definieren. Das ist besonders bei mehrstimmigen Sätzen sinnvoll.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Einstellungen im Auszug 0 wirken auf die anderen Auszüge, sofern sie dort nicht überschrieben werden.</p>
@@ -2208,12 +2226,10 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       },
       &quot;1&quot; : {&quot;title&quot;: &quot;Sopran, Alt&quot;, &quot;voices&quot;: [1, 2]},
       &quot;2&quot; : {&quot;title&quot;: &quot;Tenor, Bass&quot;, &quot;voices&quot;: [3, 4]},
-      &quot;3&quot; : {&quot;title&quot;: &quot;Melodie&quot;, &quot;voices&quot;: [1]},
-      &quot;4&quot; : {&quot;title&quot;: &quot;Extract 4&quot;, &quot;voices&quot;: [1]},
-      &quot;5&quot; : {&quot;title&quot;: &quot;Extract 5&quot;, &quot;voices&quot;: [1]}
+      &quot;3&quot; : {&quot;title&quot;: &quot;Melodie&quot;, &quot;voices&quot;: [1]}
     }
       </code></pre>
-<h2 id="extract.0.barnumbers"><span class="header-section-number">8.19</span> <code>extract.0.barnumbers</code> - Taktnummern</h2>
+<h2 id="extract.0.barnumbers"><span class="header-section-number">9.19</span> <code>extract.0.barnumbers</code> - Taktnummern</h2>
 <p>Hier kannst du angeben, wie Taktnummern in deinem Unterlegnotenblatt ausgegeben werden sollen.</p>
 <pre><code>    &quot;barnumbers&quot;: {
       &quot;apanchor&quot; : &quot;box&quot;,
@@ -2225,7 +2241,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;voices&quot;   : []
     }
       </code></pre>
-<h2 id="extract.0.barnumbers.apanchor"><span class="header-section-number">8.20</span> <code>extract.0.barnumbers.apanchor</code> - autom. pos. Anker</h2>
+<h2 id="extract.0.barnumbers.apanchor"><span class="header-section-number">9.20</span> <code>extract.0.barnumbers.apanchor</code> - autom. pos. Anker</h2>
 <p>Hier kannst du die vertikale Verankerung der Taktnummer an der Note einstellen.</p>
 <ul>
 <li><code>center</code>: die Taktnummer wird an der Mitte der Note verankert</li>
@@ -2241,7 +2257,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;apanchor&quot;: &quot;box&quot;
       </code></pre>
-<h2 id="extract.0.barnumbers.apbase"><span class="header-section-number">8.21</span> <code>extract.0.barnumbers.apbase</code> - autom. pos. Basis</h2>
+<h2 id="extract.0.barnumbers.apbase"><span class="header-section-number">9.21</span> <code>extract.0.barnumbers.apbase</code> - autom. pos. Basis</h2>
 <p>Hier kannst du die Grundlage für die automatische Positionierung von Taktnummern einstellen.</p>
 <p>Es werden zwei Werte erwartet: horizontal, vertikal.</p>
 <ul>
@@ -2258,28 +2274,28 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;apbase&quot;: [1, 1]
       </code></pre>
-<h2 id="extract.0.barnumbers.autopos"><span class="header-section-number">8.22</span> <code>extract.0.barnumbers.autopos</code> - autom. pos.</h2>
+<h2 id="extract.0.barnumbers.autopos"><span class="header-section-number">9.22</span> <code>extract.0.barnumbers.autopos</code> - autom. pos.</h2>
 <p>Hier kannst du die automatische Positionierung einschalten. Dabei werden Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert. Wenn diese Option ausgeschaltet, gelten die Werte von <code>pos</code>. Dies kann bei manchen Stücken eine sinnvollere Einstellugn sein.</p>
 <p>Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus verschieben.</p>
 <pre><code>    &quot;autopos&quot;: true
       </code></pre>
-<h2 id="extract.0.barnumbers.pos"><span class="header-section-number">8.23</span> <code>extract.0.barnumbers.pos</code> - Position</h2>
+<h2 id="extract.0.barnumbers.pos"><span class="header-section-number">9.23</span> <code>extract.0.barnumbers.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [6, -4]
       </code></pre>
-<h2 id="extract.0.barnumbers.prefix"><span class="header-section-number">8.24</span> <code>extract.0.barnumbers.prefix</code> - Präfix</h2>
+<h2 id="extract.0.barnumbers.prefix"><span class="header-section-number">9.24</span> <code>extract.0.barnumbers.prefix</code> - Präfix</h2>
 <p>Hier kannst du einen Text angeben, der z.B. vor der Taktnummeer ausgegeben werden soll (Präfix).</p>
 <pre><code>    &quot;prefix&quot;: &quot;&quot;
       </code></pre>
-<h2 id="extract.0.barnumbers.style"><span class="header-section-number">8.25</span> <code>extract.0.barnumbers.style</code> - Stil</h2>
+<h2 id="extract.0.barnumbers.style"><span class="header-section-number">9.25</span> <code>extract.0.barnumbers.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;small_bold&quot;
       </code></pre>
-<h2 id="extract.0.barnumbers.voices"><span class="header-section-number">8.26</span> <code>extract.0.barnumbers.voices</code> - Stimmen</h2>
+<h2 id="extract.0.barnumbers.voices"><span class="header-section-number">9.26</span> <code>extract.0.barnumbers.voices</code> - Stimmen</h2>
 <p>Hier kannst du eine Liste der Stimmen angeben, die Taktnummern bekommen sollen.</p>
 <pre><code>    &quot;voices&quot;: []
       </code></pre>
-<h2 id="extract.0.chords"><span class="header-section-number">8.27</span> <code>extract.0.chords</code> - Akkordsymbole</h2>
+<h2 id="extract.0.chords"><span class="header-section-number">9.27</span> <code>extract.0.chords</code> - Akkordsymbole</h2>
 <p>Hier kannst du die Darstellung von Akkordsymbolen einstellen. Akkordsymbole werden aus den Akkorden im ABC-code abgeleitet. Diese Funktion ist in erster Linie für Akkordzithern gedacht.</p>
 <pre><code>    &quot;chords&quot;: {
       &quot;apanchor&quot; : &quot;box&quot;,
@@ -2290,14 +2306,14 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;voices&quot;   : []
     }
       </code></pre>
-<h2 id="extract.0.chords.apanchor"><span class="header-section-number">8.28</span> <code>extract.0.chords.apanchor</code> - autom. pos. Anker</h2>
+<h2 id="extract.0.chords.apanchor"><span class="header-section-number">9.28</span> <code>extract.0.chords.apanchor</code> - autom. pos. Anker</h2>
 <p>Hier kannst du die vertikale Verankerung der eines notenbezogenen Objektes an der Note einstellen.</p>
 <ul>
 <li><code>center</code>: das Objekt wird an der Mitte der Note verankert</li>
 <li><p><code>box</code>: das Objekt wird am unteren Rand der Note verankert</p>
 <pre><code>&quot;apanchor&quot;: &quot;box&quot;</code></pre></li>
 </ul>
-<h2 id="extract.0.chords.apbase"><span class="header-section-number">8.29</span> <code>extract.0.chords.apbase</code> - autom. pos. Basis</h2>
+<h2 id="extract.0.chords.apbase"><span class="header-section-number">9.29</span> <code>extract.0.chords.apbase</code> - autom. pos. Basis</h2>
 <p>Hier kannst du die Grundlage für die automatische Positionierung von notenbezogenen Objekten einstellen.</p>
 <p>Es werden zwei Werte erwartet: horizontal, vertikal.</p>
 <ul>
@@ -2305,24 +2321,24 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p>Negative Werte schieben das Objekt <strong>näher</strong> an die Note heran.</p>
 <pre><code>&quot;apbase&quot;: [1, -0.5]</code></pre></li>
 </ul>
-<h2 id="extract.0.chords.autopos"><span class="header-section-number">8.30</span> <code>extract.0.chords.autopos</code> - autom. pos.</h2>
+<h2 id="extract.0.chords.autopos"><span class="header-section-number">9.30</span> <code>extract.0.chords.autopos</code> - autom. pos.</h2>
 <p>Hier kannst du die automatische Positionierung einschalten. Dabei werden Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert. Wenn diese Option ausgeschaltet, gelten die Werte von <code>pos</code>. Dies kann bei manchen Stücken eine sinnvollere Einstellugn sein.</p>
 <p>Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus verschieben.</p>
 <pre><code>    &quot;autopos&quot;: true
       </code></pre>
-<h2 id="extract.0.chords.pos"><span class="header-section-number">8.31</span> <code>extract.0.chords.pos</code> - Position</h2>
+<h2 id="extract.0.chords.pos"><span class="header-section-number">9.31</span> <code>extract.0.chords.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [3, -2]
       </code></pre>
-<h2 id="extract.0.chords.style"><span class="header-section-number">8.32</span> <code>extract.0.chords.style</code> - Stil</h2>
+<h2 id="extract.0.chords.style"><span class="header-section-number">9.32</span> <code>extract.0.chords.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;large&quot;
       </code></pre>
-<h2 id="extract.0.chords.voices"><span class="header-section-number">8.33</span> <code>extract.0.chords.voices</code> - Stimmen</h2>
+<h2 id="extract.0.chords.voices"><span class="header-section-number">9.33</span> <code>extract.0.chords.voices</code> - Stimmen</h2>
 <p>Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der <code>%%score</code> - Anweisung in der ABC-Notation.</p>
 <pre><code>    &quot;voices&quot;: []
       </code></pre>
-<h2 id="extract.0.countnotes"><span class="header-section-number">8.34</span> <code>extract.0.countnotes</code> - Zählmarken</h2>
+<h2 id="extract.0.countnotes"><span class="header-section-number">9.34</span> <code>extract.0.countnotes</code> - Zählmarken</h2>
 <p>Hier kannst du angeben, ob und wie Zählmarken in deinem Unterlegnotenblatt ausgegeben werden sollen.</p>
 <p>Zählmarken sind hilfreich, um sich ein Stück erarbeiten. Sie geben Hilfestellung beim einhalten der vorgegebenen Notenweret.</p>
 <pre><code>    &quot;countnotes&quot;: {
@@ -2334,7 +2350,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;voices&quot;   : []
     }
       </code></pre>
-<h2 id="extract.0.countnotes.apanchor"><span class="header-section-number">8.35</span> <code>extract.0.countnotes.apanchor</code> - autom. pos. Anker</h2>
+<h2 id="extract.0.countnotes.apanchor"><span class="header-section-number">9.35</span> <code>extract.0.countnotes.apanchor</code> - autom. pos. Anker</h2>
 <p>Hier kannst du die vertikale Verankerung der Zählmarke an der Note einstellen.</p>
 <ul>
 <li><code>center</code>: die Zählmarke wird an der Mitte der Note verankert</li>
@@ -2349,7 +2365,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;apanchor&quot;: &quot;box&quot;
       </code></pre>
-<h2 id="extract.0.countnotes.apbase"><span class="header-section-number">8.36</span> <code>extract.0.countnotes.apbase</code> - autom. pos. Basis</h2>
+<h2 id="extract.0.countnotes.apbase"><span class="header-section-number">9.36</span> <code>extract.0.countnotes.apbase</code> - autom. pos. Basis</h2>
 <p>Hier kannst du die Grundlage für die automatische Positionierung von Zählmarken einstellen.</p>
 <p>Es werden zwei Werte erwartet: horizontal, vertikal.</p>
 <ul>
@@ -2366,36 +2382,36 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;apbase&quot;: [1, -0.5]
       </code></pre>
-<h2 id="extract.0.countnotes.autopos"><span class="header-section-number">8.37</span> <code>extract.0.countnotes.autopos</code> - autom. pos.</h2>
+<h2 id="extract.0.countnotes.autopos"><span class="header-section-number">9.37</span> <code>extract.0.countnotes.autopos</code> - autom. pos.</h2>
 <p>Hier kannst du die automatische Positionierung einschalten. Dabei werden Zählmarken bzw. Taktnummern abhängig von der Größe der Noten platziert. Wenn diese Option ausgeschaltet, gelten die Werte von <code>pos</code>. Dies kann bei manchen Stücken eine sinnvollere Einstellugn sein.</p>
 <p>Die Zählmarken/Taktnummer lassen sich weiterhin mit der Maus verschieben.</p>
 <pre><code>    &quot;autopos&quot;: true
       </code></pre>
-<h2 id="extract.0.countnotes.pos"><span class="header-section-number">8.38</span> <code>extract.0.countnotes.pos</code> - Position</h2>
+<h2 id="extract.0.countnotes.pos"><span class="header-section-number">9.38</span> <code>extract.0.countnotes.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [3, -2]
       </code></pre>
-<h2 id="extract.0.countnotes.style"><span class="header-section-number">8.39</span> <code>extract.0.countnotes.style</code> - Stil</h2>
+<h2 id="extract.0.countnotes.style"><span class="header-section-number">9.39</span> <code>extract.0.countnotes.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;smaller&quot;
       </code></pre>
-<h2 id="extract.0.countnotes.voices"><span class="header-section-number">8.40</span> <code>extract.0.countnotes.voices</code> - Stimmen</h2>
+<h2 id="extract.0.countnotes.voices"><span class="header-section-number">9.40</span> <code>extract.0.countnotes.voices</code> - Stimmen</h2>
 <p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, die Zählmarken bekommen sollen.</p>
 <pre><code>    &quot;voices&quot;: []
       </code></pre>
-<h2 id="extract.0.flowlines"><span class="header-section-number">8.41</span> <code>extract.0.flowlines</code> - Flußlinien</h2>
+<h2 id="extract.0.flowlines"><span class="header-section-number">9.41</span> <code>extract.0.flowlines</code> - Flußlinien</h2>
 <p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, für die Flußlinien eingezeichnet werden sollen.</p>
 <pre><code>    &quot;flowlines&quot;: [1, 3]
       </code></pre>
-<h2 id="extract.0.images"><span class="header-section-number">8.42</span> <code>extract.0.images</code> - Bilder</h2>
+<h2 id="extract.0.images"><span class="header-section-number">9.42</span> <code>extract.0.images</code> - Bilder</h2>
 <p>Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen sollen.</p>
 <pre><code>    &quot;images&quot;: {}
       </code></pre>
-<h2 id="extract.0.jumplines"><span class="header-section-number">8.43</span> <code>extract.0.jumplines</code> - Sprunglinien</h2>
+<h2 id="extract.0.jumplines"><span class="header-section-number">9.43</span> <code>extract.0.jumplines</code> - Sprunglinien</h2>
 <p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, für die Sprunglinien eingezeichnet werden sollen.</p>
 <pre><code>    &quot;jumplines&quot;: [1, 3]
       </code></pre>
-<h2 id="extract.0.layout"><span class="header-section-number">8.44</span> <code>extract.0.layout</code> - Layout</h2>
+<h2 id="extract.0.layout"><span class="header-section-number">9.44</span> <code>extract.0.layout</code> - Layout</h2>
 <p>Hier kannst du die Parameter für das Layout eintsllen. Damit lässt das Notenbild gezielt optimieren.</p>
 <pre><code>    &quot;layout&quot;: {
       &quot;DRAWING_AREA_SIZE&quot; : [400, 282],
@@ -2425,11 +2441,11 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;tuning&quot;            : &quot;fixed&quot;
     }
       </code></pre>
-<h2 id="extract.0.layout.DRAWING_AREA_SIZE"><span class="header-section-number">8.45</span> <code>extract.0.layout.DRAWING_AREA_SIZE</code> - Zeichenfl.Größe</h2>
+<h2 id="extract.0.layout.DRAWING_AREA_SIZE"><span class="header-section-number">9.45</span> <code>extract.0.layout.DRAWING_AREA_SIZE</code> - Zeichenfl.Größe</h2>
 <p>Hier gibst du die Größe der Zeichenfläche an. Die Größe wird als <em>breite</em>, <em>höhe</em> angegeben.</p>
 <pre><code>    &quot;DRAWING_AREA_SIZE&quot;: [400, 282]
       </code></pre>
-<h2 id="extract.0.layout.ELLIPSE_SIZE"><span class="header-section-number">8.46</span> <code>extract.0.layout.ELLIPSE_SIZE</code> - Notengröße</h2>
+<h2 id="extract.0.layout.ELLIPSE_SIZE"><span class="header-section-number">9.46</span> <code>extract.0.layout.ELLIPSE_SIZE</code> - Notengröße</h2>
 <p>Hier kannst du die Größe der ganzen Noten einstellen. Sinnvolle Werte sind [2-4, 1.2-2].</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Die Größe der anderen Noten werden ausgehend von diesem Wert berechnet.</p>
@@ -2437,19 +2453,19 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;ELLIPSE_SIZE&quot;: [3.5, 1.7]
       </code></pre>
-<h2 id="extract.0.layout.LINE_MEDIUM"><span class="header-section-number">8.47</span> <code>extract.0.layout.LINE_MEDIUM</code> - Linienstärke mittel</h2>
+<h2 id="extract.0.layout.LINE_MEDIUM"><span class="header-section-number">9.47</span> <code>extract.0.layout.LINE_MEDIUM</code> - Linienstärke mittel</h2>
 <p>Hier stellst du die Breite (in mm) von mittelstarken Linien ein.</p>
 <pre><code>    &quot;LINE_MEDIUM&quot;: 0.3
       </code></pre>
-<h2 id="extract.0.layout.LINE_THICK"><span class="header-section-number">8.48</span> <code>extract.0.layout.LINE_THICK</code> - Linienstärke dick</h2>
+<h2 id="extract.0.layout.LINE_THICK"><span class="header-section-number">9.48</span> <code>extract.0.layout.LINE_THICK</code> - Linienstärke dick</h2>
 <p>Hier stellst du die Breite (in mm) von dicken Linien ein.</p>
 <pre><code>    &quot;LINE_THICK&quot;: 0.5
       </code></pre>
-<h2 id="extract.0.layout.LINE_THIN"><span class="header-section-number">8.49</span> <code>extract.0.layout.LINE_THIN</code> - Linienstärke dünn</h2>
+<h2 id="extract.0.layout.LINE_THIN"><span class="header-section-number">9.49</span> <code>extract.0.layout.LINE_THIN</code> - Linienstärke dünn</h2>
 <p>Hier stellst du die Breite (in mm) von dünnen Linien ein.</p>
 <pre><code>    &quot;LINE_THIN&quot;: 0.1
       </code></pre>
-<h2 id="extract.0.layout.PITCH_OFFSET"><span class="header-section-number">8.50</span> <code>extract.0.layout.PITCH_OFFSET</code> - PitchOffset</h2>
+<h2 id="extract.0.layout.PITCH_OFFSET"><span class="header-section-number">9.50</span> <code>extract.0.layout.PITCH_OFFSET</code> - PitchOffset</h2>
 <p>Dieser Paramter justiert das Verhältnis von Tonhöhe und Position auf dem Blatt. Die Angabe ist der negative MIDI-Wert der Note, die am linken Blattrand dargestellt wird.</p>
 <blockquote>
 <p><strong>Hinweis</strong> Bei <strong>chromatischen</strong> Instrumenten wird die Stimmung der Saiten von Zupfnoter berechnet. Daher sorgt der Wert -43 dafür, dass das G der Oktave 3 am linken Blattrand erscheint.</p>
@@ -2458,36 +2474,36 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;PITCH_OFFSET&quot;: -43
       </code></pre>
-<h2 id="extract.0.layout.REST_SIZE"><span class="header-section-number">8.51</span> <code>extract.0.layout.REST_SIZE</code> - Pausengröße</h2>
+<h2 id="extract.0.layout.REST_SIZE"><span class="header-section-number">9.51</span> <code>extract.0.layout.REST_SIZE</code> - Pausengröße</h2>
 <p>Hier kannst du die Größe der Pausen einstellen. Sinnvolle Werte sind [2-4, 1.2-2]</p>
 <blockquote>
 <p><strong>Hinweis</strong>:Bitte beachte, dass nur die Angabe der Höhe von berücksichtigt wird, da das Pausensymbol nicht verzerrt werden darf.</p>
 </blockquote>
 <pre><code>    &quot;REST_SIZE&quot;: [4, 2]
       </code></pre>
-<h2 id="extract.0.layout.X_OFFSET"><span class="header-section-number">8.52</span> <code>extract.0.layout.X_OFFSET</code> - X - Offset</h2>
+<h2 id="extract.0.layout.X_OFFSET"><span class="header-section-number">9.52</span> <code>extract.0.layout.X_OFFSET</code> - X - Offset</h2>
 <p>Hier gibst du an, wie weit das Druckbild auf dem A3-Blatt von links nach rechts geschoben werden soll.</p>
 <blockquote>
 <p>Hinweis: es gibt zusätzliche Möglichkeiten, das Blatt auf dem Drucker zu verschieben <code>extract.0.printer</code></p>
 </blockquote>
 <pre><code>    &quot;X_OFFSET&quot;: 2.8
       </code></pre>
-<h2 id="extract.0.layout.X_SPACING"><span class="header-section-number">8.53</span> <code>extract.0.layout.X_SPACING</code> - Saitenabstand</h2>
+<h2 id="extract.0.layout.X_SPACING"><span class="header-section-number">9.53</span> <code>extract.0.layout.X_SPACING</code> - Saitenabstand</h2>
 <p>Hier gibst du den Saitenabstand in mm an. Normalerweise ist das 11.5 mm.</p>
 <pre><code>    &quot;X_SPACING&quot;: 11.5
       </code></pre>
-<h2 id="extract.0.layout.beams"><span class="header-section-number">8.54</span> <code>extract.0.layout.beams</code> - Notenhälse</h2>
+<h2 id="extract.0.layout.beams"><span class="header-section-number">9.54</span> <code>extract.0.layout.beams</code> - Notenhälse</h2>
 <p>Hier kannst du einstellen, ob die Noten mit Notenhälsen dargestellt werden. Noten mit Notenhälsen orientieren sich mehr an der traditionellen Notenschrift, brauchen aber mehr Plat. Alle Noten werden gleich groß dargeestellt.</p>
 <pre><code>    &quot;beams&quot;: false
       </code></pre>
-<h2 id="extract.0.layout.bottomup"><span class="header-section-number">8.55</span> <code>extract.0.layout.bottomup</code> - Spiel aufwärts</h2>
+<h2 id="extract.0.layout.bottomup"><span class="header-section-number">9.55</span> <code>extract.0.layout.bottomup</code> - Spiel aufwärts</h2>
 <p>Hier kannst du einstellen, ob die Noten von unten nach oben geschrieben werden. Manche Spieler (Spieler der Okon-Harfe) bevorzugen diese Darstellung, weil dabei die Hand nicht mehr die nächsten Noten verdeckt.</p>
 <blockquote>
 <p><strong>Hinweis</strong> Die Taktstriche werden weiterhin oberhalb der Noten gezeichnet. Aber die Position von Taktnummern und Zählmarken wird angepasst.</p>
 </blockquote>
 <pre><code>    &quot;bottomup&quot;: false
       </code></pre>
-<h2 id="extract.0.layout.color"><span class="header-section-number">8.56</span> <code>extract.0.layout.color</code> - Farbeinstellung</h2>
+<h2 id="extract.0.layout.color"><span class="header-section-number">9.56</span> <code>extract.0.layout.color</code> - Farbeinstellung</h2>
 <p>Hier kannst du die Farbe für verschiedene Elemente einstellen.</p>
 <blockquote>
 <p><strong>Hinweis</strong> Die Farbe werden über die “HTML” - Namen angegegeben. Dort ist <code>grey</code> ist dunkler als <code>darkgrey</code> :-)</p>
@@ -2502,11 +2518,11 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;color_variant2&quot; : &quot;dimgrey&quot;
     }
       </code></pre>
-<h2 id="extract.0.layout.color.color_default"><span class="header-section-number">8.57</span> <code>extract.0.layout.color.color_default</code> - Sonstiges</h2>
+<h2 id="extract.0.layout.color.color_default"><span class="header-section-number">9.57</span> <code>extract.0.layout.color.color_default</code> - Sonstiges</h2>
 <p>Hier wählst die Grundfarbe für die Ausgabe. Diese Farbe wird bei allen Elementen verwendet, die keine spzeifische Farbeinstellung haben.</p>
 <pre><code>    &quot;color_default&quot;: &quot;black&quot;
       </code></pre>
-<h2 id="extract.0.layout.color.color_variant1"><span class="header-section-number">8.58</span> <code>extract.0.layout.color.color_variant1</code> - Variante1</h2>
+<h2 id="extract.0.layout.color.color_variant1"><span class="header-section-number">9.58</span> <code>extract.0.layout.color.color_variant1</code> - Variante1</h2>
 <p>Hier wählst du die Farbe in der variante Abschnitte 1, 3, 5 etc. dargestellt werden.</p>
 <blockquote>
 <p><strong>Hinweis</strong> Die Farbe von varianten Abnschnitten alterniert zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann werden die varianten Abschnitte gleichermassen eingefärbt.</p>
@@ -2514,7 +2530,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;color_variant1&quot;: &quot;grey&quot;
       </code></pre>
-<h2 id="extract.0.layout.color.color_variant2"><span class="header-section-number">8.59</span> <code>extract.0.layout.color.color_variant2</code> - Variante2</h2>
+<h2 id="extract.0.layout.color.color_variant2"><span class="header-section-number">9.59</span> <code>extract.0.layout.color.color_variant2</code> - Variante2</h2>
 <p>Hier wählst du die Farbe in der variante Abschnitte 2,4,6 etc. dargestellt werden.</p>
 <blockquote>
 <p><strong>Hinweis</strong> Die Farbe von varianten Abnschnitten alterniert zwischen variant1 und variant2. Wenn du beide gleich einstellst, dann werden die varianten Abschnitte gleichermassen eingefärbt.</p>
@@ -2522,7 +2538,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;color_variant2&quot;: &quot;dimgrey&quot;
       </code></pre>
-<h2 id="extract.0.layout.instrument"><span class="header-section-number">8.60</span> <code>extract.0.layout.instrument</code> - Instrument</h2>
+<h2 id="extract.0.layout.instrument"><span class="header-section-number">9.60</span> <code>extract.0.layout.instrument</code> - Instrument</h2>
 <p>Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite (bei <code>saitenspiel</code> als diatonischem Instrument ist das nicht linear).</p>
 <p>Es gibt folgende Einstellunge:</p>
 <ul>
@@ -2532,15 +2548,15 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><strong><code>saitenspiel</code></strong>: das ist ein diatonisch gestimmtes Saitenspiel mit einer G-Bass-Saite</p>
 <pre><code>&quot;instrument&quot;: &quot;37-strings-g-g&quot;</code></pre></li>
 </ul>
-<h2 id="extract.0.layout.jumpline_anchor"><span class="header-section-number">8.61</span> <code>extract.0.layout.jumpline_anchor</code> - Sprungl.Anker</h2>
+<h2 id="extract.0.layout.jumpline_anchor"><span class="header-section-number">9.61</span> <code>extract.0.layout.jumpline_anchor</code> - Sprungl.Anker</h2>
 <p>Hier stellst du ein, wie die Sprunglinien an den entsprechenden Noten verankert werden. Bitte gib zwei Werte (X, Y) getrennt durch ein Komma an. Die Angabe erfolgt in mm und bezieht sich auf den Rand (genauer gesagt, das umhüllende Rechteck) der entsprechende Note.</p>
 <pre><code>    &quot;jumpline_anchor&quot;: [3, 1]
       </code></pre>
-<h2 id="extract.0.layout.limit_a3"><span class="header-section-number">8.62</span> <code>extract.0.layout.limit_a3</code> - Begrenzung auf A3</h2>
+<h2 id="extract.0.layout.limit_a3"><span class="header-section-number">9.62</span> <code>extract.0.layout.limit_a3</code> - Begrenzung auf A3</h2>
 <p>Diese Funktion verschiebt Noten am A3-Blattrand nach innen. Da das Unterlegnotenblatt etwas größer ist als A3 würde sonst die Note angeshnitten.</p>
 <pre><code>    &quot;limit_a3&quot;: true
       </code></pre>
-<h2 id="extract.0.layout.packer"><span class="header-section-number">8.63</span> <code>extract.0.layout.packer</code> - Packer</h2>
+<h2 id="extract.0.layout.packer"><span class="header-section-number">9.63</span> <code>extract.0.layout.packer</code> - Packer</h2>
 <p>Hier kannst du weitere Einzelheiten für die vertikale Anordnung der Noten konfigurieren. Es sind subtile Feinheiten, welche den Unterschied ausmachen. Daher sind diese Funktionen noch experimentell.</p>
 <pre><code>    &quot;packer&quot;: {
       &quot;pack_max_spreadfactor&quot; : 2,
@@ -2548,13 +2564,13 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;pack_min_increment&quot;    : 0.2
     }
       </code></pre>
-<h2 id="extract.0.layout.packer.pack_max_spreadfactor"><span class="header-section-number">8.64</span> <code>extract.0.layout.packer.pack_max_spreadfactor</code> - max. Spreizung</h2>
+<h2 id="extract.0.layout.packer.pack_max_spreadfactor"><span class="header-section-number">9.64</span> <code>extract.0.layout.packer.pack_max_spreadfactor</code> - max. Spreizung</h2>
 <p>Nach der Berechnung des maximal komprimierten Layouts versucht Zufpnoter, dieses so weit zu spreizen, dass die Zeichenfläche voll ausgefüllt wird.</p>
 <p>Dieser Faktor bestimmt, wie weit das maximal komprimierte Layout in der Vertikalen gespreizt werden soll. Das wirkt sich bei kurzen Stücken aus, welche das Blatt nicht vollständig ausfüllen.</p>
 <p>Bei sehr kurzen Stücken ist es sinnvoll, die Spreizung zu begrenzen, weil sonst die Noten sehr weit auseinander liegen.</p>
 <pre><code>    &quot;pack_max_spreadfactor&quot;: 2
       </code></pre>
-<h2 id="extract.0.layout.packer.pack_method"><span class="header-section-number">8.65</span> <code>extract.0.layout.packer.pack_method</code> - Packmethode</h2>
+<h2 id="extract.0.layout.packer.pack_method"><span class="header-section-number">9.65</span> <code>extract.0.layout.packer.pack_method</code> - Packmethode</h2>
 <p>Hier kannst du die pack-Methode auswählen</p>
 <ul>
 <li><p><strong>0</strong> : Die bisherige Methode: diese geht nach jedem Schritt um die Höhe der größten Note weiter</p></li>
@@ -2572,7 +2588,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <p>Es wird auch kein extra Raum für Parts, Taktstriche und manuelle Vorschübe erstellt.</p>
 <pre><code>&quot;pack_method&quot;: 0</code></pre></li>
 </ul>
-<h2 id="extract.0.layout.packer.pack_min_increment"><span class="header-section-number">8.66</span> <code>extract.0.layout.packer.pack_min_increment</code> - min. Inkrement</h2>
+<h2 id="extract.0.layout.packer.pack_min_increment"><span class="header-section-number">9.66</span> <code>extract.0.layout.packer.pack_min_increment</code> - min. Inkrement</h2>
 <p>Dieser Faktor bestimmt, wie weit pro Note auf jeden Fall weiter gerückt wird. Pro Note wird mindestens um diesen Anteil einer Maximalnote weiter geschaltet.</p>
 <p><strong>Beispiele</strong>:</p>
 <ul>
@@ -2581,7 +2597,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><strong>0.2</strong>: es wird um 20% einer ganzen Note weiter geschaltet. Dies liefert angenehme Ergebnisse.</p>
 <pre><code>&quot;pack_min_increment&quot;: 0.2</code></pre></li>
 </ul>
-<h2 id="extract.0.layout.tuning"><span class="header-section-number">8.67</span> <code>extract.0.layout.tuning</code> - Stimmung</h2>
+<h2 id="extract.0.layout.tuning"><span class="header-section-number">9.67</span> <code>extract.0.layout.tuning</code> - Stimmung</h2>
 <p>Hier kannst du einstellen, ob dein Instrument umgestimmt wurde. Diese Umstimmung erfolgt entweder durch verstimmung der Saiten oder durch umlegen einer Klappe (z.b. bei Okon-Harfe). Es gibt zwei Einträge</p>
 <p><strong>feste stimmung: <code>fixed</code></strong></p>
 <p>Mit dieser Einstellung ist die Stimmung des Instrumentes fest vorgegegeben.</p>
@@ -2604,7 +2620,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p>ein vorangestelltes <code>*</code> markiert eine Klappe, die Saite gilt dann auch als einen Halbton höher gestimmt.</p>
 <pre><code>&quot;tuning&quot;: &quot;fixed&quot;</code></pre></li>
 </ul>
-<h2 id="extract.0.layoutlines"><span class="header-section-number">8.68</span> <code>extract.0.layoutlines</code> - Stimmen für Layout</h2>
+<h2 id="extract.0.layoutlines"><span class="header-section-number">9.68</span> <code>extract.0.layoutlines</code> - Stimmen für Layout</h2>
 <p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, die <strong>zusätzlich</strong> zu den dargestellten Stimmen zur die Berechnung des vertikalen Anordnung der Noten (Layout) herangezogen werden sollen.</p>
 <p>Üblicherweise werden nur die dargestellten Stimmen für die Berechnung des Layouts herangezogen. Es kann aber sinnvoll sein, weitere Stimmmen zur Berechnung des Layouts zu berücksichtigen, um in allen Auszügen ein ein gleichartiges Notenbild zu bekommen.</p>
 <blockquote>
@@ -2612,7 +2628,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;layoutlines&quot;: [1, 2, 3, 4]
       </code></pre>
-<h2 id="extract.0.legend"><span class="header-section-number">8.69</span> <code>extract.0.legend</code> - Legende</h2>
+<h2 id="extract.0.legend"><span class="header-section-number">9.69</span> <code>extract.0.legend</code> - Legende</h2>
 <p>Hier kannst du die Darstellung der Legende konfigurieren. Dabei wird unterschieden zwischen</p>
 <ul>
 <li><code>pos</code> - Position des Titels des Musikstückes</li>
@@ -2630,7 +2646,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;tstyle&quot; : &quot;large&quot;
     }
       </code></pre>
-<h2 id="extract.0.legend.align"><span class="header-section-number">8.70</span> <code>extract.0.legend.align</code> - Ausrichtung</h2>
+<h2 id="extract.0.legend.align"><span class="header-section-number">9.70</span> <code>extract.0.legend.align</code> - Ausrichtung</h2>
 <p>Hier kannst du die Ausrichtung des Titels ausweählen:</p>
 <ul>
 <li><code>l</code>: der Text steht links vom Bezugspunkt (und ist daher rechtsbündig)</li>
@@ -2638,33 +2654,33 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>auto</code>: wie <code>l</code></p>
 <pre><code>&quot;align&quot;: &quot;r&quot;</code></pre></li>
 </ul>
-<h2 id="extract.0.legend.pos"><span class="header-section-number">8.71</span> <code>extract.0.legend.pos</code> - Position</h2>
+<h2 id="extract.0.legend.pos"><span class="header-section-number">9.71</span> <code>extract.0.legend.pos</code> - Position</h2>
 <p>Hier kannst du die Position des Titels des Musikstückes angeben. Die Angabe erfolgt in mm als durch Kommas getrennt Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [320, 7]
       </code></pre>
-<h2 id="extract.0.legend.spos"><span class="header-section-number">8.72</span> <code>extract.0.legend.spos</code> - Pos. Subleg.</h2>
+<h2 id="extract.0.legend.spos"><span class="header-section-number">9.72</span> <code>extract.0.legend.spos</code> - Pos. Subleg.</h2>
 <p>Hier kannst du die Darstellung der weiteren Angaben (Sublegende) des Musikstückes angeben. Die Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;spos&quot;: [320, 27]
       </code></pre>
-<h2 id="extract.0.legend.style"><span class="header-section-number">8.73</span> <code>extract.0.legend.style</code> - Stil</h2>
+<h2 id="extract.0.legend.style"><span class="header-section-number">9.73</span> <code>extract.0.legend.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für die Legende einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;regular&quot;
       </code></pre>
-<h2 id="extract.0.legend.tstyle"><span class="header-section-number">8.74</span> <code>extract.0.legend.tstyle</code> - Stil f. Titel</h2>
+<h2 id="extract.0.legend.tstyle"><span class="header-section-number">9.74</span> <code>extract.0.legend.tstyle</code> - Stil f. Titel</h2>
 <p>Hier kannst du die Darstellung des Titels des Musikstückes angeben. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;tstyle&quot;: &quot;large&quot;
       </code></pre>
-<h2 id="extract.0.lyrics"><span class="header-section-number">8.75</span> <code>extract.0.lyrics</code> - Liedtexte</h2>
+<h2 id="extract.0.lyrics"><span class="header-section-number">9.75</span> <code>extract.0.lyrics</code> - Liedtexte</h2>
 <p>Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den Liedtext auf mehrer Blöcke aufteilen.</p>
 <p>Ein einzelner Block listet die Strophen auf, die er enthält, und die gemeinsam poitioniert werden.</p>
 <pre><code>    &quot;lyrics&quot;: {}
       </code></pre>
-<h2 id="extract.0.nonflowrest"><span class="header-section-number">8.76</span> <code>extract.0.nonflowrest</code> - Begleitpausen</h2>
+<h2 id="extract.0.nonflowrest"><span class="header-section-number">9.76</span> <code>extract.0.nonflowrest</code> - Begleitpausen</h2>
 <p>Hier kannst du einstellen, ob in den Begleitstimmen ebenfalls die Pausen dargestellt werden sollen. Eine Stimme wird dann Begleitstimme betrachtet, wenn sie keine Flußlinie hat.</p>
 <p>Normalerweise ist es nicht sinnvoll, in den Begleitstimmen Pausen darzustellen, da der Spieler sich ja an den Pausen in der Flußlinie orientiert.</p>
 <pre><code>    &quot;nonflowrest&quot;: false
       </code></pre>
-<h2 id="extract.0.notebound.minc"><span class="header-section-number">8.77</span> <code>extract.0.notebound.minc</code> - extra Vorschub</h2>
+<h2 id="extract.0.notebound.minc"><span class="header-section-number">9.77</span> <code>extract.0.notebound.minc</code> - extra Vorschub</h2>
 <p>Hier kannst du manuelle Korrekturen im vertikalen Layout vornehmen:</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Diese Funktion ist nun wirklich für die ganzen Experten. Bitte verwende sie also nur, wenn du weißt, was du tust. Anwendungsfälle für diese Funktion:</p>
@@ -2676,7 +2692,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <p>Dieser Parameter enthält eine Liste von manuellen Korrekturen. Jeder Eintrag ändert den Vorschub für einen durch seinen Schlüssel bestimmten Zeitpunkt.</p>
 <p>… kein Beispiel verfügbar …</p>
-<h2 id="extract.0.notebound.minc.x.minc_f"><span class="header-section-number">8.78</span> <code>extract.0.notebound.minc.x.minc_f</code> - Faktor</h2>
+<h2 id="extract.0.notebound.minc.x.minc_f"><span class="header-section-number">9.78</span> <code>extract.0.notebound.minc.x.minc_f</code> - Faktor</h2>
 <p>Hier gibst du den Korrekturfaktor für den vertikalen Voreschub an.</p>
 <p>Die Angabe bestimmt, welcher Anteil am errechneten vertikalen Abstand als extra Abstand <strong>hinzugefügt</strong> wird. (<code>a = (a + minc_f * a</code>))</p>
 <p>Im Beispiel</p>
@@ -2695,7 +2711,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><code>0.5</code> vergrößert den Vorschub um die Hälfte einer ganzen Note.</li>
 </ul>
 <p>… kein Beispiel verfügbar …</p>
-<h2 id="extract.0.notebound.tuplet"><span class="header-section-number">8.79</span> <code>extract.0.notebound.tuplet</code> - n-Tole</h2>
+<h2 id="extract.0.notebound.tuplet"><span class="header-section-number">9.79</span> <code>extract.0.notebound.tuplet</code> - n-Tole</h2>
 <p>Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen) steuern.</p>
 <blockquote>
 <p><strong>Hinweis</strong>:</p>
@@ -2703,14 +2719,14 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <p>Z.B. kann man eine Verschiebemarke <code>tpl_links</code> an alle tuplets schreiben, deren Bogen links von der FLußlineie liegen soll. Diese können dann über den parameter <code>extract.0.tuplet.tpl_links</code> gemeinsam konfiguriert werden</p>
 </blockquote>
 <p>… kein Beispiel verfügbar …</p>
-<h2 id="extract.0.notes"><span class="header-section-number">8.80</span> <code>extract.0.notes</code> - Seitenbeschriftungen</h2>
+<h2 id="extract.0.notes"><span class="header-section-number">9.80</span> <code>extract.0.notes</code> - Seitenbeschriftungen</h2>
 <p>Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Es kann aber auch sinnvoll sein eine sprechende Bezeichnung für die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht möglich.</p>
 </blockquote>
 <pre><code>    &quot;notes&quot;: {}
       </code></pre>
-<h2 id="extract.0.printer"><span class="header-section-number">8.81</span> <code>extract.0.printer</code> - Drucker</h2>
+<h2 id="extract.0.printer"><span class="header-section-number">9.81</span> <code>extract.0.printer</code> - Drucker</h2>
 <p>Hier kannst du das Druckbild auf deine Drucher-Umgebung anpassen.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Durch Verwendung dieser Funktion passen die erstellten PDF-Dateien eventuell nicht mehr auf andere Umgebungen. Bitte verwende die Funktion also erst, wenn du keine geeigneten Einstellungen in deinem Druckdialog findest.</p>
@@ -2722,7 +2738,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;show_border&quot; : false
     }
       </code></pre>
-<h2 id="extract.0.printer.a3_offset"><span class="header-section-number">8.82</span> <code>extract.0.printer.a3_offset</code> - Offset für A3</h2>
+<h2 id="extract.0.printer.a3_offset"><span class="header-section-number">9.82</span> <code>extract.0.printer.a3_offset</code> - Offset für A3</h2>
 <p>Hier definierst du, wie das Druckbild beim Ausdruck auf A3-Papier verschoben werden soll.</p>
 <p>Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <blockquote>
@@ -2731,23 +2747,23 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;a3_offset&quot;: [0, 0]
       </code></pre>
-<h2 id="extract.0.printer.a4_offset"><span class="header-section-number">8.83</span> <code>extract.0.printer.a4_offset</code> - Offset für A4</h2>
+<h2 id="extract.0.printer.a4_offset"><span class="header-section-number">9.83</span> <code>extract.0.printer.a4_offset</code> - Offset für A4</h2>
 <p>Hier defnierst du, wie das Druckbild beim Ausdruck auf A3-Papier verschoben werden soll.</p>
 <p>Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;a4_offset&quot;: [-5, 0]
       </code></pre>
-<h2 id="extract.0.printer.a4_pages"><span class="header-section-number">8.84</span> <code>extract.0.printer.a4_pages</code> - Seiten bei A4</h2>
+<h2 id="extract.0.printer.a4_pages"><span class="header-section-number">9.84</span> <code>extract.0.printer.a4_pages</code> - Seiten bei A4</h2>
 <p>Hier gibst du eine kommagetrennte Liste von Seiten an, die bei A4 ausgedruckt werden sollen. Die Zählung beginnt bei 0! Standardeinstellung ist <code>0,1,2</code>.</p>
 <p>Bei manchen Instrumenten passt das gesamte Notenbild auf eine Seite. Bei 25-saitigen Instrumenten reicht es beispielsweise, die Seite 1, 2 auszugeben, und Seite 0 wegzulassen.</p>
 <pre><code>    &quot;a4_pages&quot;: [0, 1, 2]
       </code></pre>
-<h2 id="extract.0.printer.show_border"><span class="header-section-number">8.85</span> <code>extract.0.printer.show_border</code> - Blattbegr. zeich.</h2>
+<h2 id="extract.0.printer.show_border"><span class="header-section-number">9.85</span> <code>extract.0.printer.show_border</code> - Blattbegr. zeich.</h2>
 <p>Hier kannst du einstellen, ob die Blattbegrenzung gedruckt werden soll. Die Blattbegrenzung liegt eigntlich ausserhalb des Bereiches, den der Drucker auf dem Papier bedrucken kann. Wenn der Drucker das Druckbild auf dem Papier zentriert, ist die Blattbegrenzung nicht sichtbar. Ihre Darstellung auf der Druckvorschau kann trotzdem hilfreich sein.</p>
 <p>Manche Drucker positionieren das Druckbild aber nicht zentriert auf dem Papier. Dadurch wird die Blattbegrenzung gedruckt, dafür fehlen dann unten ca. 10 mm.</p>
 <p>Versuche in diesem Fall, ob das Ausschalten der Blattbegrenzung die Situation verbessert.</p>
 <pre><code>    &quot;show_border&quot;: false
       </code></pre>
-<h2 id="extract.0.repeatsigns"><span class="header-section-number">8.86</span> <code>extract.0.repeatsigns</code> - Wiederholungszeichen</h2>
+<h2 id="extract.0.repeatsigns"><span class="header-section-number">9.86</span> <code>extract.0.repeatsigns</code> - Wiederholungszeichen</h2>
 <p>Hier kannst du die Darstellung der Wiederholungszeichen steuern. Dabei wird angegeben, für welche Stimmen Wiederholgungszeichen gedruckt werden, wie die Wiederholungszeichen gedruckt werden, und wie sie positioniert werden.</p>
 <pre><code>    &quot;repeatsigns&quot;: {
       &quot;left&quot;   : {&quot;pos&quot;: [-7, -2], &quot;style&quot;: &quot;bold&quot;, &quot;text&quot;: &quot;|:&quot;},
@@ -2755,72 +2771,72 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;voices&quot; : []
     }
       </code></pre>
-<h2 id="extract.0.repeatsigns.left"><span class="header-section-number">8.87</span> <code>extract.0.repeatsigns.left</code> - links</h2>
+<h2 id="extract.0.repeatsigns.left"><span class="header-section-number">9.87</span> <code>extract.0.repeatsigns.left</code> - links</h2>
 <p>Hier kannst du die Darstellung des linken Wiederholungszeichen steuern.</p>
 <pre><code>    &quot;left&quot;: {&quot;pos&quot;: [-7, -2], &quot;style&quot;: &quot;bold&quot;, &quot;text&quot;: &quot;|:&quot;}
       </code></pre>
-<h2 id="extract.0.repeatsigns.left.pos"><span class="header-section-number">8.88</span> <code>extract.0.repeatsigns.left.pos</code> - Position</h2>
+<h2 id="extract.0.repeatsigns.left.pos"><span class="header-section-number">9.88</span> <code>extract.0.repeatsigns.left.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [-7, -2]
       </code></pre>
-<h2 id="extract.0.repeatsigns.left.style"><span class="header-section-number">8.89</span> <code>extract.0.repeatsigns.left.style</code> - Stil</h2>
+<h2 id="extract.0.repeatsigns.left.style"><span class="header-section-number">9.89</span> <code>extract.0.repeatsigns.left.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;bold&quot;
       </code></pre>
-<h2 id="extract.0.repeatsigns.left.text"><span class="header-section-number">8.90</span> <code>extract.0.repeatsigns.left.text</code> - Text</h2>
+<h2 id="extract.0.repeatsigns.left.text"><span class="header-section-number">9.90</span> <code>extract.0.repeatsigns.left.text</code> - Text</h2>
 <p>Hier gibst du den Text an, der als linkes Wiederholungszeichen ausgegeben werden soll.</p>
 <pre><code>    &quot;text&quot;: &quot;|:&quot;
       </code></pre>
-<h2 id="extract.0.repeatsigns.right"><span class="header-section-number">8.91</span> <code>extract.0.repeatsigns.right</code> - rechts</h2>
+<h2 id="extract.0.repeatsigns.right"><span class="header-section-number">9.91</span> <code>extract.0.repeatsigns.right</code> - rechts</h2>
 <p>Hier kannst du die Darstellung des rechten Wiederholungszeichen steuern.</p>
 <pre><code>    &quot;right&quot;: {&quot;pos&quot;: [5, -2], &quot;style&quot;: &quot;bold&quot;, &quot;text&quot;: &quot;:|&quot;}
       </code></pre>
-<h2 id="extract.0.repeatsigns.right.pos"><span class="header-section-number">8.92</span> <code>extract.0.repeatsigns.right.pos</code> - Position</h2>
+<h2 id="extract.0.repeatsigns.right.pos"><span class="header-section-number">9.92</span> <code>extract.0.repeatsigns.right.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [5, -2]
       </code></pre>
-<h2 id="extract.0.repeatsigns.right.style"><span class="header-section-number">8.93</span> <code>extract.0.repeatsigns.right.style</code> - Stil</h2>
+<h2 id="extract.0.repeatsigns.right.style"><span class="header-section-number">9.93</span> <code>extract.0.repeatsigns.right.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;bold&quot;
       </code></pre>
-<h2 id="extract.0.repeatsigns.right.text"><span class="header-section-number">8.94</span> <code>extract.0.repeatsigns.right.text</code> - Text</h2>
+<h2 id="extract.0.repeatsigns.right.text"><span class="header-section-number">9.94</span> <code>extract.0.repeatsigns.right.text</code> - Text</h2>
 <p>Hier gibst du den Text an, der als rechtes Wiederholungszeichen ausgegeben werden soll.</p>
 <pre><code>    &quot;text&quot;: &quot;:|&quot;
       </code></pre>
-<h2 id="extract.0.repeatsigns.voices"><span class="header-section-number">8.95</span> <code>extract.0.repeatsigns.voices</code> - Stimmen</h2>
+<h2 id="extract.0.repeatsigns.voices"><span class="header-section-number">9.95</span> <code>extract.0.repeatsigns.voices</code> - Stimmen</h2>
 <p>Hier gibst du eine Liste (durch Komma getrennt) der Stimmen an, für welche Wiederholungszeichen anstelle einer Sprunglinie ausgegeben werden.</p>
 <blockquote>
 <p>Hinweis: Zupnoter stellt für die hier aufgelisteten Stimmen keine Sprunglinien mehr dar.</p>
 </blockquote>
 <pre><code>    &quot;voices&quot;: []
       </code></pre>
-<h2 id="extract.0.sortmark"><span class="header-section-number">8.96</span> <code>extract.0.sortmark</code> - Sortiermarke</h2>
+<h2 id="extract.0.sortmark"><span class="header-section-number">9.96</span> <code>extract.0.sortmark</code> - Sortiermarke</h2>
 <p>Hier konfigurierst du die Ausgabe einer Sortiermarke. Die Sortiermarke wird am oberen Blattrand gedruckt. Ihre horiozontale Position entspricht einer alphabetischen Sortierung der Titel. In einem nach Titel sortierten Stapel von Notenblättern bewegt sich die Sortiermarke also von links nach rechts. Damit kann man beim durchblättern gleich sehen, ob der Stapel sortiert ist.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Leider kann auf haushaltsüblichen Druckern nicht bis zum Rand gedrukht werden. Daher muss man die Sortiermake mit einem Filzstift bis zum Rand verlängern, dann kann man die Sortierung eiens Stapels kontrollieren, in dem man auf die Schnittkante des Stapels schaut.</p>
 </blockquote>
 <pre><code>    &quot;sortmark&quot;: {&quot;fill&quot;: true, &quot;show&quot;: false, &quot;size&quot;: [2, 4]}
       </code></pre>
-<h2 id="extract.0.sortmark.fill"><span class="header-section-number">8.97</span> <code>extract.0.sortmark.fill</code> - ausfüllen</h2>
+<h2 id="extract.0.sortmark.fill"><span class="header-section-number">9.97</span> <code>extract.0.sortmark.fill</code> - ausfüllen</h2>
 <p>Hier gibst du an, ob die Sortiermarke gefüllt werden soll. Die gefüllte Sortiermarke ist besser zu erkennen, könnte aber auch als störender empfunden werden.</p>
 <pre><code>    &quot;fill&quot;: true
       </code></pre>
-<h2 id="extract.0.sortmark.show"><span class="header-section-number">8.98</span> <code>extract.0.sortmark.show</code> - anzeigen</h2>
+<h2 id="extract.0.sortmark.show"><span class="header-section-number">9.98</span> <code>extract.0.sortmark.show</code> - anzeigen</h2>
 <p>Hier gibst du an, ob eine Sortiermarke ausgegeben werden soll.</p>
 <pre><code>    &quot;show&quot;: false
       </code></pre>
-<h2 id="extract.0.sortmark.size"><span class="header-section-number">8.99</span> <code>extract.0.sortmark.size</code> - Größe</h2>
+<h2 id="extract.0.sortmark.size"><span class="header-section-number">9.99</span> <code>extract.0.sortmark.size</code> - Größe</h2>
 <p>Hier gibst du die Gräße der Sortiermarke an. Die Voreinstallung von [2,4] hat sich als praktikabel erwiesen.</p>
 <pre><code>    &quot;size&quot;: [2, 4]
       </code></pre>
-<h2 id="extract.0.startpos"><span class="header-section-number">8.100</span> <code>extract.0.startpos</code> - Startposition</h2>
+<h2 id="extract.0.startpos"><span class="header-section-number">9.100</span> <code>extract.0.startpos</code> - Startposition</h2>
 <p>Hier kannst du die Position von oben angeben, an welcher die Harfennoten beinnen. Damit kannst du ein ausgewogeneres Bild erhalten.</p>
 <blockquote>
 <p><strong>Hinweis</strong>:Durch diese Funktion wird auch der Bereich verkleinert, in dem die Noten dargestellt werden. Sie ist daher vorzugsweise bei kurzen Stücken anzuwenden, die sonst oben auf der Seite hängen.</p>
 </blockquote>
 <pre><code>    &quot;startpos&quot;: 15
       </code></pre>
-<h2 id="extract.0.stringnames"><span class="header-section-number">8.101</span> <code>extract.0.stringnames</code> - Saitennamen</h2>
+<h2 id="extract.0.stringnames"><span class="header-section-number">9.101</span> <code>extract.0.stringnames</code> - Saitennamen</h2>
 <p>Hier kannst du stueern, ob und wie Saitennamen auf das Unterlegnotenblatt gedruckt werden.</p>
 <pre><code>    &quot;stringnames&quot;: {
       &quot;marks&quot; : {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]},
@@ -2829,24 +2845,24 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;vpos&quot;  : []
     }
       </code></pre>
-<h2 id="extract.0.stringnames.marks"><span class="header-section-number">8.102</span> <code>extract.0.stringnames.marks</code> - Saitenmarken</h2>
+<h2 id="extract.0.stringnames.marks"><span class="header-section-number">9.102</span> <code>extract.0.stringnames.marks</code> - Saitenmarken</h2>
 <p>Hier kannst du angeben, ob und wo Saitenmarken gedruckt werden.</p>
 <pre><code>    &quot;marks&quot;: {&quot;hpos&quot;: [43, 55, 79], &quot;vpos&quot;: [11]}
       </code></pre>
-<h2 id="extract.0.stringnames.marks.hpos"><span class="header-section-number">8.103</span> <code>extract.0.stringnames.marks.hpos</code> - horiz. Position</h2>
+<h2 id="extract.0.stringnames.marks.hpos"><span class="header-section-number">9.103</span> <code>extract.0.stringnames.marks.hpos</code> - horiz. Position</h2>
 <p>Hier gibst du die horizontale Position der Saitenmarken an. Die Angabe ist eine durch Komma getrennte liste von Midi-Pitches.</p>
 <p>Die Angabe <code>[43, 55, 79]</code> druckt Saitenmarken bei <code>G, G, g&#39;</code>. also bei den äußeren G-Saiten der 25-saitigen bzw. der 37-saitigen Tischharfe.</p>
 <pre><code>    &quot;hpos&quot;: [43, 55, 79]
       </code></pre>
-<h2 id="extract.0.stringnames.marks.vpos"><span class="header-section-number">8.104</span> <code>extract.0.stringnames.marks.vpos</code> - vert. Position</h2>
+<h2 id="extract.0.stringnames.marks.vpos"><span class="header-section-number">9.104</span> <code>extract.0.stringnames.marks.vpos</code> - vert. Position</h2>
 <p>Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in mm.</p>
 <pre><code>    &quot;vpos&quot;: [11]
       </code></pre>
-<h2 id="extract.0.stringnames.style"><span class="header-section-number">8.105</span> <code>extract.0.stringnames.style</code> - Stil</h2>
+<h2 id="extract.0.stringnames.style"><span class="header-section-number">9.105</span> <code>extract.0.stringnames.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;small&quot;
       </code></pre>
-<h2 id="extract.0.stringnames.text"><span class="header-section-number">8.106</span> <code>extract.0.stringnames.text</code> - Text</h2>
+<h2 id="extract.0.stringnames.text"><span class="header-section-number">9.106</span> <code>extract.0.stringnames.text</code> - Text</h2>
 <p>Hier gibst du die Liste der Saitennamen getrennt druch Leerzeichen an.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Dieses Feld wird bei einer <strong>offenen</strong> Stimmung besonders interpretiert. Siehe auch parameter <code>layout.tuning</code>.</p>
@@ -2858,15 +2874,15 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>C Cis D Dis E F Fis G Gis A Aia Bb B</code> erzeugt die regulären Saitennamen</p>
 <pre><code>&quot;text&quot;: &quot;G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G&quot;</code></pre></li>
 </ul>
-<h2 id="extract.0.stringnames.vpos"><span class="header-section-number">8.107</span> <code>extract.0.stringnames.vpos</code> - vert. Position</h2>
+<h2 id="extract.0.stringnames.vpos"><span class="header-section-number">9.107</span> <code>extract.0.stringnames.vpos</code> - vert. Position</h2>
 <p>Hier gibst du einen Abstand vom oberen Blattrand. Die Angabe erfolgt in mm.</p>
 <pre><code>    &quot;vpos&quot;: []
       </code></pre>
-<h2 id="extract.0.subflowlines"><span class="header-section-number">8.108</span> <code>extract.0.subflowlines</code> - Hilfsmelodielinien</h2>
+<h2 id="extract.0.subflowlines"><span class="header-section-number">9.108</span> <code>extract.0.subflowlines</code> - Hilfsmelodielinien</h2>
 <p>Hier kannst du du eine Liste - getrennt durch Komma - der Stimmen angeben, für die Unterflußlinien eingezeichnet werden sollen.</p>
 <pre><code>    &quot;subflowlines&quot;: [2, 4]
       </code></pre>
-<h2 id="extract.0.synchlines"><span class="header-section-number">8.109</span> <code>extract.0.synchlines</code> - Synchronisationslinien</h2>
+<h2 id="extract.0.synchlines"><span class="header-section-number">9.109</span> <code>extract.0.synchlines</code> - Synchronisationslinien</h2>
 <p>Hier kannst du angeben, welche Stimmenpaare über Synchronisationslinien verbunden werden sollen.</p>
 <p>Die Angabe erfolgt in der Bildschirmmaske als eine durch Komma separierte Liste von Stimmenpaaren (darin die Stimmen durch “-” getrennt).</p>
 <p>Die Angabe “<code>1-2, 3-4</code>” bedeutet beispielsweise, dass zwischen den Stimmen 1 und 2 bzw. den Stimmen 3 und 4 eine Synchronisationslinie gezeichnet werden soll.</p>
@@ -2875,34 +2891,34 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;synchlines&quot;: [[1, 2], [3, 4]]
       </code></pre>
-<h2 id="extract.0.title"><span class="header-section-number">8.110</span> <code>extract.0.title</code> - Titel</h2>
+<h2 id="extract.0.title"><span class="header-section-number">9.110</span> <code>extract.0.title</code> - Titel</h2>
 <p>Hier spezifizierst du den Titel des Auszuges. Er wird in der Legende mit ausgegeben.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Der Titel des Auszuges wird an die Angabe in der Zeile “F:” angehängt, falls nicht noch ein <code>extract.0.filenamepart</code> spezifiziert ist.</p>
 </blockquote>
 <pre><code>    &quot;title&quot;: &quot;alle Stimmen&quot;
       </code></pre>
-<h2 id="extract.0.tuplets"><span class="header-section-number">8.111</span> <code>extract.0.tuplets</code> - n-Tolen</h2>
+<h2 id="extract.0.tuplets"><span class="header-section-number">9.111</span> <code>extract.0.tuplets</code> - n-Tolen</h2>
 <p>Hier kannst du die generelle Darstellung von n-Tolen konfigurieren.</p>
 <pre><code>    &quot;tuplets&quot;: {&quot;text&quot;: &quot;{{tuplet}}&quot;}
       </code></pre>
-<h2 id="extract.0.tuplets.text"><span class="header-section-number">8.112</span> <code>extract.0.tuplets.text</code> - Text</h2>
+<h2 id="extract.0.tuplets.text"><span class="header-section-number">9.112</span> <code>extract.0.tuplets.text</code> - Text</h2>
 <p>Hier kannst du die Darstellung der n-Tolen - Nummer konfigurieren. Der Wert ist ein Text, in welchem der Platzhalter <code>{{tuplet}}</code> durch die n-Tolen - Nummer ersetzt wird.</p>
 <p>So wird beispielsweise mit <code>- {{tuplet}} -</code> die n-Tolen - Nummer als <code>- 3 -</code> dargestellt.</p>
 <pre><code>    &quot;text&quot;: &quot;{{tuplet}}&quot;
       </code></pre>
-<h2 id="extract.0.voices"><span class="header-section-number">8.113</span> <code>extract.0.voices</code> - Stimmen</h2>
+<h2 id="extract.0.voices"><span class="header-section-number">9.113</span> <code>extract.0.voices</code> - Stimmen</h2>
 <p>Hier gibst du eine Liste von Sstimmen als (durch Komma getrennte) Liste von Nummern an. Die Nummer ergibt sich aus der Reihnfolge in der <code>%%score</code> - Anweisung in der ABC-Notation.</p>
 <pre><code>    &quot;voices&quot;: [1, 2, 3, 4]
       </code></pre>
-<h2 id="presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes"><span class="header-section-number">8.114</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes</code> - Zählmarken</h2>
+<h2 id="presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes"><span class="header-section-number">9.114</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes</code> - Zählmarken</h2>
 <p>TODO: Helptext für presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes einfügen</p>
 <pre><code>    &quot;countnotes&quot;: {
       &quot;cntextleft&quot;  : &quot;{lyrics} {countnote}&quot;,
       &quot;cntextright&quot; : &quot;{countnote} {lyrics}&quot;
     }
       </code></pre>
-<h2 id="presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft"><span class="header-section-number">8.115</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft</code> - Text rechte Zählmarke</h2>
+<h2 id="presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft"><span class="header-section-number">9.115</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextleft</code> - Text rechte Zählmarke</h2>
 <p>Hier kannst du ein Textmuster für die Zählmarken <strong>links</strong> von der Note angegben. Dabei kannst du die entsprechneden Silben aus den Liedtexten im Notensysstem (angelegt mit <code>w:</code> Zeilen ) einfügen.</p>
 <p>Hierfür gibt es auch die Schnelleinstellung <code>Zählmarken mit Text</code>.</p>
 <blockquote>
@@ -2918,7 +2934,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <p>Beispiel: <code>{lyrics} - {countnote}</code></p>
 <pre><code>    &quot;cntextleft&quot;: &quot;{lyrics} {countnote}&quot;
       </code></pre>
-<h2 id="presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright"><span class="header-section-number">8.116</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright</code> - Text linke Zählmarke</h2>
+<h2 id="presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright"><span class="header-section-number">9.116</span> <code>presets.barnumbers_countnotes.countnotes_with_lyrics.countnotes.cntextright</code> - Text linke Zählmarke</h2>
 <p>Hier kannst du ein Textmuster für die Zählmarken <strong>rechts</strong> von der Note angegben. Dabei kannst du die entsprechneden Silben aus den Liedtexten im Notensysstem (angelegt mit <code>w:</code> Zeilen ) einfügen.</p>
 <p>Hierfür gibt es auch die Schnelleinstellung <code>Zählmarken mit Text</code>.</p>
 <blockquote>
@@ -2934,7 +2950,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <p>Beispiel: <code>{countnote} - {lyrics}</code></p>
 <pre><code>    &quot;cntextright&quot;: &quot;{countnote} {lyrics}&quot;
       </code></pre>
-<h2 id="presets.notes"><span class="header-section-number">8.117</span> <code>presets.notes</code> - Seitenbeschriftungen</h2>
+<h2 id="presets.notes"><span class="header-section-number">9.117</span> <code>presets.notes</code> - Seitenbeschriftungen</h2>
 <p>Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Es kann aber auch sinnvoll sein eine sprechende Bezeichnung für die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht möglich.</p>
@@ -2997,11 +3013,11 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       }
     }
       </code></pre>
-<h2 id="presets.notes.T01_T99"><span class="header-section-number">8.118</span> <code>presets.notes.T01_T99</code> - T01 .. T99 Alle ..</h2>
+<h2 id="presets.notes.T01_T99"><span class="header-section-number">9.118</span> <code>presets.notes.T01_T99</code> - T01 .. T99 Alle ..</h2>
 <p>TODO: Helptext für presets.notes.T01_T99 einfügen</p>
 <pre><code>    &quot;T01_T99&quot;: {&quot;value&quot;: {}}
       </code></pre>
-<h2 id="presets.notes.T01_number"><span class="header-section-number">8.119</span> <code>presets.notes.T01_number</code> - T01 Nummer</h2>
+<h2 id="presets.notes.T01_number"><span class="header-section-number">9.119</span> <code>presets.notes.T01_number</code> - T01 Nummer</h2>
 <p>Dies fügt Nummer im Notenblatt ein. Damit kannst du deine eigenen Ordnungskriterien realiseren.</p>
 <p>Das vorgesehene Numernschema setzt sich aus zwei Blöcken zusammen</p>
 <ul>
@@ -3018,7 +3034,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       }
     }
       </code></pre>
-<h2 id="presets.notes.T01_number_extract"><span class="header-section-number">8.120</span> <code>presets.notes.T01_number_extract</code> - T01 Auszug-Nummer</h2>
+<h2 id="presets.notes.T01_number_extract"><span class="header-section-number">9.120</span> <code>presets.notes.T01_number_extract</code> - T01 Auszug-Nummer</h2>
 <p>Dies fügt eine Kennzeichung des Auszuges am Ende der Nummer ein.</p>
 <p>Ein sinnvolles schema ist:</p>
 <ul>
@@ -3034,13 +3050,13 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
   }
 }</code></pre></li>
 </ul>
-<h2 id="presets.notes.T02_copyright_music"><span class="header-section-number">8.121</span> <code>presets.notes.T02_copyright_music</code> - T02 Copyright Musik</h2>
+<h2 id="presets.notes.T02_copyright_music"><span class="header-section-number">9.121</span> <code>presets.notes.T02_copyright_music</code> - T02 Copyright Musik</h2>
 <p>Dies fügt einen Copyrightvermerk für die Musik ein. Hier wird das Copyright auf die Komposition angegeben.</p>
 <pre><code>    &quot;T02_copyright_music&quot;: {
       &quot;value&quot; : {&quot;pos&quot;: [340, 251], &quot;style&quot;: &quot;small&quot;, &quot;text&quot;: &quot;© 2020\n&quot;}
     }
       </code></pre>
-<h2 id="presets.notes.T03_copyright_harpnotes"><span class="header-section-number">8.122</span> <code>presets.notes.T03_copyright_harpnotes</code> - T03 Copyright Unterlegnoten</h2>
+<h2 id="presets.notes.T03_copyright_harpnotes"><span class="header-section-number">9.122</span> <code>presets.notes.T03_copyright_harpnotes</code> - T03 Copyright Unterlegnoten</h2>
 <p>Dies fügt einen Copyrightvermerk für das Unterlgnotenbild ein. Damit reklamierst du ein Copyright für die Umsetzung auf die Tischharfe</p>
 <pre><code>    &quot;T03_copyright_harpnotes&quot;: {
       &quot;value&quot; : {
@@ -3050,13 +3066,13 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       }
     }
       </code></pre>
-<h2 id="presets.notes.T04_to_order"><span class="header-section-number">8.123</span> <code>presets.notes.T04_to_order</code> - T04 zu beziehen bei</h2>
+<h2 id="presets.notes.T04_to_order"><span class="header-section-number">9.123</span> <code>presets.notes.T04_to_order</code> - T04 zu beziehen bei</h2>
 <p>Dies fügt eine Notiz ein wo man das Unterlegnotenblatt beziehen kann. Das ist sinnvoll, wenn die Unterlegoten in irgendeiner Weise vertrieben werden.</p>
 <pre><code>    &quot;T04_to_order&quot;: {
       &quot;value&quot; : {&quot;pos&quot;: [340, 242], &quot;style&quot;: &quot;small&quot;, &quot;text&quot;: null}
     }
       </code></pre>
-<h2 id="presets.notes.T05_printed_extracts"><span class="header-section-number">8.124</span> <code>presets.notes.T05_printed_extracts</code> - T05 verfügbare Auszüge</h2>
+<h2 id="presets.notes.T05_printed_extracts"><span class="header-section-number">9.124</span> <code>presets.notes.T05_printed_extracts</code> - T05 verfügbare Auszüge</h2>
 <p>Dies fügt einen Hinweis im Notenblatt ein, welche Auszüge insgesamt zur Verfügung stehen. Das hilft festzustellen, ob alle verfügbaren Stimmen bzw. Auszüge vorliegen.</p>
 <pre><code>    &quot;T05_printed_extracts&quot;: {
       &quot;value&quot; : {
@@ -3067,7 +3083,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       }
     }
       </code></pre>
-<h2 id="presets.notes.T06_legend"><span class="header-section-number">8.125</span> <code>presets.notes.T06_legend</code> - T06 Legende</h2>
+<h2 id="presets.notes.T06_legend"><span class="header-section-number">9.125</span> <code>presets.notes.T06_legend</code> - T06 Legende</h2>
 <p>Hier kannst du eine eigene Legende gestalten. Dadurch wird die von Zupfnoter generierte Standard-Legende überschrieben.</p>
 <p>Die Voreinstellungn entspricht der Standardlegende von Zupfnoter.</p>
 <pre><code>    &quot;T06_legend&quot;: {
@@ -3078,20 +3094,20 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       }
     }
       </code></pre>
-<h2 id="presets.notes.T99_do_not_copy"><span class="header-section-number">8.126</span> <code>presets.notes.T99_do_not_copy</code> - T99 bitte nicht kopieren</h2>
+<h2 id="presets.notes.T99_do_not_copy"><span class="header-section-number">9.126</span> <code>presets.notes.T99_do_not_copy</code> - T99 bitte nicht kopieren</h2>
 <p>Dies fügt eine Notiz ein, die darauf hinweist, dass das Blatt nicht ohne Erlaubnis kopiert werden darf.</p>
 <pre><code>    &quot;T99_do_not_copy&quot;: {
       &quot;value&quot; : {&quot;pos&quot;: [380, 284], &quot;style&quot;: &quot;small_bold&quot;, &quot;text&quot;: null}
     }
       </code></pre>
-<h2 id="produce"><span class="header-section-number">8.127</span> <code>produce</code> - PDF für Auszüge</h2>
+<h2 id="produce"><span class="header-section-number">9.127</span> <code>produce</code> - PDF für Auszüge</h2>
 <p>Hier kannst du eine Liste der Auszuüge angeben, für welche eine PDF-DAtei mit erzeugt werden soll.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Manchmal ist es sinnvoll, Auszüge nur zur Bearbeitung anzulegen, diese aber nicht zu drucken. Es kommt auch vor, dass Auszug 0 nur verwendet wird, um Vorgaben für die anderen Auszüge zu machen, nicht aber um ihn wirklich auszudrucken.</p>
 </blockquote>
 <pre><code>    &quot;produce&quot;: [0]
       </code></pre>
-<h2 id="restposition"><span class="header-section-number">8.128</span> <code>restposition</code> - Position der Pausen</h2>
+<h2 id="restposition"><span class="header-section-number">9.128</span> <code>restposition</code> - Position der Pausen</h2>
 <p>Hier kannst du angeben an welcher Tonhöhe die Pausen eingetragenw werden sollen. Pausen haben an sich keine Tonhöhe, daher ist es nicht eindeutig, wie sie im Umterlegnotenblatt positioniert werden sollen.</p>
 <ul>
 <li><code>center</code> positioniert die Pause zwischen die vorherige und die nächste Note</li>
@@ -3103,37 +3119,37 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
   &quot;repeatstart&quot; : &quot;next&quot;
 }</code></pre></li>
 </ul>
-<h2 id="restposition.default"><span class="header-section-number">8.129</span> <code>restposition.default</code> - Vorgabewert</h2>
+<h2 id="restposition.default"><span class="header-section-number">9.129</span> <code>restposition.default</code> - Vorgabewert</h2>
 <p>Hier kannst den Vorgabewert für die Pausenposition angeben.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: <code>default</code> als Vorgabewert nimmt den intenrn Vorgabewert <code>center</code>.</p>
 </blockquote>
 <pre><code>    &quot;default&quot;: &quot;center&quot;
       </code></pre>
-<h2 id="restposition.repeatend"><span class="header-section-number">8.130</span> <code>restposition.repeatend</code> - Wiederholungsende</h2>
+<h2 id="restposition.repeatend"><span class="header-section-number">9.130</span> <code>restposition.repeatend</code> - Wiederholungsende</h2>
 <p>Hier kannst du die Pausenposition nach einer Wiederholung einstellen.</p>
 <pre><code>    &quot;repeatend&quot;: &quot;default&quot;
       </code></pre>
-<h2 id="restposition.repeatstart"><span class="header-section-number">8.131</span> <code>restposition.repeatstart</code> - Wiederholungsanfang</h2>
+<h2 id="restposition.repeatstart"><span class="header-section-number">9.131</span> <code>restposition.repeatstart</code> - Wiederholungsanfang</h2>
 <p>Hier kannst du die Pausenposition vor einer Wiederholung einstellen.</p>
 <pre><code>    &quot;repeatstart&quot;: &quot;next&quot;
       </code></pre>
-<h2 id="template"><span class="header-section-number">8.132</span> <code>template</code> - Dateivorlage</h2>
+<h2 id="template"><span class="header-section-number">9.132</span> <code>template</code> - Dateivorlage</h2>
 <p>Hier kannst du spezifische Eigenschaften des Template anpassen. Das ist nur relevant, wenn du ein Template bearbeitest.</p>
 <blockquote>
 <p><strong>Hinweis</strong> Diese Eigenschaften werden auch in abc dateien geschrieben welche auf Basis des vorhandenen Templates erstellt werden. Damit kann mnan feststellen, welches termplate der aktuell geöffnteten ABC - datei zu Grunde liegt.</p>
 </blockquote>
 <pre><code>    &quot;template&quot;: {&quot;filebase&quot;: &quot;-no-template-&quot;, &quot;title&quot;: &quot;- no template -&quot;}
       </code></pre>
-<h2 id="template.filebase"><span class="header-section-number">8.133</span> <code>template.filebase</code> - Filename-Basis</h2>
+<h2 id="template.filebase"><span class="header-section-number">9.133</span> <code>template.filebase</code> - Filename-Basis</h2>
 <p>Hier kannst du den Dateinamen (ohne Erweiterung) des Templates angeben. Wenn die F-Kopfzeile eine Platzhalter-Startsquenz (<code>{{</code>) enthält, wird der in diesem Parameter angegebenen Name zum Speichern verwendet</p>
 <pre><code>    &quot;filebase&quot;: &quot;-no-template-&quot;
       </code></pre>
-<h2 id="template.title"><span class="header-section-number">8.134</span> <code>template.title</code> - Titel</h2>
+<h2 id="template.title"><span class="header-section-number">9.134</span> <code>template.title</code> - Titel</h2>
 <p>Hier kannst du einen informativen Titel für die Vorlage angeben. Damit kannst du die Vorlage identifizieren.</p>
 <pre><code>    &quot;title&quot;: &quot;- no template -&quot;
       </code></pre>
-<h2 id="templates"><span class="header-section-number">8.135</span> <code>templates</code> - Vorlagen</h2>
+<h2 id="templates"><span class="header-section-number">9.135</span> <code>templates</code> - Vorlagen</h2>
 <p>Dieser Parameter kann nicht vom Benutzer gesetzt werden sondern liefert die Vorlagen beim Einfügugen neuer Liedtext-Blöcke bzw. Seitenbeschriftungen etc.</p>
 <p>Er ist hier aufgeführt, um die Vorlagen selbst zu dokumentieren.</p>
 <pre><code>    &quot;templates&quot;: {
@@ -3159,17 +3175,17 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       }
     }
       </code></pre>
-<h2 id="templates.annotations"><span class="header-section-number">8.136</span> <code>templates.annotations</code> - Notenbeschriftungsvorlagen</h2>
+<h2 id="templates.annotations"><span class="header-section-number">9.136</span> <code>templates.annotations</code> - Notenbeschriftungsvorlagen</h2>
 <p>Hier kannst du eine Liste von Beschriftungsvorlagen angeben.</p>
 <p>Zupfnoter bringt einige solcher Definitionen bereits mit.</p>
 <p>Diese Beschriftungsvorlagen kannst du über “Zusatz einfügen” mit einer Note verbinden (Notenbeschriftung).</p>
 <pre><code>    &quot;annotations&quot;: {&quot;pos&quot;: [-5, -6], &quot;text&quot;: &quot;_vorlage_&quot;}
       </code></pre>
-<h2 id="templates.annotations.pos"><span class="header-section-number">8.137</span> <code>templates.annotations.pos</code> - Position</h2>
+<h2 id="templates.annotations.pos"><span class="header-section-number">9.137</span> <code>templates.annotations.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [-5, -6]
       </code></pre>
-<h2 id="templates.annotations.text"><span class="header-section-number">8.138</span> <code>templates.annotations.text</code> - Text</h2>
+<h2 id="templates.annotations.text"><span class="header-section-number">9.138</span> <code>templates.annotations.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -3186,14 +3202,14 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;_vorlage_&quot;</code></pre></li>
 </ul>
-<h2 id="templates.extracts"><span class="header-section-number">8.139</span> <code>templates.extracts</code> - Auszüge</h2>
+<h2 id="templates.extracts"><span class="header-section-number">9.139</span> <code>templates.extracts</code> - Auszüge</h2>
 <pre><code>    &quot;extracts&quot;: {
       &quot;filenamepart&quot; : &quot;-&quot;,
       &quot;notes&quot;        : {&quot;T01_number_extract&quot;: {&quot;text&quot;: &quot;{{extract_filename}}&quot;}},
       &quot;title&quot;        : &quot;&quot;
     }
       </code></pre>
-<h2 id="templates.extracts.filenamepart"><span class="header-section-number">8.140</span> <code>templates.extracts.filenamepart</code> - Filename-Zusatz</h2>
+<h2 id="templates.extracts.filenamepart"><span class="header-section-number">9.140</span> <code>templates.extracts.filenamepart</code> - Filename-Zusatz</h2>
 <p>Hier kannst du einen Zusatz angeben, um welchen der Filename der PDF-Dateien für diesen Auszug ergänzt werden soll. Auf diese Weise wird jeder Auszug in einer eigenen Datei wiedergegeben.</p>
 <p>Wenn das Feld fehlt, dann wird der Filename aus dem Inhalt von <code>extract.0.title</code> gebildet.</p>
 <blockquote>
@@ -3201,14 +3217,14 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;filenamepart&quot;: &quot;-&quot;
       </code></pre>
-<h2 id="templates.extracts.notes"><span class="header-section-number">8.141</span> <code>templates.extracts.notes</code> - Seitenbeschriftungen</h2>
+<h2 id="templates.extracts.notes"><span class="header-section-number">9.141</span> <code>templates.extracts.notes</code> - Seitenbeschriftungen</h2>
 <p>Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Es kann aber auch sinnvoll sein eine sprechende Bezeichnung für die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht möglich.</p>
 </blockquote>
 <pre><code>    &quot;notes&quot;: {&quot;T01_number_extract&quot;: {&quot;text&quot;: &quot;{{extract_filename}}&quot;}}
       </code></pre>
-<h2 id="templates.extracts.notes.T01_number_extract"><span class="header-section-number">8.142</span> <code>templates.extracts.notes.T01_number_extract</code> - T01 Auszug-Nummer</h2>
+<h2 id="templates.extracts.notes.T01_number_extract"><span class="header-section-number">9.142</span> <code>templates.extracts.notes.T01_number_extract</code> - T01 Auszug-Nummer</h2>
 <p>Dies fügt eine Kennzeichung des Auszuges am Ende der Nummer ein.</p>
 <p>Ein sinnvolles schema ist:</p>
 <ul>
@@ -3218,7 +3234,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>-S</code> - Alle Stimmen - per default Auszug 0; dieser wird in der Regel aber nicht gedruckt, sondern nur zur Bearbeitung verwendet.</p>
 <pre><code>&quot;T01_number_extract&quot;: {&quot;text&quot;: &quot;{{extract_filename}}&quot;}</code></pre></li>
 </ul>
-<h2 id="templates.extracts.notes.T01_number_extract.text"><span class="header-section-number">8.143</span> <code>templates.extracts.notes.T01_number_extract.text</code> - Text</h2>
+<h2 id="templates.extracts.notes.T01_number_extract.text"><span class="header-section-number">9.143</span> <code>templates.extracts.notes.T01_number_extract.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -3235,10 +3251,10 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;{{extract_filename}}&quot;</code></pre></li>
 </ul>
-<h2 id="templates.extracts.title"><span class="header-section-number">8.144</span> <code>templates.extracts.title</code> - Titel</h2>
+<h2 id="templates.extracts.title"><span class="header-section-number">9.144</span> <code>templates.extracts.title</code> - Titel</h2>
 <pre><code>    &quot;title&quot;: &quot;&quot;
       </code></pre>
-<h2 id="templates.images"><span class="header-section-number">8.145</span> <code>templates.images</code> - Bilder</h2>
+<h2 id="templates.images"><span class="header-section-number">9.145</span> <code>templates.images</code> - Bilder</h2>
 <p>Hier kannst du einstellen, welche Bilder auf dem Notenblatt erscheinen sollen.</p>
 <pre><code>    &quot;images&quot;: {
       &quot;height&quot;    : 100,
@@ -3247,54 +3263,54 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;show&quot;      : true
     }
       </code></pre>
-<h2 id="templates.images.height"><span class="header-section-number">8.146</span> <code>templates.images.height</code> - Bildhöhe</h2>
+<h2 id="templates.images.height"><span class="header-section-number">9.146</span> <code>templates.images.height</code> - Bildhöhe</h2>
 <pre><code>    &quot;height&quot;: 100
       </code></pre>
-<h2 id="templates.images.imagename"><span class="header-section-number">8.147</span> <code>templates.images.imagename</code> - Bildname</h2>
+<h2 id="templates.images.imagename"><span class="header-section-number">9.147</span> <code>templates.images.imagename</code> - Bildname</h2>
 <p>Hier kannst du das Bild auswählen, welches eingefügt werden soll. Die Auswahlliste zeigt die Zupfnoter-internen Namen an. Es werden nur Bilder gelistet, die dem ABC-File hinzugefügt wurde.</p>
 <pre><code>    &quot;imagename&quot;: &quot;&quot;
       </code></pre>
-<h2 id="templates.images.pos"><span class="header-section-number">8.148</span> <code>templates.images.pos</code> - Position</h2>
+<h2 id="templates.images.pos"><span class="header-section-number">9.148</span> <code>templates.images.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [10, 10]
       </code></pre>
-<h2 id="templates.images.show"><span class="header-section-number">8.149</span> <code>templates.images.show</code> - anzeigen</h2>
+<h2 id="templates.images.show"><span class="header-section-number">9.149</span> <code>templates.images.show</code> - anzeigen</h2>
 <p>Dieser Eisntellung steuert, ob das Objekt (z.B. das Bild) in der Ausgabe angezeigt werden soll.</p>
 <pre><code>    &quot;show&quot;: true
       </code></pre>
-<h2 id="templates.lyrics"><span class="header-section-number">8.150</span> <code>templates.lyrics</code> - Liedtexte</h2>
+<h2 id="templates.lyrics"><span class="header-section-number">9.150</span> <code>templates.lyrics</code> - Liedtexte</h2>
 <p>Hier steuerst du die Positionierung der Liedtexte. Dabei kannst du den Liedtext auf mehrer Blöcke aufteilen.</p>
 <p>Ein einzelner Block listet die Strophen auf, die er enthält, und die gemeinsam poitioniert werden.</p>
 <pre><code>    &quot;lyrics&quot;: {&quot;pos&quot;: [350, 70], &quot;style&quot;: &quot;regular&quot;, &quot;verses&quot;: [1]}
       </code></pre>
-<h2 id="templates.lyrics.pos"><span class="header-section-number">8.151</span> <code>templates.lyrics.pos</code> - Position</h2>
+<h2 id="templates.lyrics.pos"><span class="header-section-number">9.151</span> <code>templates.lyrics.pos</code> - Position</h2>
 <p>Dies ist die Vorgabe für Position, an welcher der Liedtext-Block ausgegeben werden soll. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [350, 70]
       </code></pre>
-<h2 id="templates.lyrics.style"><span class="header-section-number">8.152</span> <code>templates.lyrics.style</code> - Stil</h2>
+<h2 id="templates.lyrics.style"><span class="header-section-number">9.152</span> <code>templates.lyrics.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;regular&quot;
       </code></pre>
-<h2 id="templates.lyrics.verses"><span class="header-section-number">8.153</span> <code>templates.lyrics.verses</code> - Strophen</h2>
+<h2 id="templates.lyrics.verses"><span class="header-section-number">9.153</span> <code>templates.lyrics.verses</code> - Strophen</h2>
 <p>Dies ist die Vorgabe für die Liste der Strophen die im Liedtext-Block ausgegeben werden.</p>
 <pre><code>    &quot;verses&quot;: [1]
       </code></pre>
-<h2 id="templates.notes"><span class="header-section-number">8.154</span> <code>templates.notes</code> - Seitenbeschriftungen</h2>
+<h2 id="templates.notes"><span class="header-section-number">9.154</span> <code>templates.notes</code> - Seitenbeschriftungen</h2>
 <p>Hier kannst du eine Seitenbeschriftungen hinzufügen. Beim Einfügen einer Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der <code>.0</code>.</p>
 <blockquote>
 <p><strong>Hinweis</strong>: Es kann aber auch sinnvoll sein eine sprechende Bezeichnung für die Beschriftung manuell vorzugeben um ihrer spezifische Verwendung hervorzuheben z.B. <code>notes.T_Copyright</code>. Das ist allerdings nur in der Textansicht möglich.</p>
 </blockquote>
 <pre><code>    &quot;notes&quot;: {&quot;pos&quot;: [320, 6], &quot;style&quot;: &quot;large&quot;, &quot;text&quot;: &quot;ENTER_NOTE&quot;}
       </code></pre>
-<h2 id="templates.notes.pos"><span class="header-section-number">8.155</span> <code>templates.notes.pos</code> - Position</h2>
+<h2 id="templates.notes.pos"><span class="header-section-number">9.155</span> <code>templates.notes.pos</code> - Position</h2>
 <p>Hier gibst du die Position an. Angabe erfolgt in mm als kommagetrennte Liste von horizontaler / vertikaler Position.</p>
 <pre><code>    &quot;pos&quot;: [320, 6]
       </code></pre>
-<h2 id="templates.notes.style"><span class="header-section-number">8.156</span> <code>templates.notes.style</code> - Stil</h2>
+<h2 id="templates.notes.style"><span class="header-section-number">9.156</span> <code>templates.notes.style</code> - Stil</h2>
 <p>Hier kannst du den Stil für den Text einstellen. Du hast eine Auswahl aus vordefinierten Stilen.</p>
 <pre><code>    &quot;style&quot;: &quot;large&quot;
       </code></pre>
-<h2 id="templates.notes.text"><span class="header-section-number">8.157</span> <code>templates.notes.text</code> - Text</h2>
+<h2 id="templates.notes.text"><span class="header-section-number">9.157</span> <code>templates.notes.text</code> - Text</h2>
 <p>Hier gibst du den Text, der ausgegeben werden soll. Dieser Text kann auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:</p>
 <ul>
 <li><code>{{composer}}</code>: Komponist aus <code>C:</code> Zeilen</li>
@@ -3311,7 +3327,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li><p><code>{{watermark}}</code>: Wasserzeichen (mit <code>setsettings wartermark &quot;wasserzeichen&quot;</code> eingestellt)</p>
 <pre><code>&quot;text&quot;: &quot;ENTER_NOTE&quot;</code></pre></li>
 </ul>
-<h2 id="templates.tuplet"><span class="header-section-number">8.158</span> <code>templates.tuplet</code> - n-Tole</h2>
+<h2 id="templates.tuplet"><span class="header-section-number">9.158</span> <code>templates.tuplet</code> - n-Tole</h2>
 <p>Hier kannst du die Darstellung von Triolen (genauer gesagt, von n-Tolen) steuern.</p>
 <blockquote>
 <p><strong>Hinweis</strong>:</p>
@@ -3325,15 +3341,15 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
       &quot;show&quot;  : true
     }
       </code></pre>
-<h2 id="templates.tuplet.cp1"><span class="header-section-number">8.159</span> <code>templates.tuplet.cp1</code> - cp1</h2>
+<h2 id="templates.tuplet.cp1"><span class="header-section-number">9.159</span> <code>templates.tuplet.cp1</code> - cp1</h2>
 <p>Hier gibst du den Kontrollpunkt für die erste Note an.</p>
 <pre><code>    &quot;cp1&quot;: [5, 2]
       </code></pre>
-<h2 id="templates.tuplet.cp2"><span class="header-section-number">8.160</span> <code>templates.tuplet.cp2</code> - cp2</h2>
+<h2 id="templates.tuplet.cp2"><span class="header-section-number">9.160</span> <code>templates.tuplet.cp2</code> - cp2</h2>
 <p>Hier gibst du den Kontrollpunkt für die letzte Note an.</p>
 <pre><code>    &quot;cp2&quot;: [5, -2]
       </code></pre>
-<h2 id="templates.tuplet.shape"><span class="header-section-number">8.161</span> <code>templates.tuplet.shape</code> - Linienform</h2>
+<h2 id="templates.tuplet.shape"><span class="header-section-number">9.161</span> <code>templates.tuplet.shape</code> - Linienform</h2>
 <p>Hier gibst du eine Liste von Linienformen für die n-tole an.</p>
 <ul>
 <li><code>c</code>: Kurve</li>
@@ -3344,22 +3360,22 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 </blockquote>
 <pre><code>    &quot;shape&quot;: [&quot;c&quot;]
       </code></pre>
-<h2 id="templates.tuplet.show"><span class="header-section-number">8.162</span> <code>templates.tuplet.show</code> - anzeigen</h2>
+<h2 id="templates.tuplet.show"><span class="header-section-number">9.162</span> <code>templates.tuplet.show</code> - anzeigen</h2>
 <p>Hier gibst du an, ob die n-Tole ausgegeben werden soll.</p>
 <pre><code>    &quot;show&quot;: true
       </code></pre>
-<h2 id="wrap"><span class="header-section-number">8.163</span> <code>wrap</code> - wrap</h2>
+<h2 id="wrap"><span class="header-section-number">9.163</span> <code>wrap</code> - wrap</h2>
 <p>Hier kannst du angeben, in welcher Spalte der Zeilenumbruch im Konfigurationsabschnitt erfolgen soll. Das kann bei komplexen Konfigurationen sinnvoll sein, um die Übersichtlichkeit zu erhöhen.</p>
 <pre><code>    &quot;wrap&quot;: 60</code></pre>
 
-<h1 id="änderungsgeschichte"><span class="header-section-number">9</span> Änderungsgeschichte</h1>
-<h2 id="v-1.14-februar-202"><span class="header-section-number">9.1</span> V 1.14 Februar 202</h2>
-<h2 id="v-1.13-dezember-2019"><span class="header-section-number">9.2</span> V 1.13 Dezember 2019</h2>
-<h3 id="fix"><span class="header-section-number">9.2.1</span> fix</h3>
+<h1 id="änderungsgeschichte"><span class="header-section-number">10</span> Änderungsgeschichte</h1>
+<h2 id="v-1.14-februar-202"><span class="header-section-number">10.1</span> V 1.14 Februar 202</h2>
+<h2 id="v-1.13-dezember-2019"><span class="header-section-number">10.2</span> V 1.13 Dezember 2019</h2>
+<h3 id="fix"><span class="header-section-number">10.2.1</span> fix</h3>
 <ul>
 <li>Ausrichtung von Saitennamen verfeinert #281</li>
 </ul>
-<h3 id="enhancement"><span class="header-section-number">9.2.2</span> enhancement</h3>
+<h3 id="enhancement"><span class="header-section-number">10.2.2</span> enhancement</h3>
 <ul>
 <li>Harfenvorschau kann unn auch PDF anzeigen #281</li>
 <li>Taktnummern, Zählmarken, Anmerkungen unterbrechen nun Flusslinen #279</li>
@@ -3370,14 +3386,14 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>“Offene” Sprunglinien #285</li>
 <li>PDF-Tab in Harfenvorschau #281</li>
 </ul>
-<h2 id="v-1.12-august-2019"><span class="header-section-number">9.3</span> V 1.12 August 2019</h2>
-<h3 id="fehlerbehebung"><span class="header-section-number">9.3.1</span> Fehlerbehebung</h3>
+<h2 id="v-1.12-august-2019"><span class="header-section-number">10.3</span> V 1.12 August 2019</h2>
+<h3 id="fehlerbehebung"><span class="header-section-number">10.3.1</span> Fehlerbehebung</h3>
 <ul>
 <li>Verarbeitung unsichtbarer Pausen in Unterflusslinien korrigiert #265</li>
 <li>Fehlermeldung in der Konsole wen unsichtbare Noten gespielt werden #262</li>
 <li>Probleme mit Grafiken #278</li>
 </ul>
-<h3 id="erweiterung"><span class="header-section-number">9.3.2</span> Erweiterung</h3>
+<h3 id="erweiterung"><span class="header-section-number">10.3.2</span> Erweiterung</h3>
 <ul>
 <li>beliebig vile Auszüge #268</li>
 <li>Konfiguration von Legende und Liedtexten verbessert</li>
@@ -3388,12 +3404,12 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Taktzahlen, Zählmarken und notenbezogene Anmerkungen haben nun einen weißen Hintergrund #279</li>
 <li>Beschriftung von Abschntten und standardmässig fett gedruckt #280</li>
 </ul>
-<h3 id="kompatibilität"><span class="header-section-number">9.3.3</span> Kompatibilität</h3>
+<h3 id="kompatibilität"><span class="header-section-number">10.3.3</span> Kompatibilität</h3>
 <ul>
 <li>keine Standardkonfiguration für auszug 1 .. auszug 5</li>
 </ul>
-<h2 id="v-1.11-18.4.2019"><span class="header-section-number">9.4</span> V 1.11 18.4.2019</h2>
-<h3 id="fix-1"><span class="header-section-number">9.4.1</span> fix</h3>
+<h2 id="v-1.11-18.4.2019"><span class="header-section-number">10.4</span> V 1.11 18.4.2019</h2>
+<h3 id="fix-1"><span class="header-section-number">10.4.1</span> fix</h3>
 <ul>
 <li>Meldung “Cannot read property ‘$first’ of undefined” behoben #251</li>
 <li>Dialog für “Zusätze” schliesst nun wieder #249</li>
@@ -3402,7 +3418,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>editconf extract.0.lyrics.1.pos bringt keine Fehlermeldung mehr #256</li>
 <li>Warunung wenn die Taktarkt innerhalb eines Taktes geändert wird #217</li>
 </ul>
-<h3 id="enhancement-1"><span class="header-section-number">9.4.2</span> enhancement</h3>
+<h3 id="enhancement-1"><span class="header-section-number">10.4.2</span> enhancement</h3>
 <ul>
 <li>Menü für die bisher benutzten Dropbox-Pfade in der Statuszeile #252</li>
 <li>Ein- / Aufklappen von Abschnitten in der Konfigurationsmaske #254</li>
@@ -3415,27 +3431,27 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Unterstützung von Darteivorlagen #253</li>
 <li>Menü verkleinert, Zurpnoger-Versionanzeige nun hinter einer kleinen Home-Taste verborgen #253</li>
 </ul>
-<h2 id="v.1.10-nov-2018"><span class="header-section-number">9.5</span> V.1.10 Nov 2018</h2>
-<h3 id="fix-2"><span class="header-section-number">9.5.1</span> fix</h3>
+<h2 id="v.1.10-nov-2018"><span class="header-section-number">10.5</span> V.1.10 Nov 2018</h2>
+<h3 id="fix-2"><span class="header-section-number">10.5.1</span> fix</h3>
 <ul>
 <li>Pausen in n-tolen #240</li>
 <li>“Abschnitt in allen Stimmen auswählen” funktionier tauch mit Ziernoten im ABC#243</li>
 <li>mehr Sonderzeichen ersetzt (z.b. aus Word) #238</li>
 <li>XML-Import funktioniert nun auch wenn keine Vorlage definiert ist #239</li>
 </ul>
-<h3 id="enhancement-2"><span class="header-section-number">9.5.2</span> enhancement</h3>
+<h3 id="enhancement-2"><span class="header-section-number">10.5.2</span> enhancement</h3>
 <ul>
 <li>BWC: Taktnummern und Zählmarken können nun an der Notenmitte ausgerichtet werden #237</li>
 <li>Performance: Notenvorschau und Harfennvorschau können nun im Hintergrund gerechnet werden #241</li>
 <li>Einige Menü-Einträge von “Extras” in die Statusleiste unten verlegt #242</li>
 <li>Dialog “Es gibt neue Informationen” verbessert #244</li>
 </ul>
-<h3 id="kompatibilität-1"><span class="header-section-number">9.5.3</span> Kompatibilität</h3>
+<h3 id="kompatibilität-1"><span class="header-section-number">10.5.3</span> Kompatibilität</h3>
 <ul>
 <li>“Konfig. bearb.” / “Taknummern und Zählmarken” , Schnelleinstellung “an der Mitte der Note verankern”</li>
 </ul>
-<h2 id="v-1.9.2"><span class="header-section-number">9.6</span> V 1.9.2</h2>
-<h3 id="fehlerbehbungen"><span class="header-section-number">9.6.1</span> Fehlerbehbungen</h3>
+<h2 id="v-1.9.2"><span class="header-section-number">10.6</span> V 1.9.2</h2>
+<h3 id="fehlerbehbungen"><span class="header-section-number">10.6.1</span> Fehlerbehbungen</h3>
 <ul>
 <li>Sichtbarkeit von punktierungen verbessert #224</li>
 <li>Position von Liedtexten nun gleich in Vorschau bzw. Ausdruck #235</li>
@@ -3444,7 +3460,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Bessere Darstellung der Konfigurationsbuttons in chrome / firefox</li>
 <li>Geschwindikgeitsverbesserungen #225</li>
 </ul>
-<h3 id="erweiterungen"><span class="header-section-number">9.6.2</span> Erweiterungen</h3>
+<h3 id="erweiterungen"><span class="header-section-number">10.6.2</span> Erweiterungen</h3>
 <ul>
 <li>die zu speichenden Dateien können nun eingestellt werden (seaveformat) #229</li>
 <li>Konfiguration von Beschriftungen verbessert #227</li>
@@ -3452,22 +3468,22 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Aktuelles Template wird beim import einer xml-Datei angewandt</li>
 <li>Parameter können nun von und nach Auzug 0 kopiert werden #228</li>
 </ul>
-<h3 id="experimental"><span class="header-section-number">9.6.3</span> experimental</h3>
+<h3 id="experimental"><span class="header-section-number">10.6.3</span> experimental</h3>
 <ul>
 <li>modify configuration when generating pdf with cli - eg. for watermark #231</li>
 </ul>
-<h3 id="kompatibilität-2"><span class="header-section-number">9.6.4</span> Kompatibilität</h3>
+<h3 id="kompatibilität-2"><span class="header-section-number">10.6.4</span> Kompatibilität</h3>
 <ul>
 <li>BWC Position und Größe von Liedtexten könnte sich geringfügig ändern #235</li>
 </ul>
-<h2 id="v.1.9.1"><span class="header-section-number">9.7</span> v.1.9.1</h2>
+<h2 id="v.1.9.1"><span class="header-section-number">10.7</span> v.1.9.1</h2>
 <p>internal release</p>
-<h2 id="v-1.9.0"><span class="header-section-number">9.8</span> v 1.9.0</h2>
-<h3 id="fehlerbehebungen"><span class="header-section-number">9.8.1</span> Fehlerbehebungen</h3>
+<h2 id="v-1.9.0"><span class="header-section-number">10.8</span> v 1.9.0</h2>
+<h3 id="fehlerbehebungen"><span class="header-section-number">10.8.1</span> Fehlerbehebungen</h3>
 <ul>
 <li>Taktstrich bei Wiederholungsgrenzen innerhalb eines Takts sind nun unterdrückt #216</li>
 </ul>
-<h3 id="erweiterungen-1"><span class="header-section-number">9.8.2</span> Erweiterungen</h3>
+<h3 id="erweiterungen-1"><span class="header-section-number">10.8.2</span> Erweiterungen</h3>
 <ul>
 <li>Sprunglinien für Variationen können einzeln konfiguriert werden #215</li>
 <li>Voreinstellung für Basis von Taktnummernpoistionen verändert ap_base #218</li>
@@ -3476,13 +3492,13 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>automaitsches Scrollen kann abgeschaltet werden #221</li>
 <li>Platzhalter in Seitenbeschriftungen, so dass manche Werte nicht mehrfach eingegeben werden müssen #223</li>
 </ul>
-<h3 id="kompatibilität-3"><span class="header-section-number">9.8.3</span> Kompatibilität</h3>
+<h3 id="kompatibilität-3"><span class="header-section-number">10.8.3</span> Kompatibilität</h3>
 <ul>
 <li>Voreinstellung für Basis von Taktnummernpoistionen verändert ap_base #218</li>
 <li>Konfiguration der Sprunglinien für Variationen wird von führeren Zupfnoter-Versionen nicht erkannt</li>
 </ul>
-<h2 id="v-1.8"><span class="header-section-number">9.9</span> v 1.8</h2>
-<h3 id="fehlerbehebungen-1"><span class="header-section-number">9.9.1</span> Fehlerbehebungen</h3>
+<h2 id="v-1.8"><span class="header-section-number">10.9</span> v 1.8</h2>
+<h3 id="fehlerbehebungen-1"><span class="header-section-number">10.9.1</span> Fehlerbehebungen</h3>
 <ul>
 <li>Druckvorschau löscht nicht mehr die Nicht-Speicherungsanzeige #176</li>
 <li>Update auf abc2svg 1.14
@@ -3505,7 +3521,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Größe des Auswahlbereichs verkleinern, um Überschneidungen mit Barnummer etc. zu vermeiden #197</li>
 <li>verbesserter Spieler #210</li>
 </ul>
-<h3 id="erweiterungen-2"><span class="header-section-number">9.9.2</span> Erweiterungen</h3>
+<h3 id="erweiterungen-2"><span class="header-section-number">10.9.2</span> Erweiterungen</h3>
 <ul>
 <li>linear arbeitenden packer #194</li>
 <li>Menü zum Importieren von der lokalen Platte #177<br />
@@ -3534,7 +3550,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Unterstützung von Undo/Redo für Config #201</li>
 <li>verbesserte Shortcuts (z.B. cmd-L zum Umschalten des Vollbilds, cmd-0 für Auszug 0)</li>
 </ul>
-<h3 id="experimentelles"><span class="header-section-number">9.9.3</span> Experimentelles</h3>
+<h3 id="experimentelles"><span class="header-section-number">10.9.3</span> Experimentelles</h3>
 <ul>
 <li>weitere diatonische Instrumente (z.B. OKON-Harfe) #196</li>
 <li>Layout von unten nach oben #196</li>
@@ -3544,19 +3560,19 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Unterstützung für Illustrationen #198</li>
 <li>Menü “Extras” #71</li>
 </ul>
-<h3 id="kompatibilität-4"><span class="header-section-number">9.9.4</span> Kompatibilität</h3>
+<h3 id="kompatibilität-4"><span class="header-section-number">10.9.4</span> Kompatibilität</h3>
 <ul>
 <li>es kann sein, dass manuelle Positionierung von notenbeozgenen Elementen überarbeitet werden muss. #199</li>
 </ul>
-<h2 id="v-1.7.1"><span class="header-section-number">9.10</span> v 1.7.1</h2>
-<h3 id="fix-3"><span class="header-section-number">9.10.1</span> fix</h3>
+<h2 id="v-1.7.1"><span class="header-section-number">10.10</span> v 1.7.1</h2>
+<h3 id="fix-3"><span class="header-section-number">10.10.1</span> fix</h3>
 <ul>
 <li>improved fermata symbol in pdf #178</li>
 <li>turnoff flowconf edit for pdf. This avoids noise around very short vertical flowlines #167</li>
 <li>print preview no longer clears unsaved indicator #176</li>
 </ul>
-<h2 id="v-1.7"><span class="header-section-number">9.11</span> v 1.7</h2>
-<h3 id="fix-4"><span class="header-section-number">9.11.1</span> fix</h3>
+<h2 id="v-1.7"><span class="header-section-number">10.11</span> v 1.7</h2>
+<h3 id="fix-4"><span class="header-section-number">10.11.1</span> fix</h3>
 <ul>
 <li>tuplet lines are now correct in pdf (#139)</li>
 <li>no longer have unexpected subflowlines to unisons (#140)</li>
@@ -3577,7 +3593,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Multiple notebound annotations can now be dragged individually (#170)</li>
 <li>BWC: no longer show (Original in ) in case of transpositions (#174)</li>
 </ul>
-<h3 id="enhancement-3"><span class="header-section-number">9.11.2</span> enhancement</h3>
+<h3 id="enhancement-3"><span class="header-section-number">10.11.2</span> enhancement</h3>
 <ul>
 <li>jumplines can now be configured by drag &amp; drop (#136)</li>
 <li>tuplets can now be sculptured by drag &amp; drop (#138)</li>
@@ -3596,27 +3612,27 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>now suppoert quoted tilde as non braeking space in lyrics, stringnames, annotations #113</li>
 <li>layoutlines is now the combination of voices and layoutlines (#175).</li>
 </ul>
-<h3 id="internal-stuff"><span class="header-section-number">9.11.3</span> internal stuff</h3>
+<h3 id="internal-stuff"><span class="header-section-number">10.11.3</span> internal stuff</h3>
 <ul>
 <li>updated to abc2svg 1.13.7 (#163)</li>
 </ul>
-<h3 id="experimental-feature"><span class="header-section-number">9.11.4</span> experimental feature</h3>
+<h3 id="experimental-feature"><span class="header-section-number">10.11.4</span> experimental feature</h3>
 <ul>
 <li>implemented a collision based packer (#89)</li>
 <li>implemented validation of config parameters (#85) with result form</li>
 <li>Shape of Flowlines can be configured (#167)</li>
 </ul>
-<h3 id="backwards-compatibility-issues"><span class="header-section-number">9.11.5</span> backwards compatibility issues</h3>
+<h3 id="backwards-compatibility-issues"><span class="header-section-number">10.11.5</span> backwards compatibility issues</h3>
 <ul>
 <li>layoutlines is now the combination of voices and layoutlines. It is no longer possible to show voices without considering them in the layout (#175)</li>
 <li>Default for “filenamepart” is now as it was in 1.5 (#155)</li>
 <li>tuplet configuration is now under ‘notebound’: meed to rework in the sheets - sorry! (#168)</li>
 <li>transposititions are no longer exposed in legend (#174)</li>
 </ul>
-<h3 id="known-issues"><span class="header-section-number">9.11.6</span> known issues</h3>
+<h3 id="known-issues"><span class="header-section-number">10.11.6</span> known issues</h3>
 <p>Dragging of jumpline does not work properly on Saitenspiel #158</p>
-<h2 id="v-1.6.1-2017-05-17"><span class="header-section-number">9.12</span> V 1.6.1 2017-05-17</h2>
-<h3 id="fehlerbehebungen-2"><span class="header-section-number">9.12.1</span> Fehlerbehebungen</h3>
+<h2 id="v-1.6.1-2017-05-17"><span class="header-section-number">10.12</span> V 1.6.1 2017-05-17</h2>
+<h3 id="fehlerbehebungen-2"><span class="header-section-number">10.12.1</span> Fehlerbehebungen</h3>
 <ul>
 <li>Drag und Drop funktioniert nun auch in Firefox</li>
 <li>Sektieren von Noten in der Notenvorschau verbessert.</li>
@@ -3635,7 +3651,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Tonarmodus (dur, moll) beibt bei Transponierung erhalten</li>
 <li>Referenz erzeugt nun keine Fehlermehr</li>
 </ul>
-<h3 id="erweiterung-1"><span class="header-section-number">9.12.2</span> Erweiterung</h3>
+<h3 id="erweiterung-1"><span class="header-section-number">10.12.2</span> Erweiterung</h3>
 <ul>
 <li>In Liedtexten kann man mit <code>\~</code> feste Leerzeichen erzwingen</li>
 <li>Unterlegnotenvorschau wird vor dem Rendern gelöscht</li>
@@ -3649,12 +3665,12 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>ABC-Tutorial von Gerd Schacherl verlinkt</li>
 <li>Menüs zum Speichern, Öffnen sind inaktiv im Demo modus</li>
 </ul>
-<h3 id="experimentelle-erweiterungen"><span class="header-section-number">9.12.3</span> Experimentelle Erweiterungen</h3>
+<h3 id="experimentelle-erweiterungen"><span class="header-section-number">10.12.3</span> Experimentelle Erweiterungen</h3>
 <ul>
 <li>Man kann nun sein eigenes Template anlegen und einrichten</li>
 <li>Man kann den vertikalen Abstand von Noten korrigieren.</li>
 </ul>
-<h3 id="inkompatible-änderungen---notwendige-anpassungen"><span class="header-section-number">9.12.4</span> inkompatible Änderungen - notwendige Anpassungen</h3>
+<h3 id="inkompatible-änderungen---notwendige-anpassungen"><span class="header-section-number">10.12.4</span> inkompatible Änderungen - notwendige Anpassungen</h3>
 <ul>
 <li>Oktavierte Schlüssel: Wenn man bei einer Stimme z.B. clef=treble-8 angibt, wird eine kleine 8 unter den Violinschlüssel geschrieben. Ihr müsst also die “-8” rauslöschen, damit es wieder so ist, wie vorher.Leider hat das Template in Zupfnoter dieses “-8” eingefügt.</li>
 <li>Transponierungen innerhalb einer Stimme muss angepsasst werden</li>
@@ -3663,15 +3679,15 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Fehlermeldung, wenn F: - zeile fehlt</li>
 <li>Fehlermeldung der F: - Zeile Leerzeichen oder Sonderzeichen enthält</li>
 </ul>
-<h2 id="v-1.5"><span class="header-section-number">9.13</span> V 1.5</h2>
-<h3 id="backward-compatibility-issues"><span class="header-section-number">9.13.1</span> backward compatibility issues</h3>
+<h2 id="v-1.5"><span class="header-section-number">10.13</span> V 1.5</h2>
+<h3 id="backward-compatibility-issues"><span class="header-section-number">10.13.1</span> backward compatibility issues</h3>
 <ul>
 <li>filenames are now trimmed - this might lead to slightly different filenames in dropbox</li>
 <li>we now have a filenamepart per extract. It allows to change titles without changing the filenames. Future releases might introduce a default value. So better adapt this parameter now.</li>
 <li>you need first to invoke “login” in Zupfnoter before you can use the “open”</li>
 <li>the fingerprint on a page might change as we now have 2 decimal digits in configuration #95</li>
 </ul>
-<h3 id="fix-5"><span class="header-section-number">9.13.2</span> Fix</h3>
+<h3 id="fix-5"><span class="header-section-number">10.13.2</span> Fix</h3>
 <ul>
 <li>adjusted German language also for error messages #47</li>
 <li>communication with Dropbox (error handling etc.) #77</li>
@@ -3689,7 +3705,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Now also use ctrl/cmd-RETURN for render</li>
 <li>Now yield 1.50 instead of 1.49999999 to minimize rounding effects #95</li>
 </ul>
-<h3 id="enhancement-4"><span class="header-section-number">9.13.3</span> Enhancement</h3>
+<h3 id="enhancement-4"><span class="header-section-number">10.13.3</span> Enhancement</h3>
 <ul>
 <li>now we have configuration parameters for printer optimimization #82</li>
 <li>now have forms based configuration #67</li>
@@ -3703,34 +3719,34 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>now show information of the day #98</li>
 <li>now have quick settings for some configuration #97</li>
 </ul>
-<h2 id="v-1.4.2"><span class="header-section-number">9.14</span> V 1.4.2</h2>
-<h3 id="fix-6"><span class="header-section-number">9.14.1</span> Fix</h3>
+<h2 id="v-1.4.2"><span class="header-section-number">10.14</span> V 1.4.2</h2>
+<h3 id="fix-6"><span class="header-section-number">10.14.1</span> Fix</h3>
 <ul>
 <li>barnumbers are small_bold again #60</li>
 <li>optimized placement of cutmarks #74</li>
 <li>fixed tempo note for e.g. 3/8= 120 #79</li>
 <li>fix countnotes #78</li>
 </ul>
-<h2 id="v-1.4.2-1"><span class="header-section-number">9.15</span> V 1.4.2</h2>
-<h3 id="fix-7"><span class="header-section-number">9.15.1</span> Fix</h3>
+<h2 id="v-1.4.2-1"><span class="header-section-number">10.15</span> V 1.4.2</h2>
+<h3 id="fix-7"><span class="header-section-number">10.15.1</span> Fix</h3>
 <ul>
 <li>remove copyright note from sheet annotation #69</li>
 </ul>
-<h3 id="enhancement-5"><span class="header-section-number">9.15.2</span> enhancement</h3>
+<h3 id="enhancement-5"><span class="header-section-number">10.15.2</span> enhancement</h3>
 <ul>
 <li>add textstyles: italic, small_bold, small_italic</li>
 </ul>
-<h2 id="v-1.4.1"><span class="header-section-number">9.16</span> V 1.4.1</h2>
-<h3 id="enhancment"><span class="header-section-number">9.16.1</span> enhancment</h3>
+<h2 id="v-1.4.1"><span class="header-section-number">10.16</span> V 1.4.1</h2>
+<h3 id="enhancment"><span class="header-section-number">10.16.1</span> enhancment</h3>
 <ul>
 <li>suppress measure bar if repetition starts within measure #42</li>
 </ul>
-<h3 id="fixes"><span class="header-section-number">9.16.2</span> fixes</h3>
+<h3 id="fixes"><span class="header-section-number">10.16.2</span> fixes</h3>
 <ul>
 <li>force reading dropped abc-files as utf-8 #66</li>
 <li>annotation template now works</li>
 </ul>
-<h2 id="v-1.4.0"><span class="header-section-number">9.17</span> V 1.4.0</h2>
+<h2 id="v-1.4.0"><span class="header-section-number">10.17</span> V 1.4.0</h2>
 <ul>
 <li>fixed harpnote-player (no longer relies on last voice, no noise if song starts with rests) (#20)</li>
 <li>countnotes: draw hints how to count close to the notes (#21). Configure by <code>&quot;countnotes&quot; : {&quot;voices&quot;: [1], &quot;pos&quot;: [3, -2]}</code></li>
@@ -3768,7 +3784,7 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>Now generate bar numers #60</li>
 <li>improve adjustment of zoom levels #62</li>
 </ul>
-<h2 id="v-1.3.1-2016-05-17"><span class="header-section-number">9.18</span> V 1.3.1 2016-05-17</h2>
+<h2 id="v-1.3.1-2016-05-17"><span class="header-section-number">10.18</span> V 1.3.1 2016-05-17</h2>
 <ul>
 <li>initial support of voice overlays (bars do not always show up)</li>
 <li>raise an alert before unloading Zupfnoter</li>
@@ -3779,29 +3795,29 @@ Diese dient dazu ein “V” an die Harfennote zu drucken um anzudeuten, dass di
 <li>some refactorings (abc2svg-json)</li>
 <li><p>update to abc2svg 1.5.22</p></li>
 </ul>
-<h2 id="v-1.2.2"><span class="header-section-number">9.19</span> V 1.2.2</h2>
+<h2 id="v-1.2.2"><span class="header-section-number">10.19</span> V 1.2.2</h2>
 <ul>
 <li>slowed down activity animation</li>
 </ul>
-<h2 id="v-1.2.1"><span class="header-section-number">9.20</span> V 1.2.1</h2>
-<h2 id="v-1.2.0-2016-04-21"><span class="header-section-number">9.21</span> V 1.2.0 2016-04-21</h2>
+<h2 id="v-1.2.1"><span class="header-section-number">10.20</span> V 1.2.1</h2>
+<h2 id="v-1.2.0-2016-04-21"><span class="header-section-number">10.21</span> V 1.2.0 2016-04-21</h2>
 <ul>
 <li>upgrade to abc2svg 1.5.14 ( Crash on some cases of ties since 1.5.6)</li>
 <li>let “play” call “render” before playing if necessary</li>
 <li>now use green animation (flying notes) for progress indicator</li>
 </ul>
-<h2 id="v-1.1.1-2016-04-05"><span class="header-section-number">9.22</span> V 1.1.1 2016-04-05</h2>
+<h2 id="v-1.1.1-2016-04-05"><span class="header-section-number">10.22</span> V 1.1.1 2016-04-05</h2>
 <ul>
 <li>patched version number</li>
 </ul>
-<h2 id="v-1.1.0-2016-04-05"><span class="header-section-number">9.23</span> V 1.1.0 2016-04-05</h2>
+<h2 id="v-1.1.0-2016-04-05"><span class="header-section-number">10.23</span> V 1.1.0 2016-04-05</h2>
 <ul>
 <li>refinements of toolbar: login, new, open, save</li>
 <li>add a dialog for create and login</li>
 <li>invoke render_previews on new, open, drag</li>
 <li>Improved report of coordinates for dragging annotations</li>
 </ul>
-<h2 id="v-1.0.0-2016-04-03"><span class="header-section-number">9.24</span> V 1.0.0 2016-04-03</h2>
+<h2 id="v-1.0.0-2016-04-03"><span class="header-section-number">10.24</span> V 1.0.0 2016-04-03</h2>
 <ul>
 <li>first official release</li>
 </ul>

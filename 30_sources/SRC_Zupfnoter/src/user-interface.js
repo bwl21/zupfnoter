@@ -1299,12 +1299,13 @@ function init_w2ui(uicontroller) {
  * This updates the localized texts
  * The method is called from callConsumers
  */
-function update_localized_texts() {
+function update_localized_texts(uicontroller) {
   w2ui.layout_top_toolbar.refresh();
   w2ui.layout_left_tabs.refresh();
   w2ui.layout_preview_tabs.refresh();
-  w2ui.editortoolbar.refresh();
   w2ui.configtoolbar.refresh();
+  w2ui.editortoolbar.set('add_decoration', {items: uicontroller.$get_decoration_menu_entries().$to_n()})
+  w2ui.editortoolbar.refresh();
 }
 
 

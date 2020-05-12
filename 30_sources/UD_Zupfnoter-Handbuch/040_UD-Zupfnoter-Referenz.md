@@ -1718,14 +1718,12 @@ bzw. im Menü `Extras` eingeschaltet werden.
 > **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
 > wird Zupfnoter deutlich langsamer.
 
-Die Flußlinie wird unterbrochen 
+Die Flußlinie wird unterbrochen
 
-* vor und nach einer Wiederholung
-* bei einem Taktstrich `||` bzw. `|]`
-* bei eienmm Abschnitt (Part) mit `[P:]`
-* pro Stimme mit der Dekoration !breath!
-
-
+-   vor und nach einer Wiederholung
+-   bei einem Taktstrich `||` bzw. `|]`
+-   bei eienmm Abschnitt (Part) mit `[P:]`
+-   pro Stimme mit der Dekoration !breath!
 
 <!-- -->
 \clearpage
@@ -2471,24 +2469,20 @@ zur Vollständigkeit aufgeführt.
 
 # Notwendige Änderungen beim Übergang von Zupfnoter 1.xx nach Zupfnoter 2.xx
 
-Wenn sich bei einem Programm die erste Stelle der Versionsnummer ändert, muss man ggf. die ABC-Dateien ändern.
-Auch wenn wir versuchen, diese Änderungen so gering wir möglich zu halten, so sind sie doch nicht zu vermeiden.
-Manche diese Änderungen stammen aus einer genaueren Interpretation des ABC-Standards.
+Wenn sich bei einem Programm die erste Stelle der Versionsnummer ändert,
+muss man ggf. die ABC-Dateien ändern. Auch wenn wir versuchen, diese
+Änderungen so gering wir möglich zu halten, so sind sie doch nicht zu
+vermeiden. Manche diese Änderungen stammen aus einer genaueren
+Interpretation des ABC-Standards.
 
 ## Transponieren
 
-In Zupfnoter 1.x funktioniert manchmal das `%%transpose` noch. Zupfnoter wirft nun aber einen Fehler.
+In Zupfnoter 1.x funktioniert manchmal das `%%transpose` noch. Zupfnoter
+wirft nun aber einen Fehler.
 
 ## Haltebogen
 
 ## Angabe der Geschwindigkeit (Q:)
-
- 
-
-
-
-
-
 
 [^040_UD-Zupfnoter-Referenz.md_1]: Manchmal wird die Flußlinie auch als
     Melodielinie bezeichnet. Dies ist aber nur korrekt, wenn es sich um

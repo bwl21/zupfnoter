@@ -144,7 +144,7 @@ module Harpnotes
           unless result.match(/[a-z][a-zA-Z0-9_]*/)
             start_pos = charpos_to_line_column(voice_element[:istart])
             end_pos   = charpos_to_line_column(voice_element[:iend])
-            $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("illegal character in of [r:] (must be of [a-z][a-z0.9_])"), start_pos, end_pos)
+            $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("illegal character in [r:] (must be of [a-z][a-z0.9_])"), start_pos, end_pos)
             result = result = "_#{result}_"
           end
         else

@@ -38,7 +38,7 @@ Note verbinden (Notenbeschriftung).
         }
           
 
-## `annotations.rit` - {#annotations.rit}
+## `annotations.rit` - rit {#annotations.rit}
 
 TODO: Helptext für annotations.rit einfügen
 
@@ -84,7 +84,7 @@ auch mehrzeilig sein. Folgende Platzhalter kannst du verwenden:
 
         "text": "rit"
 
-## `annotations.vb` - {#annotations.vb}
+## `annotations.vb` - Dämpfer unter der Note {#annotations.vb}
 
 TODO: Helptext für annotations.vb einfügen
 
