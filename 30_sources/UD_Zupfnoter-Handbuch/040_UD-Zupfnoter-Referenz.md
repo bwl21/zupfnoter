@@ -1707,7 +1707,7 @@ zu bieten hat :-). Aber mit der Maus geht es ganz einfach:
 ### Flußlinien gestalten {#flowconf}
 
 Bei manchen Stücken kommt es vor, dass die Flußlinie einer Stimme durch
-die Begleintnoten verläuft. In diemesm Fall muss man ggf. die Flußlinie
+die Begleintnoten verläuft. In diesem Fall muss man ggf. die Flußlinie
 um die Begleitnonten "herumbiegen". Da zu gibt es eine experimentelle
 Möglichkeit die Flußlinie mit der Maus zu gestalten, ähnlich wie die
 Triolenbögen.
@@ -1717,6 +1717,15 @@ bzw. im Menü `Extras` eingeschaltet werden.
 
 > **Hinweis:** Wenn die Bearbeitung der Flußlinien eingeschaltet ist,
 > wird Zupfnoter deutlich langsamer.
+
+Die Flußlinie wird unterbrochen 
+
+* vor und nach einer Wiederholung
+* bei einem Taktstrich `||` bzw. `|]`
+* bei eienmm Abschnitt (Part) mit `[P:]`
+* pro Stimme mit der Dekoration !breath!
+
+
 
 <!-- -->
 \clearpage

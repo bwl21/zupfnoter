@@ -21,7 +21,7 @@ module Harpnotes
         @abc_model         = {}
         @tempo_statements  = [] # here we collect multiple Q: statements; only to raise warnings if there is more than one
 
-        @supported_decorations = $conf["layout.DECORATIIONS_AS_ANNOTATIONS"].keys + [:fermata, :emphasis]
+        @supported_decorations = $conf["layout.DECORATIIONS_AS_ANNOTATIONS"].keys + [:fermata, :emphasis, :breath]
 
         @_shortest_note = $conf.get('layout.SHORTEST_NOTE')
         _reset_state
@@ -115,7 +115,7 @@ module Harpnotes
         if tempo_note && tempo_note[:tempo_notes]
           duration      = tempo_note[:tempo_notes].map { |i| i / ABC2SVG_DURATION_FACTOR }
           bpm           = tempo_note[:tempo].to_i
-          tempo_display = %Q{1/#{1/duration.sum}=#{bpm}}
+          tempo_display = %Q{1/#{1 / duration.sum}=#{bpm}}
         else
           duration      = [0.25]
           bpm           = 120
@@ -295,6 +295,8 @@ module Harpnotes
         result = []
         type   = voice_element[:bar_type]
 
+
+        # handle variation
         variant_label = voice_element[:text]
         distance = _extract_goto_info_from_bar(voice_element).last[:distance] rescue [-10, 10, 15]
         @next_note_marks[:measure]      = true unless voice_element[:invisible] or type =~ /^\:?([\[\]]+)$/ # "]" is not a visible bar - useful for variant ending between measures
@@ -358,6 +360,12 @@ module Harpnotes
           if type.include? ":" #   false # @is_first_measure ## first measure after a meter statment cannot suppress bar
             @next_note_marks[:measure] = false unless (voice_element[:time] - @measure_start_time) == @wmeasure
           end
+        end
+
+
+        # supress flowline for || and |] bars
+        if ['||', '|]'].include? type
+          @next_note_marks[:first_in_part] = true
         end
 
         @is_first_measure = false
@@ -480,8 +488,10 @@ module Harpnotes
 
         # note that this updates the reasult
         # this is the reason that it is an array
-        _make_repeats_jumps_annotations(result, voice_element, voice_index)
+        _make_repeats_jumps_annotations(result, voice_element, voice_index, decorations)
 
+        # let brath interrupt the flowline
+        #@next_note_marks[:first_in_part] = true if decorations.include? :fermata
         result
       end
 
@@ -651,7 +661,7 @@ module Harpnotes
         end
 
 
-        _make_repeats_jumps_annotations(result, voice_element, voice_index)
+        _make_repeats_jumps_annotations(result, voice_element, voice_index, decorations)
 
         result
       end
@@ -809,7 +819,7 @@ module Harpnotes
 
             argument = goto_info[:distance].first || 2
             if target.nil?
-              $log.error(  "target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
+              $log.error("target '#{targetname}' not found in voice at #{element.start_pos_to_s}", element.start_pos, element.end_pos)
             else
               result << Harpnotes::Music::Goto.new(element, target, conf_key: conf_key, distance: argument) #todo: better algorithm
             end
@@ -839,7 +849,7 @@ module Harpnotes
               when "#"
                 annotation = @annotations[text]
 
-                $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("could not find annotation") +" #{text}", entity.start_pos, entity.end_pos) unless annotation
+                $log.error("#{__FILE__}:#{__LINE__}: " + I18n.t("could not find annotation") + " #{text}", entity.start_pos, entity.end_pos) unless annotation
               when "!"
                 annotation = {text: text, style: :regular}
               when "<"
@@ -873,9 +883,10 @@ module Harpnotes
       # @param [Array of Harpnotes::Music:Entity:] harpnote_elements elements created by the current note/rest
       # @param [Object] voice_element: voice element as provided by abc2svg
       # @param [integer] voice_id the id of the voice according to the sequence sequence in the ABC-Code. First voice is 1
+      # @param [Array of symbols] decorations - the deorations of the voice_element to compute breaks of jumplines
       #
       # note that this method upddates its fist parameter
-      def _make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id)
+      def _make_repeats_jumps_annotations(harpnote_elements, voice_element, voice_id, decorations=[])
         the_note   = harpnote_elements.first
         part_label = @part_table[voice_element[:time]]
 
@@ -896,7 +907,7 @@ module Harpnotes
 
         # handle parts as annotation
 
-        if part_label and part_label.length > 0
+        if part_label
           conf_key = "notebound.partname.#{voice_id}.#{znid}" if znid #$conf['defaults.notebound.variantend.pos']
           position = $conf['defaults.notebound.partname.pos']
 
@@ -911,6 +922,7 @@ module Harpnotes
           @next_note_marks[:repeat_start] = false
         end
 
+        # flowline-interruption is handled in the fist note of the flowline-segmeent
         if @next_note_marks[:first_in_part]
           @previous_note.first_in_part     = true
           @next_note_marks[:first_in_part] = false
@@ -943,6 +955,7 @@ module Harpnotes
         chords.select { |chord| chord[0] == ":" }.each do |name|
           @jumptargets[name[1 .. -1]] = harpnote_elements.select { |n| n.is_a? Harpnotes::Music::Playable }.last
         end
+        @next_note_marks[:first_in_part] = true if decorations.include? :breath
       end
 
       # read the information from th extra - property
@@ -1043,7 +1056,7 @@ module Harpnotes
             end_pos   = charpos_to_line_column(voice_element[:iend])
             $log.error("#{__FILE__}:#{__LINE__}: " + "abc:#{start_pos.first}:#{start_pos.last} Error: " + I18n.t("Nested Tuplet"), start_pos, end_pos)
 
-          #find tuplet start
+            #find tuplet start
           elsif voice_element[:tp]&.[](0)
             @tuplet_p    = voice_element[:tp]&.first&.[](:p) # [:tp][0][:p]
             tuplet_start = true
@@ -1055,9 +1068,9 @@ module Harpnotes
           tuplet = @tuplet_p # the size of tuplet (3, etc.
 
           # detect tuplet end
-          if voice_element[:tpe]  and not @tuplet_p.nil?
+          if voice_element[:tpe] and not @tuplet_p.nil?
             tuplet_end = true
-            @tuplet_p    = nil
+            @tuplet_p  = nil
           else
             tuplet_end = nil
           end

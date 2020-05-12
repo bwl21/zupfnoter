@@ -94,7 +94,7 @@ end
 
 
 class Controller
-  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath,  :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui,
+  attr_accessor :dropped_abc, :dropboxclient, :dropboxpath, :editor, :harpnote_preview_printer, :info_url, :tune_preview_printer, :systemstatus, :zupfnoter_ui,
                 :pdf_preview_string
 
   def initialize
@@ -160,8 +160,6 @@ class Controller
     check_suppoerted_browser
 
 
-
-
     # this keeps  a hash of resources
     # as resource thend to be big,
     # we do not hold them in $conf
@@ -178,7 +176,7 @@ class Controller
 
     @abc_transformer = Harpnotes::Input::Abc2svgToHarpnotes.new #todo: get it from abc2harpnotes_factory.
 
-    @dropboxclient   = Opal::DropboxJs::NilClient.new()
+    @dropboxclient = Opal::DropboxJs::NilClient.new()
 
     # initialize the sytemstatus entries which are absolutely necessary
     @systemstatus = {version: VERSION, dropboxpathlist: []}
@@ -274,37 +272,37 @@ class Controller
   def make_error_popup
     result = %Q{<p>Wenn du nicht weiter kommmst, poste eine Anfrage über Menü 'Hilfe / support'</p><p>}
     result += $log.get_errors.join("<br/>\n")
-    result +=  "</p>"
+    result += "</p>"
     result
   end
 
-  def   call_consumers(clazz)
-    @systemstatus_consumers = {systemstatus:      [
-                                                      lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
-                                                  ],
-                               lock:              [lambda { `lockscreen()` }],
-                               unlock:            [lambda { `unlockscreen()` }],
-                               localizedtexts:    [lambda { %x{update_localized_texts()} }],
-                               statusline:        [],
-                               error_alert:       [lambda { `window.update_error_status_w2ui(#{make_error_popup})` if $log.has_errors? }],
-                               play_start:        [lambda { `update_play_w2ui('start')` }],
-                               play_stop:         [lambda { `update_play_w2ui('stop')` }],
-                               play_stopping:     [lambda { `update_play_w2ui('stopping')` }],
-                               disable_save:      [lambda { `disable_save()` }],
-                               enable_save:       [lambda { `enable_save()` }],
-                               before_open:       [lambda { `before_open()` }],
-                               document_title:    [lambda { `document.title = #{@document_title}` }],
-                               current_notes:     [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(" ")})` }],
-                               settings_menu:     [lambda { `update_settings_menu(#{$settings.to_n})` }],
-                               extracts: [lambda {
+  def call_consumers(clazz)
+    @systemstatus_consumers = {systemstatus:       [
+                                                       lambda { `update_systemstatus_w2ui(#{@systemstatus.to_n})` }
+                                                   ],
+                               lock:               [lambda { `lockscreen()` }],
+                               unlock:             [lambda { `unlockscreen()` }],
+                               localizedtexts:     [lambda {  %x{update_localized_texts(#{self})} }],
+                               statusline:         [],
+                               error_alert:        [lambda { `window.update_error_status_w2ui(#{make_error_popup})` if $log.has_errors? }],
+                               play_start:         [lambda { `update_play_w2ui('start')` }],
+                               play_stop:          [lambda { `update_play_w2ui('stop')` }],
+                               play_stopping:      [lambda { `update_play_w2ui('stopping')` }],
+                               disable_save:       [lambda { `disable_save()` }],
+                               enable_save:        [lambda { `enable_save()` }],
+                               before_open:        [lambda { `before_open()` }],
+                               document_title:     [lambda { `document.title = #{@document_title}` }],
+                               current_notes:      [lambda { `update_current_notes_w2ui(#{@harpnote_player.get_notes.join(" ")})` }],
+                               settings_menu:      [lambda { `update_settings_menu(#{$settings.to_n})` }],
+                               extracts:           [lambda {
                                  items = @extracts.map { |id, entry| {id: id, text: "#{id}: #{entry}"} }
                                  `set_extract_menu(#{items.to_n})`
                                  call_consumers(:systemstatus) # restore systemstatus as set_extract_menu redraws the toolbar
                                }],
-                               harp_preview_size: [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
-                               render_status:     [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }],
+                               harp_preview_size:  [lambda { %x{set_harp_preview_size(#{@harp_preview_size})} }],
+                               render_status:      [lambda { %x{set_render_status(#{@systemstatus[:autorefresh]}+ ' '+ #{@render_stack.to_s})} }],
                                show_config_tab:    [lambda { %x{show_config_tab()} }],
-                               update_pdf_preview: [lambda {%x{update_pdf_preview(#{self})}  }]
+                               update_pdf_preview: [lambda { %x{update_pdf_preview(#{self})} }]
     }
     @systemstatus_consumers[clazz].each { |c| c.call() }
   end
@@ -322,37 +320,43 @@ class Controller
   def get_decoration_menu_entries
 
     result = [
-        {   # emphasis is a glyph and therefore not in DECORATIONS_AS_ANNOTATIONS
+        {
             id:      "!fermata!",
-            text:    "Fermata ",
+            text:    "Fermata",
             icon:    'fa fa-bars',
-            tooltip: "insert decoration: " + %Q{Fermata: 'H'}
+            tooltip: I18n.t("insert decoration: ") + %Q{Fermata: 'H'}
+        },
+        {
+            id:      "!breath!",
+            text:    I18n.t("Breath - interrupt Flowline"),
+            icon:    'fa fa-bars',
+            tooltip: I18n.t("interrupts flowline after the note")
         },
         {
             id:      "!emphasis!",
             text:    "Emphasis ",
             icon:    'fa fa-bars',
-            tooltip: "insert decoration: " + %Q{Emphasis: 'L'}
+            tooltip: I18n.t("insert decoration: ") + %Q{Emphasis: 'L'}
         },
         {
             id:      %Q{"^#rit"},
             text:    "rit",
             icon:    'fa fa-bars',
-            tooltip: "insert Ritardando"
+            tooltip: I18n.t("insert Ritardando")
         },
         {
             id:      %Q{"^#vb"},
             text:    "Damper",
             icon:    'fa fa-bars',
-            tooltip: "insert Damper below note"
+            tooltip: I18n.t("insert Damper below note")
         },
     ]
 
     result += $conf['layout.DECORATIIONS_AS_ANNOTATIONS'].map do |name, decoration|
       {
-          id:      %Q{!#{name}!},
-          text:    %Q{!#{name}!: comes as '#{decoration[:text]}'},
-          icon:    'fa fa-bars',
+          id:   %Q{!#{name}!},
+          text: %Q{!#{name}!: #{I18n.t("comes as")} '#{decoration[:text]}'},
+          icon: 'fa fa-bars',
       }
     end
   end
@@ -451,33 +455,33 @@ class Controller
   end
 
   def get_chords_for(notes)
-    the_notes = notes
+    the_notes   = notes
     chordserver = Chordengine.new("C")
     chordserver.chordfor(the_notes)
   end
 
   def get_chords_for_string(notesstring)
     the_notes = scan_notesstring(notesstring)
-    result = get_chords_for(the_notes)
+    result    = get_chords_for(the_notes)
     result
   end
 
   def scan_notesstring(notesstring)
-    notesstring.scan(/([a-gA-G])([#b])?/).map{|i| "#{i.first.upcase}#{i.last}"}
+    notesstring.scan(/([a-gA-G])([#b])?/).map { |i| "#{i.first.upcase}#{i.last}" }
   end
 
   def play_chord(chordname)
     call_consumers(:play_start)
     chordserver = Chordengine.new("C")
-    pitches = chordserver.tomidi(chordserver.chordnotes(chordname, "#")).map{|i| i + 60}
+    pitches     = chordserver.tomidi(chordserver.chordnotes(chordname, "#")).map { |i| i + 60 }
     @harpnote_player.play_pitches(pitches)
   end
 
   def play_chordnotes(notesstring)
     call_consumers(:play_start)
-    the_notes = scan_notesstring(notesstring)
+    the_notes   = scan_notesstring(notesstring)
     chordserver = Chordengine.new("C")
-    pitches = chordserver.tomidi(the_notes).compact.map{|i| i + 60}
+    pitches     = chordserver.tomidi(the_notes).compact.map { |i| i + 60 }
     @harpnote_player.play_pitches(pitches)
   end
 
@@ -821,8 +825,8 @@ class Controller
     result
   end
 
-  # this is an accessor which tries to recompute
-  # the value if is not available
+# this is an accessor which tries to recompute
+# the value if is not available
   def pdf_preview_string
     if @systemstatus[:autorefresh] and not @pdf_preview_string.empty?
       @pdf_preview_string
@@ -876,7 +880,7 @@ class Controller
       #$log.debug(@music_model.to_json) if $log.loglevel == 'debug'
       @editor.set_annotations($log.annotations)
     rescue Exception => e
-        $log.error(%Q{#{__FILE__}:#{__LINE__}: #{e.message}}, nil, nil, e.backtrace)
+      $log.error(%Q{#{__FILE__}:#{__LINE__}: #{e.message}}, nil, nil, e.backtrace)
     ensure
       $conf.pop
     end
@@ -1341,43 +1345,42 @@ class Controller
       call_consumers(:document_title)
     end
 
-# this receiges the player_model_abc to play
-# along the tune
+    # this receiges the player_model_abc to play
+    # along the tune
     @worker.on_named_message(:load_player_model_abc) do |data|
       $log.benchmark("preocessing reply from load_player_model_abc") do
         @harpnote_player.player_model_abc = %x{JSON.parse(#{data[:payload]})}
       end
     end
 
-# this receives the player_model to play according
-# to harpnotes
+    # this receives the player_model to play according
+    # to harpnotes
     @worker.on_named_message(:load_player_from_worker) do |data|
       $log.benchmark("preocessing reply from load_player_model") do
         @harpnote_player.set_worker_model(data[:payload])
       end
     end
 
-# this retrieves the abc model from worker
-# required for select in multiple voices
+    # this retrieves the abc model from worker
+    # required for select in multiple voices
     @worker.on_named_message(:load_abc_model) do |data|
       $log.benchmark("preocessing reply from load_abc_model") do
         @abc_model = data[:payload]
       end
     end
 
-# this lets the worker send a message to the logger
+    # this lets the worker send a message to the logger
     @worker.on_named_message('log') do |data|
       $log.log_from_worker(data[:payload])
     end
 
-# this rescues from fatal worker errors
+    # this rescues from fatal worker errors
     @worker.on_named_message(:rescue_from_worker_error) do |data|
       @render_stack.clear
       call_consumers(:error_alert)
       call_consumers(:render_status)
     end
   end
-
 
 
 # this registers the listeners to ui-elements.
