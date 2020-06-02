@@ -97,6 +97,7 @@ module Harpnotes
                     :conf_key,
                     :count_note, # string to support count_notes need to be queried even for measuers ...
                     :decorations, # decorations
+                    :bardecorations, # decorations from bar
                     :end_pos, # end position in source
                     :next_pitch, # pitch of next entity
                     :next_first_in_part, # indicate if next note is first in part
@@ -116,9 +117,10 @@ module Harpnotes
 
 
       def initialize
-        @visible = true
-        @origin  = nil,
-            @decorations = []
+        @visible        = true
+        @origin         = nil
+        @decorations    = []
+        @bardecorations = []
       end
 
       def visible?
@@ -1179,7 +1181,7 @@ module Harpnotes
           #rest_0:   {d: [["M", 0.06 -0.06 - 11.25/2, 0.03-1.7*4.68], ["l", 0.09, -0.06], ["l", 5.46, 0], ["l", 5.49, 0], ["l", 0.09, 0.06], ["l", 0.06, 0.09], ["l", 0, 2.19], ["l", 0, 2.19], ["l", -0.06, 0.09], ["l", -0.09, 0.06], ["l", -5.49, 0], ["l", -5.46, 0], ["l", -0.09, -0.06], ["l", -0.06, -0.09], ["l", 0, -2.19], ["l", 0, -2.19], ["z"]], w: 2* 11.25, h: 2.2*4.68},
           rest_1: {d: [["M", -10, -5], ['l', 20, 0], ['l', 0, 10], ['l', -20, 0], ['l', 0, -10], ['z']], w: 20, h: 10},
           # optimized by try and error: orginal: ["M", 1.89, -11.82]
-          breath: {d:[["M",0, 0]], w:0, h:01},
+          breath: {d: [["M", 0, 0]], w: 0, h: 01},
           rest_4: {d: [["M", -1, -10], ["c", 0.12, -0.06, 0.24, -0.06, 0.36, -0.03], ["c", 0.09, 0.06, 4.74, 5.58, 4.86, 5.82], ["c", 0.21, 0.39, 0.15, 0.78, -0.15, 1.26],
                        ["c", -0.24, 0.33, -0.72, 0.81, -1.62, 1.56], ["c", -0.45, 0.36, -0.87, 0.75, -0.96, 0.84], ["c", -0.93, 0.99, -1.14, 2.49, -0.6, 3.63],
                        ["c", 0.18, 0.39, 0.27, 0.48, 1.32, 1.68], ["c", 1.92, 2.25, 1.83, 2.16, 1.83, 2.34], ["c", -0, 0.18, -0.18, 0.36, -0.36, 0.39],
@@ -1253,7 +1255,7 @@ module Harpnotes
         super()
         glyph = GLYPHS[glyph_name]
         unless glyph
-          $log.error ("BUG: unsuppoerted glyph #{glyph_name}") unless glyph
+          $log.error ("BUG: unsupported glyph #{glyph_name}") unless glyph
           glyph = GLYPHS[:error]
         end
         @center     = center
@@ -1729,16 +1731,18 @@ module Harpnotes
 
         annotating_decorations = $conf["layout.DECORATIIONS_AS_ANNOTATIONS"]
 
-        decorations = nil
-        decorations = playable.decorations
+        decorations = []
+        decorations += playable.decorations.map { |i| [i, :n] }
+        decorations += playable.bardecorations.map { |i| [i, :b] }
+        decorations = decorations.reject{|i| i.empty? }
+
         unless decorations.empty?
-          decoration_distance = (playable.measure_start ? 2 : 1)
-          decoration_scale    = 0.8
+          decoration_distance = (playable.measure_start ? 2 : 1)   # vertical distance of decoration
+          decoration_scale    = 0.8 # todo: conf
           decoration_size     = decoration_root.size.map { |i| i * decoration_scale }
 
           decoration_result = []
           decorations.each_with_index do |decoration, index|
-
             decoration_base_key = "notebound.decoration.v_#{voice_nr}.t_#{playable.znid}.#{index}"
             decoration_key      = "extract.#{print_variant_nr}.#{decoration_base_key}"
             conf_key            = "#{decoration_key}.pos"
@@ -1749,15 +1753,15 @@ module Harpnotes
             decoration_center = [decoration_root.center.first + decoration_offset.first, decoration_root.center.last + decoration_offset.last]
 
             show_decoration = $conf["#{decoration_key}.show"]
+            annotation = annotating_decorations[decoration[0]]
 
-            annotation = annotating_decorations[decoration]
             if annotation
               decoration_center = (Vector2d(annotation[:pos]) + decoration_center).to_a # text based annotation yields a specific default position
               style             = $conf["#{decoration_key}.style"] || annotation[:style]
               r                 = Harpnotes::Drawing::Annotation.new(decoration_center, annotation[:text], style, playable.origin, conf_key, decoration_offset)
               r.align           = annotation[:align] || :left
             else
-              r = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration, false, nil, conf_key, decoration_offset)
+              r = Harpnotes::Drawing::Glyph.new(decoration_center, decoration_size, decoration[0], false, nil, conf_key, decoration_offset)
             end
 
             r.tap { |s| s.draginfo = {handler: :annotation} }
@@ -2315,7 +2319,11 @@ module Harpnotes
           result              = layout_playable(playable, beat_layout, note_conf_base) # unless playable.is_a? Pause
           decoration_root     = result.proxy
 
-          res_decorations.push (playable.decorations.empty? ? [] : make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
+          if (playable.decorations.nil? and playable.bardecorations.nil?)
+            res_decorations.push([])
+          else
+            res_decorations.push (make_decorations_per_playable(playable, decoration_root, print_variant_nr, show_options, voice_nr))
+          end
 
           # todo: this also adds the manual incrementation conf_key. This should be separated as another concern
 

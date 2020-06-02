@@ -295,6 +295,10 @@ module Harpnotes
         result = []
         type   = voice_element[:bar_type]
 
+        decorations = _parse_decorations(voice_element)
+        unless decorations.empty?
+          @previous_note.bardecorations=decorations
+        end
 
         # handle variation
         variant_label = voice_element[:text]
@@ -490,7 +494,7 @@ module Harpnotes
         # this is the reason that it is an array
         _make_repeats_jumps_annotations(result, voice_element, voice_index, decorations)
 
-        # let brath interrupt the flowline
+        # let breath interrupt the flowline
         #@next_note_marks[:first_in_part] = true if decorations.include? :fermata
         result
       end
