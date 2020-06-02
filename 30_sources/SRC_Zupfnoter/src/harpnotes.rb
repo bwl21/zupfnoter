@@ -1144,7 +1144,7 @@ module Harpnotes
         @@pdf.font_size  = font_size
         @@pdf.font_style = font_style
 
-        size = @@pdf.get_text_dimensions(@text.split("\n"))
+        size = @@pdf.get_text_dimensions(@text.gsub("&tilde;", "~").split("\n"))
 
         result = [size[:w], size[:h]]
 
@@ -2780,6 +2780,7 @@ module Harpnotes
                 cn_pattern = (cn_side == :l ? cn_text.first : cn_text.last)
                 count_note = cn_pattern.gsub('{lyrics}', playable.lyrics)
                 count_note = count_note.gsub('{countnote}', playable.count_note)
+                count_note = "~" if count_note.empty? # empty countnotes produce negative size of background
               end
 
               unless cn_offset # unless no offest is specified in config
