@@ -132,17 +132,23 @@ sourcefiles.each do |sourcefile|
 
   pdfs.each do |filename, content|
     outputname = %Q{#{targetfolder}/#{filename}}
-    puts filename
 
     %x{
        var encoding = require ("encoding")
        var buffer = encoding.convert(#{content}, 'Latin-1')
        fs.writeFileSync(#{outputname}, buffer)
     }
+    puts "wrote #{filename}"
     nil
   end
+  puts "writing #{targetfolder}/#{File.basename(sourcefile)}.err.log"
 
   File.write("#{targetfolder}/#{File.basename(sourcefile)}.err.log", $log.get_errors.join("\n"))
+  puts "done"
+  nil
 end
+puts "all end"
+exit(0)
 nil
+
 

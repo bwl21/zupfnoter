@@ -648,7 +648,7 @@ module InitConf
                  'crescendo(':  {text: 'cresc', pos: [5, 0], style: :small_italic},
                  'crescendo)':  {text: '/cresc', pos: [5, 0], style: :small_italic},
                  'D.C.':        {text: "D.C.", pos: [5, 5], style: :bold},
-                 'D.C.alfine':  {text: "D.C. al fine", pos: [5, 5], style: :bold},
+                 'D.C.alfine':  {text: "D.C. al Fine", pos: [5, 5], style: :bold},
                  'D.S.':        {text: "D.S.", pos: [5, 5], style: :bold},
                  'dacapo':      {text: 'da Capo', pos: [5, 5], style: :bold},
                  'dacoda':      {text: 'da Coda', pos: [5, 5], style: :bold},

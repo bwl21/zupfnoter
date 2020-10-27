@@ -13969,7 +13969,6 @@ module.exports.win32 = win32;
  */
 const Url = require('url')
 const fs = require('fs')
-const path = require('path')
 
 exports.XMLHttpRequest = function () {
   'use strict'
@@ -13995,7 +13994,7 @@ exports.XMLHttpRequest = function () {
   // Set some default headers
   const defaultHeaders = {
     'User-Agent': 'node-XMLHttpRequest',
-    'Accept': '*/*'
+    Accept: '*/*'
   }
 
   let headers = {}
@@ -14122,11 +14121,11 @@ exports.XMLHttpRequest = function () {
     }
 
     settings = {
-      'method': method,
-      'url': url.toString(),
-      'async': (typeof async !== 'boolean' ? true : async),
-      'user': user || null,
-      'password': password || null
+      method: method,
+      url: url.toString(),
+      async: (typeof async !== 'boolean' ? true : async),
+      user: user || null,
+      password: password || null
     }
 
     setState(this.OPENED)
@@ -14195,7 +14194,7 @@ exports.XMLHttpRequest = function () {
     }
     let result = ''
 
-    for (let i in response.headers) {
+    for (const i in response.headers) {
       // Cookie headers are excluded
       if (i !== 'set-cookie' && i !== 'set-cookie2') {
         result += i + ': ' + response.headers[i] + '\r\n'
@@ -14233,7 +14232,7 @@ exports.XMLHttpRequest = function () {
     }
     let ssl = false
     let local = false
-    const url = Url.parse(settings.url)
+    const url = new Url.URL(settings.url)
     let host
     // Determine the server
     switch (url.protocol) {
@@ -14261,9 +14260,8 @@ exports.XMLHttpRequest = function () {
       if (settings.method !== 'GET') {
         throw new Error('XMLHttpRequest: Only GET method is supported')
       }
-
       if (settings.async) {
-        fs.readFile(url.pathname, 'utf8', function (error, data) {
+        fs.readFile(url, 'utf8', function (error, data) {
           if (error) {
             self.handleError(error)
           } else {
@@ -14274,7 +14272,7 @@ exports.XMLHttpRequest = function () {
         })
       } else {
         try {
-          this.responseText = fs.readFileSync(url.pathname, 'utf8')
+          this.responseText = fs.readFileSync(url, 'utf8')
           this.status = 200
           setState(self.DONE)
         } catch (e) {
@@ -14292,7 +14290,7 @@ exports.XMLHttpRequest = function () {
     const uri = url.pathname + (url.search ? url.search : '')
 
     // Set the defaults if they haven't been set
-    for (let name in defaultHeaders) {
+    for (const name in defaultHeaders) {
       if (!headersCase[name.toLowerCase()]) {
         headers[name] = defaultHeaders[name]
       }
@@ -14368,7 +14366,7 @@ exports.XMLHttpRequest = function () {
         if (response.statusCode === 301 || response.statusCode === 302 || response.statusCode === 303 || response.statusCode === 307) {
           // Change URL to the redirect location
           settings.url = response.headers.location
-          const url = Url.parse(settings.url)
+          const url = new Url.URL(settings.url)
           // Set host var in case it's used later
           host = url.hostname
           // Options for the new request
@@ -14438,7 +14436,7 @@ exports.XMLHttpRequest = function () {
       const output = require('child_process').execSync(`"${process.argv[0]}" "${__dirname}/request.js" \
 --ssl="${ssl}" \
 --encoding="${encoding}" \
---request-options=${JSON.stringify(JSON.stringify(options))}`, { stdio: 'pipe' })
+--request-options=${JSON.stringify(JSON.stringify(options))}`, { stdio: ['pipe', 'pipe', 'pipe'], input: data })
       const result = JSON.parse(output.toString('utf8'))
       if (result.error) {
         self.handleError(result.error)
@@ -14553,7 +14551,7 @@ exports.XMLHttpRequest = function () {
   }
 }
 
-},{"child_process":undefined,"fs":undefined,"http":undefined,"https":undefined,"path":undefined,"url":undefined}],86:[function(require,module,exports){
+},{"child_process":undefined,"fs":undefined,"http":undefined,"https":undefined,"url":undefined}],86:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -49584,7 +49582,7 @@ Opal.modules["init_conf"] = function(Opal) {
 
       return $$($nesting, 'I18n').$t("provided by\n")}, $$33.$$s = self, $$33.$$arity = 0, $$33)), "style": "small"})}), "T05_printed_extracts": $hash2(["value"], {"value": $hash2(["pos", "text", "style", "align"], {"pos": [410, 22], "text": "{{printed_extracts}}", "style": "smaller", "align": "l"})}), "T06_legend": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [360, 30], "text": "{{extract_title}}\n{{composer}}\nTakt: {{meter}} ({{tempo}})\nTonart: {{key}}", "style": "small"})}), "T99_do_not_copy": $hash2(["value"], {"value": $hash2(["pos", "text", "style"], {"pos": [380, 284], "text": $send(self, 'lambda', [], ($$34 = function(){var self = $$34.$$s || this;
 
-      return $$($nesting, 'I18n').$t("Please do not copy")}, $$34.$$s = self, $$34.$$arity = 0, $$34)), "style": "small_bold"})}), "T01_T99": $hash2(["value"], {"value": $hash2([], {})})}), "printer": $hash2(["printer_left", "printer_centric", "printer_right"], {"printer_left": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [-10, 0], "a4_offset": [-5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})}), "printer_centric": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [0, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": true})}), "printer_right": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [10, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})})})}), "annotations": $hash2(["vl", "vt", "vb", "vr", "rit"], {"vl": $hash2(["text", "pos"], {"text": "v", "pos": [-5, -5]}), "vt": $hash2(["text", "pos"], {"text": "v", "pos": [-1, -5]}), "vb": $hash2(["text", "pos"], {"text": "v", "pos": [-1, 2]}), "vr": $hash2(["text", "pos"], {"text": "v", "pos": [2, -5]}), "rit": $hash2(["text", "pos", "style"], {"text": "rit", "pos": [2, -5], "style": "italic"})}), "extract": $hash2(["0", "1", "2", "3"], {"0": $hash2(["title", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "images", "layout", "sortmark", "nonflowrest", "notes", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "printer"], {"title": "alle Stimmen", "startpos": 15, "voices": [1, 2, 3, 4], "synchlines": [[1, 2], [3, 4]], "flowlines": [1, 3], "subflowlines": [2, 4], "jumplines": [1, 3], "repeatsigns": $hash2(["voices", "left", "right"], {"voices": [], "left": $hash2(["pos", "text", "style"], {"pos": [-7, -2], "text": "|:", "style": "bold"}), "right": $hash2(["pos", "text", "style"], {"pos": [5, -2], "text": ":|", "style": "bold"})}), "layoutlines": [1, 2, 3, 4], "legend": $hash2(["spos", "pos", "tstyle", "align", "style"], {"spos": [320, 27], "pos": [320, 7], "tstyle": "large", "align": "r", "style": "regular"}), "lyrics": $hash2([], {}), "images": $hash2([], {}), "layout": $hash2(["limit_a3", "bottomup", "beams", "jumpline_anchor", "color", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "tuning", "packer"], {"limit_a3": true, "bottomup": false, "beams": false, "jumpline_anchor": [3, 1], "color": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": "black", "color_variant1": "grey", "color_variant2": "dimgrey"}), "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "PITCH_OFFSET": -43, "X_SPACING": 11.5, "X_OFFSET": 2.8, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "DRAWING_AREA_SIZE": [400, 282], "instrument": "37-strings-g-g", "tuning": "fixed", "packer": $hash2(["pack_method", "pack_max_spreadfactor", "pack_min_increment"], {"pack_method": 0, "pack_max_spreadfactor": 2, "pack_min_increment": 0.2})}), "sortmark": $hash2(["size", "fill", "show"], {"size": [2, 4], "fill": true, "show": false}), "nonflowrest": false, "notes": $hash2([], {}), "tuplets": $hash2(["text"], {"text": "{{tuplet}}"}), "barnumbers": $hash2(["voices", "pos", "autopos", "apanchor", "apbase", "style", "prefix"], {"voices": [], "pos": [6, -4], "autopos": true, "apanchor": "box", "apbase": [1, 1], "style": "small_bold", "prefix": ""}), "countnotes": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "smaller"}), "chords": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "large"}), "stringnames": $hash2(["text", "vpos", "style", "marks"], {"text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G", "vpos": [], "style": "small", "marks": $hash2(["vpos", "hpos"], {"vpos": [11], "hpos": [43, 55, 79]})}), "printer": $hash2(["a3_offset", "a4_offset", "a4_pages", "show_border"], {"a3_offset": [0, 0], "a4_offset": [-5, 0], "a4_pages": [0, 1, 2], "show_border": false})}), "1": $hash2(["title", "voices"], {"title": "Sopran, Alt", "voices": [1, 2]}), "2": $hash2(["title", "voices"], {"title": "Tenor, Bass", "voices": [3, 4]}), "3": $hash2(["title", "voices"], {"title": "Melodie", "voices": [1]})}), "layout": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "DURATION_TO_BEAMS", "REST_TO_GLYPH", "DECORATIIONS_AS_ANNOTATIONS"], {"grid": false, "limit_a3": true, "SHOW_SLUR": false, "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "X_SPACING": 11.5, "X_OFFSET": 2.8, "Y_SCALE": 4, "DRAWING_AREA_SIZE": [400, 282], "BEAT_RESOLUTION": 192, "SHORTEST_NOTE": 64, "BEAT_PER_DURATION": 3, "PITCH_OFFSET": -43, "FONT_STYLE_DEF": $hash2(["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], {"bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "bold"}), "italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "italic"}), "large": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 20, "font_style": "bold"}), "regular": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "normal"}), "small_bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "bold"}), "small_italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "italic"}), "small": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "normal"}), "smaller": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 6, "font_style": "normal"})}), "MM_PER_POINT": 0.3, "DURATION_TO_STYLE": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [2, "filled", false], "d64": [1, "empty", false], "d48": [0.75, "empty", true], "d32": [0.75, "empty", false], "d24": [0.75, "filled", true], "d16": [0.75, "filled", false], "d12": [0.5, "filled", true], "d8": [0.5, "filled", false], "d6": [0.3, "filled", true], "d4": [0.3, "filled", false], "d3": [0.1, "filled", true], "d2": [0.1, "filled", false], "d1": [0.05, "filled", false]}), "DURATION_TO_BEAMS": $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [1, "empty", false], "d48": [1, "empty", true, 0], "d32": [1, "empty", false, 0], "d24": [1, "filled", true, 0], "d16": [1, "filled", false, 0], "d12": [1, "filled", true, 1], "d8": [1, "filled", false, 1], "d6": [1, "filled", true, 2], "d4": [1, "filled", false, 2], "d3": [1, "filled", true, 3], "d2": [1, "filled", false, 3], "d1": [1, "filled", false, 4]}), "REST_TO_GLYPH": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [[2, 2], "rest_1", false], "d64": [[1, 0.8], "rest_1", false], "d48": [[0.5, 0.4], "rest_1", true], "d32": [[0.5, 0.4], "rest_1", false], "d24": [[0.4, 0.75], "rest_4", true], "d16": [[0.4, 0.75], "rest_4", false], "d12": [[0.4, 0.5], "rest_8", true], "d8": [[0.4, 0.5], "rest_8", false], "d6": [[0.4, 0.3], "rest_16", true], "d4": [[0.3, 0.3], "rest_16", false], "d3": [[0.3, 0.5], "rest_32", true], "d2": [[0.3, 0.5], "rest_32", false], "d1": [[0.3, 0.5], "rest_64", false]}), "DECORATIIONS_AS_ANNOTATIONS": $hash2(["<(", "<)", ">(", ">)", "arpeggio", "coda", "crescendo(", "crescendo)", "D.C.", "D.C.alfine", "D.S.", "dacapo", "dacoda", "dasegno", "diminuendo(", "diminuendo)", "f", "ff", "fff", "ffff", "fine", "p", "pp", "ppp", "pppp", "segno"], {"<(": $hash2(["text", "pos", "style"], {"text": "cresc", "pos": [5, 0], "style": "small_italic"}), "<)": $hash2(["text", "pos", "style"], {"text": "/cresc", "pos": [5, 0], "style": "small_italic"}), ">(": $hash2(["text", "pos", "style"], {"text": "dimin", "pos": [5, 0], "style": "small_italic"}), ">)": $hash2(["text", "pos", "style"], {"text": "/dimin", "pos": [5, 0], "style": "small_italic"}), "arpeggio": $hash2(["text", "pos", "style"], {"text": "arpeggio ", "pos": [-20, 0], "style": "small_italic"}), "coda": $hash2(["text", "pos", "style", "align", "show"], {"text": "Coda", "pos": [0, -5], "style": "bold", "align": "center", "show": "all"}), "crescendo(": $hash2(["text", "pos", "style"], {"text": "cresc", "pos": [5, 0], "style": "small_italic"}), "crescendo)": $hash2(["text", "pos", "style"], {"text": "/cresc", "pos": [5, 0], "style": "small_italic"}), "D.C.": $hash2(["text", "pos", "style"], {"text": "D.C.", "pos": [5, 5], "style": "bold"}), "D.C.alfine": $hash2(["text", "pos", "style"], {"text": "D.C. al fine", "pos": [5, 5], "style": "bold"}), "D.S.": $hash2(["text", "pos", "style"], {"text": "D.S.", "pos": [5, 5], "style": "bold"}), "dacapo": $hash2(["text", "pos", "style"], {"text": "da Capo", "pos": [5, 5], "style": "bold"}), "dacoda": $hash2(["text", "pos", "style"], {"text": "da Coda", "pos": [5, 5], "style": "bold"}), "dasegno": $hash2(["text", "pos", "style"], {"text": "da Segno", "pos": [5, 5], "style": "bold"}), "diminuendo(": $hash2(["text", "pos", "style"], {"text": "dimin", "pos": [5, 0], "style": "small_italic"}), "diminuendo)": $hash2(["text", "pos", "style"], {"text": "/dimin", "pos": [5, 0], "style": "small_italic"}), "f": $hash2(["text", "pos", "style"], {"text": "f", "pos": [3, 0], "style": "small_italic"}), "ff": $hash2(["text", "pos", "style"], {"text": "ff", "pos": [3, 0], "style": "small_italic"}), "fff": $hash2(["text", "pos", "style"], {"text": "fff", "pos": [3, 0], "style": "small_italic"}), "ffff": $hash2(["text", "pos", "style"], {"text": "ffff", "pos": [3, 0], "style": "small_italic"}), "fine": $hash2(["text", "pos", "style", "align", "show"], {"text": "Fine", "pos": [10, 5], "style": "bold", "align": "center", "show": "all"}), "p": $hash2(["text", "pos", "style"], {"text": "p", "pos": [3, 0], "style": "small_italic"}), "pp": $hash2(["text", "pos", "style"], {"text": "pp", "pos": [3, 0], "style": "small_italic"}), "ppp": $hash2(["text", "pos", "style"], {"text": "ppp", "pos": [3, 0], "style": "small_italic"}), "pppp": $hash2(["text", "pos", "style"], {"text": "pppp", "pos": [3, 0], "style": "small_italic"}), "segno": $hash2(["text", "pos", "style", "align", "show"], {"text": "Segno", "pos": [0, -5], "style": "bold", "align": "center", "show": "all"})})}), "neatjson": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "short", "afterComma", "afterColon1", "afterColonN", "beforeColonN", "decimals", "explicit_sort"], {"wrap": 60, "aligned": true, "after_comma": 1, "after_colon_1": 1, "after_colon_n": 1, "before_colon_n": 1, "short": false, "afterComma": 1, "afterColon1": 1, "afterColonN": 1, "beforeColonN": 1, "decimals": 2, "explicit_sort": $$($nesting, 'Hash')['$[]']($send(explicit_sort.$each_with_index().$to_a(), 'map', [], ($$35 = function(i){var self = $$35.$$s || this;
+      return $$($nesting, 'I18n').$t("Please do not copy")}, $$34.$$s = self, $$34.$$arity = 0, $$34)), "style": "small_bold"})}), "T01_T99": $hash2(["value"], {"value": $hash2([], {})})}), "printer": $hash2(["printer_left", "printer_centric", "printer_right"], {"printer_left": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [-10, 0], "a4_offset": [-5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})}), "printer_centric": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [0, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": true})}), "printer_right": $hash2(["printer", "layout"], {"printer": $hash2(["a3_offset", "a4_offset", "show_border"], {"a3_offset": [10, 0], "a4_offset": [5, 0], "show_border": false}), "layout": $hash2(["limit_a3"], {"limit_a3": false})})})}), "annotations": $hash2(["vl", "vt", "vb", "vr", "rit"], {"vl": $hash2(["text", "pos"], {"text": "v", "pos": [-5, -5]}), "vt": $hash2(["text", "pos"], {"text": "v", "pos": [-1, -5]}), "vb": $hash2(["text", "pos"], {"text": "v", "pos": [-1, 2]}), "vr": $hash2(["text", "pos"], {"text": "v", "pos": [2, -5]}), "rit": $hash2(["text", "pos", "style"], {"text": "rit", "pos": [2, -5], "style": "italic"})}), "extract": $hash2(["0", "1", "2", "3"], {"0": $hash2(["title", "startpos", "voices", "synchlines", "flowlines", "subflowlines", "jumplines", "repeatsigns", "layoutlines", "legend", "lyrics", "images", "layout", "sortmark", "nonflowrest", "notes", "tuplets", "barnumbers", "countnotes", "chords", "stringnames", "printer"], {"title": "alle Stimmen", "startpos": 15, "voices": [1, 2, 3, 4], "synchlines": [[1, 2], [3, 4]], "flowlines": [1, 3], "subflowlines": [2, 4], "jumplines": [1, 3], "repeatsigns": $hash2(["voices", "left", "right"], {"voices": [], "left": $hash2(["pos", "text", "style"], {"pos": [-7, -2], "text": "|:", "style": "bold"}), "right": $hash2(["pos", "text", "style"], {"pos": [5, -2], "text": ":|", "style": "bold"})}), "layoutlines": [1, 2, 3, 4], "legend": $hash2(["spos", "pos", "tstyle", "align", "style"], {"spos": [320, 27], "pos": [320, 7], "tstyle": "large", "align": "r", "style": "regular"}), "lyrics": $hash2([], {}), "images": $hash2([], {}), "layout": $hash2(["limit_a3", "bottomup", "beams", "jumpline_anchor", "color", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "PITCH_OFFSET", "X_SPACING", "X_OFFSET", "ELLIPSE_SIZE", "REST_SIZE", "DRAWING_AREA_SIZE", "instrument", "tuning", "packer"], {"limit_a3": true, "bottomup": false, "beams": false, "jumpline_anchor": [3, 1], "color": $hash2(["color_default", "color_variant1", "color_variant2"], {"color_default": "black", "color_variant1": "grey", "color_variant2": "dimgrey"}), "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "PITCH_OFFSET": -43, "X_SPACING": 11.5, "X_OFFSET": 2.8, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "DRAWING_AREA_SIZE": [400, 282], "instrument": "37-strings-g-g", "tuning": "fixed", "packer": $hash2(["pack_method", "pack_max_spreadfactor", "pack_min_increment"], {"pack_method": 0, "pack_max_spreadfactor": 2, "pack_min_increment": 0.2})}), "sortmark": $hash2(["size", "fill", "show"], {"size": [2, 4], "fill": true, "show": false}), "nonflowrest": false, "notes": $hash2([], {}), "tuplets": $hash2(["text"], {"text": "{{tuplet}}"}), "barnumbers": $hash2(["voices", "pos", "autopos", "apanchor", "apbase", "style", "prefix"], {"voices": [], "pos": [6, -4], "autopos": true, "apanchor": "box", "apbase": [1, 1], "style": "small_bold", "prefix": ""}), "countnotes": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "smaller"}), "chords": $hash2(["voices", "pos", "autopos", "apbase", "apanchor", "style"], {"voices": [], "pos": [3, -2], "autopos": true, "apbase": [1, -0.5], "apanchor": "box", "style": "large"}), "stringnames": $hash2(["text", "vpos", "style", "marks"], {"text": "G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G G# A A# B C C# D D# E F F# G", "vpos": [], "style": "small", "marks": $hash2(["vpos", "hpos"], {"vpos": [11], "hpos": [43, 55, 79]})}), "printer": $hash2(["a3_offset", "a4_offset", "a4_pages", "show_border"], {"a3_offset": [0, 0], "a4_offset": [-5, 0], "a4_pages": [0, 1, 2], "show_border": false})}), "1": $hash2(["title", "voices"], {"title": "Sopran, Alt", "voices": [1, 2]}), "2": $hash2(["title", "voices"], {"title": "Tenor, Bass", "voices": [3, 4]}), "3": $hash2(["title", "voices"], {"title": "Melodie", "voices": [1]})}), "layout": $hash2(["grid", "limit_a3", "SHOW_SLUR", "LINE_THIN", "LINE_MEDIUM", "LINE_THICK", "ELLIPSE_SIZE", "REST_SIZE", "X_SPACING", "X_OFFSET", "Y_SCALE", "DRAWING_AREA_SIZE", "BEAT_RESOLUTION", "SHORTEST_NOTE", "BEAT_PER_DURATION", "PITCH_OFFSET", "FONT_STYLE_DEF", "MM_PER_POINT", "DURATION_TO_STYLE", "DURATION_TO_BEAMS", "REST_TO_GLYPH", "DECORATIIONS_AS_ANNOTATIONS"], {"grid": false, "limit_a3": true, "SHOW_SLUR": false, "LINE_THIN": 0.1, "LINE_MEDIUM": 0.3, "LINE_THICK": 0.5, "ELLIPSE_SIZE": [3.5, 1.7], "REST_SIZE": [4, 2], "X_SPACING": 11.5, "X_OFFSET": 2.8, "Y_SCALE": 4, "DRAWING_AREA_SIZE": [400, 282], "BEAT_RESOLUTION": 192, "SHORTEST_NOTE": 64, "BEAT_PER_DURATION": 3, "PITCH_OFFSET": -43, "FONT_STYLE_DEF": $hash2(["bold", "italic", "large", "regular", "small_bold", "small_italic", "small", "smaller"], {"bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "bold"}), "italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "italic"}), "large": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 20, "font_style": "bold"}), "regular": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 12, "font_style": "normal"}), "small_bold": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "bold"}), "small_italic": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "italic"}), "small": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 9, "font_style": "normal"}), "smaller": $hash2(["text_color", "font_size", "font_style"], {"text_color": [0, 0, 0], "font_size": 6, "font_style": "normal"})}), "MM_PER_POINT": 0.3, "DURATION_TO_STYLE": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [2, "filled", false], "d64": [1, "empty", false], "d48": [0.75, "empty", true], "d32": [0.75, "empty", false], "d24": [0.75, "filled", true], "d16": [0.75, "filled", false], "d12": [0.5, "filled", true], "d8": [0.5, "filled", false], "d6": [0.3, "filled", true], "d4": [0.3, "filled", false], "d3": [0.1, "filled", true], "d2": [0.1, "filled", false], "d1": [0.05, "filled", false]}), "DURATION_TO_BEAMS": $hash2(["d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"d64": [1, "empty", false], "d48": [1, "empty", true, 0], "d32": [1, "empty", false, 0], "d24": [1, "filled", true, 0], "d16": [1, "filled", false, 0], "d12": [1, "filled", true, 1], "d8": [1, "filled", false, 1], "d6": [1, "filled", true, 2], "d4": [1, "filled", false, 2], "d3": [1, "filled", true, 3], "d2": [1, "filled", false, 3], "d1": [1, "filled", false, 4]}), "REST_TO_GLYPH": $hash2(["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"], {"err": [[2, 2], "rest_1", false], "d64": [[1, 0.8], "rest_1", false], "d48": [[0.5, 0.4], "rest_1", true], "d32": [[0.5, 0.4], "rest_1", false], "d24": [[0.4, 0.75], "rest_4", true], "d16": [[0.4, 0.75], "rest_4", false], "d12": [[0.4, 0.5], "rest_8", true], "d8": [[0.4, 0.5], "rest_8", false], "d6": [[0.4, 0.3], "rest_16", true], "d4": [[0.3, 0.3], "rest_16", false], "d3": [[0.3, 0.5], "rest_32", true], "d2": [[0.3, 0.5], "rest_32", false], "d1": [[0.3, 0.5], "rest_64", false]}), "DECORATIIONS_AS_ANNOTATIONS": $hash2(["<(", "<)", ">(", ">)", "arpeggio", "coda", "crescendo(", "crescendo)", "D.C.", "D.C.alfine", "D.S.", "dacapo", "dacoda", "dasegno", "diminuendo(", "diminuendo)", "f", "ff", "fff", "ffff", "fine", "p", "pp", "ppp", "pppp", "segno"], {"<(": $hash2(["text", "pos", "style"], {"text": "cresc", "pos": [5, 0], "style": "small_italic"}), "<)": $hash2(["text", "pos", "style"], {"text": "/cresc", "pos": [5, 0], "style": "small_italic"}), ">(": $hash2(["text", "pos", "style"], {"text": "dimin", "pos": [5, 0], "style": "small_italic"}), ">)": $hash2(["text", "pos", "style"], {"text": "/dimin", "pos": [5, 0], "style": "small_italic"}), "arpeggio": $hash2(["text", "pos", "style"], {"text": "arpeggio ", "pos": [-20, 0], "style": "small_italic"}), "coda": $hash2(["text", "pos", "style", "align", "show"], {"text": "Coda", "pos": [0, -5], "style": "bold", "align": "center", "show": "all"}), "crescendo(": $hash2(["text", "pos", "style"], {"text": "cresc", "pos": [5, 0], "style": "small_italic"}), "crescendo)": $hash2(["text", "pos", "style"], {"text": "/cresc", "pos": [5, 0], "style": "small_italic"}), "D.C.": $hash2(["text", "pos", "style"], {"text": "D.C.", "pos": [5, 5], "style": "bold"}), "D.C.alfine": $hash2(["text", "pos", "style"], {"text": "D.C. al Fine", "pos": [5, 5], "style": "bold"}), "D.S.": $hash2(["text", "pos", "style"], {"text": "D.S.", "pos": [5, 5], "style": "bold"}), "dacapo": $hash2(["text", "pos", "style"], {"text": "da Capo", "pos": [5, 5], "style": "bold"}), "dacoda": $hash2(["text", "pos", "style"], {"text": "da Coda", "pos": [5, 5], "style": "bold"}), "dasegno": $hash2(["text", "pos", "style"], {"text": "da Segno", "pos": [5, 5], "style": "bold"}), "diminuendo(": $hash2(["text", "pos", "style"], {"text": "dimin", "pos": [5, 0], "style": "small_italic"}), "diminuendo)": $hash2(["text", "pos", "style"], {"text": "/dimin", "pos": [5, 0], "style": "small_italic"}), "f": $hash2(["text", "pos", "style"], {"text": "f", "pos": [3, 0], "style": "small_italic"}), "ff": $hash2(["text", "pos", "style"], {"text": "ff", "pos": [3, 0], "style": "small_italic"}), "fff": $hash2(["text", "pos", "style"], {"text": "fff", "pos": [3, 0], "style": "small_italic"}), "ffff": $hash2(["text", "pos", "style"], {"text": "ffff", "pos": [3, 0], "style": "small_italic"}), "fine": $hash2(["text", "pos", "style", "align", "show"], {"text": "Fine", "pos": [10, 5], "style": "bold", "align": "center", "show": "all"}), "p": $hash2(["text", "pos", "style"], {"text": "p", "pos": [3, 0], "style": "small_italic"}), "pp": $hash2(["text", "pos", "style"], {"text": "pp", "pos": [3, 0], "style": "small_italic"}), "ppp": $hash2(["text", "pos", "style"], {"text": "ppp", "pos": [3, 0], "style": "small_italic"}), "pppp": $hash2(["text", "pos", "style"], {"text": "pppp", "pos": [3, 0], "style": "small_italic"}), "segno": $hash2(["text", "pos", "style", "align", "show"], {"text": "Segno", "pos": [0, -5], "style": "bold", "align": "center", "show": "all"})})}), "neatjson": $hash2(["wrap", "aligned", "after_comma", "after_colon_1", "after_colon_n", "before_colon_n", "short", "afterComma", "afterColon1", "afterColonN", "beforeColonN", "decimals", "explicit_sort"], {"wrap": 60, "aligned": true, "after_comma": 1, "after_colon_1": 1, "after_colon_n": 1, "before_colon_n": 1, "short": false, "afterComma": 1, "afterColon1": 1, "afterColonN": 1, "beforeColonN": 1, "decimals": 2, "explicit_sort": $$($nesting, 'Hash')['$[]']($send(explicit_sort.$each_with_index().$to_a(), 'map', [], ($$35 = function(i){var self = $$35.$$s || this;
 
       
         
@@ -53407,7 +53405,7 @@ Opal.modules["controller-cli"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars, $send = Opal.send, $truthy = Opal.truthy, $module = Opal.module, $range = Opal.range;
 
-  Opal.add_stubs(['$attr_reader', '$new', '$loglevel=', '$-', '$info', '$strict=', '$push', '$_init_conf', '$set_text', '$patch_config_part', '$get_config_from_editor', '$reset_to', '$get', '$create_engine', '$transform', '$get_abc_part', '$abc_model', '$get_checksum', '$checksum=', '$layout_harpnotes', '$include?', '$[]', '$meta_data', '$dig', '$harpnote_options', '$raise', '$each', '$output', '$render_a3', '$[]=', '$t', '$jspdfversion', '$last', '$split', '$get_candidate_keys', '$map', '$join', '$to_s', '$first', '$compact', '$gsub', '$length', '$+', '$reverse', '$lambda', '$_split_parts', '$_clean_models', '$each_with_index', '$==', '$start_with?', '$_set_config_json', '$_set_resources_json', '$error']);
+  Opal.add_stubs(['$attr_reader', '$new', '$loglevel=', '$-', '$info', '$strict=', '$push', '$_init_conf', '$open', '$puts', '$generate', '$_schema', '$set_text', '$patch_config_part', '$get_config_from_editor', '$reset_to', '$get', '$create_engine', '$transform', '$get_abc_part', '$abc_model', '$get_checksum', '$checksum=', '$layout_harpnotes', '$include?', '$[]', '$meta_data', '$dig', '$harpnote_options', '$raise', '$each', '$output', '$render_a3', '$[]=', '$t', '$jspdfversion', '$last', '$split', '$get_candidate_keys', '$map', '$join', '$to_s', '$first', '$compact', '$gsub', '$length', '$+', '$reverse', '$lambda', '$_split_parts', '$_clean_models', '$each_with_index', '$==', '$start_with?', '$_set_config_json', '$_set_resources_json', '$error']);
   
   (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'Controller');
@@ -53423,14 +53421,14 @@ Opal.modules["controller-cli"] = function(Opal) {
   (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'CliController');
 
-    var $nesting = [self].concat($parent_nesting), $CliController_initialize$2, $CliController_set_abc_input$3, $CliController_call_consumers$4, $CliController_apply_config$5, $CliController_load_music_model$6, $CliController_produce_pdfs$7, $CliController_about_zupfnoter$9;
+    var $nesting = [self].concat($parent_nesting), $CliController_initialize$2, $CliController_set_abc_input$4, $CliController_call_consumers$5, $CliController_apply_config$6, $CliController_load_music_model$7, $CliController_produce_pdfs$8, $CliController_about_zupfnoter$10;
 
     self.$$prototype.editor = self.$$prototype.music_model = nil;
     
     self.$attr_reader("abc_model");
     
     Opal.def(self, '$initialize', $CliController_initialize$2 = function $$initialize() {
-      var self = this, $writer = nil;
+      var $$3, self = this, $writer = nil;
       if ($gvars.log == null) $gvars.log = nil;
       if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -53453,28 +53451,37 @@ Opal.modules["controller-cli"] = function(Opal) {
       $gvars.conf.$push(self.$_init_conf());
       $gvars.settings = $hash2([], {});
       self.editor = $$($nesting, 'TextPaneEmulatorForCli').$new();
-      return (self.json_validator = $$$($$($nesting, 'Ajv'), 'JsonValidator').$new());
+      self.json_validator = $$$($$($nesting, 'Ajv'), 'JsonValidator').$new();
+      return $send($$($nesting, 'File'), 'open', ["zupfnoter.schema.json", "w"], ($$3 = function(f){var self = $$3.$$s || this;
+        if (self.json_validator == null) self.json_validator = nil;
+
+      
+        
+        if (f == null) {
+          f = nil;
+        };
+        return f.$puts($$($nesting, 'JSON').$generate(self.json_validator.$_schema()));}, $$3.$$s = self, $$3.$$arity = 1, $$3));
     }, $CliController_initialize$2.$$arity = 0);
     
-    Opal.def(self, '$set_abc_input', $CliController_set_abc_input$3 = function $$set_abc_input(abc_input) {
+    Opal.def(self, '$set_abc_input', $CliController_set_abc_input$4 = function $$set_abc_input(abc_input) {
       var self = this;
 
       return self.editor.$set_text(abc_input)
-    }, $CliController_set_abc_input$3.$$arity = 1);
+    }, $CliController_set_abc_input$4.$$arity = 1);
     
-    Opal.def(self, '$call_consumers', $CliController_call_consumers$4 = function $$call_consumers(clazz) {
+    Opal.def(self, '$call_consumers', $CliController_call_consumers$5 = function $$call_consumers(clazz) {
       var self = this;
 
       return nil
-    }, $CliController_call_consumers$4.$$arity = 1);
+    }, $CliController_call_consumers$5.$$arity = 1);
     
-    Opal.def(self, '$apply_config', $CliController_apply_config$5 = function $$apply_config(config) {
+    Opal.def(self, '$apply_config', $CliController_apply_config$6 = function $$apply_config(config) {
       var self = this;
 
       return self.editor.$patch_config_part("", config, "from json file")
-    }, $CliController_apply_config$5.$$arity = 1);
+    }, $CliController_apply_config$6.$$arity = 1);
     
-    Opal.def(self, '$load_music_model', $CliController_load_music_model$6 = function $$load_music_model() {
+    Opal.def(self, '$load_music_model', $CliController_load_music_model$7 = function $$load_music_model() {
       var $a, $b, self = this, config = nil, abc_parser = nil, harpnote_engine = nil, $writer = nil;
       if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -53490,10 +53497,10 @@ Opal.modules["controller-cli"] = function(Opal) {
       $writer = [self.editor.$get_checksum()];
       $send(self.music_model, 'checksum=', Opal.to_a($writer));
       return $writer[$rb_minus($writer["length"], 1)];;
-    }, $CliController_load_music_model$6.$$arity = 0);
+    }, $CliController_load_music_model$7.$$arity = 0);
     
-    Opal.def(self, '$produce_pdfs', $CliController_produce_pdfs$7 = function $$produce_pdfs(folder) {
-      var $$8, self = this, is_template = nil, filebase = nil, print_variants = nil, rootpath = nil, pdfs = nil;
+    Opal.def(self, '$produce_pdfs', $CliController_produce_pdfs$8 = function $$produce_pdfs(folder) {
+      var $$9, self = this, is_template = nil, filebase = nil, print_variants = nil, rootpath = nil, pdfs = nil;
 
       
       self.$layout_harpnotes();
@@ -53513,7 +53520,7 @@ Opal.modules["controller-cli"] = function(Opal) {
       };
       rootpath = folder;
       pdfs = $hash2([], {});
-      $send(print_variants, 'each', [], ($$8 = function(print_variant){var self = $$8.$$s || this, index = nil, $writer = nil;
+      $send(print_variants, 'each', [], ($$9 = function(print_variant){var self = $$9.$$s || this, index = nil, $writer = nil;
 
       
         
@@ -53525,37 +53532,37 @@ Opal.modules["controller-cli"] = function(Opal) {
         $writer = ["" + (rootpath) + "/" + (filebase) + "_" + (print_variant['$[]']("filenamepart")) + "_a3.pdf", self.$render_a3(index).$output("raw")];
         $send(pdfs, '[]=', Opal.to_a($writer));
         $writer[$rb_minus($writer["length"], 1)];;
-        return nil;}, $$8.$$s = self, $$8.$$arity = 1, $$8));
+        return nil;}, $$9.$$s = self, $$9.$$arity = 1, $$9));
       return pdfs;
-    }, $CliController_produce_pdfs$7.$$arity = 1);
-    return (Opal.def(self, '$about_zupfnoter', $CliController_about_zupfnoter$9 = function $$about_zupfnoter() {
+    }, $CliController_produce_pdfs$8.$$arity = 1);
+    return (Opal.def(self, '$about_zupfnoter', $CliController_about_zupfnoter$10 = function $$about_zupfnoter() {
       var self = this;
 
       return "" + ($$($nesting, 'I18n').$t("Free software to create sheets for table harps")) + "\n" + "          Zupfnoter: " + ($$($nesting, 'VERSION')) + "\n" + "          Opal     : " + ($$($nesting, 'RUBY_ENGINE_VERSION')) + "\n" + "          Ruby     : " + ($$($nesting, 'RUBY_VERSION')) + "\n" + "          abc2svg  : " + (abc2svg.version) + "\n" + "          jsPD     : " + ($$($nesting, 'JsPDF').$jspdfversion()) + "\n" + "          Website  : https://www.zupfnoter.de\n" + "    "
-    }, $CliController_about_zupfnoter$9.$$arity = 0), nil) && 'about_zupfnoter';
+    }, $CliController_about_zupfnoter$10.$$arity = 0), nil) && 'about_zupfnoter';
   })($nesting[0], $$($nesting, 'Controller'), $nesting);
   (function($base, $parent_nesting) {
     var self = $module($base, 'I18n');
 
-    var $nesting = [self].concat($parent_nesting), $I18n_t$10, $I18n_t_key$11, $I18n_t_help$12, $I18n_get_candidate_keys$15, $I18n_locale$22, $I18n_phrases$23;
+    var $nesting = [self].concat($parent_nesting), $I18n_t$11, $I18n_t_key$12, $I18n_t_help$13, $I18n_get_candidate_keys$16, $I18n_locale$23, $I18n_phrases$24;
 
     
-    Opal.defs(self, '$t', $I18n_t$10 = function $$t(text) {
+    Opal.defs(self, '$t', $I18n_t$11 = function $$t(text) {
       var self = this;
 
       return text
-    }, $I18n_t$10.$$arity = 1);
-    Opal.defs(self, '$t_key', $I18n_t_key$11 = function $$t_key(key) {
+    }, $I18n_t$11.$$arity = 1);
+    Opal.defs(self, '$t_key', $I18n_t_key$12 = function $$t_key(key) {
       var self = this;
 
       return self.$t(key.$split(".").$last())
-    }, $I18n_t_key$11.$$arity = 1);
-    Opal.defs(self, '$t_help', $I18n_t_help$12 = function $$t_help(key) {
-      var $$13, $$14, $a, self = this, candidate_keys = nil, candidates = nil, helptext = nil;
+    }, $I18n_t_key$12.$$arity = 1);
+    Opal.defs(self, '$t_help', $I18n_t_help$13 = function $$t_help(key) {
+      var $$14, $$15, $a, self = this, candidate_keys = nil, candidates = nil, helptext = nil;
 
       
       candidate_keys = self.$get_candidate_keys(key);
-      candidates = $send(candidate_keys, 'map', [], ($$13 = function(c){var self = $$13.$$s || this;
+      candidates = $send(candidate_keys, 'map', [], ($$14 = function(c){var self = $$14.$$s || this;
         if ($gvars.conf_helptext == null) $gvars.conf_helptext = nil;
 
       
@@ -53563,100 +53570,100 @@ Opal.modules["controller-cli"] = function(Opal) {
         if (c == null) {
           c = nil;
         };
-        return $gvars.conf_helptext['$[]'](c.$join("."));}, $$13.$$s = self, $$13.$$arity = 1, $$13));
-      candidate_keys = $send(candidate_keys, 'map', [], ($$14 = function(c){var self = $$14.$$s || this;
+        return $gvars.conf_helptext['$[]'](c.$join("."));}, $$14.$$s = self, $$14.$$arity = 1, $$14));
+      candidate_keys = $send(candidate_keys, 'map', [], ($$15 = function(c){var self = $$15.$$s || this;
 
       
         
         if (c == null) {
           c = nil;
         };
-        return c.$join(".");}, $$14.$$s = self, $$14.$$arity = 1, $$14)).$to_s();
+        return c.$join(".");}, $$15.$$s = self, $$15.$$arity = 1, $$15)).$to_s();
       helptext = ($truthy($a = candidates.$compact().$first()) ? $a : "" + "no help for " + (candidate_keys));
       return "" + "<h2>" + (key) + "</h2><div style=\"padding:0.5em;width:30em;\">" + (helptext) + "</div>";
-    }, $I18n_t_help$12.$$arity = 1);
-    Opal.defs(self, '$get_candidate_keys', $I18n_get_candidate_keys$15 = function $$get_candidate_keys(key) {
-      var $$16, $$17, $$18, $$19, $$20, $$21, self = this, help_key = nil, keyparts = nil, downwards = nil, upwards = nil, candidate_keys = nil;
+    }, $I18n_t_help$13.$$arity = 1);
+    Opal.defs(self, '$get_candidate_keys', $I18n_get_candidate_keys$16 = function $$get_candidate_keys(key) {
+      var $$17, $$18, $$19, $$20, $$21, $$22, self = this, help_key = nil, keyparts = nil, downwards = nil, upwards = nil, candidate_keys = nil;
 
       
       help_key = key;
-      help_key = $send(help_key, 'gsub', [/^(extract\.)(\d+)(.*)$/], ($$16 = function(){var self = $$16.$$s || this, $a;
-
-      return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$16.$$s = self, $$16.$$arity = 0, $$16));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.lyrics\.)(\d+)(.*)$/], ($$17 = function(){var self = $$17.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.)(\d+)(.*)$/], ($$17 = function(){var self = $$17.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$17.$$s = self, $$17.$$arity = 0, $$17));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.images\.)(\d+)(.*)$/], ($$18 = function(){var self = $$18.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.lyrics\.)(\d+)(.*)$/], ($$18 = function(){var self = $$18.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$18.$$s = self, $$18.$$arity = 0, $$18));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.notes\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$19 = function(){var self = $$19.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.images\.)(\d+)(.*)$/], ($$19 = function(){var self = $$19.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$19.$$s = self, $$19.$$arity = 0, $$19));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.tuplet\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$20 = function(){var self = $$20.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.notes\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$20 = function(){var self = $$20.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$20.$$s = self, $$20.$$arity = 0, $$20));
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.tuplet\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$21 = function(){var self = $$21.$$s || this, $a;
+
+      return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$21.$$s = self, $$21.$$arity = 0, $$21));
       keyparts = help_key.$split(".");
       downwards = [];
       upwards = [];
-      $send(Opal.Range.$new(0, $rb_minus(keyparts.$length(), 1), false), 'each', [], ($$21 = function(i){var self = $$21.$$s || this;
+      $send(Opal.Range.$new(0, $rb_minus(keyparts.$length(), 1), false), 'each', [], ($$22 = function(i){var self = $$22.$$s || this;
 
       
         
         if (i == null) {
           i = nil;
         };
-        return upwards.$push(keyparts['$[]'](Opal.Range.$new(i, -1, false)));}, $$21.$$s = self, $$21.$$arity = 1, $$21));
+        return upwards.$push(keyparts['$[]'](Opal.Range.$new(i, -1, false)));}, $$22.$$s = self, $$22.$$arity = 1, $$22));
       return (candidate_keys = $rb_plus(upwards, downwards.$reverse()));
-    }, $I18n_get_candidate_keys$15.$$arity = 1);
-    Opal.defs(self, '$locale', $I18n_locale$22 = function $$locale(language) {
+    }, $I18n_get_candidate_keys$16.$$arity = 1);
+    Opal.defs(self, '$locale', $I18n_locale$23 = function $$locale(language) {
       var self = this;
 
       return nil
-    }, $I18n_locale$22.$$arity = 1);
-    Opal.defs(self, '$phrases', $I18n_phrases$23 = function $$phrases() {
+    }, $I18n_locale$23.$$arity = 1);
+    Opal.defs(self, '$phrases', $I18n_phrases$24 = function $$phrases() {
       var self = this;
 
       return nil
-    }, $I18n_phrases$23.$$arity = 0);
+    }, $I18n_phrases$24.$$arity = 0);
   })($nesting[0], $nesting);
   return (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'TextPaneEmulatorForCli');
 
-    var $nesting = [self].concat($parent_nesting), $TextPaneEmulatorForCli_initialize$24, $TextPaneEmulatorForCli_get_abc_part$26, $TextPaneEmulatorForCli_set_text$27, $TextPaneEmulatorForCli__split_parts$28, $TextPaneEmulatorForCli__get_abc_from_editor$30, $TextPaneEmulatorForCli_set_config_part$31, $TextPaneEmulatorForCli_clear_markers$32, $TextPaneEmulatorForCli_set_markers$33, $TextPaneEmulatorForCli_set_annotations$34, $TextPaneEmulatorForCli_save_to_localstorage$35, $TextPaneEmulatorForCli_clean_localstorage$36;
+    var $nesting = [self].concat($parent_nesting), $TextPaneEmulatorForCli_initialize$25, $TextPaneEmulatorForCli_get_abc_part$27, $TextPaneEmulatorForCli_set_text$28, $TextPaneEmulatorForCli__split_parts$29, $TextPaneEmulatorForCli__get_abc_from_editor$31, $TextPaneEmulatorForCli_set_config_part$32, $TextPaneEmulatorForCli_clear_markers$33, $TextPaneEmulatorForCli_set_markers$34, $TextPaneEmulatorForCli_set_annotations$35, $TextPaneEmulatorForCli_save_to_localstorage$36, $TextPaneEmulatorForCli_clean_localstorage$37;
 
     self.$$prototype.abc_part = self.$$prototype.config_separator = nil;
     
     
-    Opal.def(self, '$initialize', $TextPaneEmulatorForCli_initialize$24 = function $$initialize() {
-      var $$25, self = this;
+    Opal.def(self, '$initialize', $TextPaneEmulatorForCli_initialize$25 = function $$initialize() {
+      var $$26, self = this;
 
       
       self.abc_text = nil;
       self.config_separator = "%%%%zupfnoter";
-      self.on_change = $send(self, 'lambda', [], ($$25 = function(){var self = $$25.$$s || this;
+      self.on_change = $send(self, 'lambda', [], ($$26 = function(){var self = $$26.$$s || this;
 
-      return nil}, $$25.$$s = self, $$25.$$arity = 0, $$25));
+      return nil}, $$26.$$s = self, $$26.$$arity = 0, $$26));
       return (self.config_undo = $$($nesting, 'UndoManager').$new());
-    }, $TextPaneEmulatorForCli_initialize$24.$$arity = 0);
+    }, $TextPaneEmulatorForCli_initialize$25.$$arity = 0);
     
-    Opal.def(self, '$get_abc_part', $TextPaneEmulatorForCli_get_abc_part$26 = function $$get_abc_part() {
+    Opal.def(self, '$get_abc_part', $TextPaneEmulatorForCli_get_abc_part$27 = function $$get_abc_part() {
       var self = this;
 
       return self.abc_part
-    }, $TextPaneEmulatorForCli_get_abc_part$26.$$arity = 0);
+    }, $TextPaneEmulatorForCli_get_abc_part$27.$$arity = 0);
     
-    Opal.def(self, '$set_text', $TextPaneEmulatorForCli_set_text$27 = function $$set_text(text) {
+    Opal.def(self, '$set_text', $TextPaneEmulatorForCli_set_text$28 = function $$set_text(text) {
       var self = this;
 
       return self.$_split_parts(text)
-    }, $TextPaneEmulatorForCli_set_text$27.$$arity = 1);
+    }, $TextPaneEmulatorForCli_set_text$28.$$arity = 1);
     
-    Opal.def(self, '$_split_parts', $TextPaneEmulatorForCli__split_parts$28 = function $$_split_parts(fulltext) {
-      var $$29, self = this;
+    Opal.def(self, '$_split_parts', $TextPaneEmulatorForCli__split_parts$29 = function $$_split_parts(fulltext) {
+      var $$30, self = this;
 
       
       self.$_clean_models();
-      return $send(fulltext.$split(self.config_separator), 'each_with_index', [], ($$29 = function(part, i){var self = $$29.$$s || this;
+      return $send(fulltext.$split(self.config_separator), 'each_with_index', [], ($$30 = function(part, i){var self = $$30.$$s || this;
         if ($gvars.log == null) $gvars.log = nil;
 
       
@@ -53676,40 +53683,40 @@ Opal.modules["controller-cli"] = function(Opal) {
           return self.$_set_resources_json(part.$split(".resources").$last())
         } else {
           return $gvars.log.$error($rb_plus($$($nesting, 'I18n').$t("unsupported section found in abc file: "), part['$[]']($range(0, 10, false))))
-        };}, $$29.$$s = self, $$29.$$arity = 2, $$29));
-    }, $TextPaneEmulatorForCli__split_parts$28.$$arity = 1);
+        };}, $$30.$$s = self, $$30.$$arity = 2, $$30));
+    }, $TextPaneEmulatorForCli__split_parts$29.$$arity = 1);
     
-    Opal.def(self, '$_get_abc_from_editor', $TextPaneEmulatorForCli__get_abc_from_editor$30 = function $$_get_abc_from_editor() {
+    Opal.def(self, '$_get_abc_from_editor', $TextPaneEmulatorForCli__get_abc_from_editor$31 = function $$_get_abc_from_editor() {
       var self = this;
 
       return self.abc_part
-    }, $TextPaneEmulatorForCli__get_abc_from_editor$30.$$arity = 0);
+    }, $TextPaneEmulatorForCli__get_abc_from_editor$31.$$arity = 0);
     
-    Opal.def(self, '$set_config_part', $TextPaneEmulatorForCli_set_config_part$31 = function $$set_config_part(config) {
+    Opal.def(self, '$set_config_part', $TextPaneEmulatorForCli_set_config_part$32 = function $$set_config_part(config) {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_set_config_part$31.$$arity = 1);
+    }, $TextPaneEmulatorForCli_set_config_part$32.$$arity = 1);
     
-    Opal.def(self, '$clear_markers', $TextPaneEmulatorForCli_clear_markers$32 = function $$clear_markers() {
+    Opal.def(self, '$clear_markers', $TextPaneEmulatorForCli_clear_markers$33 = function $$clear_markers() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_clear_markers$32.$$arity = 0);
+    }, $TextPaneEmulatorForCli_clear_markers$33.$$arity = 0);
     
-    Opal.def(self, '$set_markers', $TextPaneEmulatorForCli_set_markers$33 = function $$set_markers() {
+    Opal.def(self, '$set_markers', $TextPaneEmulatorForCli_set_markers$34 = function $$set_markers() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_set_markers$33.$$arity = 0);
+    }, $TextPaneEmulatorForCli_set_markers$34.$$arity = 0);
     
-    Opal.def(self, '$set_annotations', $TextPaneEmulatorForCli_set_annotations$34 = function $$set_annotations() {
+    Opal.def(self, '$set_annotations', $TextPaneEmulatorForCli_set_annotations$35 = function $$set_annotations() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_set_annotations$34.$$arity = 0);
+    }, $TextPaneEmulatorForCli_set_annotations$35.$$arity = 0);
     
-    Opal.def(self, '$save_to_localstorage', $TextPaneEmulatorForCli_save_to_localstorage$35 = function $$save_to_localstorage(dirty_name) {
+    Opal.def(self, '$save_to_localstorage', $TextPaneEmulatorForCli_save_to_localstorage$36 = function $$save_to_localstorage(dirty_name) {
       var self = this;
 
       
@@ -53718,12 +53725,12 @@ Opal.modules["controller-cli"] = function(Opal) {
         dirty_name = nil;
       };
       return nil;
-    }, $TextPaneEmulatorForCli_save_to_localstorage$35.$$arity = -1);
-    return (Opal.def(self, '$clean_localstorage', $TextPaneEmulatorForCli_clean_localstorage$36 = function $$clean_localstorage() {
+    }, $TextPaneEmulatorForCli_save_to_localstorage$36.$$arity = -1);
+    return (Opal.def(self, '$clean_localstorage', $TextPaneEmulatorForCli_clean_localstorage$37 = function $$clean_localstorage() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_clean_localstorage$36.$$arity = 0), nil) && 'clean_localstorage';
+    }, $TextPaneEmulatorForCli_clean_localstorage$37.$$arity = 0), nil) && 'clean_localstorage';
   })($nesting[0], $$$($$($nesting, 'Harpnotes'), 'TextPane'), $nesting);
 };
 
@@ -54841,7 +54848,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.14-61-g97fdd012");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.14-62-g325e3442");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
@@ -83895,14 +83902,19 @@ Opal.loaded(["./abc2svg-1.js"]);
         content = nil;
       };
       outputname = "" + (targetfolder) + "/" + (filename);
-      self.$puts(filename);
       
        var encoding = require ("encoding")
        var buffer = encoding.convert(content, 'Latin-1')
        fs.writeFileSync(outputname, buffer)
     ;
+      self.$puts("" + "wrote " + (filename));
       return nil;}, $$2.$$s = self, $$2.$$arity = 2, $$2));
-    return $$($nesting, 'File').$write("" + (targetfolder) + "/" + ($$($nesting, 'File').$basename(sourcefile)) + ".err.log", $gvars.log.$get_errors().$join("\n"));}, $$1.$$s = self, $$1.$$arity = 1, $$1));
+    self.$puts("" + "writing " + (targetfolder) + "/" + ($$($nesting, 'File').$basename(sourcefile)) + ".err.log");
+    $$($nesting, 'File').$write("" + (targetfolder) + "/" + ($$($nesting, 'File').$basename(sourcefile)) + ".err.log", $gvars.log.$get_errors().$join("\n"));
+    self.$puts("done");
+    return nil;}, $$1.$$s = self, $$1.$$arity = 1, $$1));
+  self.$puts("all end");
+  self.$exit(0);
   return nil;
 })(Opal);
 
