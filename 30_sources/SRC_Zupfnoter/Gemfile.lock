@@ -53,7 +53,7 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     rb-readline (0.5.5)
-    redcarpet (3.4.0)
+    redcarpet (3.5.1)
     rubyXL (3.3.33)
       nokogiri (>= 1.4.4)
       rubyzip (>= 1.1.6)
