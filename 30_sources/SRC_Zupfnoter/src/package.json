@@ -11,8 +11,8 @@
     "blob": "^0.0.4",
     "encoding": "^0.1.12",
     "glob": "^7.1.6",
-    "jscs": "^3.0.7",
-    "jspdf": "^1.5.3",
+    "jscs": "^2.1.1",
+    "jspdf": "^2.3.1",
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
     "unxhr": "^1.0.1"
   },

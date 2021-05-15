@@ -2,7 +2,43 @@
 
 # Änderungsgeschichte
 
-## V 1.14 Februar 202
+## V 1.15 Mai 2021
+
+### Erweiterung
+
+-   Menüanordnung umgstellt
+-   Dekorationen \#30
+-   experimnteller Harmonieassistent \#298
+-   Help Menu hat nun einen Link auf die Support-Seit
+-   upgrade to abc2svg - besseree Untersützung des ABC standards
+-   Flußlilninen können nun unterbrochen werden durch !breath!, and bar
+    types `||` `|]` \#301
+-   Mehr details in Zählmarken bei punktierten Noten \#297
+-   Fehlermeldungen verbessert
+-   verbesserte Behnanldung von Duplikaten in Filename\_zusatz
+-   verbesserte Behnaldung von tempo
+-   verbesserte Erkennung fehlender Tonartmodi
+
+### fix
+
+-   Behoben: Absturz wenn eine einzelne Note wiederholt wird
+-   Behoben: Absturz bei klick auf elemente, die nicht in ABC vorkommen
+    (z.B. Debug-Grid)
+-   Behoben: Absturz "M:" \#300
+-   Behoben: Absturz Editor, wenn kein Harfennoten erzeugt werden
+    konnten
+-   Behoben: font color
+
+## V 1.14 Februar 2021
+
+### fix
+
+-   refine alignment of stringnames \#281
+-   Problem with bars within measures with repeat variant ending offbeat
+    \#284
+-   filter mor unicdoce characters \#292
+-   sharp chord symbols like F\# now work in transposed pieces \#295
+-   now we can control the style of title \#294
 
 ## V 1.13 Dezember 2019
 

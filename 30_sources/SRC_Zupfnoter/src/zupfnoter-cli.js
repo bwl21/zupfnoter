@@ -13969,6 +13969,7 @@ module.exports.win32 = win32;
  */
 const Url = require('url')
 const fs = require('fs')
+const path = require('path')
 
 exports.XMLHttpRequest = function () {
   'use strict'
@@ -13994,7 +13995,7 @@ exports.XMLHttpRequest = function () {
   // Set some default headers
   const defaultHeaders = {
     'User-Agent': 'node-XMLHttpRequest',
-    Accept: '*/*'
+    'Accept': '*/*'
   }
 
   let headers = {}
@@ -14121,11 +14122,11 @@ exports.XMLHttpRequest = function () {
     }
 
     settings = {
-      method: method,
-      url: url.toString(),
-      async: (typeof async !== 'boolean' ? true : async),
-      user: user || null,
-      password: password || null
+      'method': method,
+      'url': url.toString(),
+      'async': (typeof async !== 'boolean' ? true : async),
+      'user': user || null,
+      'password': password || null
     }
 
     setState(this.OPENED)
@@ -14194,7 +14195,7 @@ exports.XMLHttpRequest = function () {
     }
     let result = ''
 
-    for (const i in response.headers) {
+    for (let i in response.headers) {
       // Cookie headers are excluded
       if (i !== 'set-cookie' && i !== 'set-cookie2') {
         result += i + ': ' + response.headers[i] + '\r\n'
@@ -14232,7 +14233,7 @@ exports.XMLHttpRequest = function () {
     }
     let ssl = false
     let local = false
-    const url = new Url.URL(settings.url)
+    const url = Url.parse(settings.url)
     let host
     // Determine the server
     switch (url.protocol) {
@@ -14260,8 +14261,9 @@ exports.XMLHttpRequest = function () {
       if (settings.method !== 'GET') {
         throw new Error('XMLHttpRequest: Only GET method is supported')
       }
+
       if (settings.async) {
-        fs.readFile(url, 'utf8', function (error, data) {
+        fs.readFile(url.pathname, 'utf8', function (error, data) {
           if (error) {
             self.handleError(error)
           } else {
@@ -14272,7 +14274,7 @@ exports.XMLHttpRequest = function () {
         })
       } else {
         try {
-          this.responseText = fs.readFileSync(url, 'utf8')
+          this.responseText = fs.readFileSync(url.pathname, 'utf8')
           this.status = 200
           setState(self.DONE)
         } catch (e) {
@@ -14290,7 +14292,7 @@ exports.XMLHttpRequest = function () {
     const uri = url.pathname + (url.search ? url.search : '')
 
     // Set the defaults if they haven't been set
-    for (const name in defaultHeaders) {
+    for (let name in defaultHeaders) {
       if (!headersCase[name.toLowerCase()]) {
         headers[name] = defaultHeaders[name]
       }
@@ -14366,7 +14368,7 @@ exports.XMLHttpRequest = function () {
         if (response.statusCode === 301 || response.statusCode === 302 || response.statusCode === 303 || response.statusCode === 307) {
           // Change URL to the redirect location
           settings.url = response.headers.location
-          const url = new Url.URL(settings.url)
+          const url = Url.parse(settings.url)
           // Set host var in case it's used later
           host = url.hostname
           // Options for the new request
@@ -14436,7 +14438,7 @@ exports.XMLHttpRequest = function () {
       const output = require('child_process').execSync(`"${process.argv[0]}" "${__dirname}/request.js" \
 --ssl="${ssl}" \
 --encoding="${encoding}" \
---request-options=${JSON.stringify(JSON.stringify(options))}`, { stdio: ['pipe', 'pipe', 'pipe'], input: data })
+--request-options=${JSON.stringify(JSON.stringify(options))}`, { stdio: 'pipe' })
       const result = JSON.parse(output.toString('utf8'))
       if (result.error) {
         self.handleError(result.error)
@@ -14551,7 +14553,7 @@ exports.XMLHttpRequest = function () {
   }
 }
 
-},{"child_process":undefined,"fs":undefined,"http":undefined,"https":undefined,"url":undefined}],86:[function(require,module,exports){
+},{"child_process":undefined,"fs":undefined,"http":undefined,"https":undefined,"path":undefined,"url":undefined}],86:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -53405,7 +53407,7 @@ Opal.modules["controller-cli"] = function(Opal) {
   }
   var self = Opal.top, $nesting = [], nil = Opal.nil, $$$ = Opal.const_get_qualified, $$ = Opal.const_get_relative, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $gvars = Opal.gvars, $send = Opal.send, $truthy = Opal.truthy, $module = Opal.module, $range = Opal.range;
 
-  Opal.add_stubs(['$attr_reader', '$new', '$loglevel=', '$-', '$info', '$strict=', '$push', '$_init_conf', '$open', '$puts', '$generate', '$_schema', '$set_text', '$patch_config_part', '$get_config_from_editor', '$reset_to', '$get', '$create_engine', '$transform', '$get_abc_part', '$abc_model', '$get_checksum', '$checksum=', '$layout_harpnotes', '$include?', '$[]', '$meta_data', '$dig', '$harpnote_options', '$raise', '$each', '$output', '$render_a3', '$[]=', '$t', '$jspdfversion', '$last', '$split', '$get_candidate_keys', '$map', '$join', '$to_s', '$first', '$compact', '$gsub', '$length', '$+', '$reverse', '$lambda', '$_split_parts', '$_clean_models', '$each_with_index', '$==', '$start_with?', '$_set_config_json', '$_set_resources_json', '$error']);
+  Opal.add_stubs(['$attr_reader', '$new', '$loglevel=', '$-', '$info', '$strict=', '$push', '$_init_conf', '$set_text', '$patch_config_part', '$get_config_from_editor', '$reset_to', '$get', '$create_engine', '$transform', '$get_abc_part', '$abc_model', '$get_checksum', '$checksum=', '$layout_harpnotes', '$include?', '$[]', '$meta_data', '$dig', '$harpnote_options', '$raise', '$each', '$output', '$render_a3', '$[]=', '$t', '$jspdfversion', '$last', '$split', '$get_candidate_keys', '$map', '$join', '$to_s', '$first', '$compact', '$gsub', '$length', '$+', '$reverse', '$lambda', '$_split_parts', '$_clean_models', '$each_with_index', '$==', '$start_with?', '$_set_config_json', '$_set_resources_json', '$error']);
   
   (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'Controller');
@@ -53421,14 +53423,14 @@ Opal.modules["controller-cli"] = function(Opal) {
   (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'CliController');
 
-    var $nesting = [self].concat($parent_nesting), $CliController_initialize$2, $CliController_set_abc_input$4, $CliController_call_consumers$5, $CliController_apply_config$6, $CliController_load_music_model$7, $CliController_produce_pdfs$8, $CliController_about_zupfnoter$10;
+    var $nesting = [self].concat($parent_nesting), $CliController_initialize$2, $CliController_set_abc_input$3, $CliController_call_consumers$4, $CliController_apply_config$5, $CliController_load_music_model$6, $CliController_produce_pdfs$7, $CliController_about_zupfnoter$9;
 
     self.$$prototype.editor = self.$$prototype.music_model = nil;
     
     self.$attr_reader("abc_model");
     
     Opal.def(self, '$initialize', $CliController_initialize$2 = function $$initialize() {
-      var $$3, self = this, $writer = nil;
+      var self = this, $writer = nil;
       if ($gvars.log == null) $gvars.log = nil;
       if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -53451,37 +53453,28 @@ Opal.modules["controller-cli"] = function(Opal) {
       $gvars.conf.$push(self.$_init_conf());
       $gvars.settings = $hash2([], {});
       self.editor = $$($nesting, 'TextPaneEmulatorForCli').$new();
-      self.json_validator = $$$($$($nesting, 'Ajv'), 'JsonValidator').$new();
-      return $send($$($nesting, 'File'), 'open', ["zupfnoter.schema.json", "w"], ($$3 = function(f){var self = $$3.$$s || this;
-        if (self.json_validator == null) self.json_validator = nil;
-
-      
-        
-        if (f == null) {
-          f = nil;
-        };
-        return f.$puts($$($nesting, 'JSON').$generate(self.json_validator.$_schema()));}, $$3.$$s = self, $$3.$$arity = 1, $$3));
+      return (self.json_validator = $$$($$($nesting, 'Ajv'), 'JsonValidator').$new());
     }, $CliController_initialize$2.$$arity = 0);
     
-    Opal.def(self, '$set_abc_input', $CliController_set_abc_input$4 = function $$set_abc_input(abc_input) {
+    Opal.def(self, '$set_abc_input', $CliController_set_abc_input$3 = function $$set_abc_input(abc_input) {
       var self = this;
 
       return self.editor.$set_text(abc_input)
-    }, $CliController_set_abc_input$4.$$arity = 1);
+    }, $CliController_set_abc_input$3.$$arity = 1);
     
-    Opal.def(self, '$call_consumers', $CliController_call_consumers$5 = function $$call_consumers(clazz) {
+    Opal.def(self, '$call_consumers', $CliController_call_consumers$4 = function $$call_consumers(clazz) {
       var self = this;
 
       return nil
-    }, $CliController_call_consumers$5.$$arity = 1);
+    }, $CliController_call_consumers$4.$$arity = 1);
     
-    Opal.def(self, '$apply_config', $CliController_apply_config$6 = function $$apply_config(config) {
+    Opal.def(self, '$apply_config', $CliController_apply_config$5 = function $$apply_config(config) {
       var self = this;
 
       return self.editor.$patch_config_part("", config, "from json file")
-    }, $CliController_apply_config$6.$$arity = 1);
+    }, $CliController_apply_config$5.$$arity = 1);
     
-    Opal.def(self, '$load_music_model', $CliController_load_music_model$7 = function $$load_music_model() {
+    Opal.def(self, '$load_music_model', $CliController_load_music_model$6 = function $$load_music_model() {
       var $a, $b, self = this, config = nil, abc_parser = nil, harpnote_engine = nil, $writer = nil;
       if ($gvars.conf == null) $gvars.conf = nil;
 
@@ -53497,10 +53490,10 @@ Opal.modules["controller-cli"] = function(Opal) {
       $writer = [self.editor.$get_checksum()];
       $send(self.music_model, 'checksum=', Opal.to_a($writer));
       return $writer[$rb_minus($writer["length"], 1)];;
-    }, $CliController_load_music_model$7.$$arity = 0);
+    }, $CliController_load_music_model$6.$$arity = 0);
     
-    Opal.def(self, '$produce_pdfs', $CliController_produce_pdfs$8 = function $$produce_pdfs(folder) {
-      var $$9, self = this, is_template = nil, filebase = nil, print_variants = nil, rootpath = nil, pdfs = nil;
+    Opal.def(self, '$produce_pdfs', $CliController_produce_pdfs$7 = function $$produce_pdfs(folder) {
+      var $$8, self = this, is_template = nil, filebase = nil, print_variants = nil, rootpath = nil, pdfs = nil;
 
       
       self.$layout_harpnotes();
@@ -53520,7 +53513,7 @@ Opal.modules["controller-cli"] = function(Opal) {
       };
       rootpath = folder;
       pdfs = $hash2([], {});
-      $send(print_variants, 'each', [], ($$9 = function(print_variant){var self = $$9.$$s || this, index = nil, $writer = nil;
+      $send(print_variants, 'each', [], ($$8 = function(print_variant){var self = $$8.$$s || this, index = nil, $writer = nil;
 
       
         
@@ -53532,37 +53525,37 @@ Opal.modules["controller-cli"] = function(Opal) {
         $writer = ["" + (rootpath) + "/" + (filebase) + "_" + (print_variant['$[]']("filenamepart")) + "_a3.pdf", self.$render_a3(index).$output("raw")];
         $send(pdfs, '[]=', Opal.to_a($writer));
         $writer[$rb_minus($writer["length"], 1)];;
-        return nil;}, $$9.$$s = self, $$9.$$arity = 1, $$9));
+        return nil;}, $$8.$$s = self, $$8.$$arity = 1, $$8));
       return pdfs;
-    }, $CliController_produce_pdfs$8.$$arity = 1);
-    return (Opal.def(self, '$about_zupfnoter', $CliController_about_zupfnoter$10 = function $$about_zupfnoter() {
+    }, $CliController_produce_pdfs$7.$$arity = 1);
+    return (Opal.def(self, '$about_zupfnoter', $CliController_about_zupfnoter$9 = function $$about_zupfnoter() {
       var self = this;
 
       return "" + ($$($nesting, 'I18n').$t("Free software to create sheets for table harps")) + "\n" + "          Zupfnoter: " + ($$($nesting, 'VERSION')) + "\n" + "          Opal     : " + ($$($nesting, 'RUBY_ENGINE_VERSION')) + "\n" + "          Ruby     : " + ($$($nesting, 'RUBY_VERSION')) + "\n" + "          abc2svg  : " + (abc2svg.version) + "\n" + "          jsPD     : " + ($$($nesting, 'JsPDF').$jspdfversion()) + "\n" + "          Website  : https://www.zupfnoter.de\n" + "    "
-    }, $CliController_about_zupfnoter$10.$$arity = 0), nil) && 'about_zupfnoter';
+    }, $CliController_about_zupfnoter$9.$$arity = 0), nil) && 'about_zupfnoter';
   })($nesting[0], $$($nesting, 'Controller'), $nesting);
   (function($base, $parent_nesting) {
     var self = $module($base, 'I18n');
 
-    var $nesting = [self].concat($parent_nesting), $I18n_t$11, $I18n_t_key$12, $I18n_t_help$13, $I18n_get_candidate_keys$16, $I18n_locale$23, $I18n_phrases$24;
+    var $nesting = [self].concat($parent_nesting), $I18n_t$10, $I18n_t_key$11, $I18n_t_help$12, $I18n_get_candidate_keys$15, $I18n_locale$22, $I18n_phrases$23;
 
     
-    Opal.defs(self, '$t', $I18n_t$11 = function $$t(text) {
+    Opal.defs(self, '$t', $I18n_t$10 = function $$t(text) {
       var self = this;
 
       return text
-    }, $I18n_t$11.$$arity = 1);
-    Opal.defs(self, '$t_key', $I18n_t_key$12 = function $$t_key(key) {
+    }, $I18n_t$10.$$arity = 1);
+    Opal.defs(self, '$t_key', $I18n_t_key$11 = function $$t_key(key) {
       var self = this;
 
       return self.$t(key.$split(".").$last())
-    }, $I18n_t_key$12.$$arity = 1);
-    Opal.defs(self, '$t_help', $I18n_t_help$13 = function $$t_help(key) {
-      var $$14, $$15, $a, self = this, candidate_keys = nil, candidates = nil, helptext = nil;
+    }, $I18n_t_key$11.$$arity = 1);
+    Opal.defs(self, '$t_help', $I18n_t_help$12 = function $$t_help(key) {
+      var $$13, $$14, $a, self = this, candidate_keys = nil, candidates = nil, helptext = nil;
 
       
       candidate_keys = self.$get_candidate_keys(key);
-      candidates = $send(candidate_keys, 'map', [], ($$14 = function(c){var self = $$14.$$s || this;
+      candidates = $send(candidate_keys, 'map', [], ($$13 = function(c){var self = $$13.$$s || this;
         if ($gvars.conf_helptext == null) $gvars.conf_helptext = nil;
 
       
@@ -53570,100 +53563,100 @@ Opal.modules["controller-cli"] = function(Opal) {
         if (c == null) {
           c = nil;
         };
-        return $gvars.conf_helptext['$[]'](c.$join("."));}, $$14.$$s = self, $$14.$$arity = 1, $$14));
-      candidate_keys = $send(candidate_keys, 'map', [], ($$15 = function(c){var self = $$15.$$s || this;
+        return $gvars.conf_helptext['$[]'](c.$join("."));}, $$13.$$s = self, $$13.$$arity = 1, $$13));
+      candidate_keys = $send(candidate_keys, 'map', [], ($$14 = function(c){var self = $$14.$$s || this;
 
       
         
         if (c == null) {
           c = nil;
         };
-        return c.$join(".");}, $$15.$$s = self, $$15.$$arity = 1, $$15)).$to_s();
+        return c.$join(".");}, $$14.$$s = self, $$14.$$arity = 1, $$14)).$to_s();
       helptext = ($truthy($a = candidates.$compact().$first()) ? $a : "" + "no help for " + (candidate_keys));
       return "" + "<h2>" + (key) + "</h2><div style=\"padding:0.5em;width:30em;\">" + (helptext) + "</div>";
-    }, $I18n_t_help$13.$$arity = 1);
-    Opal.defs(self, '$get_candidate_keys', $I18n_get_candidate_keys$16 = function $$get_candidate_keys(key) {
-      var $$17, $$18, $$19, $$20, $$21, $$22, self = this, help_key = nil, keyparts = nil, downwards = nil, upwards = nil, candidate_keys = nil;
+    }, $I18n_t_help$12.$$arity = 1);
+    Opal.defs(self, '$get_candidate_keys', $I18n_get_candidate_keys$15 = function $$get_candidate_keys(key) {
+      var $$16, $$17, $$18, $$19, $$20, $$21, self = this, help_key = nil, keyparts = nil, downwards = nil, upwards = nil, candidate_keys = nil;
 
       
       help_key = key;
-      help_key = $send(help_key, 'gsub', [/^(extract\.)(\d+)(.*)$/], ($$17 = function(){var self = $$17.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.)(\d+)(.*)$/], ($$16 = function(){var self = $$16.$$s || this, $a;
+
+      return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$16.$$s = self, $$16.$$arity = 0, $$16));
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.lyrics\.)(\d+)(.*)$/], ($$17 = function(){var self = $$17.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$17.$$s = self, $$17.$$arity = 0, $$17));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.lyrics\.)(\d+)(.*)$/], ($$18 = function(){var self = $$18.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.images\.)(\d+)(.*)$/], ($$18 = function(){var self = $$18.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$18.$$s = self, $$18.$$arity = 0, $$18));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.images\.)(\d+)(.*)$/], ($$19 = function(){var self = $$19.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.notes\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$19 = function(){var self = $$19.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$19.$$s = self, $$19.$$arity = 0, $$19));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.notes\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$20 = function(){var self = $$20.$$s || this, $a;
+      help_key = $send(help_key, 'gsub', [/^(extract\.0\.tuplet\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$20 = function(){var self = $$20.$$s || this, $a;
 
       return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$20.$$s = self, $$20.$$arity = 0, $$20));
-      help_key = $send(help_key, 'gsub', [/^(extract\.0\.tuplet\.)([a-zA-SU-Z_0-9]+)(.*)$/], ($$21 = function(){var self = $$21.$$s || this, $a;
-
-      return "" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](1))) + "0" + ((($a = $gvars['~']) === nil ? nil : $a['$[]'](3)))}, $$21.$$s = self, $$21.$$arity = 0, $$21));
       keyparts = help_key.$split(".");
       downwards = [];
       upwards = [];
-      $send(Opal.Range.$new(0, $rb_minus(keyparts.$length(), 1), false), 'each', [], ($$22 = function(i){var self = $$22.$$s || this;
+      $send(Opal.Range.$new(0, $rb_minus(keyparts.$length(), 1), false), 'each', [], ($$21 = function(i){var self = $$21.$$s || this;
 
       
         
         if (i == null) {
           i = nil;
         };
-        return upwards.$push(keyparts['$[]'](Opal.Range.$new(i, -1, false)));}, $$22.$$s = self, $$22.$$arity = 1, $$22));
+        return upwards.$push(keyparts['$[]'](Opal.Range.$new(i, -1, false)));}, $$21.$$s = self, $$21.$$arity = 1, $$21));
       return (candidate_keys = $rb_plus(upwards, downwards.$reverse()));
-    }, $I18n_get_candidate_keys$16.$$arity = 1);
-    Opal.defs(self, '$locale', $I18n_locale$23 = function $$locale(language) {
+    }, $I18n_get_candidate_keys$15.$$arity = 1);
+    Opal.defs(self, '$locale', $I18n_locale$22 = function $$locale(language) {
       var self = this;
 
       return nil
-    }, $I18n_locale$23.$$arity = 1);
-    Opal.defs(self, '$phrases', $I18n_phrases$24 = function $$phrases() {
+    }, $I18n_locale$22.$$arity = 1);
+    Opal.defs(self, '$phrases', $I18n_phrases$23 = function $$phrases() {
       var self = this;
 
       return nil
-    }, $I18n_phrases$24.$$arity = 0);
+    }, $I18n_phrases$23.$$arity = 0);
   })($nesting[0], $nesting);
   return (function($base, $super, $parent_nesting) {
     var self = $klass($base, $super, 'TextPaneEmulatorForCli');
 
-    var $nesting = [self].concat($parent_nesting), $TextPaneEmulatorForCli_initialize$25, $TextPaneEmulatorForCli_get_abc_part$27, $TextPaneEmulatorForCli_set_text$28, $TextPaneEmulatorForCli__split_parts$29, $TextPaneEmulatorForCli__get_abc_from_editor$31, $TextPaneEmulatorForCli_set_config_part$32, $TextPaneEmulatorForCli_clear_markers$33, $TextPaneEmulatorForCli_set_markers$34, $TextPaneEmulatorForCli_set_annotations$35, $TextPaneEmulatorForCli_save_to_localstorage$36, $TextPaneEmulatorForCli_clean_localstorage$37;
+    var $nesting = [self].concat($parent_nesting), $TextPaneEmulatorForCli_initialize$24, $TextPaneEmulatorForCli_get_abc_part$26, $TextPaneEmulatorForCli_set_text$27, $TextPaneEmulatorForCli__split_parts$28, $TextPaneEmulatorForCli__get_abc_from_editor$30, $TextPaneEmulatorForCli_set_config_part$31, $TextPaneEmulatorForCli_clear_markers$32, $TextPaneEmulatorForCli_set_markers$33, $TextPaneEmulatorForCli_set_annotations$34, $TextPaneEmulatorForCli_save_to_localstorage$35, $TextPaneEmulatorForCli_clean_localstorage$36;
 
     self.$$prototype.abc_part = self.$$prototype.config_separator = nil;
     
     
-    Opal.def(self, '$initialize', $TextPaneEmulatorForCli_initialize$25 = function $$initialize() {
-      var $$26, self = this;
+    Opal.def(self, '$initialize', $TextPaneEmulatorForCli_initialize$24 = function $$initialize() {
+      var $$25, self = this;
 
       
       self.abc_text = nil;
       self.config_separator = "%%%%zupfnoter";
-      self.on_change = $send(self, 'lambda', [], ($$26 = function(){var self = $$26.$$s || this;
+      self.on_change = $send(self, 'lambda', [], ($$25 = function(){var self = $$25.$$s || this;
 
-      return nil}, $$26.$$s = self, $$26.$$arity = 0, $$26));
+      return nil}, $$25.$$s = self, $$25.$$arity = 0, $$25));
       return (self.config_undo = $$($nesting, 'UndoManager').$new());
-    }, $TextPaneEmulatorForCli_initialize$25.$$arity = 0);
+    }, $TextPaneEmulatorForCli_initialize$24.$$arity = 0);
     
-    Opal.def(self, '$get_abc_part', $TextPaneEmulatorForCli_get_abc_part$27 = function $$get_abc_part() {
+    Opal.def(self, '$get_abc_part', $TextPaneEmulatorForCli_get_abc_part$26 = function $$get_abc_part() {
       var self = this;
 
       return self.abc_part
-    }, $TextPaneEmulatorForCli_get_abc_part$27.$$arity = 0);
+    }, $TextPaneEmulatorForCli_get_abc_part$26.$$arity = 0);
     
-    Opal.def(self, '$set_text', $TextPaneEmulatorForCli_set_text$28 = function $$set_text(text) {
+    Opal.def(self, '$set_text', $TextPaneEmulatorForCli_set_text$27 = function $$set_text(text) {
       var self = this;
 
       return self.$_split_parts(text)
-    }, $TextPaneEmulatorForCli_set_text$28.$$arity = 1);
+    }, $TextPaneEmulatorForCli_set_text$27.$$arity = 1);
     
-    Opal.def(self, '$_split_parts', $TextPaneEmulatorForCli__split_parts$29 = function $$_split_parts(fulltext) {
-      var $$30, self = this;
+    Opal.def(self, '$_split_parts', $TextPaneEmulatorForCli__split_parts$28 = function $$_split_parts(fulltext) {
+      var $$29, self = this;
 
       
       self.$_clean_models();
-      return $send(fulltext.$split(self.config_separator), 'each_with_index', [], ($$30 = function(part, i){var self = $$30.$$s || this;
+      return $send(fulltext.$split(self.config_separator), 'each_with_index', [], ($$29 = function(part, i){var self = $$29.$$s || this;
         if ($gvars.log == null) $gvars.log = nil;
 
       
@@ -53683,40 +53676,40 @@ Opal.modules["controller-cli"] = function(Opal) {
           return self.$_set_resources_json(part.$split(".resources").$last())
         } else {
           return $gvars.log.$error($rb_plus($$($nesting, 'I18n').$t("unsupported section found in abc file: "), part['$[]']($range(0, 10, false))))
-        };}, $$30.$$s = self, $$30.$$arity = 2, $$30));
-    }, $TextPaneEmulatorForCli__split_parts$29.$$arity = 1);
+        };}, $$29.$$s = self, $$29.$$arity = 2, $$29));
+    }, $TextPaneEmulatorForCli__split_parts$28.$$arity = 1);
     
-    Opal.def(self, '$_get_abc_from_editor', $TextPaneEmulatorForCli__get_abc_from_editor$31 = function $$_get_abc_from_editor() {
+    Opal.def(self, '$_get_abc_from_editor', $TextPaneEmulatorForCli__get_abc_from_editor$30 = function $$_get_abc_from_editor() {
       var self = this;
 
       return self.abc_part
-    }, $TextPaneEmulatorForCli__get_abc_from_editor$31.$$arity = 0);
+    }, $TextPaneEmulatorForCli__get_abc_from_editor$30.$$arity = 0);
     
-    Opal.def(self, '$set_config_part', $TextPaneEmulatorForCli_set_config_part$32 = function $$set_config_part(config) {
+    Opal.def(self, '$set_config_part', $TextPaneEmulatorForCli_set_config_part$31 = function $$set_config_part(config) {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_set_config_part$32.$$arity = 1);
+    }, $TextPaneEmulatorForCli_set_config_part$31.$$arity = 1);
     
-    Opal.def(self, '$clear_markers', $TextPaneEmulatorForCli_clear_markers$33 = function $$clear_markers() {
+    Opal.def(self, '$clear_markers', $TextPaneEmulatorForCli_clear_markers$32 = function $$clear_markers() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_clear_markers$33.$$arity = 0);
+    }, $TextPaneEmulatorForCli_clear_markers$32.$$arity = 0);
     
-    Opal.def(self, '$set_markers', $TextPaneEmulatorForCli_set_markers$34 = function $$set_markers() {
+    Opal.def(self, '$set_markers', $TextPaneEmulatorForCli_set_markers$33 = function $$set_markers() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_set_markers$34.$$arity = 0);
+    }, $TextPaneEmulatorForCli_set_markers$33.$$arity = 0);
     
-    Opal.def(self, '$set_annotations', $TextPaneEmulatorForCli_set_annotations$35 = function $$set_annotations() {
+    Opal.def(self, '$set_annotations', $TextPaneEmulatorForCli_set_annotations$34 = function $$set_annotations() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_set_annotations$35.$$arity = 0);
+    }, $TextPaneEmulatorForCli_set_annotations$34.$$arity = 0);
     
-    Opal.def(self, '$save_to_localstorage', $TextPaneEmulatorForCli_save_to_localstorage$36 = function $$save_to_localstorage(dirty_name) {
+    Opal.def(self, '$save_to_localstorage', $TextPaneEmulatorForCli_save_to_localstorage$35 = function $$save_to_localstorage(dirty_name) {
       var self = this;
 
       
@@ -53725,12 +53718,12 @@ Opal.modules["controller-cli"] = function(Opal) {
         dirty_name = nil;
       };
       return nil;
-    }, $TextPaneEmulatorForCli_save_to_localstorage$36.$$arity = -1);
-    return (Opal.def(self, '$clean_localstorage', $TextPaneEmulatorForCli_clean_localstorage$37 = function $$clean_localstorage() {
+    }, $TextPaneEmulatorForCli_save_to_localstorage$35.$$arity = -1);
+    return (Opal.def(self, '$clean_localstorage', $TextPaneEmulatorForCli_clean_localstorage$36 = function $$clean_localstorage() {
       var self = this;
 
       return nil
-    }, $TextPaneEmulatorForCli_clean_localstorage$37.$$arity = 0), nil) && 'clean_localstorage';
+    }, $TextPaneEmulatorForCli_clean_localstorage$36.$$arity = 0), nil) && 'clean_localstorage';
   })($nesting[0], $$$($$($nesting, 'Harpnotes'), 'TextPane'), $nesting);
 };
 
@@ -54848,7 +54841,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "V_1.14-62-g325e3442");
+  Opal.const_set($nesting[0], 'VERSION', "V_1.14-63-gc09e2d01");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

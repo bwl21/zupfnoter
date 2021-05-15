@@ -3,10 +3,10 @@
 ## enhancement
 
 * support decorations #30
-* Harmonieassistent #298
+* experimntellerHarmonieassistent #298
 * add support - link in help menu
 * upgrade to abc2svg - more close to the standard
-* flowlines can be interrripted by !breath!, and bar types `||` `|]` #301
+* flowlines can be interrrupted by !breath!, and bar types `||` `|]` #301
 
 # 1.14 Feburar 2020
 

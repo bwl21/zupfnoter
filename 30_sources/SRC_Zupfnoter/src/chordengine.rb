@@ -84,12 +84,6 @@ class Chordengine
         },
         flat:  {
             major: %W{C Db D Eb E F Gb G Ab A Bb B},
-            minor: {},
-
-            minor: %W{}
-        },
-        flat:  {
-            major: %W{C Db D Eb E F Gb G Ab A Bb B},
             minor: %W{}
         }
     }
