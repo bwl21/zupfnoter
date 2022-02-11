@@ -7,7 +7,7 @@
     "doc": "doc"
   },
   "dependencies": {
-    "ajv": "^4.8.2",
+    "ajv": "^6.12.3",
     "blob": "^0.0.4",
     "encoding": "^0.1.12",
     "glob": "^7.1.3",
