@@ -864,7 +864,7 @@ Hier gibst du den Namen des Instrumentes an. Die Angabe bewirkt
 spezifische Verarbeitungen, z.B. die Anpassung der Tonhöhe zur Saite
 (bei `saitenspiel` als diatonischem Instrument ist das nicht linear).
 
-Es gibt folgende Einstellunge:
+Es gibt folgende Einstellungen:
 
 -   **`37-string-g-g`**: das ist die 37-saitige Harfe
 -   **`25-string-g-g`**: das ist die 25-saitige Harfe
@@ -872,6 +872,16 @@ Es gibt folgende Einstellunge:
     e
 -   **`saitenspiel`**: das ist ein diatonisch gestimmtes Saitenspiel mit
     einer G-Bass-Saite
+-   **`Zipino`**: das ist ein diatonisch gestimmtes Saitenspiel mit
+    einer G-Bass-Saite
+-   **`okon-*`**: Tischharfe von okon-guitar.de. Dieses Instrument hat
+    Klappen für die Anpassung der Tonart. Daher gibt es hier veschiedene
+    varianten
+-   **`Akkordzither`**: Für die Akkordzither gibt es verschiedene
+    Varianten und Stimmungen. Bitte experimentieren Sie mit den
+    Saitennamen.
+-   **`klein-a4`** ein Instrument bei dem die Unterlegnonten auf ein
+    A4-Blatt passen.
 
         "instrument": "37-strings-g-g"
 
@@ -1666,14 +1676,14 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
             "value" : {
               "pos"   : [340, 251],
               "style" : "small",
-              "text"  : "© 2021\n"
+              "text"  : "© 2022\n"
             }
           },
           "T03_copyright_harpnotes"  : {
             "value" : {
               "pos"   : [340, 260],
               "style" : "small",
-              "text"  : "© 2021 Notenbild: zupfnoter.de"
+              "text"  : "© 2022 Notenbild: zupfnoter.de"
             }
           },
           "T04_to_order"             : {
@@ -1757,7 +1767,7 @@ Dies fügt einen Copyrightvermerk für die Musik ein. Hier wird das
 Copyright auf die Komposition angegeben.
 
         "T02_copyright_music": {
-          "value" : {"pos": [340, 251], "style": "small", "text": "© 2021\n"}
+          "value" : {"pos": [340, 251], "style": "small", "text": "© 2022\n"}
         }
           
 
@@ -1770,7 +1780,7 @@ reklamierst du ein Copyright für die Umsetzung auf die Tischharfe
           "value" : {
             "pos"   : [340, 260],
             "style" : "small",
-            "text"  : "© 2021 Notenbild: zupfnoter.de"
+            "text"  : "© 2022 Notenbild: zupfnoter.de"
           }
         }
           

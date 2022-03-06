@@ -203,10 +203,10 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.14-63-gc09e2d01
+Version V\_1.15-1-g79f36737
 
 \begin{verbatim}
-© 2021 https://www.zupfnoter.de
+© 2022 https://www.zupfnoter.de
 \end{verbatim}
 
 \clearpage
@@ -6009,7 +6009,7 @@ spezifische Verarbeitungen, z.B. die Anpassung der Tonh\"{o}he zur Saite
 (bei \texttt{saitenspiel} als diatonischem Instrument ist das nicht
 linear).
 
-Es gibt folgende Einstellunge:
+Es gibt folgende Einstellungen:
 
 \begin{itemize}
 \item
@@ -6022,6 +6022,20 @@ Es gibt folgende Einstellunge:
 \item
   \textbf{\texttt{saitenspiel}}: das ist ein diatonisch gestimmtes
   Saitenspiel mit einer G-Bass-Saite
+\item
+  \textbf{\texttt{Zipino}}: das ist ein diatonisch gestimmtes
+  Saitenspiel mit einer G-Bass-Saite
+\item
+  \textbf{\texttt{okon-*}}: Tischharfe von okon-guitar.de. Dieses
+  Instrument hat Klappen f\"{u}r die Anpassung der Tonart. Daher gibt es
+  hier veschiedene varianten
+\item
+  \textbf{\texttt{Akkordzither}}: F\"{u}r die Akkordzither gibt es
+  verschiedene Varianten und Stimmungen. Bitte experimentieren Sie mit
+  den Saitennamen.
+\item
+  \textbf{\texttt{klein-a4}} ein Instrument bei dem die Unterlegnonten
+  auf ein A4-Blatt passen.
 
 \begin{verbatim}
 "instrument": "37-strings-g-g"
@@ -7173,14 +7187,14 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
         "value" : {
           "pos"   : [340, 251],
           "style" : "small",
-          "text"  : "© 2021\n"
+          "text"  : "© 2022\n"
         }
       },
       "T03_copyright_harpnotes"  : {
         "value" : {
           "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2021 Notenbild: zupfnoter.de"
+          "text"  : "© 2022 Notenbild: zupfnoter.de"
         }
       },
       "T04_to_order"             : {
@@ -7295,7 +7309,7 @@ das Copyright auf die Komposition angegeben.
 
 \begin{verbatim}
     "T02_copyright_music": {
-      "value" : {"pos": [340, 251], "style": "small", "text": "© 2021\n"}
+      "value" : {"pos": [340, 251], "style": "small", "text": "© 2022\n"}
     }
       
 \end{verbatim}
@@ -7314,7 +7328,7 @@ Tischharfe
       "value" : {
         "pos"   : [340, 260],
         "style" : "small",
-        "text"  : "© 2021 Notenbild: zupfnoter.de"
+        "text"  : "© 2022 Notenbild: zupfnoter.de"
       }
     }
       

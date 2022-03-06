@@ -347,7 +347,7 @@ class ConfstackEditor
         {field:       key,
          type:        'list',
          options:     {items: ['37-strings-g-g', '25-strings-g-g', '21-strings-a-f', '18-strings-b-e', 'saitenspiel', 'Zipino',
-                               'okon-f', 'okon-g', 'okon-c', 'okon-d',  'akkordzither']},
+                               'okon-f', 'okon-g', 'okon-c', 'okon-d',  'akkordzither', 'klein-a4']},
          required:    true,
          text:        I18n.t("#{key}.text"),
          tooltip:     I18n.t("#{key}.tooltip"),

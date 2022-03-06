@@ -1428,6 +1428,11 @@ module Harpnotes
         @bottom_annotation_positions = [[150, 289], [325, 289], [380, 289]]
         @pitch_to_xpos               = lambda { |pitch| (pitchoffset + pitch) * xspacing + xoffset }
 
+        if 'open' == $conf["extract.#{print_variant_nr}.layout.tuning"]
+          string_by_pitch, flaps_by_pitch = _mkflaps_pitches($conf["extract.#{print_variant_nr}.stringnames.text"])
+          @pitch_to_xpos = _mk_pitch_to_xpos(pitchoffset, xoffset, xspacing, string_by_pitch)
+        end
+
         case $conf['layout.instrument']
 
         when "Zipino"
@@ -1443,12 +1448,15 @@ module Harpnotes
         when "21-strings-a-f"
           @bottom_annotation_positions = [[190, 287], [190, 290], [250, 290]]
 
-
         when "18-strings-b-e"
-          @bottom_annotation_positions = [[210, 287], [210, 290], [280, 290]]
+          @bottom_annotation_positions = [[215, 287], [215, 290], [280, 290]]
 
         when "akkordzither", "Akkordzither"
           _instrument_akkordzither(pitchoffset, xoffset, xspacing, print_variant_nr)
+
+        when "klein-a4"
+          @bottom_annotation_positions = [[215, 287], [215, 290], [280, 290]]
+
         else
 
         end

@@ -177,6 +177,7 @@ module InitConf
              instrument: {
                  '37-strings-g-g'      => {
                      layout:           {instrument:   '37-strings-g-g',
+                                        tuning:       'fixed',
                                         limit_a3:     true,
                                         beams:        false,
                                         bottomup:     false,
@@ -195,6 +196,7 @@ module InitConf
                  },
                  '25-strings-g-g'      => {
                      layout:           {instrument:   '25-strings-g-g',
+                                        tuning:       'fixed',
                                         limit_a3:     false,
                                         beams:        false,
                                         bottomup:     false,
@@ -213,6 +215,7 @@ module InitConf
                  },
                  '25-strings-G-g Bass' => {
                      layout:           {instrument:   '25-strings-g-g',
+                                        tuning:       'fixed',
                                         limit_a3:     false,
                                         beams:        false,
                                         bottomup:     false,
@@ -231,6 +234,7 @@ module InitConf
                  },
                  '21-strings-a-f'      => {
                      layout:           {instrument:   '21-strings-a-f',
+                                        tuning:       'fixed',
                                         limit_a3:     false,
                                         beams:        false,
                                         bottomup:     false,
@@ -249,6 +253,7 @@ module InitConf
                  },
                  '18-strings-b-e'      => {
                      layout:           {instrument:   '18-strings-b-e',
+                                        tuning:       'fixed',
                                         limit_a3:     false,
                                         beams:        false,
                                         bottomup:     false,
@@ -264,6 +269,43 @@ module InitConf
                                         a3_offset: [0, 0],
                                         a4_offset: [40, 0]}
                  },
+                 '14-strings-b-d'      => {
+                   layout:           {instrument:   'klein-a4',
+                                      tuning:       'open',
+                                      limit_a3:     false,
+                                      beams:        false,
+                                      bottomup:     false,
+                                      PITCH_OFFSET: 0,
+                                      X_SPACING:    15,
+                                      X_OFFSET:     0
+                   },
+                   stringnames:      {text:  " ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~ B c c# d e f f# g a a# b c' c#' d' ~ ~",
+                                      marks: {hpos: [71]}
+                   },
+                   instrument_shape: nil,
+                   printer:          {a4_pages:  [2],
+                                      a3_offset: [0, 0],
+                                      a4_offset: [45, 0]}
+                 },
+                 'kleine Bauerharfe'      => {
+                   layout:           {instrument:   'klein-a4',
+                                      tuning:       'open',
+                                      limit_a3:     false,
+                                      beams:        false,
+                                      bottomup:     false,
+                                      PITCH_OFFSET: 0,
+                                      X_SPACING:    15,
+                                      X_OFFSET:     70
+                   },
+                   stringnames:      {text:  "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ C D E F G A H c d e",
+                                      marks: {hpos: []}
+                   },
+                   instrument_shape: nil,
+                   printer:          {a4_pages:  [2],
+                                      a3_offset: [0, 0],
+                                      a4_offset: [40, 0]}
+                 },
+
                  'saitenspiel'         => {
                      layout:           {instrument:   'saitenspiel',
                                         limit_a3:     false,
@@ -327,7 +369,7 @@ module InitConf
                                         X_SPACING: 8.9,
                                         X_OFFSET:  140
                      },
-                     stringnames:      {text:  %Q{C C# D E F F# G G# A B C' C# D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ },
+                     stringnames:      {text:  %Q{C C# D E F F# G G# A B C' C#' D' E' F' F#' G' G#' A' B' C''  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ },
                                         marks: {hpos: [60]}
                      },
                      instrument_shape: %Q{[["M", 228, 0], ["L",  335, 185], ["L", 335,297]]},

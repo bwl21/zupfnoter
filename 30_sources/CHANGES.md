@@ -8,6 +8,11 @@
 * upgrade to abc2svg - more close to the standard
 * flowlines can be interrrupted by !breath!, and bar types `||` `|]` #301
 
+# 1.16 March 2021
+
+* Support 15-String Zupfnoter
+* allow open tuning everywhere
+
 # 1.14 Feburar 2020
 
 ## fix
