@@ -24,6 +24,12 @@ GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questi
 VENDORFOLDER = "../vendor"
 ACE_REPO     = "../../../../200_zupfnoter_external_components/ace"
 
+#env = Sprockets::Environment.new
+Opal.append_path "."
+Opal.append_path "../vendor"
+Opal.use_gem "vector2d"
+
+
 desc "update public/locale"
 task :updateLocales do
   puts "updating locales"
@@ -100,9 +106,6 @@ task :build_worker do
   git_describe
 
   File.open(ZNWORKER_JS, "w+") do |out|
-    Opal.append_path "."
-    Opal.append_path "../vendor"
-    Opal.use_gem "vector2d"
 
     compiled_js = Opal::Builder::build("znworker").to_s
 
@@ -115,12 +118,6 @@ end
 desc "Build zupfnoter to #{ZUPFNOTER_JS}"
 task :build => [:buildConfigDoc, :updateLocales, :build_worker, :build_cli] do
   git_describe
-  #env = Sprockets::Environment.new
-  Opal.append_path "."
-  Opal.append_path "../vendor"
-  Opal.use_gem "vector2d"
-
-  #Opal.paths.each { |p| env.append_path(p) }
 
   File.open(ZUPFNOTER_JS, "w+") do |out|
     #   out << env["application"].to_s
@@ -257,11 +254,6 @@ end
 
 desc "build the cli application"
 task :build_cli do #=> [:build] do
-
-  #env = Sprockets::Environment.new
-  Opal.append_path "."
-  Opal.append_path "../vendor"
-  Opal.use_gem "vector2d"
 
   #
   # you nedd npm install

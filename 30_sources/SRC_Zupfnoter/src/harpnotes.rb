@@ -1072,6 +1072,8 @@ module Harpnotes
       attr_reader :center, :text, :style, :origin
       attr_accessor :conf_key, :conf_value, :align, :baseline, :shift_eu
 
+      @@pdf = nil  # since ruby 3.0 class variables need to be initialized
+
       # @param center Array the position of the text as [x, y]
       # @param text String the text itself
       # @param style Symbol the text style, can be :regular, :large (as defined in pdfengine)

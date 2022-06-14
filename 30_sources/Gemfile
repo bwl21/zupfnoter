@@ -1,17 +1,16 @@
 #Gemfile
 source 'https://rubygems.org'
-ruby "2.6.3"
 
 gem 'rake'
 gem 'sass'
 gem 'zip'
 #gem 'prmd'
 
-gem 'opal', '~> 1.0'
+gem 'opal'
 gem 'opal-sprockets'
 gem 'opal-jquery'#, git: "https://github.com/opal/opal-jquery"
 
-gem 'vector2d', "~> 2.1.0"
+gem 'vector2d', '~> 2.1.0'  # locked to 2.1.0 since later version requires Contract which does not work with opal
 gem 'pry'
 #gem 'pry-byebug'  # for debugging on ruby lavel
 gem 'graphviz'
@@ -19,11 +18,12 @@ gem 'bundler'
 gem 'redcarpet'
 gem 'json-schema-generator'
 gem 'neatjson'
-gem 'rb-readline'	
+gem 'rb-readline'
+gem 'webrick'
 
 
 # had trouble to install nokogiri on windows
 # so I build the manual on mac os only
 install_if -> { RUBY_PLATFORM =~ /darwin/ } do
-  gem 'wortsammler', "~> 2.0.0.dev4"
+  #gem 'wortsammler', "~> 2.0.0.dev4"
   end
