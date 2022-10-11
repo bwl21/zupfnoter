@@ -11,7 +11,7 @@
     "blob": "^0.0.4",
     "encoding": "^0.1.12",
     "glob": "^7.1.3",
-    "jspdf": "^1.5.3"
+    "jspdf": "^2.5.1"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
