@@ -5,7 +5,7 @@ GEM
     coderay (1.1.2)
     concurrent-ruby (1.1.5)
     diffy (2.1.4)
-    ffi (1.11.1)
+    ffi (1.15.5)
     graphviz (1.1.0)
       process-pipeline
     json-schema-generator (0.0.9)
@@ -92,7 +92,7 @@ DEPENDENCIES
   zip
 
 RUBY VERSION
-   ruby 2.6.3p62
+   ruby 2.7.2p137
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
