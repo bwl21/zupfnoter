@@ -632,6 +632,7 @@ module InitConf
                  #key      size   fill          dot                  abc duration
 
                  :err => [2, :filled, false], # 1      1
+                 :d96 => [1, :empty, true], # 1  *     1
                  :d64 => [1, :empty, false], # 1      1
                  :d48 => [0.75, :empty, true], # 1/2 *
                  :d32 => [0.75, :empty, false], # 1/2
@@ -649,6 +650,7 @@ module InitConf
              # this is injected in case of layout.beams = true
              DURATION_TO_BEAMS:           {
                  # key     size, fill, dot, number-of-flags (nil = no beam)
+                 "d96" => [1, "empty", false],
                  "d64" => [1, "empty", false],
                  "d48" => [1, "empty", true, 0],
                  "d32" => [1, "empty", false, 0],
@@ -667,6 +669,7 @@ module InitConf
                  # this basically determines the white background rectangel
                  # [sizex, sizey], glyph, dot # note that sizex has no effect.
                  :err => [[2, 2], :rest_1, false], # 1      1
+                 :d96 => [[1, 0.8], :rest_1, true], # 1      1   # make it a bit smaller than the note to improve visibility of barover
                  :d64 => [[1, 0.8], :rest_1, false], # 1      1   # make it a bit smaller than the note to improve visibility of barover
                  :d48 => [[0.5, 0.4], :rest_1, true], # 1/2 *     # make it a bit smaller than the note to improve visibility of barover
                  :d32 => [[0.5, 0.4], :rest_1, false], # 1/2      # make it a bit smaller than the note to improve visibility of barover
