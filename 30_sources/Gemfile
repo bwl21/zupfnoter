@@ -20,6 +20,7 @@ gem 'json-schema-generator'
 gem 'neatjson'
 gem 'rb-readline'
 gem 'webrick'
+gem 'rackup'
 
 
 # had trouble to install nokogiri on windows

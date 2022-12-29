@@ -8,6 +8,7 @@ module Ajv
       if OPAL_PLATFORM == 'nodejs'
         ajv = %x{Ajv}
       else
+        `debugger`
         ajv = %x{Ajv}
       end
       @root = `#{ajv}({allErrors: true, jsonPointers: true, extendRefs: true})`;

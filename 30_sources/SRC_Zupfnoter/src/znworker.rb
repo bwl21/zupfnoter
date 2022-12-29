@@ -27,7 +27,6 @@
 require 'opal'
 require 'opal-platform'
 require 'ajv.min.js'
-
 #require 'opal-jquery'
 require 'vector2d'
 #require 'neatjson_js'
