@@ -690,7 +690,7 @@ module Ajv
                                  },
                                  :MM_PER_POINT      => {:type => "number"},
                                  :DURATION_TO_STYLE => {:type              => "object",
-                                                        :required          => ["err", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"],
+                                                        :required          => ["err", "d96", "d64", "d48", "d32", "d24", "d16", "d12", "d8", "d6", "d4", "d3", "d2", "d1"],
                                                         :patternProperties =>
                                                             {".*" => {:type        => "array",
                                                                       :minItems    => 3,

@@ -6,17 +6,18 @@
 // the settings (in particuler "jsdir" is also specific for Zupfnoter
 
   var jsdir = '';
-
+if ("undefined" !== typeof abc2svg) {
   abc2svg.loadjs = function (fn, relay, onerror) {
     var s = document.createElement('script');
     s.src = jsdir + fn;
     s.type = 'text/javascript';
     if (relay)
       s.onload = relay;
-    s.onerror = onerror || function() {
+    s.onerror = onerror || function () {
       alert('error loading ' + fn)
     }
     document.head.appendChild(s)
   }
+}
 
 
