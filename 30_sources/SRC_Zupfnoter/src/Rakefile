@@ -176,10 +176,7 @@ def git_describe
 end
 
 desc "Build a distribution for the server"
-## task :deploy => [:build, :build_worker, :buildUserManual, :build_cli] do
- task :deploy => [:build, :build_worker] do
-
-
+task :deploy => [:build, :build_worker, :buildUserManual, :build_cli] do
   # prepare all requested folders
   # todo:this is not dry - see buildDesktop
   ["public/icons", "public/demos", "public/locale", "public/soundfont/zupfnoter",
