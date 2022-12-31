@@ -223,7 +223,8 @@ module Opal
           block.call(lambda { |error, data|
             if error
               # todo: don't know if this is generic enough. it assumes that error is a dedicated structure.
-              errormessage = Native(error).error rescue "unspecified error from Dropbox API"
+              errorjson= %x{JSON.stringify(error)}
+              errormessage = Native(error).error rescue errorjson
               promise.reject(errormessage)
             else
               promise.resolve(data)
