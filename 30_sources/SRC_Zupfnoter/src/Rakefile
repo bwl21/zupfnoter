@@ -7,6 +7,11 @@ require 'net/http'
 require 'pry'
 require 'neatjson.rb'
 
+## It appears that Opal builder (1.7) processes the requires  in reverse order.  I have to swap the requires in the application.rb to make it work again.
+## hmdne says: 2022-12-30 in slack
+## 18:23 Uhr @Bernhard Weichel this is a problem with prefork, your code should run with OPAL_PREFORK_DISABLE=true ENV var (though obviously it's a bug)
+ENV['OPAL_PREFORK_DISABLE']='true'  ## hmdne says: hmdne
+
 HTMLTEMPLATE         = "../index_opal.html.erb"
 PACKAGE_JSON         = "../package.json"
 ZUPFNOTER_JS         = "build.js"
@@ -17,7 +22,6 @@ OUTFOLDER            = "../deploy_files"
 LOCALEPATH           = "../public/locale/"
 NINJAEXEC            = File.absolute_path("../../ZSUPP_TOOLS/macOs/ninja")
 INDEXFILE            = "index.html"
-
 
 GITSHA = %x{git log --pretty=format:'%h' -n 1} # http://stackoverflow.com/questions/949314/how-to-retrieve-the-hash-for-the-current-commit-in-git
 
@@ -119,6 +123,7 @@ desc "Build zupfnoter to #{ZUPFNOTER_JS}"
 task :build => [:buildConfigDoc, :updateLocales, :build_worker, :build_cli] do
   git_describe
 
+  ENV['OPAL_PREFORK_DISABLE']='true'
   File.open(ZUPFNOTER_JS, "w+") do |out|
     #   out << env["application"].to_s
     #   out << Opal::Processor.load_asset_code(env, 'application')

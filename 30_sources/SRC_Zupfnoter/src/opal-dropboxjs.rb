@@ -138,6 +138,7 @@ module Opal
             dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
             window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
             access_token_from_url = dropbox_answers.access_token;
+debugger;
 
             if (dropbox_answers.error)
                  {
