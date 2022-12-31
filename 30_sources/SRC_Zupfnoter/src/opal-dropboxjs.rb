@@ -32,7 +32,7 @@ module Opal
 
         @accesstoken_key = "dbx_token"
 
-        @root = `new Dropbox({clientId: #{key}})`
+        @root = `new Dropbox.Dropbox({clientId: #{key}})`
 
         # %x{
         #    self.root.onError.addListener(function(error) {
@@ -56,7 +56,7 @@ module Opal
 
       def revoke_zombie_access_token(access_token)
         %x{
-           dbx =  new Dropbox({accessToken: #{access_token}});
+           dbx =  new Dropbox.Dropbox({accessToken: #{access_token}});
 
            dbx.authTokenRevoke()
            .then(function(response) {
@@ -138,7 +138,6 @@ module Opal
             dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
             window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
             access_token_from_url = dropbox_answers.access_token;
-debugger;
 
             if (dropbox_answers.error)
                  {
@@ -178,7 +177,7 @@ debugger;
              {
               if (!access_token ) {
                 if (access_token_from_url) {   // new login
-                    #{@root} = new Dropbox({accessToken: access_token_from_url})
+                    #{@root} = new Dropbox.Dropbox({accessToken: access_token_from_url})
                     #{save_access_token_to_localstore(`access_token_from_url`)}
         #{iblock.call(nil, true)}
                  }
@@ -199,7 +198,7 @@ debugger;
                  }
               else  // already logged in
                {
-                #{@root} = new Dropbox({accessToken: access_token})
+                #{@root} = new Dropbox.Dropbox({accessToken: access_token})
                 #{iblock.call(nil, true)}
                }
             }
@@ -298,12 +297,15 @@ debugger;
 
         with_promise() do |iblock|
           %x{
-           var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin] + "/"});
-           #{
-          remove_access_token_from_localstore
-          iblock.call(`{error: #{I18n.t("wait for Dropbox authentication")}}`, nil) # do not change this text
-          }
-           window.location.href=authUrl;
+
+           var authUrl = #{@root}.auth.getAuthenticationUrl(#{Controller::get_uri[:origin] + "/"})
+              .then((authUrl) => {
+              #{
+               remove_access_token_from_localstore
+               iblock.call(`{error: #{I18n.t("wait for Dropbox authentication")}}`, nil) # do not change this text
+               }
+               window.location.href=authUrl;
+               });
           }
         end
       end
@@ -311,7 +313,7 @@ debugger;
       def reconnect()
         access_token = get_access_token_from_localstore # try to get an accesstoken from previous session
         if access_token
-          @root = %x{new Dropbox({accessToken: #{access_token}})}
+          @root = %x{new Dropbox.Dropbox({accessToken: #{access_token}})}
         end
       end
 
@@ -338,8 +340,10 @@ debugger;
       def write_file(filename, data)
         with_promise_retry(filename, 4) do |iblock|
           %x{#{@root}.filesUpload({path: #{filename}, contents: #{data}, mode:{'.tag': 'overwrite'}})
-            .then(function(respnse){#{iblock}(nil, respnse)})
-            .catch(function(error){#{iblock}(error, nil)})
+            .then(function(response){
+                #{iblock}(nil, response)})
+            .catch(function(error){
+                #{iblock}(error, nil)})
             }
         end
       end
@@ -356,7 +360,7 @@ debugger;
                     reader.addEventListener("loadend", function(){
                      #{iblock}(nil, reader.result);
                     });
-                    reader.readAsText(response.fileBlob);
+                    reader.readAsText(response.result.fileBlob);
                  })
                 .catch(function(error){#{iblock}(error, nil)})
                 }
@@ -372,7 +376,7 @@ debugger;
           %x{
           #{@root}.filesListFolder({path: #{dirname}})
                 .then(function (response) {
-                    #{iblock}(nil, response.entries.map(function(i){return i.name}))
+                    #{iblock}(nil, response.result.entries.map(function(i){return i.name}))
                 })
                 .catch(function (error) {
                     #{iblock}(error, nil)

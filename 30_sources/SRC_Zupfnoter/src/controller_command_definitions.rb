@@ -1448,9 +1448,9 @@ class Controller
         end
 
         Promise.when(*save_promises).then do |xx|
-          saved_paths = Native(xx).map do |x|
-            x.path_display if x.respond_to? :path_display
-          end.compact
+          saved_paths = %x{
+            xx.map(x => x.result.path_display)
+          }
           message     = %Q{#{saved_paths.count} } + I18n.t("Files saved to dropbox") + "\n<pre>" + saved_paths.join("\n") + "</pre>"
           set_status(music_model: message)
           `w2alert(#{message}, "Info")`
