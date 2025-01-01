@@ -23,7 +23,7 @@ module Opal
     # http://coffeedoc.info/github/dropbox/dropbox-js/master/class_index.html
     # all methods yield a promise (see http://opalrb.org/blog/2014/05/07/promises-in-opal/)
     class Client
-      attr_accessor :root_in_dropbox, :app_name, :app_id
+      attr_accessor :root_in_dropbox, :app_name, :app_id, :login_info
 
 
       # @param [String] key - the Dropbox API key
@@ -321,6 +321,27 @@ module Opal
 
       def is_authenticated?
         not Native(get_access_token_from_localstore).nil?
+      end
+
+      def validate_token
+        %x{
+        #{@login_info} = 'unknown token status';
+        #{@root}.usersGetCurrentAccount()
+           .then((response) => {
+             #{@login_info} = response;
+             alert("foo" + JSON.stringify(response));
+             console.log('Token ist gültig:', response);
+        })
+        .catch((error) => {
+          if (error.status === 401) {
+            #{@login_info} = 'TOKEN UNGÜLTIG: ' + error.message;
+            alert('Dropbox-Zugriff ist ungültig oder abgelaufen.');
+          } else {
+            #{@login_info} = 'SonstigerFehler: ' + error.message;
+            alert('Ein anderer Fehler ist aufgetreten:', error);
+          }
+          });
+        }
       end
 
 
