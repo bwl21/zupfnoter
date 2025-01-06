@@ -28,6 +28,8 @@ require 'controller_command_definitions'
 require 'harpnote_player'
 require 'text_pane'
 require 'opal-dropboxjs'
+require 'DropboxPKCE.js'
+# require 'opal-drobox-js-pkce'
 require 'opal-jqconsole'
 require 'confstack2'
 require 'opal-abc2svg'
@@ -43,6 +45,7 @@ require 'xml2abc.js'
 require 'bowser.js'
 require 'opal-webworker'
 require 'chordengine'
+require 'securerandom'
 
 puts "now starting zupfnoter"
 puts "zupfnoter is now running"

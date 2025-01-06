@@ -1116,7 +1116,7 @@ class Controller
 
 # this method sets systemstatus from the status of @dropboxclient
   def set_status_dropbox_status
-    @dropboxclient.validate_token
+    # @dropboxclient.validate_token
     `debugger`
     set_status(dropbox: "#{@dropboxclient.app_name}: #{@dropboxpath}", dropboxapp: @dropboxclient.app_id, dropboxpath: @dropboxpath, dropboxloginstate: @dropboxloginstate)
   end
