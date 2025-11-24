@@ -1,5 +1,5 @@
 
-Version V_1.16-1-g620b8c29
+Version V_1.16-3-gb12a702c
 
-    © 2022 https://www.zupfnoter.de
+    © 2025 https://www.zupfnoter.de
     
