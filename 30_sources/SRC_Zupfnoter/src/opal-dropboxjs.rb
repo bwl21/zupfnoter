@@ -30,30 +30,45 @@ module Opal
 
         @accesstoken_key = "dbx_token"
         @app_secret = "jt8veky2idx2kkj"
+        @app_key = key
 
-        @root = `new Dropbox.Dropbox({clientId: #{key}, clientSecret: #{@app_secret}})`
+        ## todo do we need this?  @root = `new Dropbox.Dropbox({clientId: #{key}, clientSecret: #{@app_secret}})`
 
         @redirect_uri = Controller::get_uri[:origin] + "/"
         @dropboxPKCE = `new DropboxPKCE(#{key}, #{@redirect_uri})`;
       end
 
-
       def get_access_token_from_localstore
         token = `localStorage.getItem(#{@accesstoken_key})`
         if token
-          alert(token)
           parsed_token = JSON.parse(`token`)
+          refresh_token = parsed_token["refresh_token"]
+
+          new_access_token = get_new_access_token_from_dropbox(refresh_token)
+
           parsed_token["access_token"]
         else
           nil # Kein Token gefunden
         end
       end
 
+      def get_new_access_token_from_dropbox(refresh_token)
+        %x{
+          dbx =  new Dropbox.Dropbox({refreshToken: #{refresh_token}});
+          debugger;
+           #{@dropboxPKCE}.refreshToken(#{refreshToken})
+           .then(function(response) {
+              debugger;
+              const newAccessToken = response.accessToken;
+           })
+        }
+      end
+
       def get_refresh_token_from_localstore
         r = %x{ localStorage.getItem(#{@refreshtoken_key}) }
       end
 
-      def save_access_token_to_localstore(token)
+      def save_access_and_refresh_token_to_localstore(token)
         %x{
              localStorage.setItem(#{@accesstoken_key}, JSON.stringify(#{token}))
         }
@@ -61,7 +76,6 @@ module Opal
 
       def remove_access_token_from_localstore
         r = %x{ localStorage.removeItem( #{@accesstoken_key}) }
-        r = %x{ localStorage.removeItem( #{@refreshtoken_key_key}) }
       end
 
       def revoke_zombie_access_token(access_token)
@@ -108,14 +122,15 @@ module Opal
 
       def getAccessToken(iblock)
         %x{
+           debugger;
            const parsedUrl = new URL(window.location.href);
            const code = parsedUrl.searchParams.get('code')
            if (code) {
              #{getAccesstokenWithRefresh(iblock, `code`)}
            }
            else {
-alert("norefresh")
-             #{getAccessTokenNoRefresh(iblock)}
+             alert("looking  for existing access token");
+            #{getAccessTokenNoRefresh(iblock)}
            }
          }
       end
@@ -124,9 +139,11 @@ alert("norefresh")
         %x{
              #{@dropboxPKCE}.exchangeCodeForTokens(#{code})
                 .then(function(token) {
-                #{save_access_token_to_localstore(`token`)}
+debugger;
+                #{save_access_and_refresh_token_to_localstore(`token`)}
             })
             .catch(function (error) {
+debugger;
                   alert ("getadressTokenWithRefresh:" + error.message)
               }
             )
@@ -215,7 +232,7 @@ alert("norefresh")
               if (!access_token ) {
                 if (access_token_from_url) {   // new login
                     #{@root} = new Dropbox.Dropbox({accessToken: access_token_from_url})
-                    #{save_access_token_to_localstore(`access_token_from_url`)}
+                    #{save_access_and_refresh_token_to_localstore(`access_token_from_url`)}
                     #{iblock.call(nil, true)}
                  }
                 else  // ! lost token
@@ -340,7 +357,6 @@ alert("norefresh")
       def reconnect()
         access_token = get_access_token_from_localstore # try to get an accesstoken from previous session
         if access_token
-          alert access_token
           @root = %x{new Dropbox.Dropbox({accessToken: #{access_token}})}
         end
       end
