@@ -1,10 +1,9 @@
-#require 'promise'
+# require 'promise'
 
 ## this wraps dropbox - api - v2.0
 
 module Opal
   module DropboxJs
-
 
     # this is a dummy client to register before login
     class NilClient
@@ -23,36 +22,81 @@ module Opal
     # http://coffeedoc.info/github/dropbox/dropbox-js/master/class_index.html
     # all methods yield a promise (see http://opalrb.org/blog/2014/05/07/promises-in-opal/)
     class Client
-      attr_accessor :root_in_dropbox, :app_name, :app_id
-
+      attr_accessor :root_in_dropbox, :app_name, :app_id, :login_info
 
       # @param [String] key - the Dropbox API key
       def initialize(key)
         @errorlogger = lambda { |error| $log.error(error) }
 
         @accesstoken_key = "dbx_token"
+        @app_secret = "jt8veky2idx2kkj"
+        @app_key = key
 
-        @root = `new Dropbox({clientId: #{key}})`
+        ## todo do we need this?  @root = `new Dropbox({clientId: #{key}, clientSecret: #{@app_secret}})`
 
-        # %x{
-        #    self.root.onError.addListener(function(error) {
-        #                            self.errorlogger(error)
-        #    });
-        # }
+        @redirect_uri = Controller::get_uri[:origin] + "/"
+        @dropboxPKCE = `new DropboxPKCE(#{key}, #{@redirect_uri})`;
       end
 
       def get_access_token_from_localstore
-        r = %x{ localStorage.getItem(#{@accesstoken_key}) }
+        token_str = `localStorage.getItem(#{@accesstoken_key})`
+        return nil if `token_str === null || token_str === undefined`
+        
+        # Try to parse as JSON (new format with refresh_token)
+        begin
+          parsed_token = JSON.parse(token_str)
+          refresh_token = parsed_token["refresh_token"]
+
+          if refresh_token
+            # Try to refresh token if refresh_token exists
+            new_access_token = get_new_access_token_from_dropbox(refresh_token)
+            if new_access_token
+              parsed_token["access_token"] = new_access_token
+              save_access_and_refresh_token_to_localstore(parsed_token)
+              new_access_token
+            else
+              parsed_token["access_token"]
+            end
+          else
+            parsed_token["access_token"]
+          end
+        rescue
+          # Old format (plain string token) - user needs to re-login
+          $log.info("Old token format detected. Clearing and requiring re-login.")
+          `localStorage.removeItem(#{@accesstoken_key})`
+          nil
+        end
       end
 
-      def save_access_token_to_localstore(token)
-        r = %x{ localStorage.setItem(#{@accesstoken_key}, #{token}) }
+      def get_new_access_token_from_dropbox(refresh_token)
+        new_token = nil
+        %x{
+          (async function() {
+            try {
+              const response = await #{@dropboxPKCE}.refreshToken(#{refresh_token});
+              #{new_token} = response.access_token;
+              console.log("New access token obtained:", #{new_token});
+            } catch (error) {
+              console.error("Token refresh failed:", error.message);
+            }
+          })();
+        }
+        new_token
+      end
+
+      def get_refresh_token_from_localstore
+        r = %x{ localStorage.getItem(#{@refreshtoken_key}) }
+      end
+
+      def save_access_and_refresh_token_to_localstore(token)
+        %x{
+             localStorage.setItem(#{@accesstoken_key}, JSON.stringify(#{token}))
+        }
       end
 
       def remove_access_token_from_localstore
         r = %x{ localStorage.removeItem( #{@accesstoken_key}) }
       end
-
 
       def revoke_zombie_access_token(access_token)
         %x{
@@ -88,8 +132,8 @@ module Opal
            else
             {
              #{
-          message = I18n.t("No access token to revoke")
-          iblock.call(`{error: #{message}}`, nil)
+            message = I18n.t("No access token to revoke")
+            iblock.call(`{error: #{message}}`, nil)
           }
             }
          }
@@ -97,6 +141,43 @@ module Opal
       end
 
       def getAccessToken(iblock)
+        %x{
+           const parsedUrl = new URL(window.location.href);
+           const code = parsedUrl.searchParams.get('code')
+           if (code) {
+             console.log("Authorization code found, exchanging for tokens...");
+             #{getAccesstokenWithRefresh(iblock, `code`)}
+           }
+           else {
+             console.log("No authorization code in URL, checking for existing access token");
+            #{getAccessTokenNoRefresh(iblock)}
+           }
+         }
+      end
+
+      def getAccesstokenWithRefresh(iblock, code)
+        %x{
+             (async function() {
+               try {
+                 console.log("Exchanging code for tokens...");
+                 const token = await #{@dropboxPKCE}.exchangeCodeForTokens(#{code});
+                 console.log("Token exchange successful:", token);
+                 #{save_access_and_refresh_token_to_localstore(`token`)}
+                 // Initialize Dropbox client with new access token
+                 #{@root} = new Dropbox({accessToken: token.access_token})
+                 // Clear code from URL only AFTER successful token exchange
+                 window.history.replaceState(null, null, window.location.pathname);
+                 #{iblock.call(nil, true)}
+               } catch (error) {
+                 console.error("Token exchange failed:", error.message);
+                 alert("getAccessTokenWithRefresh: " + error.message);
+                 #{iblock.call(`{error: error.message}`, nil)}
+               }
+             })();
+        }
+      end
+
+      def getAccessTokenNoRefresh(iblock)
         %x{
             parseQueryString = function(str) {
                   var ret = Object.create(null);
@@ -135,76 +216,41 @@ module Opal
                   return ret;
                 }
 
-            dropbox_answers = parseQueryString(window.location.hash);   // see if access token is provided by url as part of the authentification process
-            window.history.replaceState(null, null, window.location.pathname); // remove access-token from addressbar (http://stackoverflow.com/questions/22753052/remove-url-parameters-without-refreshing-page)
-            access_token_from_url = dropbox_answers.access_token;
+            // PKCE flow returns code in query string (?code=...)
+            // Note: URL will be cleaned AFTER successful token exchange in getAccesstokenWithRefresh()
+            dropbox_answers = parseQueryString(window.location.search);
+            code_from_url = dropbox_answers.code;
 
             if (dropbox_answers.error)
                  {
                    #{remove_access_token_from_localstore}
-        #{iblock.call(%x{{error: dropbox_answers.error_description}}, nil)}
+                   #{iblock.call(%x{{error: dropbox_answers.error_description}}, nil)}
                    return ;
                  }
 
-            access_token = #{get_access_token_from_localstore};  // try to ge an accesstoken from previous session
+             access_token = #{get_access_token_from_localstore};  // try to get accesstoken from previous session
+             console.log("access_token:", access_token);
+             console.log("code_from_url:", code_from_url);
 
-            // login-status
-            //
-            //app      token       url-token   |  status     situation
-            //
-            // no        no            no       !   ok        not logged in
-            // no        no            yes      !   fail      zombie login
-            // no        yes           no       !   fail      zombie token
-            // no        yes           no       !   fail      zombie token and zombie login
-            //
-            // yes       no            yes      !   ok        new login
-            // yes       no            no       !   fail      lost token
-            // yes       yes           yes      !   fail      zombie login
-            // yes       yes           no       !   ok        already logged in
+             // Simple logic: if we have a token, use it. If code in URL, exchange it for new token.
+             // Ignore code in URL if we already have a valid token (avoids "code expired" errors on reload)
 
-            if ( #{@app_id.nil?}){
-              if (! access_token && ! access_token_from_url)
-               {
-                // we are not logged in
-               }
-              else
-               {
-                 message = #{I18n.t("Zombie token or zombie login occured. Maybe you hit the back button in the browser.")}
-        #{iblock.call(%x{{"error": message }}, nil)}
-               }
+             if (access_token) {
+               // Case 1: Already logged in - use existing token
+               #{@root} = new Dropbox({accessToken: access_token})
+               #{iblock.call(nil, true)}
              }
-            else
-             {
-              if (!access_token ) {
-                if (access_token_from_url) {   // new login
-                    #{@root} = new Dropbox({accessToken: access_token_from_url})
-                    #{save_access_token_to_localstore(`access_token_from_url`)}
-        #{iblock.call(nil, true)}
-                 }
-                else  // ! lost token
-                 {
-                    message = #{I18n.t("Access token lost; do note use browser back or refresh button in login procedure.")}
-        #{iblock.call(%x{{"error": message }}, nil)}
-                 }
-               }
-             else  // has token
-              {
-                if (access_token_from_url){ // zombie token
-                  message = #{I18n.t("Zombie Accesstoken revoked; do not use Browser back after login to dropbox")}
-        #{
-        revoke_zombie_access_token(`access_token_from_url`)
-        iblock.call(%x{{"error": message }}, nil)
-        }
-                 }
-              else  // already logged in
-               {
-                #{@root} = new Dropbox({accessToken: access_token})
-                #{iblock.call(nil, true)}
-               }
-            }
-          }
-        }
-      end
+             else if (code_from_url) {
+               // Case 2: New login - code in URL, no token yet
+               // This will be exchanged for tokens in getAccesstokenWithRefresh()
+               #{getAccesstokenWithRefresh(iblock, `code_from_url`)}
+             }
+             else {
+               // Case 3: Not logged in - no token and no code
+               #{iblock.call(nil, false)}
+             }
+         }
+       end
 
       # this method supports to execute a block in a promise
       #
@@ -223,7 +269,8 @@ module Opal
           block.call(lambda { |error, data|
             if error
               # todo: don't know if this is generic enough. it assumes that error is a dedicated structure.
-              errormessage = Native(error).error rescue "unspecified error from Dropbox API"
+              errorjson = %x{JSON.stringify(error)}
+              errormessage = Native(error).error rescue errorjson
               promise.reject(errormessage)
             else
               promise.resolve(data)
@@ -263,7 +310,7 @@ module Opal
       def with_promise_retry(info = "", retries = 2, &block)
         Promise.new.tap do |promise|
           remaining = retries
-          handler   = lambda { |error, data|
+          handler = lambda { |error, data|
             if error
               remaining -= 1
               if remaining >= 0
@@ -282,7 +329,6 @@ module Opal
         end
       end
 
-
       # authenticate on dropbox
       # @return [Promise]
       def authenticate()
@@ -293,18 +339,11 @@ module Opal
 
       ## this performs a login on Dropbox
       def login
-        revoke_access_token if is_authenticated?
-
-        with_promise() do |iblock|
-          %x{
-           var authUrl = #{@root}.getAuthenticationUrl(#{Controller::get_uri[:origin] + "/"});
-           #{
-          remove_access_token_from_localstore
-          iblock.call(`{error: #{I18n.t("wait for Dropbox authentication")}}`, nil) # do not change this text
-          }
-           window.location.href=authUrl;
-          }
-        end
+        %x{
+           #{@dropboxPKCE}.getAuthUrl(#{Controller::get_uri[:origin]}).then(function(authUrl){
+             window.location.href = authUrl;
+           })
+         }
       end
 
       def reconnect()
@@ -314,11 +353,30 @@ module Opal
         end
       end
 
-
       def is_authenticated?
         not Native(get_access_token_from_localstore).nil?
       end
 
+      def validate_token
+        %x{
+        #{@login_info} = 'unknown token status';
+        #{@root}.usersGetCurrentAccount()
+           .then((response) => {
+             #{@login_info} = response;
+             alert("foo" + JSON.stringify(response));
+             console.log('Token ist gültig:', response);
+        })
+        .catch((error) => {
+          if (error.status === 401) {
+            #{@login_info} = 'TOKEN UNGÜLTIG: ' + error.message;
+            alert('Dropbox-Zugriff ist ungültig oder abgelaufen.');
+          } else {
+            #{@login_info} = 'SonstigerFehler: ' + error.message;
+            alert('Ein anderer Fehler ist aufgetreten:', error);
+          }
+          });
+        }
+      end
 
       # get information about the dropbox account
       # @return [Promise]
@@ -337,12 +395,13 @@ module Opal
       def write_file(filename, data)
         with_promise_retry(filename, 4) do |iblock|
           %x{#{@root}.filesUpload({path: #{filename}, contents: #{data}, mode:{'.tag': 'overwrite'}})
-            .then(function(respnse){#{iblock}(nil, respnse)})
-            .catch(function(error){#{iblock}(error, nil)})
+            .then(function(response){
+                #{iblock}(nil, response)})
+            .catch(function(error){
+                #{iblock}(error, nil)})
             }
         end
       end
-
 
       # @param [String] filename name of the file to be read
       # @return [Promise]
@@ -355,13 +414,13 @@ module Opal
                     reader.addEventListener("loadend", function(){
                      #{iblock}(nil, reader.result);
                     });
+                    // New Dropbox API: fileBlob is directly in response, not in response.result
                     reader.readAsText(response.fileBlob);
                  })
                 .catch(function(error){#{iblock}(error, nil)})
                 }
         end
       end
-
 
       # @param [String] dirname - name of the directory to be read
       # @return [Promise]
@@ -371,7 +430,7 @@ module Opal
           %x{
           #{@root}.filesListFolder({path: #{dirname}})
                 .then(function (response) {
-                    #{iblock}(nil, response.entries.map(function(i){return i.name}))
+                    #{iblock}(nil, response.result.entries.map(function(i){return i.name}))
                 })
                 .catch(function (error) {
                     #{iblock}(error, nil)
@@ -397,9 +456,7 @@ module Opal
         end
       end
 
-
       def choose_file(options)
-
 
         with_promise_chooser() do |iblock|
           if is_authenticated?
@@ -431,7 +488,6 @@ module Opal
           end
         end
       end
-
 
     end
 

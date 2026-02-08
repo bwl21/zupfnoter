@@ -1192,7 +1192,6 @@ class Controller
       command.set_help { "dropbox login for #{command.parameter_help(0)}" }
 
       command.as_action do |args|
-
         path = args[:path]
         path = reconcile_dropbox_path(path)
 
