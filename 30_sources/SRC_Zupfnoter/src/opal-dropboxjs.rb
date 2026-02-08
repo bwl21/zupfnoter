@@ -44,24 +44,37 @@ module Opal
           parsed_token = JSON.parse(`token`)
           refresh_token = parsed_token["refresh_token"]
 
-          new_access_token = get_new_access_token_from_dropbox(refresh_token)
-
-          parsed_token["access_token"]
+          if refresh_token
+            new_access_token = get_new_access_token_from_dropbox(refresh_token)
+            if new_access_token
+              parsed_token["access_token"] = new_access_token
+              save_access_and_refresh_token_to_localstore(parsed_token)
+              new_access_token
+            else
+              parsed_token["access_token"]
+            end
+          else
+            parsed_token["access_token"]
+          end
         else
           nil # Kein Token gefunden
         end
       end
 
       def get_new_access_token_from_dropbox(refresh_token)
+        new_token = nil
         %x{
-          dbx =  new Dropbox.Dropbox({refreshToken: #{refresh_token}});
-          debugger;
-           #{@dropboxPKCE}.refreshToken(#{refreshToken})
-           .then(function(response) {
-              debugger;
-              const newAccessToken = response.accessToken;
-           })
+          (async function() {
+            try {
+              const response = await #{@dropboxPKCE}.refreshToken(#{refresh_token});
+              #{new_token} = response.access_token;
+              console.log("New access token obtained:", #{new_token});
+            } catch (error) {
+              console.error("Token refresh failed:", error.message);
+            }
+          })();
         }
+        new_token
       end
 
       def get_refresh_token_from_localstore
@@ -122,14 +135,14 @@ module Opal
 
       def getAccessToken(iblock)
         %x{
-           debugger;
            const parsedUrl = new URL(window.location.href);
            const code = parsedUrl.searchParams.get('code')
            if (code) {
+             console.log("Authorization code found, exchanging for tokens...");
              #{getAccesstokenWithRefresh(iblock, `code`)}
            }
            else {
-             alert("looking  for existing access token");
+             console.log("No authorization code in URL, checking for existing access token");
             #{getAccessTokenNoRefresh(iblock)}
            }
          }
@@ -137,16 +150,19 @@ module Opal
 
       def getAccesstokenWithRefresh(iblock, code)
         %x{
-             #{@dropboxPKCE}.exchangeCodeForTokens(#{code})
-                .then(function(token) {
-debugger;
-                #{save_access_and_refresh_token_to_localstore(`token`)}
-            })
-            .catch(function (error) {
-debugger;
-                  alert ("getadressTokenWithRefresh:" + error.message)
-              }
-            )
+             (async function() {
+               try {
+                 console.log("Exchanging code for tokens...");
+                 const token = await #{@dropboxPKCE}.exchangeCodeForTokens(#{code});
+                 console.log("Token exchange successful:", token);
+                 #{save_access_and_refresh_token_to_localstore(`token`)}
+                 #{iblock.call(nil, true)}
+               } catch (error) {
+                 console.error("Token exchange failed:", error.message);
+                 alert("getAccessTokenWithRefresh: " + error.message);
+                 #{iblock.call(`{error: error.message}`, nil)}
+               }
+             })();
         }
       end
 

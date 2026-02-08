@@ -62,4 +62,22 @@ class DropboxPKCE {
         }
         return await response.json();
     }
+
+    async refreshToken(refreshToken) {
+        console.log("Refreshing token with refresh_token:", refreshToken);
+        const response = await fetch("https://api.dropboxapi.com/oauth2/token", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                grant_type: "refresh_token",
+                refresh_token: refreshToken,
+                client_id: this.clientId,
+            }),
+        });
+        if (!response.ok) {
+            const errorDetails = await response.json();
+            throw new Error(errorDetails.error_description || "Token refresh failed");
+        }
+        return await response.json();
+    }
 }
