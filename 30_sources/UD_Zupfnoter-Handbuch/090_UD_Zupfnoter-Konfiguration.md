@@ -1676,14 +1676,14 @@ Seitenbeschriftung vergibt Zupfnoter eine Nummer anstelle der `.0`.
             "value" : {
               "pos"   : [340, 251],
               "style" : "small",
-              "text"  : "© 2025\n"
+              "text"  : "© 2026\n"
             }
           },
           "T03_copyright_harpnotes"  : {
             "value" : {
               "pos"   : [340, 260],
               "style" : "small",
-              "text"  : "© 2025 Notenbild: zupfnoter.de"
+              "text"  : "© 2026 Notenbild: zupfnoter.de"
             }
           },
           "T04_to_order"             : {
@@ -1767,7 +1767,7 @@ Dies fügt einen Copyrightvermerk für die Musik ein. Hier wird das
 Copyright auf die Komposition angegeben.
 
         "T02_copyright_music": {
-          "value" : {"pos": [340, 251], "style": "small", "text": "© 2025\n"}
+          "value" : {"pos": [340, 251], "style": "small", "text": "© 2026\n"}
         }
           
 
@@ -1780,7 +1780,7 @@ reklamierst du ein Copyright für die Umsetzung auf die Tischharfe
           "value" : {
             "pos"   : [340, 260],
             "style" : "small",
-            "text"  : "© 2025 Notenbild: zupfnoter.de"
+            "text"  : "© 2026 Notenbild: zupfnoter.de"
           }
         }
           
