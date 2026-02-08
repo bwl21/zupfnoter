@@ -2,6 +2,10 @@
 
 # Änderungsgeschichte
 
+## kommend
+
+-   support dotted whole notes \#317
+
 ## V 1.15 Mai 2021
 
 ### Erweiterung
