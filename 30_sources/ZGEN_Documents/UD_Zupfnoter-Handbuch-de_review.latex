@@ -203,10 +203,10 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.16-3-gb12a702c
+Version V\_1.17
 
 \begin{verbatim}
-© 2025 https://www.zupfnoter.de
+© 2026 https://www.zupfnoter.de
 \end{verbatim}
 
 \clearpage
@@ -7187,14 +7187,14 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
         "value" : {
           "pos"   : [340, 251],
           "style" : "small",
-          "text"  : "© 2025\n"
+          "text"  : "© 2026\n"
         }
       },
       "T03_copyright_harpnotes"  : {
         "value" : {
           "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2025 Notenbild: zupfnoter.de"
+          "text"  : "© 2026 Notenbild: zupfnoter.de"
         }
       },
       "T04_to_order"             : {
@@ -7309,7 +7309,7 @@ das Copyright auf die Komposition angegeben.
 
 \begin{verbatim}
     "T02_copyright_music": {
-      "value" : {"pos": [340, 251], "style": "small", "text": "© 2025\n"}
+      "value" : {"pos": [340, 251], "style": "small", "text": "© 2026\n"}
     }
       
 \end{verbatim}
@@ -7328,7 +7328,7 @@ Tischharfe
       "value" : {
         "pos"   : [340, 260],
         "style" : "small",
-        "text"  : "© 2025 Notenbild: zupfnoter.de"
+        "text"  : "© 2026 Notenbild: zupfnoter.de"
       }
     }
       

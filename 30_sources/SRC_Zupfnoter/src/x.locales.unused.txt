@@ -1,5 +1,6 @@
 $resources
 abc Tutorial
+Access token lost; do note use browser back or refresh button in login procedure.
 Auto Refresh
 barnumber
 barnumbers.full
@@ -88,8 +89,11 @@ Stringnames
 stringnames.full
 trpos
 url
+wait for Dropbox authentication
 xx
 xxspecify layout details 
 (e.g. size of symbols)
+Zombie Accesstoken revoked; do not use Browser back after login to dropbox
+Zombie token or zombie login occured. Maybe you hit the back button in the browser.
 zoom harpnote preview
 _ende_der_liste
