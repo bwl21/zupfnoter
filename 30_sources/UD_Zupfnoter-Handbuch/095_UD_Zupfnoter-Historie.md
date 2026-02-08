@@ -6,6 +6,28 @@
 
 -   support dotted whole notes \#317
 
+## V 1.17 März 2025
+
+### Erweiterung
+
+-   Dropbox OAuth2 PKCE Flow für sicherere Authentifizierung
+-   Unterstützung für Offline-Zugriff mit Refresh Tokens
+-   Token-Refresh-Mechanismus für erweiterte Session-Dauer (kein 4-Stunden-Timeout mehr)
+-   Automatische Migration alter Token-Formate beim Login
+
+### Fix
+
+-   Behoben: Dropbox API v2 SDK-Initialisierung
+-   Behoben: Login-Flow mit Authorization Code
+-   Behoben: filesDownload API Response-Handling
+-   Behoben: Soundfont-Pfade bei Deployment
+-   Verbesserte Token-Speicherung und Verwaltung
+
+## V 1.16 März 2021
+
+-   Support für 15-saitige Zupfharfe
+-   Unterstützung offener Stimmungen überall möglich
+
 ## V 1.15 Mai 2021
 
 ### Erweiterung

@@ -9,6 +9,23 @@
 * flowlines can be interrrupted by !breath!, and bar types `||` `|]` #301
 * support dotted whole notes #317
 
+# 1.17 March 2025
+
+## enhancement
+
+* Dropbox OAuth2 PKCE Flow for secure authentication
+* Support for offline access with refresh tokens
+* Token refresh mechanism for extended session duration (no more 4-hour timeout)
+* Automatic migration of legacy token formats on login
+
+## fix
+
+* Fixed Dropbox API v2 SDK initialization
+* Fixed login flow with authorization code handling
+* Fixed filesDownload API response handling
+* Fixed soundfont paths during deployment
+* Improved token storage and management
+
 # 1.16 March 2021
 
 * Support 15-String Zupfnoter
