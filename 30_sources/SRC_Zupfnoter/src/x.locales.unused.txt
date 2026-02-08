@@ -88,6 +88,7 @@ Stringnames
 stringnames.full
 trpos
 url
+wait for Dropbox authentication
 xx
 xxspecify layout details 
 (e.g. size of symbols)
