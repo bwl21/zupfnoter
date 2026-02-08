@@ -7,6 +7,7 @@
 * add support - link in help menu
 * upgrade to abc2svg - more close to the standard
 * flowlines can be interrrupted by !breath!, and bar types `||` `|]` #301
+* support dotted whole notes #317
 
 # 1.16 March 2021
 

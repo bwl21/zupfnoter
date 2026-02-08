@@ -1,5 +1,5 @@
 
-Version V_1.16-5-gabcf3e74
+Version V_1.17
 
-    © 2022 https://www.zupfnoter.de
+    © 2026 https://www.zupfnoter.de
     

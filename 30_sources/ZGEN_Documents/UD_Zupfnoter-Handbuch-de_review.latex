@@ -203,10 +203,10 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.16-5-gabcf3e74
+Version V\_1.17
 
 \begin{verbatim}
-© 2022 https://www.zupfnoter.de
+© 2026 https://www.zupfnoter.de
 \end{verbatim}
 
 \clearpage
@@ -7187,14 +7187,14 @@ Das ist allerdings nur in der Textansicht m\"{o}glich.
         "value" : {
           "pos"   : [340, 251],
           "style" : "small",
-          "text"  : "© 2022\n"
+          "text"  : "© 2026\n"
         }
       },
       "T03_copyright_harpnotes"  : {
         "value" : {
           "pos"   : [340, 260],
           "style" : "small",
-          "text"  : "© 2022 Notenbild: zupfnoter.de"
+          "text"  : "© 2026 Notenbild: zupfnoter.de"
         }
       },
       "T04_to_order"             : {
@@ -7309,7 +7309,7 @@ das Copyright auf die Komposition angegeben.
 
 \begin{verbatim}
     "T02_copyright_music": {
-      "value" : {"pos": [340, 251], "style": "small", "text": "© 2022\n"}
+      "value" : {"pos": [340, 251], "style": "small", "text": "© 2026\n"}
     }
       
 \end{verbatim}
@@ -7328,7 +7328,7 @@ Tischharfe
       "value" : {
         "pos"   : [340, 260],
         "style" : "small",
-        "text"  : "© 2022 Notenbild: zupfnoter.de"
+        "text"  : "© 2026 Notenbild: zupfnoter.de"
       }
     }
       
@@ -8085,6 +8085,15 @@ erh\"{o}hen.
 
 \hypertarget{aux308nderungsgeschichte}{%
 \section{\"{A}nderungsgeschichte}\label{aux308nderungsgeschichte}}
+
+\hypertarget{kommend}{%
+\subsection{kommend}\label{kommend}}
+
+\begin{itemize}
+\tightlist
+\item
+  support dotted whole notes \#317
+\end{itemize}
 
 \hypertarget{v-1.15-mai-2021}{%
 \subsection{V 1.15 Mai 2021}\label{v-1.15-mai-2021}}
