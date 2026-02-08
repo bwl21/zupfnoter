@@ -32,7 +32,7 @@ module Opal
         @app_secret = "jt8veky2idx2kkj"
         @app_key = key
 
-        ## todo do we need this?  @root = `new Dropbox.Dropbox({clientId: #{key}, clientSecret: #{@app_secret}})`
+        ## todo do we need this?  @root = `new Dropbox({clientId: #{key}, clientSecret: #{@app_secret}})`
 
         @redirect_uri = Controller::get_uri[:origin] + "/"
         @dropboxPKCE = `new DropboxPKCE(#{key}, #{@redirect_uri})`;
@@ -93,7 +93,7 @@ module Opal
 
       def revoke_zombie_access_token(access_token)
         %x{
-           dbx =  new Dropbox.Dropbox({accessToken: #{access_token}});
+           dbx =  new Dropbox({accessToken: #{access_token}});
 
            dbx.authTokenRevoke()
            .then(function(response) {
@@ -247,7 +247,7 @@ module Opal
              {
               if (!access_token ) {
                 if (access_token_from_url) {   // new login
-                    #{@root} = new Dropbox.Dropbox({accessToken: access_token_from_url})
+                    #{@root} = new Dropbox({accessToken: access_token_from_url})
                     #{save_access_and_refresh_token_to_localstore(`access_token_from_url`)}
                     #{iblock.call(nil, true)}
                  }
@@ -268,7 +268,7 @@ module Opal
                  }
               else  // already logged in
                {
-                #{@root} = new Dropbox.Dropbox({accessToken: access_token})
+                #{@root} = new Dropbox({accessToken: access_token})
                 #{iblock.call(nil, true)}
                }
             }
@@ -373,7 +373,7 @@ module Opal
       def reconnect()
         access_token = get_access_token_from_localstore # try to get an accesstoken from previous session
         if access_token
-          @root = %x{new Dropbox.Dropbox({accessToken: #{access_token}})}
+          @root = %x{new Dropbox({accessToken: #{access_token}})}
         end
       end
 
