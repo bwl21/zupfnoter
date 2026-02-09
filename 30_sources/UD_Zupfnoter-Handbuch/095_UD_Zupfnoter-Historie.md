@@ -12,7 +12,8 @@
 
 -   Dropbox OAuth2 PKCE Flow für sicherere Authentifizierung
 -   Unterstützung für Offline-Zugriff mit Refresh Tokens
--   Token-Refresh-Mechanismus für erweiterte Session-Dauer (kein 4-Stunden-Timeout mehr)
+-   Token-Refresh-Mechanismus für erweiterte Session-Dauer (kein
+    4-Stunden-Timeout mehr)
 -   Automatische Migration alter Token-Formate beim Login
 
 ### Fix

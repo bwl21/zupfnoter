@@ -7,12 +7,12 @@
     "doc": "doc"
   },
   "dependencies": {
-    "ajv": "^4.8.2",
+    "ajv": "^8.17.1",
     "blob": "^0.0.4",
     "encoding": "^0.1.12",
     "glob": "^7.1.6",
     "jscs": "^2.1.1",
-    "jspdf": "^2.3.1",
+    "jspdf": "^4.1.0",
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
     "unxhr": "^1.0.1"
   },

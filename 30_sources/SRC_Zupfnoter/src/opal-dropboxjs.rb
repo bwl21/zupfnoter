@@ -349,7 +349,10 @@ module Opal
       def reconnect()
         access_token = get_access_token_from_localstore # try to get an accesstoken from previous session
         if access_token
+          $log.info("Reconnecting to Dropbox with token: #{access_token[0..10]}...")
           @root = %x{new Dropbox({accessToken: #{access_token}})}
+        else
+          $log.warn("No access token available for reconnect")
         end
       end
 
@@ -407,20 +410,30 @@ module Opal
       # @return [Promise]
 
       def read_file(filename)
-        with_promise() do |iblock|
-          %x{#@root.filesDownload({path: #{filename}})
-                .then(function(response){
-                    reader = new FileReader();
-                    reader.addEventListener("loadend", function(){
-                     #{iblock}(nil, reader.result);
-                    });
-                    // New Dropbox API: fileBlob is directly in response, not in response.result
-                    reader.readAsText(response.fileBlob);
-                 })
-                .catch(function(error){#{iblock}(error, nil)})
-                }
-        end
-      end
+         with_promise() do |iblock|
+           %x{
+             (async function() {
+               try {
+                 // Ensure token is fresh before download
+                 const token = #{get_access_token_from_localstore};
+                 if (!token) {
+                   #{iblock}({error: 'Not authenticated'}, nil);
+                   return;
+                 }
+                 const response = await #{@root}.filesDownload({path: #{filename}});
+                 const reader = new FileReader();
+                 reader.addEventListener("loadend", function(){
+                   #{iblock}(nil, reader.result);
+                 });
+                 reader.readAsText(response.fileBlob);
+               } catch(error) {
+                 console.error('Error reading file:', error);
+                 #{iblock}(error, nil);
+               }
+             })();
+           }
+         end
+       end
 
       # @param [String] dirname - name of the directory to be read
       # @return [Promise]

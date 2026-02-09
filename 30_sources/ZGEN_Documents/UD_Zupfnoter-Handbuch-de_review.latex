@@ -203,7 +203,7 @@
 \hyphenation{Zupf-noter}
 \hyphenation{Fen-ster}
 
-Version V\_1.17
+Version V\_1.17-2-gb24554e6
 
 \begin{verbatim}
 © 2026 https://www.zupfnoter.de
@@ -8095,11 +8095,58 @@ erh\"{o}hen.
   support dotted whole notes \#317
 \end{itemize}
 
-\hypertarget{v-1.15-mai-2021}{%
-\subsection{V 1.15 Mai 2021}\label{v-1.15-mai-2021}}
+\hypertarget{v-1.17-maux308rz-2025}{%
+\subsection{V 1.17 M\"{a}rz 2025}\label{v-1.17-maux308rz-2025}}
 
 \hypertarget{erweiterung}{%
 \subsubsection{Erweiterung}\label{erweiterung}}
+
+\begin{itemize}
+\tightlist
+\item
+  Dropbox OAuth2 PKCE Flow f\"{u}r sicherere Authentifizierung
+\item
+  Unterst\"{u}tzung f\"{u}r Offline-Zugriff mit Refresh Tokens
+\item
+  Token-Refresh-Mechanismus f\"{u}r erweiterte Session-Dauer (kein
+  4-Stunden-Timeout mehr)
+\item
+  Automatische Migration alter Token-Formate beim Login
+\end{itemize}
+
+\hypertarget{fix}{%
+\subsubsection{Fix}\label{fix}}
+
+\begin{itemize}
+\tightlist
+\item
+  Behoben: Dropbox API v2 SDK-Initialisierung
+\item
+  Behoben: Login-Flow mit Authorization Code
+\item
+  Behoben: filesDownload API Response-Handling
+\item
+  Behoben: Soundfont-Pfade bei Deployment
+\item
+  Verbesserte Token-Speicherung und Verwaltung
+\end{itemize}
+
+\hypertarget{v-1.16-maux308rz-2021}{%
+\subsection{V 1.16 M\"{a}rz 2021}\label{v-1.16-maux308rz-2021}}
+
+\begin{itemize}
+\tightlist
+\item
+  Support f\"{u}r 15-saitige Zupfharfe
+\item
+  Unterst\"{u}tzung offener Stimmungen \"{u}berall m\"{o}glich
+\end{itemize}
+
+\hypertarget{v-1.15-mai-2021}{%
+\subsection{V 1.15 Mai 2021}\label{v-1.15-mai-2021}}
+
+\hypertarget{erweiterung-1}{%
+\subsubsection{Erweiterung}\label{erweiterung-1}}
 
 \begin{itemize}
 \tightlist
@@ -8128,8 +8175,8 @@ erh\"{o}hen.
   verbesserte Erkennung fehlender Tonartmodi
 \end{itemize}
 
-\hypertarget{fix}{%
-\subsubsection{fix}\label{fix}}
+\hypertarget{fix-1}{%
+\subsubsection{fix}\label{fix-1}}
 
 \begin{itemize}
 \tightlist
@@ -8149,8 +8196,8 @@ erh\"{o}hen.
 \hypertarget{v-1.14-februar-2021}{%
 \subsection{V 1.14 Februar 2021}\label{v-1.14-februar-2021}}
 
-\hypertarget{fix-1}{%
-\subsubsection{fix}\label{fix-1}}
+\hypertarget{fix-2}{%
+\subsubsection{fix}\label{fix-2}}
 
 \begin{itemize}
 \tightlist
@@ -8170,8 +8217,8 @@ erh\"{o}hen.
 \hypertarget{v-1.13-dezember-2019}{%
 \subsection{V 1.13 Dezember 2019}\label{v-1.13-dezember-2019}}
 
-\hypertarget{fix-2}{%
-\subsubsection{fix}\label{fix-2}}
+\hypertarget{fix-3}{%
+\subsubsection{fix}\label{fix-3}}
 
 \begin{itemize}
 \tightlist
@@ -8221,8 +8268,8 @@ erh\"{o}hen.
   Probleme mit Grafiken \#278
 \end{itemize}
 
-\hypertarget{erweiterung-1}{%
-\subsubsection{Erweiterung}\label{erweiterung-1}}
+\hypertarget{erweiterung-2}{%
+\subsubsection{Erweiterung}\label{erweiterung-2}}
 
 \begin{itemize}
 \tightlist
@@ -8257,8 +8304,8 @@ erh\"{o}hen.
 \hypertarget{v-1.11-18.4.2019}{%
 \subsection{V 1.11 18.4.2019}\label{v-1.11-18.4.2019}}
 
-\hypertarget{fix-3}{%
-\subsubsection{fix}\label{fix-3}}
+\hypertarget{fix-4}{%
+\subsubsection{fix}\label{fix-4}}
 
 \begin{itemize}
 \tightlist
@@ -8313,8 +8360,8 @@ erh\"{o}hen.
 \hypertarget{v.1.10-nov-2018}{%
 \subsection{V.1.10 Nov 2018}\label{v.1.10-nov-2018}}
 
-\hypertarget{fix-4}{%
-\subsubsection{fix}\label{fix-4}}
+\hypertarget{fix-5}{%
+\subsubsection{fix}\label{fix-5}}
 
 \begin{itemize}
 \tightlist
@@ -8625,8 +8672,8 @@ internal release
 \hypertarget{v-1.7.1}{%
 \subsection{v 1.7.1}\label{v-1.7.1}}
 
-\hypertarget{fix-5}{%
-\subsubsection{fix}\label{fix-5}}
+\hypertarget{fix-6}{%
+\subsubsection{fix}\label{fix-6}}
 
 \begin{itemize}
 \tightlist
@@ -8642,8 +8689,8 @@ internal release
 \hypertarget{v-1.7}{%
 \subsection{v 1.7}\label{v-1.7}}
 
-\hypertarget{fix-6}{%
-\subsubsection{fix}\label{fix-6}}
+\hypertarget{fix-7}{%
+\subsubsection{fix}\label{fix-7}}
 
 \begin{itemize}
 \tightlist
@@ -8821,8 +8868,8 @@ Dragging of jumpline does not work properly on Saitenspiel \#158
   Referenz erzeugt nun keine Fehlermehr
 \end{itemize}
 
-\hypertarget{erweiterung-2}{%
-\subsubsection{Erweiterung}\label{erweiterung-2}}
+\hypertarget{erweiterung-3}{%
+\subsubsection{Erweiterung}\label{erweiterung-3}}
 
 \begin{itemize}
 \tightlist
@@ -8915,8 +8962,8 @@ issues}\label{backward-compatibility-issues}}
   in configuration \#95
 \end{itemize}
 
-\hypertarget{fix-7}{%
-\subsubsection{Fix}\label{fix-7}}
+\hypertarget{fix-8}{%
+\subsubsection{Fix}\label{fix-8}}
 
 \begin{itemize}
 \tightlist
@@ -8986,8 +9033,8 @@ issues}\label{backward-compatibility-issues}}
 \hypertarget{v-1.4.2}{%
 \subsection{V 1.4.2}\label{v-1.4.2}}
 
-\hypertarget{fix-8}{%
-\subsubsection{Fix}\label{fix-8}}
+\hypertarget{fix-9}{%
+\subsubsection{Fix}\label{fix-9}}
 
 \begin{itemize}
 \tightlist
@@ -9004,8 +9051,8 @@ issues}\label{backward-compatibility-issues}}
 \hypertarget{v-1.4.2-1}{%
 \subsection{V 1.4.2}\label{v-1.4.2-1}}
 
-\hypertarget{fix-9}{%
-\subsubsection{Fix}\label{fix-9}}
+\hypertarget{fix-10}{%
+\subsubsection{Fix}\label{fix-10}}
 
 \begin{itemize}
 \tightlist
