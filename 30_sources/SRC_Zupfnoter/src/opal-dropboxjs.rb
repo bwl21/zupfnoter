@@ -400,10 +400,32 @@ module Opal
           %x{
             (async function() {
               try {
-                const token = #{get_access_token_from_localstore};
+                let token = localStorage.getItem(#{@accesstoken_key});
                 if (!token) {
                   #{iblock}({error: 'Not authenticated'}, nil);
                   return;
+                }
+                
+                // Try to parse token and get fresh access token if needed
+                try {
+                  const tokenData = JSON.parse(token);
+                  const refreshToken = tokenData.refresh_token;
+                  
+                  if (refreshToken) {
+                    try {
+                      const newTokenData = await #{@dropboxPKCE}.refreshToken(refreshToken);
+                      tokenData.access_token = newTokenData.access_token;
+                      localStorage.setItem(#{@accesstoken_key}, JSON.stringify(tokenData));
+                      token = newTokenData.access_token;
+                    } catch (refreshError) {
+                      console.warn('Token refresh failed, using existing token:', refreshError);
+                      token = tokenData.access_token;
+                    }
+                  } else {
+                    token = tokenData.access_token;
+                  }
+                } catch (parseError) {
+                  // Old token format (plain string)
                 }
                 
                 const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
@@ -440,14 +462,37 @@ module Opal
            %x{
              (async function() {
                try {
-                 // Ensure token is fresh before download
-                 const token = #{get_access_token_from_localstore};
+                 let token = localStorage.getItem(#{@accesstoken_key});
                  if (!token) {
                    #{iblock}({error: 'Not authenticated'}, nil);
                    return;
                  }
                  
-                 // Use fetch instead of SDK to avoid XMLHttpRequest responseType issue
+                 // Try to parse token and get fresh access token if needed
+                 try {
+                   const tokenData = JSON.parse(token);
+                   const refreshToken = tokenData.refresh_token;
+                   
+                   if (refreshToken) {
+                     // Try to refresh the token
+                     try {
+                       const newTokenData = await #{@dropboxPKCE}.refreshToken(refreshToken);
+                       tokenData.access_token = newTokenData.access_token;
+                       localStorage.setItem(#{@accesstoken_key}, JSON.stringify(tokenData));
+                       token = newTokenData.access_token;
+                       console.log('Token refreshed successfully');
+                     } catch (refreshError) {
+                       console.warn('Token refresh failed, using existing token:', refreshError);
+                       token = tokenData.access_token;
+                     }
+                   } else {
+                     token = tokenData.access_token;
+                   }
+                 } catch (parseError) {
+                   // Old token format (plain string)
+                 }
+                 
+                 // Download file
                  const response = await fetch('https://content.dropboxapi.com/2/files/download', {
                    method: 'POST',
                    headers: {
