@@ -397,12 +397,38 @@ module Opal
 
       def write_file(filename, data)
         with_promise_retry(filename, 4) do |iblock|
-          %x{#{@root}.filesUpload({path: #{filename}, contents: #{data}, mode:{'.tag': 'overwrite'}})
-            .then(function(response){
-                #{iblock}(nil, response)})
-            .catch(function(error){
-                #{iblock}(error, nil)})
-            }
+          %x{
+            (async function() {
+              try {
+                const token = #{get_access_token_from_localstore};
+                if (!token) {
+                  #{iblock}({error: 'Not authenticated'}, nil);
+                  return;
+                }
+                
+                const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Dropbox-API-Arg': JSON.stringify({path: #{filename}, mode: {'.tag': 'overwrite'}}),
+                    'Content-Type': 'application/octet-stream'
+                  },
+                  body: #{data}
+                });
+                
+                if (!response.ok) {
+                  #{iblock}({error: 'HTTP ' + response.status}, nil);
+                  return;
+                }
+                
+                const result = await response.json();
+                #{iblock}(nil, result);
+              } catch(error) {
+                console.error('Error writing file:', error);
+                #{iblock}(error, nil);
+              }
+            })();
+          }
         end
       end
 
@@ -420,12 +446,27 @@ module Opal
                    #{iblock}({error: 'Not authenticated'}, nil);
                    return;
                  }
-                 const response = await #{@root}.filesDownload({path: #{filename}});
+                 
+                 // Use fetch instead of SDK to avoid XMLHttpRequest responseType issue
+                 const response = await fetch('https://content.dropboxapi.com/2/files/download', {
+                   method: 'POST',
+                   headers: {
+                     'Authorization': 'Bearer ' + token,
+                     'Dropbox-API-Arg': JSON.stringify({path: #{filename}})
+                   }
+                 });
+                 
+                 if (!response.ok) {
+                   #{iblock}({error: 'HTTP ' + response.status + ': ' + response.statusText}, nil);
+                   return;
+                 }
+                 
+                 const blob = await response.blob();
                  const reader = new FileReader();
                  reader.addEventListener("loadend", function(){
                    #{iblock}(nil, reader.result);
                  });
-                 reader.readAsText(response.fileBlob);
+                 reader.readAsText(blob);
                } catch(error) {
                  console.error('Error reading file:', error);
                  #{iblock}(error, nil);
