@@ -1,6 +1,21 @@
 # require 'promise'
 
 ## this wraps dropbox - api - v2.0
+#
+# IMPORTANT: WORKAROUND FOR DROPBOX SDK BUG
+# =========================================
+# The Dropbox SDK has a bug with blob responses where it tries to access
+# responseText on an XMLHttpRequest with responseType='blob', causing
+# InvalidStateError. Also, token refresh cannot be called synchronously
+# before API calls (async/await issue in Ruby Opal).
+#
+# SOLUTION: Use fetch() API directly instead of Dropbox SDK for
+# filesDownload and filesUpload. Token refresh happens inline before
+# each API call to ensure we always have a valid access_token.
+#
+# See commits:
+# - fix: Use fetch() directly for Dropbox API calls to avoid SDK bug
+# - fix: Add token refresh in read/write_file to handle expired tokens
 
 module Opal
   module DropboxJs
