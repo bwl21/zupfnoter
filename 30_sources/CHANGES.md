@@ -9,6 +9,14 @@
 * flowlines can be interrrupted by !breath!, and bar types `||` `|]` #301
 * support dotted whole notes #317
 
+# 1.17.1 February 2025
+
+## fix
+
+* Fixed Dropbox SDK XMLHttpRequest blob response bug
+* Fixed token refresh on expired access tokens
+* Improved error handling for Dropbox API calls
+
 # 1.17 March 2025
 
 ## enhancement

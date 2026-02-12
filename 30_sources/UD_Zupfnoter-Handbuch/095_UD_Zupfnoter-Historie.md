@@ -6,6 +6,14 @@
 
 -   support dotted whole notes \#317
 
+## V 1.17.1 Februar 2025
+
+### Fix
+
+-   Behoben: Dropbox SDK XMLHttpRequest blob response bug
+-   Behoben: Token-Refresh bei abgelaufenem Access Token
+-   Verbesserte Fehlerbehandlung bei Dropbox API Calls
+
 ## V 1.17 März 2025
 
 ### Erweiterung
