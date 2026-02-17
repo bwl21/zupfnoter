@@ -104,6 +104,118 @@ bereits in `abc2svg-model.schema.json`.
 | 17 | `remark` | `_transform_remark` | **Bemerkung** (ABC: `[r:name]`). Speichert den Text in `@remark_table`, damit er als benutzerdefinierte `znid` für die zugehörige Note verwendet werden kann. |
 
 
+### Klassendiagramm (Stufe 1)
+
+```mermaid
+classDiagram
+    direction TB
+
+    class abc_model {
+        +String[] music_types
+        +Object music_type_ids
+        +Voice[] voices
+    }
+
+    class music_type_ids {
+        +Integer note
+        +Integer bar
+        +Integer tempo
+    }
+
+    class Voice {
+        +VoiceProperties voice_properties
+        +VoiceElement[] symbols
+    }
+
+    class VoiceProperties {
+        +String id
+        +KeyElement key
+        +KeyElement okey
+        +Meter meter
+    }
+
+    class KeyElement {
+        +Integer k_sf
+        +Integer k_mode
+    }
+
+    class Meter {
+        +Integer wmeasure
+        +AMeter[] a_meter
+    }
+
+    class AMeter {
+        +String bot
+    }
+
+    class VoiceElement {
+        +Integer type
+        +Integer time
+        +Integer dur
+        +Integer istart
+        +Integer iend
+        +Boolean invis
+        +NoteEntry[] notes
+        +String bar_type
+        +Boolean invisible
+        +Integer rbstart
+        +Integer rbstop
+        +String text
+        +Object ti1
+        +Boolean in_tuplet
+        +TupletParam[] tp
+        +Boolean tpe
+        +Integer slur_sls
+        +Integer slur_end
+        +GchEntry[] a_gch
+        +Decoration[] a_dd
+        +Lyric[] a_ly
+        +Integer wmeasure
+        +AMeter[] a_meter
+        +Integer tempo
+        +Number[] tempo_notes
+        +Object sy
+        +Array extra
+    }
+
+    class NoteEntry {
+        +Integer midi
+        +Integer dur
+    }
+
+    class TupletParam {
+        +Integer p
+    }
+
+    class GchEntry {
+        +String type
+        +String text
+    }
+
+    class Decoration {
+        +String name
+    }
+
+    class Lyric {
+        +String t
+    }
+
+    abc_model "1" *-- "1" music_type_ids
+    abc_model "1" *-- "1..*" Voice
+    Voice "1" *-- "1" VoiceProperties
+    Voice "1" *-- "0..*" VoiceElement
+    VoiceProperties "1" *-- "1" KeyElement : key
+    VoiceProperties "1" *-- "0..1" KeyElement : okey
+    VoiceProperties "1" *-- "1" Meter
+    Meter "1" *-- "0..*" AMeter
+    VoiceElement "1" *-- "0..*" NoteEntry : notes
+    VoiceElement "1" *-- "0..*" TupletParam : tp
+    VoiceElement "1" *-- "0..*" GchEntry : a_gch
+    VoiceElement "1" *-- "0..*" Decoration : a_dd
+    VoiceElement "1" *-- "0..*" Lyric : a_ly
+    VoiceElement "1" *-- "0..*" AMeter : a_meter
+```
+
 ### JSON-Schema (Stufe 1)
 
 Die folgenden Properties werden tatsächlich von `Abc2svgToHarpnotes` gelesen:
@@ -415,6 +527,161 @@ mit Stimmen, Noten, Pausen, Sprüngen und Metadaten. Es hat bereits eine
 | `style` | Text-Stil (z.B. `:regular`, `:bold`, `:small_italic`). Wird in `FONT_STYLE_DEF` aufgelöst. |
 | `pos` | Offset-Position relativ zur Note als `[x, y]`. |
 | `policy` | Steuerungsinformation (z.B. `:Goto` für Volta-Annotationen). |
+
+### Klassendiagramm (Stufe 2)
+
+Gestrichelte Pfeile (`..>`) zeigen **znid-Referenzen** — zirkuläre Beziehungen,
+die bei der Serialisierung durch String-IDs aufgelöst werden.
+
+```mermaid
+classDiagram
+    direction TB
+
+    class Song {
+        +Object meta_data
+        +Object harpnote_options
+        +Voice[] voices
+        +BeatMap[] beat_maps
+        +String checksum
+    }
+
+    class MetaData {
+        +String number
+        +String composer
+        +String title
+        +String filename
+        +Object tempo
+        +String tempo_display
+        +String[] meter
+        +String key
+        +String o_key
+    }
+
+    class MusicEntity {
+        <<abstract>>
+        +String class
+        +Integer beat
+        +Integer time
+        +Boolean visible
+        +Integer variant
+        +String znid
+        +String conf_key
+        +Integer[] start_pos
+        +Integer[] end_pos
+        +String[] decorations
+        +String[] bardecorations
+        +Origin origin
+    }
+
+    class Origin {
+        +Integer startChar
+        +Integer endChar
+        +Integer[] start_pos
+        +Integer[] end_pos
+    }
+
+    class Note {
+        +Integer pitch
+        +Integer duration
+        +Boolean first_in_part
+        +Boolean measure_start
+        +Integer measure_count
+        +String count_note
+        +String lyrics
+        +Boolean tie_start
+        +Boolean tie_end
+        +Integer[] slur_starts
+        +Integer[] slur_ends
+        +Integer tuplet
+        +Boolean tuplet_start
+        +Boolean tuplet_end
+        +Object shift
+        +String chord_symbol
+    }
+
+    class Pause {
+        +Integer pitch
+        +Integer duration
+        +Boolean invisible
+        +Boolean measure_start
+        +Integer measure_count
+        +String count_note
+    }
+
+    class SynchPoint {
+        +Note[] notes
+        +Integer duration
+        +Boolean measure_start
+        +Integer measure_count
+    }
+
+    class Goto {
+        +String from  ← znid
+        +String to  ← znid
+        +GotoPolicy policy
+    }
+
+    class GotoPolicy {
+        +Integer distance
+        +Boolean is_repeat
+        +Integer level
+        +String conf_key
+        +String from_anchor
+        +String to_anchor
+        +String vertical_anchor
+        +Number padding
+    }
+
+    class NoteBoundAnnotation {
+        +String companion  ← znid
+        +String text
+        +String style
+        +Number[] pos
+    }
+
+    class Chordsymbol {
+        +String companion  ← znid
+        +String text
+        +String style
+        +Number[] pos
+    }
+
+    class MeasureStart {
+        +String companion  ← znid
+    }
+
+    class NewPart {
+        +String name
+    }
+
+    class BeatMap {
+        +Map~Integer-Playable~ beats
+    }
+
+    MusicEntity <|-- Note
+    MusicEntity <|-- Pause
+    MusicEntity <|-- SynchPoint
+    MusicEntity <|-- Goto
+    MusicEntity <|-- NoteBoundAnnotation
+    MusicEntity <|-- Chordsymbol
+    MusicEntity <|-- MeasureStart
+    MusicEntity <|-- NewPart
+
+    Song "1" *-- "1" MetaData : meta_data
+    Song "1" *-- "1..*" BeatMap : beat_maps
+    Song "1" *-- "2..*" MusicEntity : voices[][]
+
+    MusicEntity "1" *-- "0..1" Origin : origin
+    SynchPoint "1" *-- "2..*" Note : notes
+    Goto "1" *-- "1" GotoPolicy : policy
+
+    Goto "1" ..> "1" MusicEntity : from → znid
+    Goto "1" ..> "1" MusicEntity : to → znid
+    NoteBoundAnnotation "1" ..> "1" MusicEntity : companion → znid
+    Chordsymbol "1" ..> "1" MusicEntity : companion → znid
+    MeasureStart "1" ..> "1" MusicEntity : companion → znid
+    BeatMap "1" ..> "0..*" MusicEntity : beat → Playable
+```
 
 ### JSON-Schema (Stufe 2)
 
@@ -793,6 +1060,96 @@ Position, Größe, Farbe und Linienbreite.
 | `url` | Data-URI (Base64) oder URL des Bildes. Aus `$resources` geladen. |
 | `llpos` | Position der unteren linken Ecke `[x, y]` in mm. |
 | `height` | Höhe des Bildes in mm. Die Breite wird proportional berechnet. |
+
+### Klassendiagramm (Stufe 3)
+
+```mermaid
+classDiagram
+    direction TB
+
+    class Sheet {
+        +Integer[] active_voices
+        +PrinterConfig printer_config
+        +Drawable[] children
+    }
+
+    class PrinterConfig {
+        +Number[] a3_offset
+        +Number[] a4_offset
+        +Integer[] a4_pages
+        +Boolean show_border
+    }
+
+    class Drawable {
+        <<abstract>>
+        +String class
+        +Boolean visible
+        +String color
+        +Number line_width
+        +String conf_key
+        +Any conf_value
+    }
+
+    class Ellipse {
+        +Number[] center
+        +Number[] size
+        +String fill
+        +Boolean dotted
+        +Boolean rect
+        +Boolean hasbarover
+    }
+
+    class FlowLine {
+        +Number[] from
+        +Number[] to
+        +String style
+    }
+
+    class Path {
+        +Array[] path
+        +String fill
+        +String style
+    }
+
+    class Annotation {
+        +Number[] center
+        +String text
+        +String style
+        +String align
+        +String baseline
+    }
+
+    class Glyph {
+        +Number[] center
+        +Number[] size
+        +String glyph_name
+        +GlyphData glyph
+        +Boolean dotted
+    }
+
+    class GlyphData {
+        +Array d
+        +Number w
+        +Number h
+    }
+
+    class Image {
+        +String url
+        +Number[] llpos
+        +Number height
+    }
+
+    Drawable <|-- Ellipse
+    Drawable <|-- FlowLine
+    Drawable <|-- Path
+    Drawable <|-- Annotation
+    Drawable <|-- Glyph
+    Drawable <|-- Image
+
+    Sheet "1" *-- "1" PrinterConfig : printer_config
+    Sheet "1" *-- "0..*" Drawable : children
+    Glyph "1" *-- "1" GlyphData : glyph
+```
 
 ### JSON-Schema (Stufe 3)
 

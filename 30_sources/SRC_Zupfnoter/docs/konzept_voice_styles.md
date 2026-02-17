@@ -466,4 +466,4 @@ einen Abschnittswechsel überbrücken, wird der Stil des **Ziel-Playables** verw
 
 5. **PDF-Export**: Die Stile müssen auch im PDF korrekt gerendert werden. Da `pdf_engine.rb` 
    die Drawable-Objekte mit ihren `color`- und `line_width`-Attributen rendert, sollte 
-   dies automatisch funktionieren – die Stilinformationen sind bereits im Drawable hinterlegt.
+   dies automatisch funktionieren – die Stilinformationen sind bereits im Drawable hinterlegt.+
