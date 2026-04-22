@@ -16,6 +16,8 @@ abstract: |
 author:
 - 'www.zupfnoter.de'
 title: Zupfnoter Benutzerhandbuch
+mainfont: "Libertinus Serif"
+monofont: "DejaVu Sans Mono"
 ---
 
 # Über dieses Handbuch
