@@ -40839,8 +40839,9 @@ Opal.modules["harpnotes"] = function(Opal) {
         }, $MusicEntity_start_pos_to_s$3.$$arity = 0);
         return (Opal.def(self, '$to_json', $MusicEntity_to_json$4 = function $$to_json() {
           var $$5, self = this;
-
-          return $$($nesting, 'Hash')['$[]']($rb_plus([["class", self.$class()]], $send($rb_minus(self.$instance_variables(), ["@constructor", "@toString"]), 'map', [], ($$5 = function(v){var self = $$5.$$s || this;
+          // PATCH: exclude circular/internal fields to prevent stack overflow
+          var _excluded = ["@constructor", "@toString", "@next_playable", "@prev_playable", "@next_pitch", "@prev_pitch", "@companion", "@origin"];
+          return $$($nesting, 'Hash')['$[]']($rb_plus([["class", self.$class()]], $send($rb_minus(self.$instance_variables(), _excluded), 'map', [], ($$5 = function(v){var self = $$5.$$s || this;
 
           
             
@@ -83880,7 +83881,9 @@ Opal.loaded(["./abc2svg-1.js"]);
   global.atob = function atob(a) {return Buffer.from(a, 'base64').toString('binary');};
 
   jsPDF = require ("../vendor/jspdf.node.debug.js")   // adapt in opal-jspdf.rb
-  Ajv = require("ajv")        // adapt in opal-ajv.rb
+  var _AjvLib = require("/tmp/zupfnoter/30_sources/SRC_Zupfnoter/src/node_modules/ajv"); // patched: use external ajv@6
+  var _AjvDraft04 = require("/tmp/zupfnoter/30_sources/SRC_Zupfnoter/src/node_modules/ajv/lib/refs/json-schema-draft-04.json");
+  Ajv = function(opts) { var a = new _AjvLib(Object.assign({schemaId: 'auto'}, opts)); a.addMetaSchema(_AjvDraft04); return a; } // adapt in opal-ajv.rb
   neatJSON = require("./neatjson_js") // adapt in opal-neatjson.rb
 
   // these requires are requred by nodejs/dir, nodejs/file
@@ -83953,6 +83956,29 @@ Opal.loaded(["./abc2svg-1.js"]);
       controller.$apply_config(config);};
     controller.$load_music_model();
     $$($nesting, 'File').$write("x.json", controller.$abc_model().$to_json());
+    // PATCH: export Song JSON
+    var _songJson = controller.$instance_variable_get("@music_model").$to_json();
+    var _baseName = require('path').basename(sourcefile, '.abc');
+    fs.writeFileSync(targetfolder + "/" + _baseName + ".song.json", _songJson);
+    // PATCH: export Sheet JSON (layout result)
+    var _sheet = controller.$layout_harpnotes();
+    if (_sheet && _sheet.$children) {
+      var _children = _sheet.$children().$to_a ? _sheet.$children().$to_a() : _sheet.$children();
+      var _sheetData = { children: _children.map(function(c) {
+        var h = {};
+        var ivars = c.$instance_variables ? c.$instance_variables() : [];
+        ivars.forEach(function(iv) {
+          var key = iv.toString().replace(/^@/, '');
+          var val = c.$instance_variable_get(iv);
+          if (val !== null && val !== undefined && typeof val !== 'function') {
+            try { h[key] = (val.$to_n ? val.$to_n() : val); } catch(e) { h[key] = String(val); }
+          }
+        });
+        h['class'] = c.$$class ? c.$$class.$name() : 'Unknown';
+        return h;
+      })};
+      fs.writeFileSync(targetfolder + "/" + _baseName + ".sheet.json", JSON.stringify(_sheetData, null, 2));
+    }
     pdfs = controller.$produce_pdfs(".");
     $send(pdfs, 'each', [], ($$2 = function(filename, content){var self = $$2.$$s || this, outputname = nil;
 
