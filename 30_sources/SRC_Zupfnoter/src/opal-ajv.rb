@@ -10,7 +10,7 @@ module Ajv
       else
         ajv = %x{Ajv}
       end
-      @root = `#{ajv}({allErrors: true, jsonPointers: true, extendRefs: true})`;
+      @root = `#{ajv}({allErrors: true, jsonPointers: true, extendRefs: true, schemaId: 'auto'})`;
       add_schema(_schema, 'zupfnoter');
     end
 

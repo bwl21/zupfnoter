@@ -26676,7 +26676,7 @@ Opal.modules["opal-ajv"] = function(Opal) {
         } else {
           ajv = Ajv
         };
-        self.root = ajv({allErrors: true, jsonPointers: true, extendRefs: true});
+        self.root = ajv({allErrors: true, jsonPointers: true, extendRefs: true, schemaId: 'auto'});
         return self.$add_schema(self.$_schema(), "zupfnoter");
       }, $JsonValidator_initialize$1.$$arity = 0);
       
@@ -40418,7 +40418,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v1.17.1-4-g8ed2f176");
+  Opal.const_set($nesting[0], 'VERSION', "v1.17.1-5-gb97a9f0a");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };
