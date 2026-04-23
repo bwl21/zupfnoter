@@ -26678,7 +26678,6 @@ Opal.modules["opal-ajv"] = function(Opal) {
         };
         self.root = ajv({allErrors: true, jsonPointers: true, extendRefs: true, schemaId: 'auto'});
         self.root.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
-        self.$add_schema(self.$_schema(), "zupfnoter");
         return self.$add_schema(self.$_schema(), "zupfnoter");
       }, $JsonValidator_initialize$1.$$arity = 0);
       
@@ -26718,7 +26717,7 @@ Opal.modules["opal-ajv"] = function(Opal) {
               path = path['$[]']($range(1, -1, false)).$gsub("/", ".")};
             result.$push(path);
             message = path+ ': ' + error.message + "\n" + JSON.stringify(error.params, null, " ");
-            return $gvars.log.$error("" + ("./opal-ajv.rb".$force_encoding("US-ASCII")) + ":" + (41) + " " + (message));}, $$4.$$s = self, $$4.$$arity = 1, $$4));
+            return $gvars.log.$error("" + ("./opal-ajv.rb".$force_encoding("US-ASCII")) + ":" + (40) + " " + (message));}, $$4.$$s = self, $$4.$$arity = 1, $$4));
         };
         return result;
       }, $JsonValidator_validate$3.$$arity = 2);
@@ -26800,7 +26799,7 @@ Opal.modules["opal-ajv"] = function(Opal) {
             v = nil;
           };
           message = $rb_plus($rb_plus($$($nesting, 'I18n').$t("duplicate filenameparts"), "" + ": ''" + (k) + "'' in "), v.$join(", "));
-          return $gvars.log.$error("" + ("./opal-ajv.rb".$force_encoding("US-ASCII")) + ":" + (73) + " " + (message));}, $$11.$$s = self, $$11.$$arity = 2, $$11));
+          return $gvars.log.$error("" + ("./opal-ajv.rb".$force_encoding("US-ASCII")) + ":" + (72) + " " + (message));}, $$11.$$s = self, $$11.$$arity = 2, $$11));
         return filenameparts.$values().$flatten().$uniq();
       }, $JsonValidator_validate_filenameparts$7.$$arity = 1);
       return (Opal.def(self, '$_schema', $JsonValidator__schema$12 = function $$_schema() {
@@ -40420,7 +40419,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v1.17.1-6-g4afbc753");
+  Opal.const_set($nesting[0], 'VERSION', "v1.17.1-7-g7f2b1ee8");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

@@ -14,7 +14,6 @@ module Ajv
       # draft-04 meta-schema für ajv@6 registrieren
       %x{#{@root}.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'))}
       add_schema(_schema, 'zupfnoter');
-      add_schema(_schema, 'zupfnoter');
     end
 
     def add_schema(schema, schemaname)
