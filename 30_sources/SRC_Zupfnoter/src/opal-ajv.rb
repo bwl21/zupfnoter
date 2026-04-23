@@ -10,7 +10,10 @@ module Ajv
       else
         ajv = %x{Ajv}
       end
-      @root = `#{ajv}({allErrors: true, jsonPointers: true, extendRefs: true, schemaId: 'auto'})`;
+      @root = `#{ajv}({allErrors: true, jsonPointers: true, extendRefs: true, schemaId: 'auto'})`
+      # draft-04 meta-schema für ajv@6 registrieren
+      %x{#{@root}.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'))}
+      add_schema(_schema, 'zupfnoter');
       add_schema(_schema, 'zupfnoter');
     end
 
