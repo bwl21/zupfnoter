@@ -126,7 +126,10 @@ sourcefiles.each do |sourcefile|
 
   controller.load_music_model
 
-  File.write("x.json", controller.abc_model.to_json)
+  # EXPORT: Song JSON für zupfnoter-ts Fixtures
+  song_json = controller.instance_variable_get(:@music_model).to_json
+  File.write("#{targetfolder}/#{File.basename(sourcefile, '.abc')}.song.json", song_json)
+
   pdfs = controller.produce_pdfs(".")
 
 
