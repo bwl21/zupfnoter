@@ -41594,16 +41594,18 @@ Opal.modules["harpnotes"] = function(Opal) {
           return "" + "[" + (self.start_pos.$first()) + ":" + (self.start_pos.$last()) + "]"
         }, $MusicEntity_start_pos_to_s$3.$$arity = 0);
         return (Opal.def(self, '$to_json', $MusicEntity_to_json$4 = function $$to_json() {
-          var $$5, self = this;
+          var $$5, self = this, skip = nil;
 
-          return $$($nesting, 'Hash')['$[]']($rb_plus([["class", self.$class()]], $send($rb_minus(self.$instance_variables(), ["@constructor", "@toString"]), 'map', [], ($$5 = function(v){var self = $$5.$$s || this;
+          
+          skip = ["@constructor", "@toString", "@next_playable", "@prev_playable", "@sheet_drawable", "@companion"];
+          return $$($nesting, 'Hash')['$[]']($rb_plus([["class", self.$class()]], $send($rb_minus(self.$instance_variables(), skip), 'map', [], ($$5 = function(v){var self = $$5.$$s || this;
 
           
             
             if (v == null) {
               v = nil;
             };
-            return [v, self.$instance_variable_get(v)];}, $$5.$$s = self, $$5.$$arity = 1, $$5)))).$to_json()
+            return [v, self.$instance_variable_get(v)];}, $$5.$$s = self, $$5.$$arity = 1, $$5)))).$to_json();
         }, $MusicEntity_to_json$4.$$arity = 0), nil) && 'to_json';
       })($nesting[0], null, $nesting);
       (function($base, $super, $parent_nesting) {
@@ -42412,7 +42414,7 @@ Opal.modules["harpnotes"] = function(Opal) {
               if (Opal.rescue($err, [$$($nesting, 'StandardError')])) {
                 try {
                   
-                  $gvars.log.$error("" + "BUG: Annotation without origin " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + " " + (780));
+                  $gvars.log.$error("" + "BUG: Annotation without origin " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + " " + (781));
                   [0, 0];
                 } finally { Opal.pop_exception() }
               } else { throw $err; }
@@ -44012,7 +44014,7 @@ Opal.modules["harpnotes"] = function(Opal) {
             from_anchor = ($truthy($a = goto$.$policy()['$[]']("from_anchor")) ? $a : "after");
             to_anchor = ($truthy($a = goto$.$policy()['$[]']("to_anchor")) ? $a : "before");
             vertical_anchor = ($truthy($a = goto$.$policy()['$[]']("vertical_anchor")) ? $a : "from");
-            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2071));
+            $gvars.log.$debug("" + "vertical line x offset: " + (distance) + " " + ("./harpnotes.rb".$force_encoding("US-ASCII")) + ":" + (2072));
             vertical = $rb_times($rb_plus(distance, 0.5), $gvars.conf.$get("layout.X_SPACING"));
             from = goto$.$from().$sheet_drawable();
             to = goto$.$to().$sheet_drawable();
@@ -55668,7 +55670,7 @@ Opal.modules["version-prod"] = function(Opal) {
 
   Opal.add_stubs(['$year', '$now']);
   
-  Opal.const_set($nesting[0], 'VERSION', "v1.17.1-7-g7f2b1ee8");
+  Opal.const_set($nesting[0], 'VERSION', "v1.17.1-8-g3b30107e");
   Opal.const_set($nesting[0], 'SCHEMA_VERSION', "https://zupfnoter.weichel21.de/schema/zupfnoter-config_1.0.json");
   return Opal.const_set($nesting[0], 'COPYRIGHT', "" + "© " + ($$($nesting, 'Time').$now().$year()) + " https://www.zupfnoter.de");
 };

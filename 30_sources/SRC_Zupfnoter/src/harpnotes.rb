@@ -134,7 +134,8 @@ module Harpnotes
 
 
       def to_json
-        Hash[[['class', self.class]] + (instance_variables - ['@constructor', '@toString']).map { |v|
+        skip = ['@constructor', '@toString', '@next_playable', '@prev_playable', '@sheet_drawable', '@companion']
+        Hash[[['class', self.class]] + (instance_variables - skip).map { |v|
           [v, instance_variable_get(v)]
         }].to_json
       end
